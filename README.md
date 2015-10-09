@@ -50,6 +50,7 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 * Add cli based on the library for working with pkcs#11 devices
 
 ## Related
+- [PKCS #11 2.40 Specification](http://docs.oasis-open.org/pkcs11/pkcs11-curr/v2.40/pkcs11-curr-v2.40.html)
 - [.NET PKCS #11 binding](https://github.com/jariq/Pkcs11Interop)
 - [Ruby PKCS #11 binding](https://github.com/larskanis/pkcs11)
 - [Go PKCS #11 binding](https://github.com/miekg/pkcs11) 
