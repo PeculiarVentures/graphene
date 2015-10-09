@@ -54,4 +54,5 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 - [Ruby PKCS #11 binding](https://github.com/larskanis/pkcs11)
 - [Go PKCS #11 binding](https://github.com/miekg/pkcs11) 
 - [PKCS #11 Admin](http://www.pkcs11admin.net)
+- [Node.js Foreign Function Interface](https://github.com/node-ffi/node-ffi)
 
