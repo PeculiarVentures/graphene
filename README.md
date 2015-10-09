@@ -39,6 +39,12 @@ It has been tested with :
 ### Encrypting
 ### Decrypting
 
+## Suitability
+At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
+
+## Bug Reporting
+Please report bugs either as pull requests or as issues in the issue tracker. Graphene has a full disclosure vulnerability policy. Please do NOT attempt to report any security vulnerability in this code privately to anybody.
+
 ## TODO
 * Add tests to the library
 * Add cli based on the library for working with pkcs#11 devices
