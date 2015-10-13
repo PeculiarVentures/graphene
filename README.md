@@ -34,8 +34,131 @@ It has been tested with :
 ## Examples
 ### Listing capabilities
 ### Hashing
+```
+var pkcs11 = require('pkcs11');
+var Module = pkcs11.Module;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+	
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+	
+//get slots
+var slots = mod.getSlots(true);
+if (slots.length > 0) {
+	var slot = slots[0]; //get first slot;
+	var session = slot.session;
+	session.start();
+
+	var digest = session.createDigest("sha1");
+	digest.update("simple text 1");
+	digest.update("simple text 2");
+	var hash = digest.final();
+	console.log("Hash SHA1:", hash.toString("hex")); //Hash SHA1: e1dc1e52e9779cd69679b3e0af87d2e288190d34 
+
+	session.stop();
+}
+
+mod.finalize();
+```
 ### Generating keys
 ### Signing
+```
+var pkcs11 = require('pkcs11');
+var Module = pkcs11.Module;
+var Enums = pkcs11.Enums;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+
+//get slots
+var slots = mod.getSlots(true);
+if (slots.length > 0) {
+	var slot = slots[1];
+	var session = slot.session;
+	session.start();
+	
+	session.login("1234");
+	
+	var objects = session.findObjects();
+	
+	var key = null;
+	//Get first PrivateKey
+	for (var i in objects){
+		var object = objects[i];
+		if (object.getClass() == Enums.ObjectClass.PrivateKey){
+			key = object.toType(Enums.ObjectClass.PrivateKey);
+			break;
+		}
+	}
+	
+	console.log("PK lable:", key.getLabel()); 						//PK lable: My key
+	console.log("PK type:", Enums.KeyType.getText(key.getType()));	//PK type: RSA
+	console.log("PK is Sign:", key.isSign());						//PK is Sign: true
+
+	var sign = session.createSign("SHA1_RSA_PKCS", key);
+	sign.update("simple text 1");
+	sign.update("simple text 2");
+	var signature = sign.final();
+	console.log("Signature RSA-SHA1:", signature.toString("hex"));	//Signature RSA-SHA1: 6102a66dc0d97fadb5...
+	
+	session.logout();
+	session.stop();
+}
+
+mod.finalize();
+```
+### Verifying
+```
+var pkcs11 = require('pkcs11');
+var Module = pkcs11.Module;
+var Enums = pkcs11.Enums;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+
+//get slots
+var slots = mod.getSlots(true);
+if (slots.length > 0) {
+	var slot = slots[1];
+	var session = slot.session;
+	session.start();
+	
+	session.login("1234");
+	
+	var objects = session.findObjects();
+	
+	var key = null;
+	//Get first PublicKey
+	for (var i in objects){
+		var object = objects[i];
+		if (object.getClass() == Enums.ObjectClass.PublicKey){
+			key = object.toType(Enums.ObjectClass.PublicKey);
+			break;
+		}
+	}
+	
+	console.log("PubK lable:", key.getLabel()); 						//PK lable: My key
+	console.log("PubK type:", Enums.KeyType.getText(key.getType()));	//PK type: RSA
+	console.log("PubK is Verify:", key.isVerify());						//PK is Sign: true
+
+	var verify = session.createVerify("SHA1_RSA_PKCS", key);
+	verify.update("simple text 1");
+	verify.update("simple text 2");
+	var signature = new Buffer("6102a66dc0d97fadb53bda109b726714e0206b5a...","hex");
+	var res = verify.final(signature);
+	console.log("Verify RSA-SHA1:", res);								//Verify RSA-SHA1: true
+	
+	session.logout();
+	session.stop();
+}
+
+mod.finalize();
+```
 ### Encrypting
 ### Decrypting
 
