@@ -47,16 +47,21 @@ mod.initialize();
 var slots = mod.getSlots(true);
 if (slots.length > 0) {
 	var slot = slots[0]; //get first slot;
-	var session = slot.session;
-	session.start();
-
-	var digest = session.createDigest("sha1");
-	digest.update("simple text 1");
-	digest.update("simple text 2");
-	var hash = digest.final();
-	console.log("Hash SHA1:", hash.toString("hex")); //Hash SHA1: e1dc1e52e9779cd69679b3e0af87d2e288190d34 
-
-	session.stop();
+	if (slot.isInitialized()){
+		var session = slot.session;
+		session.start();
+	
+		var digest = session.createDigest("sha1");
+		digest.update("simple text 1");
+		digest.update("simple text 2");
+		var hash = digest.final();
+		console.log("Hash SHA1:", hash.toString("hex")); //Hash SHA1: e1dc1e52e9779cd69679b3e0af87d2e288190d34 
+	
+		session.stop();
+	}
+	else{
+		console.error('Slot is not initialized');
+	}
 }
 
 mod.finalize();
