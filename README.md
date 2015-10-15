@@ -182,4 +182,5 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 - [PKCS #11 Admin](http://www.pkcs11admin.net)
 - [Node.js Foreign Function Interface](https://github.com/node-ffi/node-ffi)
 - [GOST PKCS#11 constants](https://github.com/romanovskiy-k/pkcs11/blob/master/rtpkcs11t.h)
+- [PKCS#11 Logging Shim](https://github.com/jariq/pkcs11-logger)
 
