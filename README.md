@@ -68,7 +68,6 @@ mod.finalize();
 ```
 ### Generating keys
 #### AES
-### Key generation
 ```
 var pkcs11 = require('pkcs11');
 var Module = pkcs11.Module;
