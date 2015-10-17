@@ -221,7 +221,7 @@ mod.finalize();
 ```
 ###Key pair generation
 ```
-var pkcs11 = require('./lib/index');
+var pkcs11 = require('pkcs11');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 
