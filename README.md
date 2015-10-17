@@ -67,6 +67,110 @@ if (slots.length > 0) {
 mod.finalize();
 ```
 ### Generating keys
+#### AES
+### Key generation
+```
+var pkcs11 = require('pkcs11');
+var Module = pkcs11.Module;
+var Enums = pkcs11.Enums;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+
+//get slots
+var slots = mod.getSlots(true);
+if (slots.length > 0) {
+	var slot = slots[1];
+	if (slot.isInitialized()) {
+		var session = slot.session;
+		session.start(2|4); //start session in RW mode
+
+		session.login("1234");
+		
+		var k = session.generateKey("AES_KEY_GEN", {
+			"class": Enums.ObjectClass.SecretKey,
+			"token": true,
+			"sensitive": true,
+			"valueLen": 32,
+			"keyType": Enums.KeyType.AES,
+			"label": "My AES secret key",
+			"private": true
+		})
+		console.log("Key.handle:", k.handle);
+		console.log("Key.type:", k.getType());
+
+		session.logout();
+		session.stop();
+	}
+	else {
+		console.error('Slot is not initialized');
+	}
+}
+
+mod.finalize();
+```
+
+#### ECC
+```
+var pkcs11 = require('pkcs11');
+var Module = pkcs11.Module;
+var Enums = pkcs11.Enums;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+
+//get slots
+var slots = mod.getSlots(true);
+if (slots.length > 0) {
+	var slot = slots[1];
+	if (slot.isInitialized()) {
+		var session = slot.session;
+		session.start(2 | 4); //start session in RW mode
+
+		session.login("1234");
+
+		var keyPair = session.generateKeyPair(
+			"EC_KEY_PAIR_GEN",
+			{
+				"token": true,
+				"private": true,
+				"verify": true,
+				"wrap": false,
+				"encrypt": false,
+				"paramsEC": new Buffer("06082A8648CE3D030101", "hex")
+			},
+			{
+				"token": true,
+				"private": true,
+				"sensitive": true,
+				"decrypt": false,
+				"sign": true,
+				"unwrap": false,
+
+			})
+		var pubKey = keyPair.public;
+		console.log("Key.handle:", pubKey.handle);
+		console.log("Key.type:", Enums.KeyType.getText(pubKey.getType()));
+		
+		var prvKey = keyPair.private;
+		console.log("Key.handle:", prvKey.handle);
+		console.log("Key.type:", Enums.KeyType.getText(prvKey.getType()));
+
+		session.logout();
+		session.stop();
+	}
+	else {
+		console.error('Slot is not initialized');
+	}
+}
+
+mod.finalize();
+```
+
 ### Signing
 ```
 var pkcs11 = require('pkcs11');
@@ -176,107 +280,6 @@ mod.finalize();
 ```
 ### Encrypting
 ### Decrypting
-### Key generation
-```
-var pkcs11 = require('pkcs11');
-var Module = pkcs11.Module;
-var Enums = pkcs11.Enums;
-
-var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
-
-var mod = Module.load(lib, "SoftHSM");
-mod.initialize();
-
-//get slots
-var slots = mod.getSlots(true);
-if (slots.length > 0) {
-	var slot = slots[1];
-	if (slot.isInitialized()) {
-		var session = slot.session;
-		session.start(2|4); //start session in RW mode
-
-		session.login("1234");
-		
-		var k = session.generateKey("AES_KEY_GEN", {
-			"class": Enums.ObjectClass.SecretKey,
-			"token": true,
-			"sensitive": true,
-			"valueLen": 32,
-			"keyType": Enums.KeyType.AES,
-			"label": "My AES secret key",
-			"private": true
-		})
-		console.log("Key.handle:", k.handle);
-		console.log("Key.type:", k.getType());
-
-		session.logout();
-		session.stop();
-	}
-	else {
-		console.error('Slot is not initialized');
-	}
-}
-
-mod.finalize();
-```
-###Key pair generation
-```
-var pkcs11 = require('pkcs11');
-var Module = pkcs11.Module;
-var Enums = pkcs11.Enums;
-
-var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
-
-var mod = Module.load(lib, "SoftHSM");
-mod.initialize();
-
-//get slots
-var slots = mod.getSlots(true);
-if (slots.length > 0) {
-	var slot = slots[1];
-	if (slot.isInitialized()) {
-		var session = slot.session;
-		session.start(2 | 4); //start session in RW mode
-
-		session.login("1234");
-
-		var keyPair = session.generateKeyPair(
-			"EC_KEY_PAIR_GEN",
-			{
-				"token": true,
-				"private": true,
-				"verify": true,
-				"wrap": false,
-				"encrypt": false,
-				"paramsEC": new Buffer("06082A8648CE3D030101", "hex")
-			},
-			{
-				"token": true,
-				"private": true,
-				"sensitive": true,
-				"decrypt": false,
-				"sign": true,
-				"unwrap": false,
-
-			})
-		var pubKey = keyPair.public;
-		console.log("Key.handle:", pubKey.handle);
-		console.log("Key.type:", Enums.KeyType.getText(pubKey.getType()));
-		
-		var prvKey = keyPair.private;
-		console.log("Key.handle:", prvKey.handle);
-		console.log("Key.type:", Enums.KeyType.getText(prvKey.getType()));
-
-		session.logout();
-		session.stop();
-	}
-	else {
-		console.error('Slot is not initialized');
-	}
-}
-
-mod.finalize();
-```
 
 ## Suitability
 At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
