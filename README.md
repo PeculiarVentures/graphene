@@ -33,6 +33,63 @@ It has been tested with :
 
 ## Examples
 ### Listing capabilities
+```
+var pkcs11 = require('pkcs11');
+var Module = pkcs11.Module;
+var Enums = pkcs11.Enums;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+
+//get slots
+var slots = mod.getSlots(true);
+if (slots.length > 0) {
+	var slots = mod.getSlots(true);
+	for (var i in slots) {
+		var slot = slots[i];
+		console.log("Slot #" + (+i + 1));
+		console.log("\tDescription:", slot.description);
+		console.log("\tSerial:", slot.serial);
+		console.log("\tNeed login:", slot.needLogin);
+		console.log("\tPassword(min/max): %d/%d", slot.minPassword, slot.maxPassword);
+		console.log("\tIs hardware:", slot.isHardware());
+		console.log("\tIs removable:", slot.isRemovable());
+		console.log("\tIs initialized:", slot.isInitialized());
+
+		console.log("\n\nMechanisms:");
+		console.log("Name                       h/s/v/e/d/w/u");
+		console.log("========================================");
+		function b(v) {
+			return v ? '+' : '-';
+		};
+		function s(v) {
+			v = v.toString();
+			for (var i = v.length; i < 27; i++) {
+				v += ' ';
+			}
+			return v;
+		};
+		var mechs = slot.mechanismList;
+		for (var j in mechs) {
+			var mech = mechs[j];
+			console.log(
+				s(mech.name) +
+				b(mech.isDigest()) + '/' +
+				b(mech.isSign()) + '/' +
+				b(mech.isVerify()) + '/' +
+				b(mech.isEncrypt()) + '/' +
+				b(mech.isDecrypt()) + '/' +
+				b(mech.isWrap()) + '/' +
+				b(mech.isUnwrap())
+				);
+		}
+	}
+}
+
+mod.finalize();
+```
 ### Hashing
 ```
 var pkcs11 = require('pkcs11');
