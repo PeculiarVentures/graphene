@@ -1,0 +1,28 @@
+{
+  "name": "pk11",
+  "version": "1.0.0",
+  "description": "cryptoki wrapper",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "ffi": "^2.0.0",
+    "ref": "^1.1.0",
+    "ref-struct": "^1.0.2",
+    "ref-array": "^1.1.2",
+    "debug": "^2.2.0"
+  },
+  "devDependencies": {
+    "mocha":"^2.3.3"
+  },
+  "keywords": [
+    "pkcs11",
+    "cryptographi",
+    "cryptoki",
+    "token",
+    "RSA"
+  ],
+  "author": "microshine",
+  "license": "BSD"
+}
