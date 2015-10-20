@@ -278,7 +278,128 @@ if (slots.length > 0) {
 mod.finalize();
 ```
 ### Encrypting
+```
+var pkcs11 = require('pkcs11');
+var Module = pkcs11.Module;
+var Enums = pkcs11.Enums;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+
+//get slots
+var slots = mod.getSlots(true);
+if (slots.length > 0) {
+	var slot = slots[0]; //get slot by index
+	if (slot.isInitialized()) {
+		var session = slot.session;
+		session.start();
+
+		session.login("1234");
+
+		var objects = session.findObjects();
+
+		var key = null;
+		//Get AES key
+		for (var i in objects) {
+			var object = objects[i];
+			if (object.getClass() == Enums.ObjectClass.SecretKey) {
+				var _key = object.toType(); //converts object to SecretKey 
+				if (_key.getType() == Enums.KeyType.AES) {
+					key = object.toType(Enums.ObjectClass.PublicKey);
+					break;
+				}
+			}
+		}
+
+		console.log("Key lable:", key.getLabel()); 						//Key lable: test key AES
+		console.log("Key type:", Enums.KeyType.getText(key.getType()));	//Key type: AES
+		console.log("Key is Encrypt:", key.isEncrypt());				//Key is Encrypt: true
+
+		var encrypt = session.createEncrypt({
+			name: "AES_CBC_PAD",
+			params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+		}, key);
+		var encMsg = new Buffer(0);
+		encMsg = Buffer.concat([encMsg, encrypt.update("simple text 1")]);
+		encMsg = Buffer.concat([encMsg, encrypt.update("simple text 2")]);
+		encMsg = Buffer.concat([encMsg, encrypt.final()]);
+		console.log("Encrypted AES_CBC_PAD:", encMsg.toString('base64'));	
+		//Encrypted AES_CBC_PAD: ByPGGo2xIcGsyRZBncjmI2nLiSAOSnmKG4U1p7LJIRM=
+	
+		session.logout();
+		session.stop();
+	}
+	else {
+		console.error('Slot is not initialized');
+	}
+}
+
+mod.finalize();
+```
 ### Decrypting
+```
+var pkcs11 = require('pkcs11');
+var Module = pkcs11.Module;
+var Enums = pkcs11.Enums;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+
+//get slots
+var slots = mod.getSlots(true);
+if (slots.length > 0) {
+	var slot = slots[0]; //get slot by index
+	if (slot.isInitialized()) {
+		var session = slot.session;
+		session.start();
+
+		session.login("1234");
+
+		var objects = session.findObjects();
+
+		var key = null;
+		//Get AES key
+		for (var i in objects) {
+			var object = objects[i];
+			if (object.getClass() == Enums.ObjectClass.SecretKey) {
+				var _key = object.toType(); //converts object to SecretKey 
+				if (_key.getType() == Enums.KeyType.AES) {
+					key = object.toType(Enums.ObjectClass.PublicKey);
+					break;
+				}
+			}
+		}
+
+		console.log("Key lable:", key.getLabel()); 						//Key lable: test key AES
+		console.log("Key type:", Enums.KeyType.getText(key.getType()));	//Key type: AES
+		console.log("Key is Encrypt:", key.isEncrypt());				//Key is Encrypt: true
+
+		var decrypt = session.createDecrypt({
+			name: "AES_CBC_PAD",
+			params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+		}, key);
+		var msg = new Buffer(0);
+		msg = Buffer.concat([msg, decrypt.update(
+			new Buffer("ByPGGo2xIcGsyRZBncjmI2nLiSAOSnmKG4U1p7LJIRM=", "base64")
+			)]);
+		msg = Buffer.concat([msg, decrypt.final()]);
+		console.log("Decrypted AES_CBC_PAD:", msg.toString());	
+		//Decrypted AES_CBC_PAD: simple text 1simple text 2
+
+		session.logout();
+		session.stop();
+	}
+	else {
+		console.error('Slot is not initialized');
+	}
+}
+
+mod.finalize();
+```
 
 ## Suitability
 At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
