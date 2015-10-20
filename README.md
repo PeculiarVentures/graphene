@@ -90,7 +90,8 @@ if (slots.length > 0) {
 
 mod.finalize();
 ```
-Output
+
+####Output
 ```
 Slot #1
         Description: Luna UHD Slot
