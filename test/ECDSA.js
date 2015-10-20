@@ -27,7 +27,7 @@ describe("ECDSA", function () {
 		var objects = session.findObjects();
 		for (var i in objects) {
 			var obj = objects[i];
-			if (obj.getClass() == Enums.ObjectClass.PrivateKey || obj.getClass() == Enums.ObjectClass.Public) {
+			if (obj.getClass() == Enums.ObjectClass.PrivateKey || obj.getClass() == Enums.ObjectClass.PublicKey) {
 				var key = obj.toType();
 				if (key.getType() == Enums.KeyType.ECDSA) {
 					if (!_keys) _keys = {};
