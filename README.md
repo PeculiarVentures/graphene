@@ -303,4 +303,6 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 - [PKCS#11 Logging Shim](https://github.com/jariq/pkcs11-logger)
 - [PKCS#11 Proxy](https://github.com/iksaif/pkcs11-proxy)
 - [PKCS#11 Tests](https://github.com/google/pkcs11test)
+- [OpenCryptoKi](http://sourceforge.net/projects/opencryptoki/)
+- [SoftHSM](https://www.opendnssec.org/softhsm/)
 
