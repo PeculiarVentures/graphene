@@ -90,6 +90,34 @@ if (slots.length > 0) {
 
 mod.finalize();
 ```
+Output
+```
+Slot #1
+        Description: Luna UHD Slot
+        Serial: 486884
+        Need login: true
+        Password(min/max): 7/255
+        Is hardware: true
+        Is removable: false
+        Is initialized: true
+
+
+Mechanisms:
+Name                       h/s/v/e/d/w/u
+=========================================
+RSA_PKCS_KEY_PAIR_GEN      -/-/-/-/-/-/-
+RSA_PKCS                   -/+/+/+/+/+/+
+SHA1_RSA_PKCS              -/+/+/-/-/-/-
+RSA_PKCS_OAEP              -/-/-/+/+/+/+
+RSA_X9_31_KEY_PAIR_GEN     -/-/-/-/-/-/-
+SHA1_RSA_X9_31             -/+/+/-/-/-/-
+RSA_PKCS_PSS               -/+/+/-/-/-/-
+SHA1_RSA_PKCS_PSS          -/+/+/-/-/-/-
+DSA_KEY_PAIR_GEN           -/-/-/-/-/-/-
+DSA                        -/+/+/-/-/-/-
+SHA224_RSA_PKCS            -/+/+/-/-/-/-
+```
+
 ### Hashing
 ```
 var pkcs11 = require('pkcs11');
