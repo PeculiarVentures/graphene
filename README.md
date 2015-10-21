@@ -512,4 +512,5 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 - [PKCS#11 Tests](https://github.com/google/pkcs11test)
 - [OpenCryptoKi](http://sourceforge.net/projects/opencryptoki/)
 - [SoftHSM](https://www.opendnssec.org/softhsm/)
+- [node-pcsc](https://github.com/santigimeno/node-pcsclite)
 
