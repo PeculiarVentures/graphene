@@ -6,6 +6,9 @@
   "scripts": {
     "test": "mocha"
   },
+  "bin": {
+    "graphene": "./bin/graphene.js"
+  },
   "dependencies": {
     "ffi": "^2.0.0",
     "ref": "^1.1.0",
