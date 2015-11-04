@@ -85,7 +85,7 @@ commander.createCommand("module")
 
 function print_slot(slot) {
   print_caption("Slot info");
-  console.log("\tHandle:", slot.handle);
+  console.log("\tNumber:", slot.number);
   console.log("\tDescription:", slot.description);
   console.log("\tIs hardware:", slot.isHardware());
   console.log("\tIs removable:", slot.isRemovable());
@@ -105,13 +105,13 @@ function get_slot_list() {
 
 function get_slot(cmd) {
   check_module();
-  if (!("handle" in cmd))
-    throw new Error("Parameter --handle is required");
+  if (!("number" in cmd))
+    throw new Error("Parameter --number is required");
   if (!slots)
     get_slot_list();
-  var slot = slots[cmd.handle];
+  var slot = slots[cmd.number];
   if (!slot)
-    throw new Error("Unknown --handle value");
+    throw new Error("Unknown --number value");
   return slot;
 }
 
@@ -129,13 +129,13 @@ var slots = null;
 commander.createCommand("slot")
 //.option("l", "list", "Prints list of connected modules", [])
   .option('l', 'list', 'Returns list of slots')
-  .option('h', 'handle', 'Returns slot by handle')
+  .option('n', 'number', 'Returns slot by number')
   .option('i', 'info', 'Returns info about slot')
   .option('hs', 'hashes', 'Returns an array with the names of the supported hash algorithms')
   .option('cs', 'ciphers', 'Returns an array with the names of the supported ciphers')
   .option('as', 'algs', 'Returns an array with the names of the supported algoriphms')
   .option('p', 'pin', 'PIN of session')
-  .option('help', 'help', 'Return Help description')
+  .option('h', 'help', 'Returns Help description')
   .on("call", function (cmd) {
     if ("list" in cmd) {
       if ('help' in cmd) {
@@ -186,8 +186,8 @@ commander.createCommand("slot")
     else if ("algs" in cmd) {
       if ('help' in cmd) {
         console.log(this._options.algs.description);
-        console.log("slot --algs --handle|-h <Number>");
-        console.log("\t--handle|-h Handle of Slot.");
+        console.log("slot --algs --number|-n <Number>");
+        console.log("\t--number|-n number of Slot.");
         return;
       }
       var slot = get_slot(cmd)
@@ -231,9 +231,9 @@ commander.createCommand("slot")
   })
 
 commander.createCommand("hash")
-  .option('help', 'help', 'Return Help description')
+  .option('help', 'h', 'Returns Help description')
   .option('a', 'alg', 'Algorith name')
-  .option('h', 'handle', 'Returns slot by handle')
+  .option('n', 'number', 'Returns slot by number')
   .option('p', 'pin', 'PIN of slot')
   .option('in', 'in', 'Path to input file', check_file)
   .on("call", function (cmd) {
@@ -254,6 +254,71 @@ commander.createCommand("hash")
       session.stop();
       rl.prompt();
     });
+  })
+
+function gen_AES(session) {
+		var _key = session.generateKey("AES_KEY_GEN", {
+    "class": Enums.ObjectClass.SecretKey,
+    "keyType": Enums.KeyType.AES,
+    "valueLen": 32,
+    "label": "test key AES",
+    "private": true,
+    "sensitive": true,
+    "token": true,
+    "encrypt": true,
+    "decrypt": true,
+    "wrap": true,
+    "unwrap": true,
+    "extractable": false,
+		})
+		return _key;
+}
+
+var BUF_SIZE = 1024;
+var BUF_STEP = 8;
+var BUF = new Buffer(BUF_STEP);
+
+function test_encrypt(session, key, algName) {
+  var enc = session.createEncrypt(algName, key);
+  var msg = new Buffer(0);
+  var buf = new Buffer(BUF_STEP);
+  for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
+		  msg = Buffer.concat([msg, enc.update(buf)]);
+  }
+  msg = Buffer.concat([msg, enc.final()]);
+}
+
+commander.createCommand("test")
+  .option('help', 'h', 'Returns Help description')
+  // .option('a', 'alg', 'Algorith name')
+  .option('p', 'pin', 'PIN of slot')
+  .option('n', 'number', 'Returns slot by number', function (v) {
+    var res = +v;
+    if (!Number.isInteger(res))
+      throw new TypeError("Parameter --num must be number");
+    if (res <= 0)
+      throw new TypeError("Parameter --num must be more then 0");
+    return res;
+  })
+  .option('p', 'pin', 'PIN of slot')
+  .on("call", function (cmd) {
+    // if (!("in" in cmd))
+    //   throw new Error("Parameter --alg is required");
+    if (!("alg" in cmd))
+      cmd.alg = '';
+    if (!("num" in cmd))
+      cmd.num = 1;
+    console.time("Key generation");
+    var key = gen_AES();
+    console.timeEnd("Key generation");
+    console.time("Encryption");
+    var session = get_session(cmd);
+    for (var i = 0; i < cmd.num; i++)
+      test_encrypt(session, key, {
+        name: "AES_CBC_PAD",
+        params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+      });
+      console.timeEnd("Encryption");
   })
 
 commander.createCommand("exit")
