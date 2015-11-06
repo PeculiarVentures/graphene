@@ -513,4 +513,5 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 - [OpenCryptoKi](http://sourceforge.net/projects/opencryptoki/)
 - [SoftHSM](https://www.opendnssec.org/softhsm/)
 - [node-pcsc](https://github.com/santigimeno/node-pcsclite)
+- [PKCS#11 URIs](https://tools.ietf.org/html/rfc7512)
 
