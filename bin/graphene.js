@@ -10,7 +10,16 @@ var Enums = pkcs11.Enums;
 
 var CAPTION_UNDERLINE = "==============================";
 
-var ERROR_MODULE_NOT_INITIALIZED = "Module is not initialized";
+var MODULE_NOTE = "All commands require you to first load the PKCS #11 module";
+var MODULE_EXAMPLE = "module init -l /path/to/pkcs11/lib/name.so -n LibName";
+
+var NOTE = MODULE_NOTE + "\n\n    " + MODULE_EXAMPLE;
+
+var ERROR_MODULE_NOT_INITIALIZED = "Module is not initialized\n\n" +
+  "Note:\n" +
+  "  " + MODULE_NOTE + "\n\n" +
+  "Example:\n" +
+  "  " + MODULE_EXAMPLE;
 var ERROR_SLOTS_NOT_INITIALIZED = "Slots are not initialized"
 
 var rl = readline.createInterface({
@@ -21,15 +30,22 @@ var rl = readline.createInterface({
 var commander = require('../lib/commander/command');
 
 commander.on("error", function (e) {
+  console.log();
   console.log("Error:", e.message);
   debug(e.stack);
+  if (e.command && e.command.print) {
+    console.log();
+    e.command.print("usage");
+    e.command.print("commands");
+    e.command.print("example");
+  }
 
   rl.prompt();
 })
 
 /* ==========
    Helpers
-   ==========*/
+   ==========*/   
 /**
  * Prints caption to stdout with underline
  * 
@@ -106,6 +122,16 @@ function print_bool(v) {
 }
 
 /**
+ * Prints Module note
+ */
+function print_module_note() {
+  var msg = "Note:" + "\n";
+  msg += "  All commands require you to first load the PKCS #11 module" + "\n\n";
+  msg += "    module init -l /path/to/pkcs11/lib/name.so -n LibName";
+  return msg;
+}
+
+/**
  * Class Timer.
  */
 function Timer() {
@@ -131,7 +157,27 @@ Timer.prototype.stop = function stop() {
     this.time = this.endAt.getTime() - this.beginAt.getTime()
   }
 }
+  
+/* ==========
+   ?
+   ==========*/
+commander.createCommand("?", "Returns Help")
+  .on("call", function (v) {
+    console.log();
+    console.log("Description of graphene command");
+    console.log();
+    console.log("Commands:");
+    for (var i in commander._commands) {
+      var cmd = commander._commands[i];
+      console.log("  " + cmd._name + " - " + cmd._description);
+    }
+    console.log();
+    console.log(print_module_note());
+    console.log();
 
+
+  })
+  
 /* ==========
    exit
    ==========*/
@@ -141,17 +187,22 @@ commander.createCommand("exit", "Exit from application")
     console.log("Thanks for using");
     console.log();
     rl.close();
+    rl.prompt = function () { };
   })
   
 /* ==========
    Module
    ==========*/
 var mod;
-var cmdModule = commander.createCommand("module", "Manages PKCS11 library.")
+var cmdModule = commander.createCommand("module", {
+  description: "Manages PKCS11 library",
+  note: MODULE_NOTE,
+  example: MODULE_EXAMPLE
+})
   .on("call", function (cmd) {
     this.help();
 
-    rl.prompt();
+
   })
 
 /**
@@ -171,14 +222,15 @@ var cmdModuleInit = cmdModule.command("init", "Initializes module")
     console.log(this._name + " is called");
     mod = Module.load(cmd.lib, cmd.name);
     mod.initialize();
-
-    rl.prompt();
-  });
+  })
 
 /**
  * info
  */
-var cmdModuleInfo = cmdModule.command("info", "Returns info about Module")
+var cmdModuleInfo = cmdModule.command("info", {
+  description: "Returns info about Module",
+  note: NOTE
+})
   .on("call", function (cmd) {
     check_module();
     print_caption("Module info");
@@ -186,8 +238,6 @@ var cmdModuleInfo = cmdModule.command("info", "Returns info about Module")
     console.log("\tName:", mod.name);
     console.log("\tDescription:", mod.description);
     console.log("\tCryptoki version:", mod.cryptokiVersion);
-
-    rl.prompt();
   })
 
 function print_slot(slot) {
@@ -244,17 +294,21 @@ var option_pin = {
 /* ==========
    Slot
    ==========*/
-var cmdSlot = commander.createCommand("slot", "Description for Slot command")
+var cmdSlot = commander.createCommand("slot", {
+  description: "Description for Slot command",
+  note: NOTE,
+})
   .on("call", function () {
     this.help();
-
-    rl.prompt();
   })
-  
+    
 /**
  * list
  */
-var cmdSlotList = cmdSlot.command("list", "Returns list of slots")
+var cmdSlotList = cmdSlot.command("list", {
+  description: "Returns list of slots",
+  note: NOTE
+})
   .on("call", function () {
     get_slot_list();
     print_caption("Slot list");
@@ -265,24 +319,30 @@ var cmdSlotList = cmdSlot.command("list", "Returns list of slots")
       print_slot(slot);
     }
 
-    rl.prompt();
-  });
-  
+
+  })
+    
 /**
  * info
  */
-var cmdSlotInfo = cmdSlot.command("info", "Returns info about Slot by index")
+var cmdSlotInfo = cmdSlot.command("info", {
+  description: "Returns info about Slot by index",
+  note: NOTE
+})
   .option('slot', option_slot)
   .on("call", function (cmd) {
     print_slot(cmd.slot);
 
-    rl.prompt();
-  });
-  
+
+  })
+   
 /**
  * hashes
  */
-var cmdSlotHashes = cmdSlot.command("hashes", "Returns an array with the names of the supported hash algorithms")
+var cmdSlotHashes = cmdSlot.command("hashes", {
+  description: "Returns an array with the names of the supported hash algorithms",
+  note: NOTE
+})
   .option('slot', option_slot)
   .on("call", function (cmd) {
     var lDigest = cmd.slot.getHashes();
@@ -291,13 +351,16 @@ var cmdSlotHashes = cmdSlot.command("hashes", "Returns an array with the names o
       console.log("\t" + lDigest[i]);
     }
 
-    rl.prompt();
-  });
-  
+
+  })
+    
 /**
  * ciphers
  */
-var cmdSlotCiphers = cmdSlot.command("ciphers", "Returns an array with the names of the supported ciphers")
+var cmdSlotCiphers = cmdSlot.command("ciphers", {
+  description: "Returns an array with the names of the supported ciphers",
+  note: NOTE
+})
   .option('slot', option_slot)
   .on("call", function (cmd) {
     var lCiphers = cmd.slot.getCiphers();
@@ -306,13 +369,16 @@ var cmdSlotCiphers = cmdSlot.command("ciphers", "Returns an array with the names
       console.log("\t" + lCiphers[i]);
     }
 
-    rl.prompt();
-  });
-  
+
+  })
+   
 /**
  * algs
  */
-var cmdSlotCiphers = cmdSlot.command("algs", "Returns an array with the names of the supported algoripthms")
+var cmdSlotCiphers = cmdSlot.command("algs", {
+  description: "Returns an array with the names of the supported algoripthms",
+  note: NOTE
+})
   .option('slot', option_slot)
   .on("call", function (cmd) {
     var lAlg = cmd.slot.mechanismList;
@@ -333,14 +399,15 @@ var cmdSlotCiphers = cmdSlot.command("algs", "Returns an array with the names of
       s += print_bool(alg.isGenerate() || alg.isGenerateKeyPair());
       console.log("\t" + s);
     }
-
-    rl.prompt();
-  });
-
+  })
+  
 /* ==========
    Hash
    ==========*/
-var cmdHash = commander.createCommand("hash")
+var cmdHash = commander.createCommand("hash", {
+  description: "Calculates hash for input file",
+  note: NOTE
+})
   .option('slot', option_slot)
   .option('alg', {
     description: 'Algorith name',
@@ -364,10 +431,9 @@ var cmdHash = commander.createCommand("hash")
       console.log(hash.toString('hex'));
       session.logout();
       session.stop();
-      rl.prompt();
     });
   })
-  
+   
 /* ==========
    Test
    ==========*/
@@ -523,17 +589,21 @@ function print_test_sign_row(alg, t1, t2) {
   console.log(rpud(alg.toUpperCase(), 30), lpud(t1, 10), lpud(t2, 10))
 }
 
-var cmdTest = commander.createCommand("test", "Description for Test command")
+var cmdTest = commander.createCommand("test", {
+  description: "Description for Test command",
+  note: NOTE
+})
   .on("call", function (cmd) {
     this.help();
-
-    rl.prompt();
-  })
+  }) 
 
 /**
  * enc
  */
-var cmdTestEnc = cmdTest.command("enc", "Tests Encryption")
+var cmdTestEnc = cmdTest.command("enc", {
+  description: "Tests Encryption",
+  note: NOTE
+})
   .option('alg', {
     description: 'Algorithm name',
     isRequired: true
@@ -562,14 +632,15 @@ var cmdTestEnc = cmdTest.command("enc", "Tests Encryption")
         params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
       });
     console.timeEnd("Encryption");
-
-    rl.prompt();
-  });
+  })
   
 /**
  * sign
  */
-var cmdTestSign = cmdTest.command("sign", "Runs speed test for sign and verify PKCS11 functions")
+var cmdTestSign = cmdTest.command("sign", {
+  description: "Runs speed test for sign and verify PKCS11 functions",
+  note: NOTE
+})
   .option("pin", option_pin)
   .option("slot", option_slot)
   .option('buf', {
@@ -604,11 +675,11 @@ var cmdTestSign = cmdTest.command("sign", "Runs speed test for sign and verify P
     test_sign_rsa(session, cmd, "1024");
     test_sign_rsa(session, cmd, "2048");
     test_sign_rsa(session, cmd, "4096");
-
-    rl.prompt();
   });
 
+//Read line
 rl.on("line", function (cmd) {
   commander.parse(cmd);
+  rl.prompt();
 })
 rl.prompt();
