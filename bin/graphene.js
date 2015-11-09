@@ -14,6 +14,8 @@ var MODULE_NOTE = "All commands require you to first load the PKCS #11 module";
 var MODULE_EXAMPLE = "module init -l /path/to/pkcs11/lib/name.so -n LibName";
 
 var NOTE = MODULE_NOTE + "\n\n    " + MODULE_EXAMPLE;
+var NOTE_SESSION = "All commands which uses session require you to first open session"+"\n\n"+
+  "    slot open --slot 0 --pin YourPIN";
 
 var ERROR_MODULE_NOT_INITIALIZED = "Module is not initialized\n\n" +
   "Note:\n" +
@@ -54,6 +56,7 @@ commander.on("error", function (e) {
  * ===================================
  */
 function print_caption(name) {
+  console.log();
   console.log(name);
   console.log(CAPTION_UNDERLINE);
 }
@@ -119,16 +122,6 @@ function rpud(s, size, c) {
  */
 function print_bool(v) {
   return v ? 'x' : ' ';
-}
-
-/**
- * Prints Module note
- */
-function print_module_note() {
-  var msg = "Note:" + "\n";
-  msg += "  All commands require you to first load the PKCS #11 module" + "\n\n";
-  msg += "    module init -l /path/to/pkcs11/lib/name.so -n LibName";
-  return msg;
 }
 
 /**
@@ -201,9 +194,23 @@ var cmdModule = commander.createCommand("module", {
 })
   .on("call", function (cmd) {
     this.help();
-
-
   })
+
+function print_module_note() {
+  var msg = "Note:" + "\n";
+  msg += "  All commands require you to first load the PKCS #11 module" + "\n\n";
+  msg += "    module init -l /path/to/pkcs11/lib/name.so -n LibName";
+  return msg;
+}
+
+function print_module_info() {
+  print_caption("Module info");
+  console.log("  Library:", mod.lib);
+  console.log("  Name:", mod.name);
+  console.log("  Description:", mod.description);
+  console.log("  Cryptoki version:", mod.cryptokiVersion);
+  console.log();
+}
 
 /**
  * init
@@ -222,9 +229,9 @@ var cmdModuleInit = cmdModule.command("init", {
     isRequired: true
   })
   .on("call", function (cmd) {
-    console.log(this._name + " is called");
     mod = Module.load(cmd.lib, cmd.name);
     mod.initialize();
+    print_module_info();
   })
 
 /**
@@ -236,21 +243,11 @@ var cmdModuleInfo = cmdModule.command("info", {
 })
   .on("call", function (cmd) {
     check_module();
-    print_caption("Module info");
-    console.log("\tLibrary:", mod.lib);
-    console.log("\tName:", mod.name);
-    console.log("\tDescription:", mod.description);
-    console.log("\tCryptoki version:", mod.cryptokiVersion);
+    print_module_info();
   })
 
 function print_slot(slot) {
-  print_caption("Slot info");
-  console.log("\tIndex:", slot.handle);
-  console.log("\tDescription:", slot.description);
-  console.log("\tIs hardware:", slot.isHardware());
-  console.log("\tIs removable:", slot.isRemovable());
-  console.log("\tIs accessible:", slot.isAccessible());
-  console.log("\tIs initialized:", slot.isInitialized());
+  print_module_info();
 }
 
 function check_slots() {
@@ -261,13 +258,6 @@ function check_slots() {
 function get_slot_list() {
   check_module();
   slots = mod.getSlots(true); //with token present
-}
-
-function get_session(cmd) {
-  var session = cmd.slot.session;
-  session.start();
-  session.login(cmd.pin);
-  return session;
 }
 
 var slots = null;
@@ -335,8 +325,6 @@ var cmdSlotInfo = cmdSlot.command("info", {
   .option('slot', option_slot)
   .on("call", function (cmd) {
     print_slot(cmd.slot);
-
-
   })
    
 /**
@@ -351,10 +339,8 @@ var cmdSlotHashes = cmdSlot.command("hashes", {
     var lDigest = cmd.slot.getHashes();
     print_caption("List of the supported hashes");
     for (var i in lDigest) {
-      console.log("\t" + lDigest[i]);
+      console.log("  " + lDigest[i]);
     }
-
-
   })
     
 /**
@@ -369,10 +355,8 @@ var cmdSlotCiphers = cmdSlot.command("ciphers", {
     var lCiphers = cmd.slot.getCiphers();
     print_caption("List of the supported ciphers");
     for (var i in lCiphers) {
-      console.log("\t" + lCiphers[i]);
+      console.log("  " + lCiphers[i]);
     }
-
-
   })
    
 /**
@@ -387,8 +371,8 @@ var cmdSlotCiphers = cmdSlot.command("algs", {
     var lAlg = cmd.slot.mechanismList;
 
     print_caption("List of the supported algorithms");
-    console.log("\t" + pud("Algorithm name", COLUMN_SIZE) + "h s v e d w u g");
-    console.log("\t" + pud("", COLUMN_SIZE + 15, "-"));
+    console.log("  " + pud("Algorithm name", COLUMN_SIZE) + "h s v e d w u g");
+    console.log("  " + pud("", COLUMN_SIZE + 15, "-"));
     for (var i in lAlg) {
       var alg = lAlg[i];
       var s = pud(alg.name, COLUMN_SIZE);
@@ -400,29 +384,72 @@ var cmdSlotCiphers = cmdSlot.command("algs", {
       s += print_bool(alg.isWrap()) + " ";
       s += print_bool(alg.isUnwrap()) + " ";
       s += print_bool(alg.isGenerate() || alg.isGenerateKeyPair());
-      console.log("\t" + s);
+      console.log("  " + s);
     }
   })
+
+var session = null;
+
+var cmdSlotOpen = cmdSlot.command("open", {
+  description: "Opens session for slot",
+  note: NOTE
+})
+  .option('slot', option_slot)
+  .option('pin', option_pin)
+  .on("call", function (cmd) {
+    if (session && session.isLogged()) {
+      session.logout();
+      session.stop();
+    }
+    session = cmd.slot.session;
+    session.start();
+    session.login(cmd.pin);
+    console.log();
+    console.log("Session is started");
+    console.log();
+  })
+
+var cmdSlotStop = cmdSlot.command("stop", {
+  description: "Stops session for slot",
+  note: NOTE
+})
+  .on("call", function (cmd) {
+    if (session && session.isLogged()) {
+      session.logout();
+      session.stop();
+    }
+    session = null;
+    console.log();
+    console.log("Session is stopped");
+    console.log();
+  })
+  
+  function check_session(){
+    if (!(session && session.isLogged())){
+      var error = new Error("Session is not opened"+"\n\n"+
+      "  "+NOTE_SESSION);
+      throw error;
+    }
+  }
   
 /* ==========
    Hash
    ==========*/
 var cmdHash = commander.createCommand("hash", {
   description: "Calculates hash for input file",
-  note: NOTE
+  note: NOTE_SESSION
 })
-  .option('slot', option_slot)
   .option('alg', {
     description: 'Algorith name',
     value: "sha1"
   })
-  .option('pin', option_pin)
   .option('in', {
     description: 'Path to the input file',
     set: check_file,
     isRequired: true
   })
   .on("call", function (cmd) {
+    check_session();
     var rs = fs.createReadStream(cmd.in);
     var session = get_session(cmd);
     var digest = session.createDigest(cmd.alg);
@@ -605,14 +632,12 @@ var cmdTest = commander.createCommand("test", {
  */
 var cmdTestEnc = cmdTest.command("enc", {
   description: "Tests Encryption",
-  note: NOTE
+  note: NOTE_SESSION
 })
   .option('alg', {
     description: 'Algorithm name',
     isRequired: true
   })
-  .option("pin", option_pin)
-  .option("slot", option_slot)
   .option('buf', {
     description: 'Buffer size (bytes)',
     set: function (v) {
@@ -624,7 +649,7 @@ var cmdTestEnc = cmdTest.command("enc", {
     value: BUF_SIZE_DEFAULT
   })
   .on("call", function (cmd) {
-    var session = get_session(cmd);
+    check_session();
     console.time("Key generation");
     var key = gen_AES(session);
     console.timeEnd("Key generation");
@@ -641,11 +666,11 @@ var cmdTestEnc = cmdTest.command("enc", {
  * sign
  */
 var cmdTestSign = cmdTest.command("sign", {
-  description: "Runs speed test for sign and verify PKCS11 functions",
-  note: NOTE
+  description: "Runs speed test for sign and verify PKCS11 functions" + "\n\n" +
+  "  Supported algorithms:\n" +
+  "    rsa, rsa-1024, rsa-2048, rsa-4096",
+  note: NOTE_SESSION
 })
-  .option("pin", option_pin)
-  .option("slot", option_slot)
   .option('buf', {
     description: 'Buffer size (bytes)',
     set: function (v) {
@@ -673,7 +698,7 @@ var cmdTestSign = cmdTest.command("sign", {
     isRequired: true
   })
   .on("call", function (cmd) {
-    var session = get_session(cmd);
+    check_session();
     print_test_sign_header();
     test_sign_rsa(session, cmd, "1024");
     test_sign_rsa(session, cmd, "2048");
