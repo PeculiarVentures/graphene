@@ -208,7 +208,10 @@ var cmdModule = commander.createCommand("module", {
 /**
  * init
  */
-var cmdModuleInit = cmdModule.command("init", "Initializes module")
+var cmdModuleInit = cmdModule.command("init", {
+  description: "Initializes module",
+  example: MODULE_EXAMPLE
+})
   .option('name', {
     description: 'Name of module',
     isRequired: true
