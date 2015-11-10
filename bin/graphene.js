@@ -14,7 +14,7 @@ var MODULE_NOTE = "All commands require you to first load the PKCS #11 module";
 var MODULE_EXAMPLE = "module init -l /path/to/pkcs11/lib/name.so -n LibName";
 
 var NOTE = MODULE_NOTE + "\n\n    " + MODULE_EXAMPLE;
-var NOTE_SESSION = "All commands which uses session require you to first open session"+"\n\n"+
+var NOTE_SESSION = "All commands which uses session require you to first open session" + "\n\n" +
   "    slot open --slot 0 --pin YourPIN";
 
 var ERROR_MODULE_NOT_INITIALIZED = "Module is not initialized\n\n" +
@@ -423,14 +423,14 @@ var cmdSlotStop = cmdSlot.command("stop", {
     console.log("Session is stopped");
     console.log();
   })
-  
-  function check_session(){
-    if (!(session && session.isLogged())){
-      var error = new Error("Session is not opened"+"\n\n"+
-      "  "+NOTE_SESSION);
-      throw error;
-    }
+
+function check_session() {
+  if (!(session && session.isLogged())) {
+    var error = new Error("Session is not opened" + "\n\n" +
+      "  " + NOTE_SESSION);
+    throw error;
   }
+}
   
 /* ==========
    Hash
@@ -525,11 +525,41 @@ function gen_RSA(session, size, exp) {
 		return _key;
 }
 
+function gen_ECDSA(session, name, hexOid) {
+		var _keys = session.generateKeyPair("ECDSA_KEY_PAIR_GEN", {
+    "token": true,
+    "keyType": Enums.KeyType.ECDSA,
+    "label": name,
+    "private": true,
+    "verify": true,
+    "wrap": false,
+    "encrypt": false,
+    "paramsEC": new Buffer(hexOid, "hex")
+		}, {
+      "token": true,
+      "private": true,
+      "keyType": Enums.KeyType.ECDSA,
+      "label": name,
+      "sensitive": true,
+      "decrypt": false,
+      "sign": true,
+      "unwrap": false,
+
+    })
+		return _keys;
+}
+
 var gen = {
   rsa: {
     "1024": gen_RSA_1024,
     "2048": gen_RSA_2048,
     "4096": gen_RSA_4096,
+  },
+  ecdsa: {
+    "secp192r1": gen_ECDSA_secp192r1,
+    "secp256r1": gen_ECDSA_secp256r1,
+    "secp384r1": gen_ECDSA_secp384r1,
+    "secp256k1": gen_ECDSA_secp256k1,
   }
 }
 
@@ -543,6 +573,22 @@ function gen_RSA_2048(session) {
 
 function gen_RSA_4096(session) {
   return gen_RSA(session, 4096);
+}
+
+function gen_ECDSA_secp192r1(session) {
+  return gen_ECDSA(session, "test ECDSA-secp192r1", "06082A8648CE3D030101");
+}
+
+function gen_ECDSA_secp256r1(session) {
+  return gen_ECDSA(session, "test ECDSA-secp256r1", "06082A8648CE3D030107");
+}
+
+function gen_ECDSA_secp384r1(session) {
+  return gen_ECDSA(session, "test ECDSA-secp384r1", "06052B81040022");
+}
+
+function gen_ECDSA_secp256k1(session) {
+  return gen_ECDSA(session, "test ECDSA-secp256k1", "06052B8104000A");
 }
 
 var BUF_SIZE_DEFAULT = 1024;
@@ -562,7 +608,7 @@ function test_encrypt(session, key, algName) {
   //enc.final();
 }
 
-function test_sign(session, key, algName) {
+function test_sign_operation(session, key, algName) {
   var buf = new Buffer(BUF_SIZE);
   var sig = session.createSign(algName, key.private);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
@@ -572,7 +618,7 @@ function test_sign(session, key, algName) {
   return res;
 }
 
-function test_verify(session, key, algName, sig) {
+function test_verify_operation(session, key, algName, sig) {
   var buf = new Buffer(BUF_SIZE);
   var verify = session.createVerify(algName, key.public);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
@@ -582,25 +628,25 @@ function test_verify(session, key, algName, sig) {
   return res;
 }
 
-function test_sign_rsa(session, cmd, size) {
-  var alg = "rsa-" + size;
-  if (cmd.alg == "rsa" || cmd.alg == alg) {
+function test_sign(session, cmd, prefix, postfix, signAlg) {
+  var alg = prefix + "-" + postfix;
+  if (cmd.alg == prefix || cmd.alg == alg) {
     var tGen = new Timer();
     tGen.start();
-    var key = gen.rsa[size](session);
+    var key = gen.ecdsa[postfix](session);
     tGen.stop();
     debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
     var t1 = new Timer();
     var sig = null;
     t1.start();
     for (var i = 0; i < cmd.it; i++)
-      sig = test_sign(session, key, "SHA1_RSA_PKCS");
+      sig = test_sign_operation(session, key, signAlg);
     t1.stop();
 
     var t2 = new Timer();
     t2.start();
     for (var i = 0; i < cmd.it; i++) {
-      test_verify(session, key, "SHA1_RSA_PKCS", sig);
+      test_verify_operation(session, key, signAlg, sig);
     }
     t2.stop();
 
@@ -668,7 +714,8 @@ var cmdTestEnc = cmdTest.command("enc", {
 var cmdTestSign = cmdTest.command("sign", {
   description: "Runs speed test for sign and verify PKCS11 functions" + "\n\n" +
   "  Supported algorithms:\n" +
-  "    rsa, rsa-1024, rsa-2048, rsa-4096",
+  "    rsa, rsa-1024, rsa-2048, rsa-4096" +
+  "    ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1, ecdsa-secp256k1",
   note: NOTE_SESSION
 })
   .option('buf', {
@@ -700,9 +747,13 @@ var cmdTestSign = cmdTest.command("sign", {
   .on("call", function (cmd) {
     check_session();
     print_test_sign_header();
-    test_sign_rsa(session, cmd, "1024");
-    test_sign_rsa(session, cmd, "2048");
-    test_sign_rsa(session, cmd, "4096");
+    test_sign(session, cmd, "rsa", "1024", "SHA1_RSA_PKCS");
+    test_sign(session, cmd, "rsa", "2048", "SHA1_RSA_PKCS");
+    test_sign(session, cmd, "rsa", "4096", "SHA1_RSA_PKCS");
+    test_sign(session, cmd, "ecdsa", "secp192r1", "ECDSA_SHA1");
+    test_sign(session, cmd, "ecdsa", "secp256r1", "ECDSA_SHA1");
+    test_sign(session, cmd, "ecdsa", "secp384r1", "ECDSA_SHA1");
+    test_sign(session, cmd, "ecdsa", "secp256k1", "ECDSA_SHA1");
   });
 
 //Read line
