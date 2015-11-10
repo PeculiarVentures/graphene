@@ -630,10 +630,10 @@ function test_verify_operation(session, key, algName, sig) {
 
 function test_sign(session, cmd, prefix, postfix, signAlg) {
   var alg = prefix + "-" + postfix;
-  if (cmd.alg == prefix || cmd.alg == alg) {
+  if (cmd.alg == "all" || cmd.alg == prefix || cmd.alg == alg) {
     var tGen = new Timer();
     tGen.start();
-    var key = gen.ecdsa[postfix](session);
+    var key = gen[prefix][postfix](session);
     tGen.stop();
     debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
     var t1 = new Timer();
@@ -657,12 +657,12 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
 }
 
 function print_test_sign_header() {
-  console.log(rpud("Algorithm", 30), lpud("Sign", 10), lpud("Verify", 10))
-  console.log(rpud("", 52, "="));
+  console.log("| %s | %s | %s |",rpud("Algorithm", 26), lpud("Sign", 10), lpud("Verify", 10));
+  console.log("|%s|%s:|%s:|",rpud("", 28, "-"), rpud("", 11, "-"), rpud("", 11, "-"));
 }
 
 function print_test_sign_row(alg, t1, t2) {
-  console.log(rpud(alg.toUpperCase(), 30), lpud(t1, 10), lpud(t2, 10))
+  console.log("| %s | %s | %s |",rpud(alg.toUpperCase(), 26), lpud(t1, 10), lpud(t2, 10))
 }
 
 var cmdTest = commander.createCommand("test", {
@@ -714,7 +714,7 @@ var cmdTestEnc = cmdTest.command("enc", {
 var cmdTestSign = cmdTest.command("sign", {
   description: "Runs speed test for sign and verify PKCS11 functions" + "\n\n" +
   "  Supported algorithms:\n" +
-  "    rsa, rsa-1024, rsa-2048, rsa-4096" +
+  "    rsa, rsa-1024, rsa-2048, rsa-4096" + "\n" +
   "    ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1, ecdsa-secp256k1",
   note: NOTE_SESSION
 })
@@ -754,6 +754,7 @@ var cmdTestSign = cmdTest.command("sign", {
     test_sign(session, cmd, "ecdsa", "secp256r1", "ECDSA_SHA1");
     test_sign(session, cmd, "ecdsa", "secp384r1", "ECDSA_SHA1");
     test_sign(session, cmd, "ecdsa", "secp256k1", "ECDSA_SHA1");
+    console.log();
   });
 
 //Read line
