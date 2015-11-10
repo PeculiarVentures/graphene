@@ -560,6 +560,10 @@ var gen = {
     "secp256r1": gen_ECDSA_secp256r1,
     "secp384r1": gen_ECDSA_secp384r1,
     "secp256k1": gen_ECDSA_secp256k1,
+    "brainpoolP192r1": gen_ECDSA_brainpoolP192r1,
+    "brainpoolP224r1": gen_ECDSA_brainpoolP224r1,
+    "brainpoolP256r1": gen_ECDSA_brainpoolP256r1,
+    "brainpoolP320r1": gen_ECDSA_brainpoolP320r1
   }
 }
 
@@ -589,6 +593,22 @@ function gen_ECDSA_secp384r1(session) {
 
 function gen_ECDSA_secp256k1(session) {
   return gen_ECDSA(session, "test ECDSA-secp256k1", "06052B8104000A");
+}
+
+function gen_ECDSA_brainpoolP192r1(session) {
+  return gen_ECDSA(session, "test ECDSA-brainpoolP192r1", "06052B8104000A");
+}
+
+function gen_ECDSA_brainpoolP224r1(session) {
+  return gen_ECDSA(session, "test ECDSA-brainpoolP224r1", "06092B2403030208010105");
+}
+
+function gen_ECDSA_brainpoolP256r1(session) {
+  return gen_ECDSA(session, "test ECDSA-brainpoolP256r1", "06092B2403030208010107");
+}
+
+function gen_ECDSA_brainpoolP320r1(session) {
+  return gen_ECDSA(session, "test ECDSA-brainpoolP320r1", "06092B2403030208010109");
 }
 
 var BUF_SIZE_DEFAULT = 1024;
@@ -657,12 +677,12 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
 }
 
 function print_test_sign_header() {
-  console.log("| %s | %s | %s |",rpud("Algorithm", 26), lpud("Sign", 10), lpud("Verify", 10));
-  console.log("|%s|%s:|%s:|",rpud("", 28, "-"), rpud("", 11, "-"), rpud("", 11, "-"));
+  console.log("| %s | %s | %s |", rpud("Algorithm", 26), lpud("Sign", 10), lpud("Verify", 10));
+  console.log("|%s|%s:|%s:|", rpud("", 28, "-"), rpud("", 11, "-"), rpud("", 11, "-"));
 }
 
 function print_test_sign_row(alg, t1, t2) {
-  console.log("| %s | %s | %s |",rpud(alg.toUpperCase(), 26), lpud(t1, 10), lpud(t2, 10))
+  console.log("| %s | %s | %s |", rpud(alg.toUpperCase(), 26), lpud(t1, 10), lpud(t2, 10))
 }
 
 var cmdTest = commander.createCommand("test", {
@@ -715,7 +735,9 @@ var cmdTestSign = cmdTest.command("sign", {
   description: "Runs speed test for sign and verify PKCS11 functions" + "\n\n" +
   "  Supported algorithms:\n" +
   "    rsa, rsa-1024, rsa-2048, rsa-4096" + "\n" +
-  "    ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1, ecdsa-secp256k1",
+  "    ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1, ecdsa-secp256k1" + "\n" +
+  "    ecdsa-brainpoolP192r1, ecdsa-brainpoolP224r1, ecdsa-brainpoolP256r1" + "\n" +
+  "    ecdsa-brainpoolP320r1",
   note: NOTE_SESSION
 })
   .option('buf', {
@@ -750,10 +772,14 @@ var cmdTestSign = cmdTest.command("sign", {
     test_sign(session, cmd, "rsa", "1024", "SHA1_RSA_PKCS");
     test_sign(session, cmd, "rsa", "2048", "SHA1_RSA_PKCS");
     test_sign(session, cmd, "rsa", "4096", "SHA1_RSA_PKCS");
-    test_sign(session, cmd, "ecdsa", "secp192r1", "ECDSA_SHA1");
-    test_sign(session, cmd, "ecdsa", "secp256r1", "ECDSA_SHA1");
-    test_sign(session, cmd, "ecdsa", "secp384r1", "ECDSA_SHA1");
-    test_sign(session, cmd, "ecdsa", "secp256k1", "ECDSA_SHA1");
+    test_sign(session, cmd, "ecdsa", "secp192r1", "ECDSA_SHA256");
+    test_sign(session, cmd, "ecdsa", "secp256r1", "ECDSA_SHA256");
+    test_sign(session, cmd, "ecdsa", "secp384r1", "ECDSA_SHA256");
+    test_sign(session, cmd, "ecdsa", "secp256k1", "ECDSA_SHA256");
+    test_sign(session, cmd, "ecdsa", "brainpoolP192r1", "ECDSA_SHA256");
+    test_sign(session, cmd, "ecdsa", "brainpoolP224r1", "ECDSA_SHA256");
+    test_sign(session, cmd, "ecdsa", "brainpoolP256r1", "ECDSA_SHA256");
+    test_sign(session, cmd, "ecdsa", "brainpoolP320r1", "ECDSA_SHA256");
     console.log();
   });
 
