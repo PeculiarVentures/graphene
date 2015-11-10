@@ -564,6 +564,10 @@ var gen = {
     "brainpoolP224r1": gen_ECDSA_brainpoolP224r1,
     "brainpoolP256r1": gen_ECDSA_brainpoolP256r1,
     "brainpoolP320r1": gen_ECDSA_brainpoolP320r1
+  },
+  aes: {
+    "ecb": gen_AES,
+    "cbc": gen_AES,
   }
 }
 
@@ -648,6 +652,27 @@ function test_verify_operation(session, key, algName, sig) {
   return res;
 }
 
+function test_encrypt_operation(session, key, alg) {
+  var buf = new Buffer(BUF_SIZE);
+  var enc = session.createEncrypt(alg, key);
+  var msg = new Buffer(0);
+  for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
+		  msg = Buffer.concat([msg, enc.update(buf)]);
+  }
+  msg = Buffer.concat([msg, enc.final()]);
+  return msg;
+}
+
+function test_decrypt_operation(session, key, alg, message) {
+  var buf = new Buffer(0);
+  var dec = session.createDecrypt(alg, key);
+  //for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
+  buf = Buffer.concat([buf, dec.update(message)]);
+  //}
+  buf = Buffer.concat([buf, dec.final()]);
+  return buf;
+}
+
 function test_sign(session, cmd, prefix, postfix, signAlg) {
   var alg = prefix + "-" + postfix;
   if (cmd.alg == "all" || cmd.alg == prefix || cmd.alg == alg) {
@@ -676,8 +701,41 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
   }
 }
 
+function test_enc(session, cmd, prefix, postfix, encAlg) {
+  var alg = prefix + "-" + postfix;
+  if (cmd.alg == "all" || cmd.alg == prefix || cmd.alg == alg) {
+    var tGen = new Timer();
+    tGen.start();
+    var key = gen[prefix][postfix](session);
+    tGen.stop();
+    debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
+    var t1 = new Timer();
+    var enc = null;
+    t1.start();
+    for (var i = 0; i < cmd.it; i++)
+      enc = test_encrypt_operation(session, key, encAlg);
+    t1.stop();
+
+    var t2 = new Timer();
+    t2.start();
+    for (var i = 0; i < cmd.it; i++) {
+      test_decrypt_operation(session, key, encAlg, enc);
+    }
+    t2.stop();
+
+    var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
+    var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
+    print_test_sign_row(alg, r1, r2);
+  }
+}
+
 function print_test_sign_header() {
   console.log("| %s | %s | %s |", rpud("Algorithm", 26), lpud("Sign", 10), lpud("Verify", 10));
+  console.log("|%s|%s:|%s:|", rpud("", 28, "-"), rpud("", 11, "-"), rpud("", 11, "-"));
+}
+
+function print_test_enc_header() {
+  console.log("| %s | %s | %s |", rpud("Algorithm", 26), lpud("Encrypt", 10), lpud("Decrypt", 10));
   console.log("|%s|%s:|%s:|", rpud("", 28, "-"), rpud("", 11, "-"), rpud("", 11, "-"));
 }
 
@@ -697,13 +755,12 @@ var cmdTest = commander.createCommand("test", {
  * enc
  */
 var cmdTestEnc = cmdTest.command("enc", {
-  description: "Tests Encryption",
-  note: NOTE_SESSION
+  description: "Runs speed test for encrypt and decrypt PKCS11 functions" + "\n\n" +
+  "  Supported algorithms:\n" +
+  "    aes, aes-cbc, aes-ecb",
+  note: NOTE_SESSION,
+  example: "test sign --alg aes -it 100"
 })
-  .option('alg', {
-    description: 'Algorithm name',
-    isRequired: true
-  })
   .option('buf', {
     description: 'Buffer size (bytes)',
     set: function (v) {
@@ -714,19 +771,31 @@ var cmdTestEnc = cmdTest.command("enc", {
     },
     value: BUF_SIZE_DEFAULT
   })
+  .option('it', {
+    description: 'Sets number of iterations. Default 1',
+    set: function (v) {
+      var res = +v;
+      if (!Number.isInteger(res))
+        throw new TypeError("Parameter --it must be number");
+      if (res <= 0)
+        throw new TypeError("Parameter --it must be more then 0");
+      return res;
+    },
+    value: 1
+  })
+  .option('alg', {
+    description: 'Algorithm name',
+    isRequired: true
+  })
   .on("call", function (cmd) {
     check_session();
-    console.time("Key generation");
-    var key = gen_AES(session);
-    console.timeEnd("Key generation");
-    console.time("Encryption");
-    for (var i = 0; i < cmd.it; i++)
-      test_encrypt(session, key, {
-        name: "AES_CBC_PAD",
-        params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
-      });
-    console.timeEnd("Encryption");
-  })
+    print_test_enc_header();
+    test_enc(session, cmd, "aes", "cbc", {
+      name: "AES_CBC_PAD",
+      params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+    });
+    console.log();
+  });
   
 /**
  * sign
