@@ -328,38 +328,6 @@ var cmdSlotInfo = cmdSlot.command("info", {
   })
    
 /**
- * hashes
- */
-var cmdSlotHashes = cmdSlot.command("hashes", {
-  description: "Returns an array with the names of the supported hash algorithms",
-  note: NOTE
-})
-  .option('slot', option_slot)
-  .on("call", function (cmd) {
-    var lDigest = cmd.slot.getHashes();
-    print_caption("List of the supported hashes");
-    for (var i in lDigest) {
-      console.log("  " + lDigest[i]);
-    }
-  })
-    
-/**
- * ciphers
- */
-var cmdSlotCiphers = cmdSlot.command("ciphers", {
-  description: "Returns an array with the names of the supported ciphers",
-  note: NOTE
-})
-  .option('slot', option_slot)
-  .on("call", function (cmd) {
-    var lCiphers = cmd.slot.getCiphers();
-    print_caption("List of the supported ciphers");
-    for (var i in lCiphers) {
-      console.log("  " + lCiphers[i]);
-    }
-  })
-   
-/**
  * algs
  */
 var cmdSlotCiphers = cmdSlot.command("algs", {
