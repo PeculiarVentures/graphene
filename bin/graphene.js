@@ -11,7 +11,7 @@ var Enums = pkcs11.Enums;
 var CAPTION_UNDERLINE = "==============================";
 
 var MODULE_NOTE = "All commands require you to first load the PKCS #11 module";
-var MODULE_EXAMPLE = "module init -l /path/to/pkcs11/lib/name.so -n LibName";
+var MODULE_EXAMPLE = "module load -l /path/to/pkcs11/lib/name.so -n LibName";
 
 var NOTE = MODULE_NOTE + "\n\n    " + MODULE_EXAMPLE;
 var NOTE_SESSION = "All commands which uses session require you to first open session" + "\n\n" +
@@ -215,8 +215,8 @@ function print_module_info() {
 /**
  * init
  */
-var cmdModuleInit = cmdModule.command("init", {
-  description: "Initializes module",
+var cmdModuleInit = cmdModule.command("load", {
+  description: "Loads a specified PKCS#11 module",
   example: MODULE_EXAMPLE
 })
   .option('name', {
@@ -364,9 +364,24 @@ var cmdSlotCiphers = cmdSlot.command("ciphers", {
  */
 var cmdSlotCiphers = cmdSlot.command("algs", {
   description: "Returns an array with the names of the supported algoripthms",
-  note: NOTE
+  note: NOTE,
+  example: "Returns a list of mechanisms which can be used with C_DigestInit, C_SignInit\n  and C_VerifyInit" + "\n\n" +
+  "  > slot algs -s 0 -f hsv"
 })
   .option('slot', option_slot)
+  .option('flags', {
+    description: "Optional. Flags specifying mechanism capabilities. Default is 'a'" + "\n" +
+    "    a - all mechanisms in PKCS11" + "\n" +
+    "    h - mechanism can be used with C_DigestInit" + "\n" +
+    "    s - mechanism can be used with C_SignInit" + "\n" +
+    "    v - mechanism can be used with C_VerifyInit" + "\n" +
+    "    e - mechanism can be used with C_EncryptInit" + "\n" +
+    "    d - mechanism can be used with C_DecryptInit" + "\n" +
+    "    w - mechanism can be used with C_WrapKey" + "\n" +
+    "    u - mechanism can be used with C_UnwrapKey" + "\n" +
+    "    g - mechanism can be used with C_GenerateKey or C_GenerateKeyPair",
+    value: "a"
+  })
   .on("call", function (cmd) {
     var lAlg = cmd.slot.mechanismList;
 
@@ -375,6 +390,28 @@ var cmdSlotCiphers = cmdSlot.command("algs", {
     console.log("  " + pud("", COLUMN_SIZE + 15, "-"));
     for (var i in lAlg) {
       var alg = lAlg[i];
+      var f = cmd.flags;
+      var d = false;
+      if (!d && f.indexOf("a") >= 0)
+        d = true;
+      if (!d && f.indexOf("h") >= 0 && alg.isDigest())
+        d = true;
+      if (!d && f.indexOf("s") >= 0 && alg.isSign())
+        d = true;
+      if (!d && f.indexOf("v") >= 0 && alg.isVerify())
+        d = true;
+      if (!d && f.indexOf("e") >= 0 && alg.isEncrypt())
+        d = true;
+      if (!d && f.indexOf("d") >= 0 && alg.isDecrypt())
+        d = true;
+      if (!d && f.indexOf("w") >= 0 && alg.isWrap())
+        d = true;
+      if (!d && f.indexOf("u") >= 0 && alg.isUnwrap())
+        d = true;
+      if (!d && f.indexOf("g") >= 0 && (alg.isGenerate() || alg.isGenerateKeyPair))
+        d = true;
+      if (!d)
+        continue;
       var s = pud(alg.name, COLUMN_SIZE);
       s += print_bool(alg.isDigest()) + " ";
       s += print_bool(alg.isSign()) + " ";
@@ -467,12 +504,12 @@ var cmdHash = commander.createCommand("hash", {
 /* ==========
    Test
    ==========*/
-function gen_AES(session) {
+function gen_AES(session, len) {
 		var _key = session.generateKey("AES_KEY_GEN", {
     "class": Enums.ObjectClass.SecretKey,
     "keyType": Enums.KeyType.AES,
-    "valueLen": 32,
-    "label": "test key AES",
+    "valueLen": len,
+    "label": "test AES " + len * 8 + " bits",
     "private": true,
     "sensitive": true,
     "token": true,
@@ -566,8 +603,9 @@ var gen = {
     "brainpoolP320r1": gen_ECDSA_brainpoolP320r1
   },
   aes: {
-    "ecb": gen_AES,
-    "cbc": gen_AES,
+    "cbc128": gen_AES_128,
+    "cbc192": gen_AES_192,
+    "cbc256": gen_AES_256,
   }
 }
 
@@ -615,6 +653,16 @@ function gen_ECDSA_brainpoolP320r1(session) {
   return gen_ECDSA(session, "test ECDSA-brainpoolP320r1", "06092B2403030208010109");
 }
 
+function gen_AES_128(session) {
+  return gen_AES(session, 128 / 8);
+}
+function gen_AES_192(session) {
+  return gen_AES(session, 192 / 8);
+}
+function gen_AES_256(session) {
+  return gen_AES(session, 256 / 8);
+}
+
 var BUF_SIZE_DEFAULT = 1024;
 var BUF_SIZE = 1024;
 var BUF_STEP = BUF_SIZE;
@@ -632,8 +680,7 @@ function test_encrypt(session, key, algName) {
   //enc.final();
 }
 
-function test_sign_operation(session, key, algName) {
-  var buf = new Buffer(BUF_SIZE);
+function test_sign_operation(session, buf, key, algName) {
   var sig = session.createSign(algName, key.private);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
 		  sig.update(buf);
@@ -642,8 +689,7 @@ function test_sign_operation(session, key, algName) {
   return res;
 }
 
-function test_verify_operation(session, key, algName, sig) {
-  var buf = new Buffer(BUF_SIZE);
+function test_verify_operation(session, buf, key, algName, sig) {
   var verify = session.createVerify(algName, key.public);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
 		  verify.update(buf);
@@ -652,8 +698,7 @@ function test_verify_operation(session, key, algName, sig) {
   return res;
 }
 
-function test_encrypt_operation(session, key, alg) {
-  var buf = new Buffer(BUF_SIZE);
+function test_encrypt_operation(session, buf, key, alg) {
   var enc = session.createEncrypt(alg, key);
   var msg = new Buffer(0);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
@@ -664,13 +709,13 @@ function test_encrypt_operation(session, key, alg) {
 }
 
 function test_decrypt_operation(session, key, alg, message) {
-  var buf = new Buffer(0);
+  var decMsg = new Buffer(0);
   var dec = session.createDecrypt(alg, key);
   //for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
-  buf = Buffer.concat([buf, dec.update(message)]);
+  decMsg = Buffer.concat([decMsg, dec.update(message)]);
   //}
-  buf = Buffer.concat([buf, dec.final()]);
-  return buf;
+  decMsg = Buffer.concat([decMsg, dec.final()]);
+  return decMsg;
 }
 
 function test_sign(session, cmd, prefix, postfix, signAlg) {
@@ -681,17 +726,19 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
     var key = gen[prefix][postfix](session);
     tGen.stop();
     debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
+    //create buffer
+    var buf = new Buffer(BUF_SIZE);
     var t1 = new Timer();
     var sig = null;
     t1.start();
     for (var i = 0; i < cmd.it; i++)
-      sig = test_sign_operation(session, key, signAlg);
+      sig = test_sign_operation(session, buf, key, signAlg);
     t1.stop();
 
     var t2 = new Timer();
     t2.start();
     for (var i = 0; i < cmd.it; i++) {
-      test_verify_operation(session, key, signAlg, sig);
+      test_verify_operation(session, buf, key, signAlg, sig);
     }
     t2.stop();
 
@@ -710,16 +757,19 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
     tGen.stop();
     debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
     var t1 = new Timer();
+    //create buffer
+    var buf = new Buffer(BUF_SIZE);
     var enc = null;
     t1.start();
     for (var i = 0; i < cmd.it; i++)
-      enc = test_encrypt_operation(session, key, encAlg);
+      enc = test_encrypt_operation(session, buf, key, encAlg);
     t1.stop();
 
     var t2 = new Timer();
     t2.start();
+    var msg = null;
     for (var i = 0; i < cmd.it; i++) {
-      test_decrypt_operation(session, key, encAlg, enc);
+      msg = test_decrypt_operation(session, key, encAlg, enc);
     }
     t2.stop();
 
@@ -757,9 +807,9 @@ var cmdTest = commander.createCommand("test", {
 var cmdTestEnc = cmdTest.command("enc", {
   description: "Runs speed test for encrypt and decrypt PKCS11 functions" + "\n\n" +
   "  Supported algorithms:\n" +
-  "    aes, aes-cbc, aes-ecb",
+  "    aes, aes-cbc128, aes-cbc192, aes-cbc256",
   note: NOTE_SESSION,
-  example: "test sign --alg aes -it 100"
+  example: "> test sign --alg aes -it 100"
 })
   .option('buf', {
     description: 'Buffer size (bytes)',
@@ -790,10 +840,13 @@ var cmdTestEnc = cmdTest.command("enc", {
   .on("call", function (cmd) {
     check_session();
     print_test_enc_header();
-    test_enc(session, cmd, "aes", "cbc", {
+    var AES_PARAMS = {
       name: "AES_CBC_PAD",
       params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
-    });
+    };
+    test_enc(session, cmd, "aes", "cbc128", AES_PARAMS);
+    test_enc(session, cmd, "aes", "cbc192", AES_PARAMS);
+    test_enc(session, cmd, "aes", "cbc256", AES_PARAMS);
     console.log();
   });
   
@@ -807,7 +860,8 @@ var cmdTestSign = cmdTest.command("sign", {
   "    ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1, ecdsa-secp256k1" + "\n" +
   "    ecdsa-brainpoolP192r1, ecdsa-brainpoolP224r1, ecdsa-brainpoolP256r1" + "\n" +
   "    ecdsa-brainpoolP320r1",
-  note: NOTE_SESSION
+  note: NOTE_SESSION,
+  example: "> test sign --alg rsa-1024 --it 60"
 })
   .option('buf', {
     description: 'Buffer size (bytes)',
