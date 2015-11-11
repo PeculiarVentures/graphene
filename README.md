@@ -514,4 +514,5 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 - [SoftHSM](https://www.opendnssec.org/softhsm/)
 - [node-pcsc](https://github.com/santigimeno/node-pcsclite)
 - [PKCS#11 URIs](https://tools.ietf.org/html/rfc7512)
+- [Key Length Recommendations](http://www.keylength.com/en/compare/)
 
