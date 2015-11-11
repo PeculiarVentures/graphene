@@ -355,7 +355,7 @@ var cmdSlotInfo = cmdSlot.command("info", {
   description: "Returns info about Slot by index",
   note: NOTE,
   example: "Returns an info about slot" + "\n\n" +
-  "  > slot info -s 0\n\n"+
+  "  > slot info -s 0\n\n" +
   "  Returns an info about algorithm of selected slot" + "\n\n" +
   "  > slot info -s 0 -a SHA1"
 })
@@ -371,7 +371,7 @@ var cmdSlotInfo = cmdSlot.command("info", {
       else
         throw new Error("Unknown Algorithm name in use");
     }
-    else{
+    else {
       print_slot(cmd.slot);
     }
   })
@@ -736,64 +736,78 @@ function test_decrypt_operation(session, key, alg, message) {
 }
 
 function test_sign(session, cmd, prefix, postfix, signAlg) {
-  var alg = prefix + "-" + postfix;
-  if (cmd.alg == "all" || cmd.alg == prefix || cmd.alg == alg) {
-    var tGen = new Timer();
-    tGen.start();
-    var key = gen[prefix][postfix](session);
-    tGen.stop();
-    debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
-    //create buffer
-    var buf = new Buffer(BUF_SIZE);
-    var t1 = new Timer();
-    var sig = null;
-    t1.start();
-    for (var i = 0; i < cmd.it; i++)
-      sig = test_sign_operation(session, buf, key, signAlg);
-    t1.stop();
+  try {
+    var alg = prefix + "-" + postfix;
+    if (cmd.alg == "all" || cmd.alg == prefix || cmd.alg == alg) {
+      var tGen = new Timer();
+      tGen.start();
+      var key = gen[prefix][postfix](session);
+      tGen.stop();
+      debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
+      //create buffer
+      var buf = new Buffer(BUF_SIZE);
+      var t1 = new Timer();
+      var sig = null;
+      t1.start();
+      for (var i = 0; i < cmd.it; i++)
+        sig = test_sign_operation(session, buf, key, signAlg);
+      t1.stop();
 
-    var t2 = new Timer();
-    t2.start();
-    for (var i = 0; i < cmd.it; i++) {
-      test_verify_operation(session, buf, key, signAlg, sig);
+      var t2 = new Timer();
+      t2.start();
+      for (var i = 0; i < cmd.it; i++) {
+        test_verify_operation(session, buf, key, signAlg, sig);
+      }
+      t2.stop();
+
+      var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
+      var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
+      print_test_sign_row(alg, r1, r2);
     }
-    t2.stop();
-
-    var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
-    var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
-    print_test_sign_row(alg, r1, r2);
+    return true;
   }
+  catch (e) {
+    debug("%s-%s\n  %s", prefix, postfix, e.message);
+  }
+  return false;
 }
 
 function test_enc(session, cmd, prefix, postfix, encAlg) {
-  var alg = prefix + "-" + postfix;
-  if (cmd.alg == "all" || cmd.alg == prefix || cmd.alg == alg) {
-    var tGen = new Timer();
-    tGen.start();
-    var key = gen[prefix][postfix](session);
-    tGen.stop();
-    debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
-    var t1 = new Timer();
-    //create buffer
-    var buf = new Buffer(BUF_SIZE);
-    var enc = null;
-    t1.start();
-    for (var i = 0; i < cmd.it; i++)
-      enc = test_encrypt_operation(session, buf, key, encAlg);
-    t1.stop();
+  try {
+    var alg = prefix + "-" + postfix;
+    if (cmd.alg == "all" || cmd.alg == prefix || cmd.alg == alg) {
+      var tGen = new Timer();
+      tGen.start();
+      var key = gen[prefix][postfix](session);
+      tGen.stop();
+      debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
+      var t1 = new Timer();
+      //create buffer
+      var buf = new Buffer(BUF_SIZE);
+      var enc = null;
+      t1.start();
+      for (var i = 0; i < cmd.it; i++)
+        enc = test_encrypt_operation(session, buf, key, encAlg);
+      t1.stop();
 
-    var t2 = new Timer();
-    t2.start();
-    var msg = null;
-    for (var i = 0; i < cmd.it; i++) {
-      msg = test_decrypt_operation(session, key, encAlg, enc);
+      var t2 = new Timer();
+      t2.start();
+      var msg = null;
+      for (var i = 0; i < cmd.it; i++) {
+        msg = test_decrypt_operation(session, key, encAlg, enc);
+      }
+      t2.stop();
+
+      var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
+      var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
+      print_test_sign_row(alg, r1, r2);
     }
-    t2.stop();
-
-    var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
-    var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
-    print_test_sign_row(alg, r1, r2);
+    return true;
   }
+  catch (e) {
+    debug("%s-%s\n  %s", prefix, postfix, e.message);
+  }
+  return false;
 }
 
 function print_test_sign_header() {
