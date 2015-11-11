@@ -311,20 +311,69 @@ var cmdSlotList = cmdSlot.command("list", {
       var slot = slots[i];
       print_slot(slot);
     }
-
-
   })
+
+function print_alg_info(slot, algName) {
+  var algList = slot.mechanismList;
+  //find alg
+  var alg = null;
+  for (var i in algList) {
+    var item = algList[i];
+    if (item.name == algName) {
+      alg = item;
+      break;
+    }
+  }
+  if (!alg)
+    throw new Error("Unsupported algorithm in use");
+  var PADDING_1 = 25;
+  print_caption("Algorithm info");
+  console.log("  %s%s", rpud("Name:", PADDING_1), alg.name);
+  console.log("  %s%s", rpud("Min key size:", PADDING_1), alg.minKeySize);
+  console.log("  %s%s", rpud("Max key size:", PADDING_1), alg.maxKeySize);
+  console.log("  %s%s", rpud("Is hardware:", PADDING_1), alg.isHardware());
+  console.log("  %s%s", rpud("Is encrypt:", PADDING_1), alg.isEncrypt());
+  console.log("  %s%s", rpud("Is decrypt:", PADDING_1), alg.isDecrypt());
+  console.log("  %s%s", rpud("Is digest:", PADDING_1), alg.isDigest());
+  console.log("  %s%s", rpud("Is sign:", PADDING_1), alg.isSign());
+  console.log("  %s%s", rpud("Is sign recover:", PADDING_1), alg.isSignRecover());
+  console.log("  %s%s", rpud("Is verify:", PADDING_1), alg.isVerify());
+  console.log("  %s%s", rpud("Is verify recover:", PADDING_1), alg.isVerifyRecover());
+  console.log("  %s%s", rpud("Is generate key:", PADDING_1), alg.isGenerate());
+  console.log("  %s%s", rpud("Is generate key pair:", PADDING_1), alg.isGenerateKeyPair());
+  console.log("  %s%s", rpud("Is wrap key:", PADDING_1), alg.isWrap());
+  console.log("  %s%s", rpud("Is unwrap key:", PADDING_1), alg.isUnwrap());
+  console.log("  %s%s", rpud("Is derive key:", PADDING_1), alg.isDerive());
+  console.log("  %s%s", rpud("Is extension:", PADDING_1), alg.isExtension());
+  console.log();
+}
     
 /**
  * info
  */
 var cmdSlotInfo = cmdSlot.command("info", {
   description: "Returns info about Slot by index",
-  note: NOTE
+  note: NOTE,
+  example: "Returns an info about slot" + "\n\n" +
+  "  > slot info -s 0\n\n"+
+  "  Returns an info about algorithm of selected slot" + "\n\n" +
+  "  > slot info -s 0 -a SHA1"
 })
   .option('slot', option_slot)
+  .option('alg', {
+    description: "Algorithm name",
+  })
   .on("call", function (cmd) {
-    print_slot(cmd.slot);
+    if (cmd.alg) {
+      if (cmd.alg in Enums.Mechanism) {
+        print_alg_info(cmd.slot, cmd.alg);
+      }
+      else
+        throw new Error("Unknown Algorithm name in use");
+    }
+    else{
+      print_slot(cmd.slot);
+    }
   })
    
 /**
