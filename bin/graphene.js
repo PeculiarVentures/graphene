@@ -380,7 +380,7 @@ var cmdSlotInfo = cmdSlot.command("info", {
  * algs
  */
 var cmdSlotCiphers = cmdSlot.command("algs", {
-  description: "Returns an array with the names of the supported algoripthms",
+  description: "Returns an array with the names of the supported algorithms",
   note: NOTE,
   example: "Returns a list of mechanisms which can be used with C_DigestInit, C_SignInit\n  and C_VerifyInit" + "\n\n" +
   "  > slot algs -s 0 -f hsv"
@@ -485,6 +485,126 @@ function check_session() {
     throw error;
   }
 }
+  
+/* ==========
+   object
+   ==========*/
+var cmdObject = commander.createCommand("object", {
+  description: "Manage with PKCS11 objects",
+  note: NOTE_SESSION
+})
+  .on('call', function () {
+    this.help();
+  });
+
+function print_object_info(obj) {
+  var PADDING_1 = 25;
+  console.log("  %s%s", rpud("ID:", PADDING_1), obj.handle);
+  console.log("  %s%s", rpud("Class:", PADDING_1), Enums.ObjectClass.getText(obj.getClass()));
+  console.log("  %s%s", rpud("Label:", PADDING_1), obj.getLabel());
+  console.log("  %s%s", rpud("Is token:", PADDING_1), obj.isToken());
+  console.log("  %s%s", rpud("Is private:", PADDING_1), obj.isPrivate());
+  console.log("  %s%s", rpud("Is modifiable:", PADDING_1), obj.isModifiable());
+}
+
+var cmdObjectList = cmdObject.command("list", {
+  description: "Returns list of PKCS11 objects form slot",
+  note: NOTE_SESSION,
+  example: "> object list"
+})
+  .option("type", {
+    description: "Type of object (key, cert)"
+  })
+  .on("call", function (cmd) {
+    check_session();
+    var objList = session.findObjects();
+    console.log();
+    console.log("%s object(s) in list", objList.length);
+    for (var i in objList) {
+      var obj = objList[i];
+      print_caption("Object info  ");
+      print_object_info(obj);
+    }
+    console.log();
+  })
+
+var cmdObjectDelete = cmdObject.command("delete", {
+  description: "Removes Object from list of PKCS11 objects of slot",
+  note: NOTE_SESSION,
+  example: "Removes Object from Slot by object's ID 1\n    > object delete --obj 1"
+})
+  .option("obj", {
+    description: "Identificator of object",
+    isRequired: true
+  })
+  .on("call", function (cmd) {
+    check_session();
+    var objList = session.findObjects();
+    if (cmd.obj == "all") {
+      rl.question("Do you really want to remove ALL objects (Y/N)?", function (answer) {
+        if (answer && answer.toLowerCase() == "y") {
+          for (var i in objList) {
+            session.destroyObject(objList[i]);
+          }
+          console.log();
+          console.log("All Objects were successfully removed");
+          console.log();
+        }
+        rl.prompt();
+      });
+    }
+    else {
+      var obj = null;
+      for (var i in objList) {
+        var item = objList[i];
+        if (item.handle == cmd.obj) {
+          obj = item;
+          break;
+        }
+      }
+      if (!obj)
+        throw new Error("Object by ID '" + cmd.obj + "' is not found");
+      print_caption("Object info");
+      print_object_info(obj);
+      console.log();
+      rl.question("Do you really want to remove this object (Y/N)?", function (answer) {
+        if (answer && answer.toLowerCase() == "y") {
+          session.destroyObject(obj);
+          console.log();
+          console.log("Object was successfully removed");
+          console.log();
+        }
+        rl.prompt();
+      });
+    }
+  })
+
+var cmdObjectInfo = cmdObject.command("info", {
+  description: "Returns info about Object of Slot",
+  note: NOTE_SESSION,
+  example: "Return info about Object of Slot by ID 1\n    > object info --obj 1"
+})
+  .option("obj", {
+    description: "Identificator of object",
+    isRequired: true
+  })
+  .on("call", function (cmd) {
+    check_session();
+    var objList = session.findObjects();
+    var obj = null;
+    for (var i in objList) {
+      var item = objList[i];
+      if (item.handle == cmd.obj) {
+        obj = item;
+        break;
+      }
+    }
+    if (!obj)
+      throw new Error("Object by ID '" + cmd.obj + "' is not found");
+    print_caption("Object info");
+    print_object_info(obj);
+    console.log();
+  })
   
 /* ==========
    Hash
@@ -745,24 +865,32 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
       tGen.stop();
       debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
       //create buffer
-      var buf = new Buffer(BUF_SIZE);
-      var t1 = new Timer();
-      var sig = null;
-      t1.start();
-      for (var i = 0; i < cmd.it; i++)
-        sig = test_sign_operation(session, buf, key, signAlg);
-      t1.stop();
+      try {
+        var buf = new Buffer(BUF_SIZE);
+        var t1 = new Timer();
+        var sig = null;
+        t1.start();
+        for (var i = 0; i < cmd.it; i++)
+          sig = test_sign_operation(session, buf, key, signAlg);
+        t1.stop();
 
-      var t2 = new Timer();
-      t2.start();
-      for (var i = 0; i < cmd.it; i++) {
-        test_verify_operation(session, buf, key, signAlg, sig);
+        var t2 = new Timer();
+        t2.start();
+        for (var i = 0; i < cmd.it; i++) {
+          test_verify_operation(session, buf, key, signAlg, sig);
+        }
+        t2.stop();
+
+        var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
+        var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
+        print_test_sign_row(alg, r1, r2);
+      } catch (e) {
+        session.destroyObject(key.privet);
+        session.destroyObject(key.public);
+        throw e;
       }
-      t2.stop();
-
-      var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
-      var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
-      print_test_sign_row(alg, r1, r2);
+      session.destroyObject(key.private);
+      session.destroyObject(key.public);
     }
     return true;
   }
@@ -781,26 +909,32 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
       var key = gen[prefix][postfix](session);
       tGen.stop();
       debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
-      var t1 = new Timer();
-      //create buffer
-      var buf = new Buffer(BUF_SIZE);
-      var enc = null;
-      t1.start();
-      for (var i = 0; i < cmd.it; i++)
-        enc = test_encrypt_operation(session, buf, key, encAlg);
-      t1.stop();
+      try {
+        var t1 = new Timer();
+        //create buffer
+        var buf = new Buffer(BUF_SIZE);
+        var enc = null;
+        t1.start();
+        for (var i = 0; i < cmd.it; i++)
+          enc = test_encrypt_operation(session, buf, key, encAlg);
+        t1.stop();
 
-      var t2 = new Timer();
-      t2.start();
-      var msg = null;
-      for (var i = 0; i < cmd.it; i++) {
-        msg = test_decrypt_operation(session, key, encAlg, enc);
+        var t2 = new Timer();
+        t2.start();
+        var msg = null;
+        for (var i = 0; i < cmd.it; i++) {
+          msg = test_decrypt_operation(session, key, encAlg, enc);
+        }
+        t2.stop();
+
+        var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
+        var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
+        print_test_sign_row(alg, r1, r2);
+      } catch (e) {
+        session.destroyObject(key);
+        throw e;
       }
-      t2.stop();
-
-      var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
-      var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
-      print_test_sign_row(alg, r1, r2);
+      session.destroyObject(key);
     }
     return true;
   }
@@ -840,7 +974,7 @@ var cmdTestEnc = cmdTest.command("enc", {
   "  Supported algorithms:\n" +
   "    aes, aes-cbc128, aes-cbc192, aes-cbc256",
   note: NOTE_SESSION,
-  example: "> test sign --alg aes -it 100"
+  example: "> test enc --alg aes -it 100"
 })
   .option('buf', {
     description: 'Buffer size (bytes)',
