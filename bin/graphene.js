@@ -91,6 +91,8 @@ var COLUMN_SIZE = 30;
 function pud(s, size, c, d) {
   if (!c) c = " ";
   var res, pad = "";
+  if (typeof s !== "string")
+    s = new String(s);
   if (s.length < size) {
     for (var i = 0; i < (size - s.length); i++)
       pad += c;
@@ -499,12 +501,33 @@ var cmdObject = commander.createCommand("object", {
 
 function print_object_info(obj) {
   var PADDING_1 = 25;
-  console.log("  %s%s", rpud("ID:", PADDING_1), obj.handle);
-  console.log("  %s%s", rpud("Class:", PADDING_1), Enums.ObjectClass.getText(obj.getClass()));
-  console.log("  %s%s", rpud("Label:", PADDING_1), obj.getLabel());
-  console.log("  %s%s", rpud("Is token:", PADDING_1), obj.isToken());
-  console.log("  %s%s", rpud("Is private:", PADDING_1), obj.isPrivate());
-  console.log("  %s%s", rpud("Is modifiable:", PADDING_1), obj.isModifiable());
+  var TEMPLATE = '| %s | %s |';
+  var COL_1 = 10;
+  var COL_2 = 25;
+  console.log(TEMPLATE, rpud("Name", COL_1), rpud("Value", COL_2));
+  console.log(TEMPLATE.replace(/\s/g, '-'), rpud("", COL_1, "-"), rpud("", COL_2, "-"));
+  console.log(TEMPLATE, rpud("ID", COL_1), rpud(obj.handle, COL_2));
+  console.log(TEMPLATE, rpud("Class", COL_1), rpud(Enums.ObjectClass.getText(obj.getClass()), COL_2));
+  console.log(TEMPLATE, rpud("Label", COL_1), rpud(obj.getLabel(), COL_2));
+  console.log(TEMPLATE, rpud("Token", COL_1), rpud(obj.isToken(), COL_2));
+  console.log(TEMPLATE, rpud("Private", COL_1), rpud(obj.isPrivate(), COL_2));
+  console.log(TEMPLATE, rpud("Modifiable", COL_1), rpud(obj.isModifiable(), COL_2));
+}
+
+function print_object_header() {
+  console.log("| %s | %s | %s | %s | %s | %s |", rpud("ID", 4), rpud("Class", 10), rpud("Label", 25), rpud("Token", 4), rpud("Private", 4), rpud("Modifiable", 4));
+  console.log("|%s|%s|%s|%s|%s|%s|", rpud("", 6, "-"), rpud("", 12, "-"), rpud("", 27, "-"), rpud("", 7, "-"), rpud("", 9, "-"), rpud("", 12, "-"));
+}
+
+function print_object_row(obj) {
+  console.log(
+    "| %s | %s | %s | %s | %s | %s |",
+    rpud(obj.handle, 4),
+    rpud(Enums.ObjectClass.getText(obj.getClass()), 10),
+    rpud(obj.getLabel(), 25),
+    rpud(obj.isToken(), 5),
+    rpud(obj.isPrivate(), 7),
+    rpud(obj.isModifiable(), 10));
 }
 
 var cmdObjectList = cmdObject.command("list", {
@@ -519,12 +542,13 @@ var cmdObjectList = cmdObject.command("list", {
     check_session();
     var objList = session.findObjects();
     console.log();
-    console.log("%s object(s) in list", objList.length);
+    print_object_header();
     for (var i in objList) {
       var obj = objList[i];
-      print_caption("Object info  ");
-      print_object_info(obj);
+      print_object_row(obj);
     }
+    console.log();
+    console.log("%s object(s) in list", objList.length);
     console.log();
   })
 
@@ -601,7 +625,7 @@ var cmdObjectInfo = cmdObject.command("info", {
     }
     if (!obj)
       throw new Error("Object by ID '" + cmd.obj + "' is not found");
-    print_caption("Object info");
+    console.log();
     print_object_info(obj);
     console.log();
   })
