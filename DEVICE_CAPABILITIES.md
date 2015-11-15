@@ -55,8 +55,8 @@
 | AES_CBC                   |   |   |   | x | x | x | x |   |   |   |
 | AES_MAC                   |   | x | x |   |   |   |   |   |   |   |
 | AES_MAC_GENERAL           |   | x | x |   |   |   |   |   |   |   |
-| 4234                      |   | x | x |   |   |   |   |   |   |   |
-| 4233                      |   | x | x |   |   |   |   |   |   |   |
+| AES_CMAC                  |   | x | x |   |   |   |   |   |   |   |
+| AES_CMAC_GENERAL          |   | x | x |   |   |   |   |   |   |   |
 | AES_CBC_PAD               |   |   |   | x | x | x | x |   |   |   |
 | AES_CFB8                  |   |   |   | x | x |   |   |   |   |   |
 | AES_CFB128                |   |   |   | x | x |   |   |   |   |   |
@@ -97,7 +97,6 @@
 | NIST_PRF_KDF              |   |   |   |   |   |   |   |   | x |   |
 
 75 algorithm(s) in list
-
 
 #### Performance
 ##### Key generation
