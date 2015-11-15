@@ -3,7 +3,6 @@
 
 ### [SafeNet Luna G5](http://www.safenet-inc.com/data-encryption/hardware-security-modules-hsms/luna-hsms-key-management/luna-G5-usb-attached-hsm/)
 #### Capabilities
-**Key**
 
     a - all mechanisms in PKCS11
     h - mechanism can be used with C_DigestInit
