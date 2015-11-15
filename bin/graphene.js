@@ -377,6 +377,27 @@ var cmdSlotInfo = cmdSlot.command("info", {
       print_slot(cmd.slot);
     }
   })
+  
+  function print_slot_algs_header(){
+    var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s |";
+    console.log(TEMPLATE, rpud("Algorithm name", 25), "h", "s",  "v", "e", "d", "w", "u", "g");
+    console.log(TEMPLATE.replace(/\s/g, "-"), rpud("", 25, '-'), "-", "-",  "-", "-", "-", "-", "-", "-");
+  }
+  
+  function print_slot_algs_row(alg){
+    var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s |";
+    console.log(TEMPLATE,
+      rpud(alg.name, 25), 
+      print_bool(alg.isDigest()), 
+      print_bool(alg.isSign()), 
+      print_bool(alg.isVerify()), 
+      print_bool(alg.isEncrypt()), 
+      print_bool(alg.isDecrypt()), 
+      print_bool(alg.isWrap()), 
+      print_bool(alg.isUnwrap()), 
+      print_bool(alg.isGenerate() || alg.isGenerateKeyPair()) 
+    );
+  }
    
 /**
  * algs
@@ -404,9 +425,8 @@ var cmdSlotCiphers = cmdSlot.command("algs", {
   .on("call", function (cmd) {
     var lAlg = cmd.slot.mechanismList;
 
-    print_caption("List of the supported algorithms");
-    console.log("  " + pud("Algorithm name", COLUMN_SIZE) + "h s v e d w u g");
-    console.log("  " + pud("", COLUMN_SIZE + 15, "-"));
+    console.log();
+    print_slot_algs_header();
     for (var i in lAlg) {
       var alg = lAlg[i];
       var f = cmd.flags;
@@ -431,17 +451,11 @@ var cmdSlotCiphers = cmdSlot.command("algs", {
         d = true;
       if (!d)
         continue;
-      var s = pud(alg.name, COLUMN_SIZE);
-      s += print_bool(alg.isDigest()) + " ";
-      s += print_bool(alg.isSign()) + " ";
-      s += print_bool(alg.isVerify()) + " ";
-      s += print_bool(alg.isEncrypt()) + " ";
-      s += print_bool(alg.isDecrypt()) + " ";
-      s += print_bool(alg.isWrap()) + " ";
-      s += print_bool(alg.isUnwrap()) + " ";
-      s += print_bool(alg.isGenerate() || alg.isGenerateKeyPair());
-      console.log("  " + s);
+      print_slot_algs_row(alg);
     }
+    console.log();
+    console.log("%s algorithm(s) in list", lAlg.length);
+    console.log();
   })
 
 var session = null;
