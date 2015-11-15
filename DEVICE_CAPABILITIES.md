@@ -44,8 +44,8 @@
 | DES3_CBC                  |   |   |   | x | x | x | x |   |   |   |
 | DES3_MAC                  |   | x | x |   |   |   |   |   |   |   |
 | DES3_MAC_GENERAL          |   | x | x |   |   |   |   |   |   |   |
-| 312                       |   | x | x |   |   |   |   |   |   |   |
-| 311                       |   | x | x |   |   |   |   |   |   |   |
+| CKM_DES3_CMAC_GENERAL     |   | x | x |   |   |   |   |   |   |   |
+| CKM_DES3_CMAC             |   | x | x |   |   |   |   |   |   |   |
 | DES3_CBC_PAD              |   |   |   | x | x | x | x |   |   |   |
 | DES_CFB8                  |   |   |   | x | x |   |   |   |   |   |
 | DES_CFB64                 |   |   |   | x | x |   |   |   |   |   |
