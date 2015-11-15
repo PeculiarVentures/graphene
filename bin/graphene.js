@@ -377,27 +377,27 @@ var cmdSlotInfo = cmdSlot.command("info", {
       print_slot(cmd.slot);
     }
   })
-  
-  function print_slot_algs_header(){
-    var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s |";
-    console.log(TEMPLATE, rpud("Algorithm name", 25), "h", "s",  "v", "e", "d", "w", "u", "g");
-    console.log(TEMPLATE.replace(/\s/g, "-"), rpud("", 25, '-'), "-", "-",  "-", "-", "-", "-", "-", "-");
-  }
-  
-  function print_slot_algs_row(alg){
-    var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s |";
-    console.log(TEMPLATE,
-      rpud(alg.name, 25), 
-      print_bool(alg.isDigest()), 
-      print_bool(alg.isSign()), 
-      print_bool(alg.isVerify()), 
-      print_bool(alg.isEncrypt()), 
-      print_bool(alg.isDecrypt()), 
-      print_bool(alg.isWrap()), 
-      print_bool(alg.isUnwrap()), 
-      print_bool(alg.isGenerate() || alg.isGenerateKeyPair()) 
+
+function print_slot_algs_header() {
+  var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s |";
+  console.log(TEMPLATE, rpud("Algorithm name", 25), "h", "s", "v", "e", "d", "w", "u", "g");
+  console.log(TEMPLATE.replace(/\s/g, "-"), rpud("", 25, '-'), "-", "-", "-", "-", "-", "-", "-", "-");
+}
+
+function print_slot_algs_row(alg) {
+  var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s |";
+  console.log(TEMPLATE,
+    rpud(alg.name, 25),
+    print_bool(alg.isDigest()),
+    print_bool(alg.isSign()),
+    print_bool(alg.isVerify()),
+    print_bool(alg.isEncrypt()),
+    print_bool(alg.isDecrypt()),
+    print_bool(alg.isWrap()),
+    print_bool(alg.isUnwrap()),
+    print_bool(alg.isGenerate() || alg.isGenerateKeyPair())
     );
-  }
+}
    
 /**
  * algs
@@ -921,7 +921,9 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
 
         var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
         var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
-        print_test_sign_row(alg, r1, r2);
+        var rs1 = Math.round((1000 / t1.time / cmd.it) * 1000) / 1000;
+        var rs2 = Math.round((1000 / t2.time / cmd.it) * 1000) / 1000;
+        print_test_sign_row(alg, r1, r2, rs1, rs2);
       } catch (e) {
         session.destroyObject(key.privet);
         session.destroyObject(key.public);
@@ -967,7 +969,9 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
 
         var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
         var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
-        print_test_sign_row(alg, r1, r2);
+        var rs1 = Math.round((1000 / t1.time / cmd.it) * 1000) / 1000;
+        var rs2 = Math.round((1000 / t2.time / cmd.it) * 1000) / 1000;
+        print_test_sign_row(alg, r1, r2, rs1, rs2);
       } catch (e) {
         session.destroyObject(key);
         throw e;
@@ -983,17 +987,17 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
 }
 
 function print_test_sign_header() {
-  console.log("| %s | %s | %s |", rpud("Algorithm", 26), lpud("Sign", 10), lpud("Verify", 10));
-  console.log("|%s|%s:|%s:|", rpud("", 28, "-"), rpud("", 11, "-"), rpud("", 11, "-"));
+  console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Sign", 8), lpud("Verify", 8), lpud("Sign/s", 8), lpud("Verify/s", 8));
+  console.log("|%s|%s:|%s:|%s:|%s:|", rpud("", 27, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"));
 }
 
 function print_test_enc_header() {
-  console.log("| %s | %s | %s |", rpud("Algorithm", 26), lpud("Encrypt", 10), lpud("Decrypt", 10));
-  console.log("|%s|%s:|%s:|", rpud("", 28, "-"), rpud("", 11, "-"), rpud("", 11, "-"));
+  console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Encrypt", 8), lpud("Decrypt", 8), lpud("Encrypt/s", 8), lpud("Decrypt/s", 8));
+  console.log("|%s|%s:|%s:|%s:|%s:|", rpud("", 27, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"));
 }
 
-function print_test_sign_row(alg, t1, t2) {
-  console.log("| %s | %s | %s |", rpud(alg.toUpperCase(), 26), lpud(t1, 10), lpud(t2, 10))
+function print_test_sign_row(alg, t1, t2, ts1, ts2) {
+  console.log("| %s | %s | %s | %s | %s |", rpud(alg.toUpperCase(), 25), lpud(t1, 8), lpud(t2, 8), lpud(ts1, 8), lpud(ts2, 8))
 }
 
 var cmdTest = commander.createCommand("test", {
@@ -1002,7 +1006,17 @@ var cmdTest = commander.createCommand("test", {
 })
   .on("call", function (cmd) {
     this.help();
-  }) 
+  })
+
+function check_sign_algs(alg) {
+  var list = ["all", "rsa", "rsa-1024", "rsa-2048", "rsa-4096", "ecdsa", "ecdsa-secp192r1", "ecdsa-secp256r1", "ecdsa-secp384r1", "ecdsa-secp256k1",
+    "ecdsa-brainpoolP192r1", "ecdsa-brainpoolP224r1", "ecdsa-brainpoolP256r1", "ecdsa-brainpoolP320r1"];
+  return list.indexOf(alg) !== -1;
+}
+function check_enc_algs(alg) {
+  var list = ["all", "aes", "aes-cbc128", "aes-cbc192", "aes-cbc256"];
+  return list.indexOf(alg) !== -1;
+}
 
 /**
  * enc
@@ -1042,6 +1056,11 @@ var cmdTestEnc = cmdTest.command("enc", {
   })
   .on("call", function (cmd) {
     check_session();
+    if (!check_enc_algs(cmd.alg)){
+      var error = new Error("No such algorithm");
+      throw error;
+    }
+    console.log();
     print_test_enc_header();
     var AES_PARAMS = {
       name: "AES_CBC_PAD",
@@ -1094,6 +1113,11 @@ var cmdTestSign = cmdTest.command("sign", {
   })
   .on("call", function (cmd) {
     check_session();
+    if (!check_sign_algs(cmd.alg)){
+      var error = new Error("No such algorithm");
+      throw error;
+    }
+    console.log();
     print_test_sign_header();
     test_sign(session, cmd, "rsa", "1024", "SHA1_RSA_PKCS");
     test_sign(session, cmd, "rsa", "2048", "SHA1_RSA_PKCS");
