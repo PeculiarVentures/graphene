@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
-
 var debug = require('debug')('commander');
 var fs = require('fs');
 var readline = require('readline');
 var pkcs11 = require('../lib');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
+
+var common = require("../lib/common.js");
 
 var CAPTION_UNDERLINE = "==============================";
 
@@ -215,7 +216,7 @@ function print_module_info() {
 }
 
 /**
- * init
+ * load
  */
 var cmdModuleInit = cmdModule.command("load", {
   description: "Loads a specified PKCS#11 module",
@@ -379,23 +380,25 @@ var cmdSlotInfo = cmdSlot.command("info", {
   })
 
 function print_slot_algs_header() {
-  var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s |";
-  console.log(TEMPLATE, rpud("Algorithm name", 25), "h", "s", "v", "e", "d", "w", "u", "g");
-  console.log(TEMPLATE.replace(/\s/g, "-"), rpud("", 25, '-'), "-", "-", "-", "-", "-", "-", "-", "-");
+  var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |";
+  console.log(TEMPLATE, rpud("Algorithm name", 25), "h", "s", "v", "e", "d", "w", "u", "g", "D", "E");
+  console.log(TEMPLATE.replace(/\s/g, "-"), rpud("", 25, '-'), "-", "-", "-", "-", "-", "-", "-", "-", "-", "-");
 }
 
 function print_slot_algs_row(alg) {
-  var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s |";
+  var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |";
   console.log(TEMPLATE,
     rpud(alg.name, 25),
     print_bool(alg.isDigest()),
-    print_bool(alg.isSign()),
-    print_bool(alg.isVerify()),
+    print_bool(alg.isSign() || alg.isSignRecover()),
+    print_bool(alg.isVerify() || alg.isVerifyRecover()),
     print_bool(alg.isEncrypt()),
     print_bool(alg.isDecrypt()),
     print_bool(alg.isWrap()),
     print_bool(alg.isUnwrap()),
-    print_bool(alg.isGenerate() || alg.isGenerateKeyPair())
+    print_bool(alg.isGenerate() || alg.isGenerateKeyPair()),
+    print_bool(alg.isDerive()),
+    print_bool(alg.isExtension())
     );
 }
    
@@ -419,7 +422,9 @@ var cmdSlotCiphers = cmdSlot.command("algs", {
     "    d - mechanism can be used with C_DecryptInit" + "\n" +
     "    w - mechanism can be used with C_WrapKey" + "\n" +
     "    u - mechanism can be used with C_UnwrapKey" + "\n" +
-    "    g - mechanism can be used with C_GenerateKey or C_GenerateKeyPair",
+    "    g - mechanism can be used with C_GenerateKey or C_GenerateKeyPair" + "\n" +
+    "    D - mechanism can be used with C_DeriveKey" + "\n" +
+    "    E - true if there is an extension",
     value: "a"
   })
   .on("call", function (cmd) {
@@ -778,9 +783,15 @@ var gen = {
     "brainpoolP320r1": gen_ECDSA_brainpoolP320r1
   },
   aes: {
+    "128": gen_AES_128,
+    "192": gen_AES_192,
+    "256": gen_AES_256,
     "cbc128": gen_AES_128,
     "cbc192": gen_AES_192,
     "cbc256": gen_AES_256,
+    "gcm128": gen_AES_128,
+    "gcm192": gen_AES_192,
+    "gcm256": gen_AES_256,
   }
 }
 
@@ -848,11 +859,9 @@ function test_encrypt(session, key, algName) {
   var msg = new Buffer(0);
   var buf = new Buffer(BUF_STEP);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
-		  //enc.update(buf);
 		  msg = Buffer.concat([msg, enc.update(buf)]);
   }
   msg = Buffer.concat([msg, enc.final()]);
-  //enc.final();
 }
 
 function test_sign_operation(session, buf, key, algName) {
@@ -907,6 +916,11 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
         var buf = new Buffer(BUF_SIZE);
         var t1 = new Timer();
         var sig = null;
+        /**
+         * TODO: We need to determine why the first call to the device is so much slower, 
+         * it may be the FFI initialization. For now we will exclude this one call from results.
+         */
+        test_sign_operation(session, buf, key, signAlg);
         t1.start();
         for (var i = 0; i < cmd.it; i++)
           sig = test_sign_operation(session, buf, key, signAlg);
@@ -921,8 +935,8 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
 
         var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
         var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
-        var rs1 = Math.round((1000 / t1.time / cmd.it) * 1000) / 1000;
-        var rs2 = Math.round((1000 / t2.time / cmd.it) * 1000) / 1000;
+        var rs1 = Math.round((1000 / (t1.time / cmd.it)) * 1000) / 1000;
+        var rs2 = Math.round((1000 / (t2.time / cmd.it)) * 1000) / 1000;
         print_test_sign_row(alg, r1, r2, rs1, rs2);
       } catch (e) {
         session.destroyObject(key.privet);
@@ -954,6 +968,11 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
         //create buffer
         var buf = new Buffer(BUF_SIZE);
         var enc = null;
+        /**
+         * TODO: We need to determine why the first call to the device is so much slower, 
+         * it may be the FFI initialization. For now we will exclude this one call from results.
+         */
+        test_encrypt_operation(session, buf, key, encAlg);
         t1.start();
         for (var i = 0; i < cmd.it; i++)
           enc = test_encrypt_operation(session, buf, key, encAlg);
@@ -969,8 +988,8 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
 
         var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
         var r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
-        var rs1 = Math.round((1000 / t1.time / cmd.it) * 1000) / 1000;
-        var rs2 = Math.round((1000 / t2.time / cmd.it) * 1000) / 1000;
+        var rs1 = Math.round((1000 / (t1.time / cmd.it)) * 1000) / 1000;
+        var rs2 = Math.round((1000 / (t2.time / cmd.it)) * 1000) / 1000;
         print_test_sign_row(alg, r1, r2, rs1, rs2);
       } catch (e) {
         session.destroyObject(key);
@@ -993,7 +1012,7 @@ function print_test_sign_header() {
 
 function print_test_enc_header() {
   console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Encrypt", 8), lpud("Decrypt", 8), lpud("Encrypt/s", 8), lpud("Decrypt/s", 8));
-  console.log("|%s|%s:|%s:|%s:|%s:|", rpud("", 27, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"));
+  console.log("|%s|%s:|%s:|%s-:|%s-:|", rpud("", 27, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"));
 }
 
 function print_test_sign_row(alg, t1, t2, ts1, ts2) {
@@ -1014,8 +1033,40 @@ function check_sign_algs(alg) {
   return list.indexOf(alg) !== -1;
 }
 function check_enc_algs(alg) {
-  var list = ["all", "aes", "aes-cbc128", "aes-cbc192", "aes-cbc256"];
+  var list = ["all", "aes", "aes-cbc128", "aes-cbc192", "aes-cbc256", "aes-gcm128", "aes-gcm192", "aes-gcm256"];
   return list.indexOf(alg) !== -1;
+}
+
+function check_gen_algs(alg) {
+  return check_sign_algs(alg) || ["aes", "aes-128", "aes-192", "aes-256"].indexOf(alg) !== -1
+}
+
+function generate_iv(session, block_size) {
+  var iv = session.generateRandom(block_size);
+  if (iv.length !== block_size)
+    throw new Error("IV has different size from block_size");
+  return iv
+}
+
+var CK_AES_GCM_PARAMS = common.RefStruct({
+  pIv: common.CKI.CK_BYTE_PTR,
+  ulIvLen: common.CKI.CK_ULONG,
+  ulIvBits: common.CKI.CK_ULONG,
+  pAAD: common.CKI.CK_BYTE_PTR,
+  ulAADLen: common.CKI.CK_ULONG,
+  ulTagBits: common.CKI.CK_ULONG
+});
+
+function build_gcm_params(iv) {
+  var gcm = new CK_AES_GCM_PARAMS({
+    pIv: iv,
+    ulIvLen: iv.length,
+    ulIvBits: iv.length * 8,
+    pAAD: null,
+    ulAADLen: 0,
+    ulTagBits: 128
+  })
+  return gcm;
 }
 
 /**
@@ -1024,7 +1075,8 @@ function check_enc_algs(alg) {
 var cmdTestEnc = cmdTest.command("enc", {
   description: "Runs speed test for encrypt and decrypt PKCS11 functions" + "\n\n" +
   "  Supported algorithms:\n" +
-  "    aes, aes-cbc128, aes-cbc192, aes-cbc256",
+  "    aes, aes-cbc128, aes-cbc192, aes-cbc256" + "\n" +
+  "    aes-gcm128, aes-gcm192, aes-gcm256",
   note: NOTE_SESSION,
   example: "> test enc --alg aes -it 100"
 })
@@ -1056,19 +1108,26 @@ var cmdTestEnc = cmdTest.command("enc", {
   })
   .on("call", function (cmd) {
     check_session();
-    if (!check_enc_algs(cmd.alg)){
+    if (!check_enc_algs(cmd.alg)) {
       var error = new Error("No such algorithm");
       throw error;
     }
     console.log();
     print_test_enc_header();
-    var AES_PARAMS = {
+    var AES_CBC_PARAMS = {
       name: "AES_CBC_PAD",
       params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
     };
-    test_enc(session, cmd, "aes", "cbc128", AES_PARAMS);
-    test_enc(session, cmd, "aes", "cbc192", AES_PARAMS);
-    test_enc(session, cmd, "aes", "cbc256", AES_PARAMS);
+    var AES_GCM_PARAMS = {
+      name: "AES_GCM",
+      params: build_gcm_params(generate_iv(session, 16)).ref()
+    }
+    test_enc(session, cmd, "aes", "cbc128", AES_CBC_PARAMS);
+    test_enc(session, cmd, "aes", "cbc192", AES_CBC_PARAMS);
+    test_enc(session, cmd, "aes", "cbc256", AES_CBC_PARAMS);
+    test_enc(session, cmd, "aes", "gcm128", AES_GCM_PARAMS);
+    test_enc(session, cmd, "aes", "gcm192", AES_GCM_PARAMS);
+    test_enc(session, cmd, "aes", "gcm256", AES_GCM_PARAMS);
     console.log();
   });
   
@@ -1113,7 +1172,7 @@ var cmdTestSign = cmdTest.command("sign", {
   })
   .on("call", function (cmd) {
     check_session();
-    if (!check_sign_algs(cmd.alg)){
+    if (!check_sign_algs(cmd.alg)) {
       var error = new Error("No such algorithm");
       throw error;
     }
@@ -1130,6 +1189,106 @@ var cmdTestSign = cmdTest.command("sign", {
     test_sign(session, cmd, "ecdsa", "brainpoolP224r1", "ECDSA_SHA256");
     test_sign(session, cmd, "ecdsa", "brainpoolP256r1", "ECDSA_SHA256");
     test_sign(session, cmd, "ecdsa", "brainpoolP320r1", "ECDSA_SHA256");
+    console.log();
+  });
+
+function test_gen(session, cmd, prefix, postfix) {
+  try {
+    var alg = prefix + "-" + postfix;
+    if (cmd.alg == "all" || cmd.alg == prefix || cmd.alg == alg) {
+      var time = 0;
+      for (var i = 0; i < cmd.it; i++) {
+        var tGen = new Timer();
+        tGen.start();
+        var key = gen[prefix][postfix](session);
+        tGen.stop();
+        time += tGen.time;
+        if (key.private) {
+          session.destroyObject(key.private);
+          session.destroyObject(key.public);
+        }
+        else {
+          session.destroyObject(key);
+        }
+      }
+      var t1 = Math.round((time / cmd.it) * 1000) / 1000 + "ms";
+      var t2 = Math.round((1000 / (time / cmd.it)) * 1000) / 1000;
+      print_test_gen_row(alg, t1, t2);
+      return true;
+    }
+    return false;
+  }
+  catch (e) {
+    debug("%s-%s\n  %s", prefix, postfix, e.message);
+  }
+  return false;
+}
+
+function print_test_gen_header() {
+  var TEMPLATE = '| %s | %s | %s |';
+  console.log(TEMPLATE, rpud("Algorithm", 25), lpud("Generate", 8), lpud("Generate/s", 10));
+  console.log('|-%s-|-%s:|-%s:|'.replace(/\s/g, "-"), rpud("", 25, "-"), lpud("", 8, "-"), lpud("", 10, "-"));
+}
+
+function print_test_gen_row(alg, t1, t2) {
+  var TEMPLATE = '| %s | %s | %s |';
+  console.log(TEMPLATE, rpud(alg.toUpperCase(), 25), lpud(t1, 8), lpud(t2, 10));
+}
+    
+/**
+ * gen
+ */
+var cmdTestGen = cmdTest.command("gen", {
+  description: "Runs speed test for key generation PKCS11 functions" + "\n\n" +
+  "  Supported algorithms:\n" +
+  "    rsa, rsa-1024, rsa-2048, rsa-4096" + "\n" +
+  "    ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1, ecdsa-secp256k1" + "\n" +
+  "    ecdsa-brainpoolP192r1, ecdsa-brainpoolP224r1, ecdsa-brainpoolP256r1" + "\n" +
+  "    ecdsa-brainpoolP320r1" + "\n" +
+  "    aes, aes-cbc128, aes-cbc192, aes-cbc256",
+  note: NOTE_SESSION,
+  example: "> test gen --alg rsa-1024 --it 2"
+})
+  .option('it', {
+    description: 'Sets number of iterations. Default 1',
+    set: function (v) {
+      var res = +v;
+      if (!Number.isInteger(res))
+        throw new TypeError("Parameter --it must be number");
+      if (res <= 0)
+        throw new TypeError("Parameter --it must be more then 0");
+      return res;
+    },
+    value: 1
+  })
+  .option('alg', {
+    description: 'Algorithm name',
+    isRequired: true
+  })
+  .on("call", function (cmd) {
+    check_session();
+    if (!check_gen_algs(cmd.alg)) {
+      var error = new Error("No such algorithm");
+      throw error;
+    }
+    console.log();
+    print_test_gen_header();
+    //sign
+    test_gen(session, cmd, "rsa", "1024");
+    test_gen(session, cmd, "rsa", "2048");
+    test_gen(session, cmd, "rsa", "4096");
+    test_gen(session, cmd, "ecdsa", "secp192r1");
+    test_gen(session, cmd, "ecdsa", "secp256r1");
+    test_gen(session, cmd, "ecdsa", "secp384r1");
+    test_gen(session, cmd, "ecdsa", "secp256k1");
+    test_gen(session, cmd, "ecdsa", "brainpoolP192r1");
+    test_gen(session, cmd, "ecdsa", "brainpoolP224r1");
+    test_gen(session, cmd, "ecdsa", "brainpoolP256r1");
+    test_gen(session, cmd, "ecdsa", "brainpoolP320r1");
+    //enc
+    test_gen(session, cmd, "aes", "128");
+    test_gen(session, cmd, "aes", "192");
+    test_gen(session, cmd, "aes", "256");
     console.log();
   });
 
