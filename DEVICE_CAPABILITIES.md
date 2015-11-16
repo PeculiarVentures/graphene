@@ -116,12 +116,10 @@
 | ECDSA-BRAINPOOLP224R1     |   89.8ms |     11.136 |
 | ECDSA-BRAINPOOLP256R1     |  103.8ms |      9.634 |
 | ECDSA-BRAINPOOLP320R1     |  165.8ms |      6.031 |
-| AES-CBC128                |    8.8ms |    113.636 |
-| AES-CBC192                |    8.4ms |    119.048 |
-| AES-CBC256                |      9ms |    111.111 |
-| AES-GCM128                |    8.8ms |    113.636 |
-| AES-GCM192                |    8.4ms |    119.048 |
-| AES-GCM256                |    8.8ms |    113.636 |
+| AES-128                   |    8.8ms |    113.636 |
+| AES-192                   |    8.4ms |    119.048 |
+| AES-256                   |      9ms |    111.111 |
+
 
 ##### Signing
 
