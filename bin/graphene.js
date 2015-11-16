@@ -23,7 +23,6 @@ var ERROR_MODULE_NOT_INITIALIZED = "Module is not initialized\n\n" +
   "  " + MODULE_NOTE + "\n\n" +
   "Example:\n" +
   "  " + MODULE_EXAMPLE;
-var ERROR_SLOTS_NOT_INITIALIZED = "Slots are not initialized"
 
 var rl = readline.createInterface({
   input: process.stdin,
@@ -44,7 +43,7 @@ commander.on("error", function (e) {
   }
 
   rl.prompt();
-})
+});
 
 /* ==========
    Helpers
@@ -79,8 +78,6 @@ function check_file(v) {
     throw new Error('File is not found');
   return v;
 }
-
-var COLUMN_SIZE = 30;
 
 /**
  * Adds symbols to String, default symbol is white space
@@ -142,7 +139,7 @@ function Timer() {
 Timer.prototype.start = function start() {
   if (!this.beginAt)
     this.beginAt = new Date();
-}
+};
 
 /**
  * Stops timer
@@ -150,9 +147,9 @@ Timer.prototype.start = function start() {
 Timer.prototype.stop = function stop() {
   if (this.beginAt && !this.endAt) {
     this.endAt = new Date();
-    this.time = this.endAt.getTime() - this.beginAt.getTime()
+    this.time = this.endAt.getTime() - this.beginAt.getTime();
   }
-}
+};
   
 /* ==========
    ?
@@ -170,9 +167,7 @@ commander.createCommand("?", "Returns Help")
     console.log();
     console.log(print_module_note());
     console.log();
-
-
-  })
+  });
   
 /* ==========
    exit
@@ -184,7 +179,7 @@ commander.createCommand("exit", "Exit from application")
     console.log();
     rl.close();
     rl.prompt = function () { };
-  })
+  });
   
 /* ==========
    Module
@@ -197,7 +192,7 @@ var cmdModule = commander.createCommand("module", {
 })
   .on("call", function (cmd) {
     this.help();
-  })
+  });
 
 function print_module_note() {
   var msg = "Note:" + "\n";
@@ -235,7 +230,7 @@ var cmdModuleInit = cmdModule.command("load", {
     mod = Module.load(cmd.lib, cmd.name);
     mod.initialize();
     print_module_info();
-  })
+  });
 
 /**
  * info
@@ -247,15 +242,10 @@ var cmdModuleInfo = cmdModule.command("info", {
   .on("call", function (cmd) {
     check_module();
     print_module_info();
-  })
+  });
 
 function print_slot(slot) {
   print_module_info();
-}
-
-function check_slots() {
-  if (!slots)
-    throw new Error(ERROR_SLOTS_NOT_INITIALIZED);
 }
 
 function get_slot_list() {
@@ -280,12 +270,12 @@ var option_slot = {
     return slot;
   },
   isRequired: true
-}
+};
 
 var option_pin = {
   description: "The PIN for the slot",
   type: "pin"
-}
+};
 
 /* ==========
    Slot
@@ -296,7 +286,7 @@ var cmdSlot = commander.createCommand("slot", {
 })
   .on("call", function () {
     this.help();
-  })
+  });
     
 /**
  * list
@@ -314,7 +304,7 @@ var cmdSlotList = cmdSlot.command("list", {
       var slot = slots[i];
       print_slot(slot);
     }
-  })
+  });
 
 function print_alg_info(slot, algName) {
   var algList = slot.mechanismList;
@@ -377,7 +367,7 @@ var cmdSlotInfo = cmdSlot.command("info", {
     else {
       print_slot(cmd.slot);
     }
-  })
+  });
 
 function print_slot_algs_header() {
   var TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |";
@@ -461,7 +451,7 @@ var cmdSlotCiphers = cmdSlot.command("algs", {
     console.log();
     console.log("%s algorithm(s) in list", lAlg.length);
     console.log();
-  })
+  });
 
 var session = null;
 
@@ -482,7 +472,7 @@ var cmdSlotOpen = cmdSlot.command("open", {
     console.log();
     console.log("Session is started");
     console.log();
-  })
+  });
 
 var cmdSlotStop = cmdSlot.command("stop", {
   description: "Stops session for slot",
@@ -497,7 +487,7 @@ var cmdSlotStop = cmdSlot.command("stop", {
     console.log();
     console.log("Session is stopped");
     console.log();
-  })
+  });
 
 function check_session() {
   if (!(session && session.isLogged())) {
@@ -519,7 +509,6 @@ var cmdObject = commander.createCommand("object", {
   });
 
 function print_object_info(obj) {
-  var PADDING_1 = 25;
   var TEMPLATE = '| %s | %s |';
   var COL_1 = 10;
   var COL_2 = 25;
@@ -569,7 +558,7 @@ var cmdObjectList = cmdObject.command("list", {
     console.log();
     console.log("%s object(s) in list", objList.length);
     console.log();
-  })
+  });
 
 var cmdObjectDelete = cmdObject.command("delete", {
   description: "Removes Object from list of PKCS11 objects of slot",
@@ -620,7 +609,7 @@ var cmdObjectDelete = cmdObject.command("delete", {
         rl.prompt();
       });
     }
-  })
+  });
 
 var cmdObjectInfo = cmdObject.command("info", {
   description: "Returns info about Object of Slot",
@@ -647,7 +636,7 @@ var cmdObjectInfo = cmdObject.command("info", {
     console.log();
     print_object_info(obj);
     console.log();
-  })
+  });
   
 /* ==========
    Hash
@@ -668,18 +657,17 @@ var cmdHash = commander.createCommand("hash", {
   .on("call", function (cmd) {
     check_session();
     var rs = fs.createReadStream(cmd.in);
-    var session = get_session(cmd);
     var digest = session.createDigest(cmd.alg);
     rs.on('data', function (chunk) {
       digest.update(chunk);
-    })
+    });
     rs.on('end', function () {
       var hash = digest.final();
       console.log(hash.toString('hex'));
       session.logout();
       session.stop();
     });
-  })
+  });
    
 /* ==========
    Test
@@ -698,7 +686,7 @@ function gen_AES(session, len) {
     "wrap": true,
     "unwrap": true,
     "extractable": false,
-		})
+		});
 		return _key;
 }
 
@@ -738,7 +726,7 @@ function gen_RSA(session, size, exp) {
       //"wrap": true,
       //"unwrap": true,
       "extractable": false
-    })
+    });
 		return _key;
 }
 
@@ -761,8 +749,7 @@ function gen_ECDSA(session, name, hexOid) {
       "decrypt": false,
       "sign": true,
       "unwrap": false,
-
-    })
+    });
 		return _keys;
 }
 
@@ -793,7 +780,7 @@ var gen = {
     "gcm192": gen_AES_192,
     "gcm256": gen_AES_256,
   }
-}
+};
 
 function gen_RSA_1024(session) {
   return gen_RSA(session, 1024);
@@ -853,16 +840,6 @@ var BUF_SIZE_DEFAULT = 1024;
 var BUF_SIZE = 1024;
 var BUF_STEP = BUF_SIZE;
 var BUF = new Buffer(BUF_STEP);
-
-function test_encrypt(session, key, algName) {
-  var enc = session.createEncrypt(algName, key);
-  var msg = new Buffer(0);
-  var buf = new Buffer(BUF_STEP);
-  for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
-		  msg = Buffer.concat([msg, enc.update(buf)]);
-  }
-  msg = Buffer.concat([msg, enc.final()]);
-}
 
 function test_sign_operation(session, buf, key, algName) {
   var sig = session.createSign(algName, key.private);
@@ -1016,7 +993,7 @@ function print_test_enc_header() {
 }
 
 function print_test_sign_row(alg, t1, t2, ts1, ts2) {
-  console.log("| %s | %s | %s | %s | %s |", rpud(alg.toUpperCase(), 25), lpud(t1, 8), lpud(t2, 8), lpud(ts1, 8), lpud(ts2, 8))
+  console.log("| %s | %s | %s | %s | %s |", rpud(alg.toUpperCase(), 25), lpud(t1, 8), lpud(t2, 8), lpud(ts1, 8), lpud(ts2, 8));
 }
 
 var cmdTest = commander.createCommand("test", {
@@ -1025,7 +1002,7 @@ var cmdTest = commander.createCommand("test", {
 })
   .on("call", function (cmd) {
     this.help();
-  })
+  });
 
 function check_sign_algs(alg) {
   var list = ["all", "rsa", "rsa-1024", "rsa-2048", "rsa-4096", "ecdsa", "ecdsa-secp192r1", "ecdsa-secp256r1", "ecdsa-secp384r1", "ecdsa-secp256k1",
@@ -1038,14 +1015,14 @@ function check_enc_algs(alg) {
 }
 
 function check_gen_algs(alg) {
-  return check_sign_algs(alg) || ["aes", "aes-128", "aes-192", "aes-256"].indexOf(alg) !== -1
+  return check_sign_algs(alg) || ["aes", "aes-128", "aes-192", "aes-256"].indexOf(alg) !== -1;
 }
 
 function generate_iv(session, block_size) {
   var iv = session.generateRandom(block_size);
   if (iv.length !== block_size)
     throw new Error("IV has different size from block_size");
-  return iv
+  return iv;
 }
 
 var CK_AES_GCM_PARAMS = common.RefStruct({
@@ -1065,7 +1042,7 @@ function build_gcm_params(iv) {
     pAAD: null,
     ulAADLen: 0,
     ulTagBits: 128
-  })
+  });
   return gcm;
 }
 
@@ -1085,7 +1062,7 @@ var cmdTestEnc = cmdTest.command("enc", {
     set: function (v) {
       var _v = +v;
       if (!_v)
-        throw new TypeError("Parameter --buf must be Number (min 1024)")
+        throw new TypeError("Parameter --buf must be Number (min 1024)");
       return _v;
     },
     value: BUF_SIZE_DEFAULT
@@ -1121,7 +1098,7 @@ var cmdTestEnc = cmdTest.command("enc", {
     var AES_GCM_PARAMS = {
       name: "AES_GCM",
       params: build_gcm_params(generate_iv(session, 16)).ref()
-    }
+    };
     test_enc(session, cmd, "aes", "cbc128", AES_CBC_PARAMS);
     test_enc(session, cmd, "aes", "cbc192", AES_CBC_PARAMS);
     test_enc(session, cmd, "aes", "cbc256", AES_CBC_PARAMS);
@@ -1149,7 +1126,7 @@ var cmdTestSign = cmdTest.command("sign", {
     set: function (v) {
       var _v = +v;
       if (!_v)
-        throw new TypeError("Parameter --buf must be Number (min 1024)")
+        throw new TypeError("Parameter --buf must be Number (min 1024)");
       return _v;
     },
     value: BUF_SIZE_DEFAULT
@@ -1296,5 +1273,5 @@ var cmdTestGen = cmdTest.command("gen", {
 rl.on("line", function (cmd) {
   commander.parse(cmd);
   rl.prompt();
-})
+});
 rl.prompt();
