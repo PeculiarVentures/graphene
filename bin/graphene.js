@@ -11,12 +11,14 @@ var common = require("../lib/common.js");
 
 var CAPTION_UNDERLINE = "==============================";
 
-var MODULE_NOTE = "All commands require you to first load the PKCS #11 module";
-var MODULE_EXAMPLE = "module load -l /path/to/pkcs11/lib/name.so -n LibName";
+var MODULE_NOTE = "all commands require you to first load the PKCS #11 module";
+var MODULE_EXAMPLE = "> module load -l {/path/to/pkcs11/lib/name.so} -n {LibName}";
 
-var NOTE = MODULE_NOTE + "\n\n    " + MODULE_EXAMPLE;
-var NOTE_SESSION = "All commands which uses session require you to first open session" + "\n\n" +
-  "    slot open --slot 0 --pin YourPIN";
+var NOTE = MODULE_NOTE + "\n\n    Example:\n\n      " + MODULE_EXAMPLE;
+var NOTE_SESSION = "all commands require you to first load the PKCS #11 module and log in." + "\n\n" +
+  "    Example:" + "\n\n" +
+  "      " + MODULE_EXAMPLE + "\n" +
+  "      > slot open --slot 0 --pin {YourPIN}";
 
 var ERROR_MODULE_NOT_INITIALIZED = "Module is not initialized\n\n" +
   "Note:\n" +
@@ -154,15 +156,13 @@ Timer.prototype.stop = function stop() {
 /* ==========
    ?
    ==========*/
-commander.createCommand("?", "Returns Help")
+commander.createCommand("?", "output usage information")
   .on("call", function (v) {
     console.log();
-    console.log("Description of graphene command");
-    console.log();
-    console.log("Commands:");
+    console.log("  Commands:");
     for (var i in commander._commands) {
       var cmd = commander._commands[i];
-      console.log("  " + cmd._name + " - " + cmd._description);
+      console.log("    " + pud(cmd._name, 10) + cmd._description);
     }
     console.log();
     console.log(print_module_note());
@@ -172,7 +172,7 @@ commander.createCommand("?", "Returns Help")
 /* ==========
    exit
    ==========*/
-commander.createCommand("exit", "Exit from application")
+commander.createCommand("exit", "exit from the application")
   .on("call", function (v) {
     console.log();
     console.log("Thanks for using");
@@ -186,7 +186,7 @@ commander.createCommand("exit", "Exit from application")
    ==========*/
 var mod;
 var cmdModule = commander.createCommand("module", {
-  description: "Manages PKCS11 library",
+  description: "load and retrieve information from the PKCS#11 module",
   note: MODULE_NOTE,
   example: MODULE_EXAMPLE
 })
@@ -195,9 +195,9 @@ var cmdModule = commander.createCommand("module", {
   });
 
 function print_module_note() {
-  var msg = "Note:" + "\n";
-  msg += "  All commands require you to first load the PKCS #11 module" + "\n\n";
-  msg += "    module init -l /path/to/pkcs11/lib/name.so -n LibName";
+  var msg = "  Note:" + "\n";
+  msg += "    all commands require you to first load the PKCS #11 module" + "\n\n";
+  msg += "      > module load -l /path/to/pkcs11/lib/name.so -n LibName";
   return msg;
 }
 
@@ -214,7 +214,7 @@ function print_module_info() {
  * load
  */
 var cmdModuleInit = cmdModule.command("load", {
-  description: "Loads a specified PKCS#11 module",
+  description: "loads a specified PKCS#11 module",
   example: MODULE_EXAMPLE
 })
   .option('name', {
@@ -236,7 +236,7 @@ var cmdModuleInit = cmdModule.command("load", {
  * info
  */
 var cmdModuleInfo = cmdModule.command("info", {
-  description: "Returns info about Module",
+  description: "returns info about Module",
   note: NOTE
 })
   .on("call", function (cmd) {
@@ -281,7 +281,7 @@ var option_pin = {
    Slot
    ==========*/
 var cmdSlot = commander.createCommand("slot", {
-  description: "Description for Slot command",
+  description: "open a session to a slot and work with its contents",
   note: NOTE,
 })
   .on("call", function () {
@@ -292,7 +292,7 @@ var cmdSlot = commander.createCommand("slot", {
  * list
  */
 var cmdSlotList = cmdSlot.command("list", {
-  description: "Returns list of slots",
+  description: "enumerates the available slots",
   note: NOTE
 })
   .on("call", function () {
@@ -345,12 +345,12 @@ function print_alg_info(slot, algName) {
  * info
  */
 var cmdSlotInfo = cmdSlot.command("info", {
-  description: "Returns info about Slot by index",
+  description: "returns information about a specific slot",
   note: NOTE,
   example: "Returns an info about slot" + "\n\n" +
-  "  > slot info -s 0\n\n" +
-  "  Returns an info about algorithm of selected slot" + "\n\n" +
-  "  > slot info -s 0 -a SHA1"
+  "      > slot info -s 0\n\n" +
+  "    Returns an info about algorithm of selected slot" + "\n\n" +
+  "      > slot info -s 0 -a SHA1"
 })
   .option('slot', option_slot)
   .option('alg', {
@@ -396,7 +396,7 @@ function print_slot_algs_row(alg) {
  * algs
  */
 var cmdSlotCiphers = cmdSlot.command("algs", {
-  description: "Returns an array with the names of the supported algorithms",
+  description: "enumerates the supported algorithms",
   note: NOTE,
   example: "Returns a list of mechanisms which can be used with C_DigestInit, C_SignInit\n  and C_VerifyInit" + "\n\n" +
   "  > slot algs -s 0 -f hsv"
@@ -456,7 +456,7 @@ var cmdSlotCiphers = cmdSlot.command("algs", {
 var session = null;
 
 var cmdSlotOpen = cmdSlot.command("open", {
-  description: "Opens session for slot",
+  description: "open a session to a slot",
   note: NOTE
 })
   .option('slot', option_slot)
@@ -475,7 +475,7 @@ var cmdSlotOpen = cmdSlot.command("open", {
   });
 
 var cmdSlotStop = cmdSlot.command("stop", {
-  description: "Stops session for slot",
+  description: "close the open session",
   note: NOTE
 })
   .on("call", function (cmd) {
@@ -501,7 +501,7 @@ function check_session() {
    object
    ==========*/
 var cmdObject = commander.createCommand("object", {
-  description: "Manage with PKCS11 objects",
+  description: "manage objects on the device",
   note: NOTE_SESSION
 })
   .on('call', function () {
@@ -539,7 +539,7 @@ function print_object_row(obj) {
 }
 
 var cmdObjectList = cmdObject.command("list", {
-  description: "Returns list of PKCS11 objects form slot",
+  description: "enumerates the objects in a given slot",
   note: NOTE_SESSION,
   example: "> object list"
 })
@@ -561,9 +561,9 @@ var cmdObjectList = cmdObject.command("list", {
   });
 
 var cmdObjectDelete = cmdObject.command("delete", {
-  description: "Removes Object from list of PKCS11 objects of slot",
+  description: "delete an object from a slot",
   note: NOTE_SESSION,
-  example: "Removes Object from Slot by object's ID 1\n    > object delete --obj 1"
+  example: "Removes Object from Slot by object's ID 1\n      > object delete --obj 1"
 })
   .option("obj", {
     description: "Identificator of object",
@@ -612,9 +612,9 @@ var cmdObjectDelete = cmdObject.command("delete", {
   });
 
 var cmdObjectInfo = cmdObject.command("info", {
-  description: "Returns info about Object of Slot",
+  description: "returns information about a object",
   note: NOTE_SESSION,
-  example: "Return info about Object of Slot by ID 1\n    > object info --obj 1"
+  example: "Return info about Object of Slot by ID 1\n      > object info --obj 1"
 })
   .option("obj", {
     description: "Identificator of object",
@@ -642,15 +642,17 @@ var cmdObjectInfo = cmdObject.command("info", {
    Hash
    ==========*/
 var cmdHash = commander.createCommand("hash", {
-  description: "Calculates hash for input file",
+  description: "compute a hash for a given file",
   note: NOTE_SESSION
 })
   .option('alg', {
-    description: 'Algorith name',
+    description: 'the algorithm to hash the file with. Default SHA1.' + '\n\n' +
+    pud('', 14) + 'to get list of supported algoriphms use command' + '\n\n' +
+    pud('', 16) + '> slot algs -s {num} -f h'+'\n',
     value: "sha1"
   })
   .option('in', {
-    description: 'Path to the input file',
+    description: 'the file to hash',
     set: check_file,
     isRequired: true
   })
@@ -997,8 +999,8 @@ function print_test_sign_row(alg, t1, t2, ts1, ts2) {
 }
 
 var cmdTest = commander.createCommand("test", {
-  description: "Description for Test command",
-  note: NOTE
+  description: "benchmark device performance for common algorithms",
+  note: NOTE_SESSION
 })
   .on("call", function (cmd) {
     this.help();
@@ -1050,10 +1052,10 @@ function build_gcm_params(iv) {
  * enc
  */
 var cmdTestEnc = cmdTest.command("enc", {
-  description: "Runs speed test for encrypt and decrypt PKCS11 functions" + "\n\n" +
-  "  Supported algorithms:\n" +
-  "    aes, aes-cbc128, aes-cbc192, aes-cbc256" + "\n" +
-  "    aes-gcm128, aes-gcm192, aes-gcm256",
+  description: "test encryption and decryption performance" + "\n\n" +
+  pud("", 10) + "    Supported algorithms:\n" +
+  pud("", 10) + "      aes, aes-cbc128, aes-cbc192, aes-cbc256" + "\n" +
+  pud("", 10) + "      aes-gcm128, aes-gcm192, aes-gcm256" + "\n",
   note: NOTE_SESSION,
   example: "> test enc --alg aes -it 100"
 })
@@ -1112,12 +1114,12 @@ var cmdTestEnc = cmdTest.command("enc", {
  * sign
  */
 var cmdTestSign = cmdTest.command("sign", {
-  description: "Runs speed test for sign and verify PKCS11 functions" + "\n\n" +
-  "  Supported algorithms:\n" +
-  "    rsa, rsa-1024, rsa-2048, rsa-4096" + "\n" +
-  "    ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1, ecdsa-secp256k1" + "\n" +
-  "    ecdsa-brainpoolP192r1, ecdsa-brainpoolP224r1, ecdsa-brainpoolP256r1" + "\n" +
-  "    ecdsa-brainpoolP320r1",
+  description: "test sign and verification performance" + "\n\n" +
+  pud("", 10) + "    Supported algorithms:\n" +
+  pud("", 10) + "      rsa, rsa-1024, rsa-2048, rsa-4096" + "\n" +
+  pud("", 10) + "      ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1," + "\n" +
+  pud("", 10) + "      ecdsa-secp256k1, ecdsa-brainpoolP192r1, ecdsa-brainpoolP224r1," + "\n" +
+  pud("", 10) + "      ecdsa-brainpoolP256r1, ecdsa-brainpoolP320r1" + "\n",
   note: NOTE_SESSION,
   example: "> test sign --alg rsa-1024 --it 60"
 })
@@ -1216,13 +1218,13 @@ function print_test_gen_row(alg, t1, t2) {
  * gen
  */
 var cmdTestGen = cmdTest.command("gen", {
-  description: "Runs speed test for key generation PKCS11 functions" + "\n\n" +
-  "  Supported algorithms:\n" +
-  "    rsa, rsa-1024, rsa-2048, rsa-4096" + "\n" +
-  "    ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1, ecdsa-secp256k1" + "\n" +
-  "    ecdsa-brainpoolP192r1, ecdsa-brainpoolP224r1, ecdsa-brainpoolP256r1" + "\n" +
-  "    ecdsa-brainpoolP320r1" + "\n" +
-  "    aes, aes-cbc128, aes-cbc192, aes-cbc256",
+  description: "test key generation performance" + "\n\n" +
+  pud("", 10) + "    Supported algorithms:\n" +
+  pud("", 10) + "      rsa, rsa-1024, rsa-2048, rsa-4096" + "\n" +
+  pud("", 10) + "      ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1," + "\n" +
+  pud("", 10) + "      ecdsa-secp256k1, ecdsa-brainpoolP192r1, ecdsa-brainpoolP224r1," + "\n" +
+  pud("", 10) + "      ecdsa-brainpoolP256r1, ecdsa-brainpoolP320r1" + "\n" +
+  pud("", 10) + "      aes, aes-cbc128, aes-cbc192, aes-cbc256",
   note: NOTE_SESSION,
   example: "> test gen --alg rsa-1024 --it 2"
 })
