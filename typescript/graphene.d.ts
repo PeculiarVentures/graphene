@@ -2029,19 +2029,641 @@ declare module "graphene" {
 	}
 
 	class MechanismInfo {
+		slot: Slot;
+		name: string;
+		minKeySize: number;
+		maxKeySize: number;
+		flags: number;
+
+		getInfo(): {
+			ulMinKeySize: number;
+			ulMaxKeySize: number;
+			flags: number;
+			type: string;
+		}
+		
+		/**
+		 * True if the mechanism is performed by the device; false if the mechanism is performed in software
+		 */
+		isHardware(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_EncryptInit
+		 */
+		isEncrypt(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_DecryptInit
+		 */
+		isDecrypt(): boolean;
+
+		/**
+		 * True if the mechanism can be used with C_DigestInit
+		 */
+		isDigest(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_SignInit
+		 */
+		isSign(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_SignRecoverInit
+		 */
+		isSignRecover(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_VerifyInit
+		 */
+		isVerify(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_VerifyRecoverInit
+		 */
+		isVerifyRecover(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_GenerateKey
+		 */
+		isGenerateKey(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_GenerateKeyPair
+		 */
+		isGenerateKeyPair(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_WrapKey
+		 */
+		isWrap(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_UnwrapKey
+		 */
+		isUnwrap(): boolean;
+		
+		/**
+		 * True if the mechanism can be used with C_DeriveKey
+		 */
+		isDerive(): boolean;
+		
+		/**
+		 * True if there is an extension to the flags; false if no extensions. 
+		 * Must be false for this version.
+		 */
+		isExtension(): boolean;
+				
+		/**
+		 * Create MechanismInfo by algorithm name
+		 * @param algName String name of algorithm
+		 */
+		static create(algName: string): MechanismInfo;
+		
+		/**
+		 * Create MechanismInfo by algorithm name and prarams
+		 * @param alg Object with name and params of algorithm
+		 */
+		static create(alg: AlgParams): MechanismInfo;
 
 	}
 
-	class SessionObject { }
+	class SessionObject {
+		session: Session;
+		type: string;
+		
+		/**
+		 * Returns attribute value by attribute number.
+		 * @param atrType Number of attribute type. Use Attribute enum.
+		 * @param atrType Number of buffer size  
+		 */
+		getAttribute(atrType: number, len?: number): Buffer
+		
+		/**
+		 * Returns boolean value of attribute
+		 * @param attrType Number of attribute type. Use Attribute enum.
+		 */
+		getBooleanAttribute(attrType: number): boolean
+		
+		/**
+		 * Returns number value of attribute
+		 * @param attrType Number of attribute type. Use Attribute enum.
+		 */
+		getNumberAttribute(attrType: number): number
+		
+		/**
+		 * Returns Buffer value of attribute
+		 * @param attrType Number of attribute type. Use Attribute enum.
+		 */
+		getBinaryAttribute(attrType: number): Buffer
+		
+		/**
+		 * Returns String value of attribute. Charset UTF-8
+		 * @param attrType Number of attribute type. Use Attribute enum.
+		 */
+		getUtf8Attribute(attrType: number): string
+		
+		/**
+		 * Returns number of class (type) of SessionObject.
+		 * Use ObjectClass enum. 
+		 */
+		getClass(): number;
+		
+		/**
+		 * CK_TRUE if object is a token object; CK_FALSE if object is a session object. Default is CK_FALSE.
+		 */
+		isToken(): boolean;
+		
+		/**
+		 * CK_TRUE if object is a private object; CK_FALSE if object is a public object. 
+ 		 * Default value is token-specific, and may depend on the values of other attributes of the object.
+		 */
+		isPrivate(): boolean;
 
-	class Key { }
+		/**
+		 * CK_TRUE if object can be modified Default is CK_TRUE.
+		 */
+		isModifiable(): boolean;
+		
+		/**
+		 * Description of the object (default empty).
+		 */
+		getLabel(): string;
+		
+		/**
+		 * Convert Session object to extended type
+		 * @param obj SessionObject which must be converted
+		 * @param classType Number of class type. USe ObjectClass enum
+		 */
+		static toType(obj: SessionObject, classType: string): any
+		
+		/**
+		 * Convert Session object to extended type
+		 * @param classType Number of class type. USe ObjectClass enum 
+		 */
+		toType(classType: string): any;
+	}
 
-	class PrivateKey extends Key { }
-	class PublicKey extends Key { }
+	class Key extends SessionObject {
+		/**
+		 * Returns number of key type. Use KeyType enum. 
+		 */
+		getType(): number;
+		
+		/**
+		 * Key identifier for key (default empty)
+		 */
+		getId(): Buffer
+		
+		/**
+		 * CK_TRUE if key supports key derivation 
+		 * i.e., if other keys can be derived from this one (default CK_FALSE))
+		 */
+		isDerived(): boolean;
+		
+		/**
+		 * CK_TRUE only if key was either * generated locally (i.e., on the token) 
+		 * with a C_GenerateKey or C_GenerateKeyPair call * created with a C_CopyObject call 
+		 * as a copy of a key which had its CKA_LOCAL attribute set to CK_TRUE
+		 */
+		isLocal(): boolean;
+		
+		/**
+		 * Start date for the key (default empty)
+		 */
+		getStartDate(): Buffer;
+		
+		/**
+		 * End date for the key (default empty)
+		 */
+		getEndDate(): Buffer;
+		
+		/**
+		 * Identifier of the mechanism used to generate the key material
+		 * Use Mechanism enum
+		 */
+		getKeyGenMechanism(): number;
+		
+		/**
+		 * Not realized in current version
+		 * A list of mechanisms allowed to be used with this key. The number of
+ 	     * mechanisms in the array is the ulValueLen component of the attribute divided by the size
+         * of CK_MECHANISM_TYPE.
+		 */
+		getAllowedMechanisms(): any;
 
-	class Digest { }
-	class Sign { }
-	class Verify { }
-	class Encrypt { }
-	class Decrypt { }
+
+	}
+
+	class PrivateKey extends Key {
+		/**
+		 * DER-encoding of the key subject name (default empty)  
+		 */
+		getSubject(): Buffer;
+		
+		/**
+		 * CK_TRUE if key is sensitive
+		 */
+		isSensitive(): boolean;
+
+		/**
+		 * CK_TRUE if key supports decryption
+		 */
+		isDecrypt(): boolean;
+		
+		/**
+		 * CK_TRUE if key supports signatures where the signature is an appendix to the data
+		 */
+		isSign(): boolean;
+		
+		/**
+		 * CK_TRUE if key supports signatures where the data can be recovered from the signature
+		 */
+		isSignRecover(): boolean;
+		
+		/**
+		 * CK_TRUE if key supports unwrapping (i.e., can be used to unwrap other keys)
+		 */
+		isUnwrap(): boolean;
+		
+		/**
+		 * CK_TRUE if key is extractable and can be wrapped
+		 */
+		isExtractable(): boolean;
+		
+		/**
+		 * CK_TRUE if key has always had the CKA_SENSITIVE attribute set to CK_TRUE 
+		 */
+		isAlwaysSensitive(): boolean;
+		
+		/**
+		 * CK_TRUE if key has never had the CKA_EXTRACTABLE attribute set to CK_TRUE
+		 */
+		isNeverExtractable(): boolean;
+		
+		/**
+		 * CK_TRUE if the key can only be wrapped with a wrapping key that has CKA_TRUSTED set to CK_TRUE. 
+		 * Default is CK_FALSE.
+		 */
+		isWrapWithTrusted(): boolean;
+		
+		/**
+		 * If CK_TRUE, the user has to supply the PIN for each use (sign or decrypt) with the key. 
+		 * Default is CK_FALSE.
+		 */
+		isAlwaysAuthenticate(): boolean;
+		
+		/**
+		 * Not realized in current version.
+		 * For wrapping keys. The attribute template to apply to
+		 * any keys unwrapped using this wrapping key. Any user
+		 * supplied template is applied after this template as if the
+		 * object has already been created. The number of
+		 * attributes in the array is the ulValueLen component of the
+		 * attribute divided by the size of CK_ATTRIBUTE. 
+		 */
+		getUnwrapTemplate(): boolean;
+
+	}
+
+	class PublicKey extends Key { 
+		/**
+		 * DER-encoding of the key subject name (default empty)  
+		 */
+		getSubject(): Buffer;
+		
+		/**
+		 * CK_TRUE if key supports encryption
+		 */
+		isEncrypt(): boolean;
+		
+		/**
+		 * CK_TRUE if key supports verification where the signature is an appendix to the data
+		 */
+		isVerify(): boolean;		
+		
+		/**
+		 * CK_TRUE if key supports verification where the data is recovered from the signature
+		 */
+		isVerifyRecover(): boolean;
+		
+		/**
+		 * CK_TRUE if key supports wrapping (i.e., can be used to wrap other keys)
+		 */
+		isWrap(): boolean;
+		
+		/**
+		 * The key can be trusted for the application that it was created.
+		 * The wrapping key can be used to wrap keys with
+		 * CKA_WRAP_WITH_TRUSTED set to CK_TRUE.
+		 */
+		isTrusted(): boolean;
+		
+		/**
+		 * Not realized in current version.
+ 		 * For wrapping keys. The attribute template to match against any keys
+ 		 * wrapped using this wrapping key. Keys that do not match cannot be wrapped.
+ 		 * The number of attributes in the array is the ulValueLen component of the
+ 		 * attribute divided by the size of CK_ATTRIBUTE. 
+ 		 */
+		getWrapTemplate(): any;
+	}
+
+	class SecretKey extends Key {		
+		/**
+		 * CK_TRUE if key is sensitive
+		 */
+		isSensitive(): boolean;
+		
+		/**
+		 * CK_TRUE if key supports encryption
+		 */
+		isEncrypt(): boolean;
+
+		/**
+		 * CK_TRUE if key supports decryption
+		 */
+		isDecrypt(): boolean;
+		
+		/**
+		 * CK_TRUE if key supports signatures where the signature is an appendix to the data
+		 */
+		isSign(): boolean;
+		
+		/**
+		 * CK_TRUE if key supports verification where the signature is an appendix to the data
+		 */
+		isVerify(): boolean;
+		
+		/**
+		 * CK_TRUE if key supports wrapping (i.e., can be used to wrap other keys)
+		 */
+		isWrap(): boolean;
+		
+		/**
+		 * CK_TRUE if key supports unwrapping (i.e., can be used to unwrap other keys)
+		 */
+		isUnwrap(): boolean;
+		
+		/**
+		 * CK_TRUE if key is extractable and can be wrapped
+		 */
+		isExtractable(): boolean;
+		
+		/**
+		 * CK_TRUE if key has always had the CKA_SENSITIVE attribute set to CK_TRUE 
+		 */
+		isAlwaysSensitive(): boolean;
+		
+		/**
+		 * CK_TRUE if key has never had the CKA_EXTRACTABLE attribute set to CK_TRUE
+		 */
+		isNeverExtractable(): boolean;
+		
+		/**
+		 * Key checksum
+		 */
+		getCheckValue(): Buffer;
+		
+		/**
+		 * CK_TRUE if the key can only be wrapped with a wrapping key that has CKA_TRUSTED set to CK_TRUE. 
+		 * Default is CK_FALSE.
+		 */
+		isWrapWithTrusted(): boolean;
+		
+		/**
+		 * Not realized in current version.
+ 		 * For wrapping keys. The attribute template to match against any keys
+ 		 * wrapped using this wrapping key. Keys that do not match cannot be wrapped.
+ 		 * The number of attributes in the array is the ulValueLen component of the
+ 		 * attribute divided by the size of CK_ATTRIBUTE. 
+ 		 */
+		getWrapTemplate(): any;
+		
+		/**
+		 * Not realized in current version.
+		 * For wrapping keys. The attribute template to apply to
+		 * any keys unwrapped using this wrapping key. Any user
+		 * supplied template is applied after this template as if the
+		 * object has already been created. The number of
+		 * attributes in the array is the ulValueLen component of the
+		 * attribute divided by the size of CK_ATTRIBUTE. 
+		 */
+		getUnwrapTemplate(): boolean;
+	}
+
+	class Certificate extends SessionObject {
+		/**
+		 * Type of certificate
+		 */
+		getType(): number;
+		
+		/**
+		 * The certificate can be trusted for the application that it was created.
+		 */
+		isTrusted(): boolean;
+		
+		/**
+		 * Categorization of the certificate:0 = unspecified (default value), 
+ 		 * 1 = token user, 2 = authority, 3 = other entity
+		 */
+		getCategory(): number;
+		
+		/**
+		 * Checksum
+		 */
+		getCheckValue(): Buffer;
+		
+		/**
+		 * Start date for the certificate (default empty)
+		 */
+		getStartDate(): Buffer;
+		
+		/**
+		 * End date for the certificate (default empty)
+		 */
+		getEndDate(): Buffer;
+	}
+	
+	/**
+	 * X.509 public key certificate objects
+	 */
+	class X509Certificate extends Certificate {
+		/**
+		 * DER-encoding of the certificate subject name
+		 */
+		getSubject(): Buffer;
+		
+		/**
+		 * DER-encoding of the certificate issuer name (default empty)
+		 */
+		getIssuer(): Buffer;
+		
+		/**
+		 * DER-encoding of the certificate serial number (default empty)
+		 */
+		getSerialNumber(): Buffer;
+		
+		/**
+		 * Key identifier for public/private key pair (default empty)
+		 */
+		getId(): Buffer;
+		
+		/**
+		 * 	DER-encoding of the certificate
+		 */
+		getValue(): Buffer;
+		
+		/**
+		 * If not empty this attribute gives the URL where the complete
+ 		 * certificate can be obtained (default empty)
+		 */
+		getUrl(): string;
+		
+		/**
+		 * SHA-1 hash of the subject public key (default empty)
+		 */
+		getSubjectPublicKeyHash(): Buffer;
+		
+		/**
+		 * SHA-1 hash of the issuer public key (default empty)
+		 */
+		getIssuerPublicKeyHash(): Buffer;
+		
+		/**
+		 * Java MIDP security domain: 
+		 * 0 = unspecified (default value), 
+		 * 1 = manufacturer, 
+		 * 2 = operator, 
+		 * 3 = third party 
+ 		 */
+		getJavaMIDP(): number;
+	}
+	
+	/**
+	 * X.509 attribute certificate object
+	 */
+	class X509CertificateAttribute extends Certificate {
+		/**
+		 * DER-encoding of the attribute certificate's subject field. This is distinct from the
+ 		 * CKA_SUBJECT attribute contained in CKC_X_509 certificates because the ASN.1 
+ 	     * syntax and encoding are different.
+		 */
+		getOwner(): Buffer;
+		
+		/**
+		 * DER-encoding of the attribute certificate's issuer field. This is distinct from the
+	 	 * CKA_ISSUER attribute contained in CKC_X_509 certificates because the ASN.1
+	 	 * syntax and encoding are different. (default empty)
+		 */
+		getIssuer(): Buffer;
+		
+		/**
+		 * DER-encoding of the certificate serial number (default empty)
+		 */
+		getSerialNumber(): Buffer;
+		
+		/**
+		 * DER-encoding of the attribute certificate
+		 */
+		getValue(): Buffer;
+		
+		/**
+		 * DER-encoding of a sequence of object identifier values corresponding to the attribute
+  	     * types contained in the certificate. When present, this field offers an opportunity for
+ 		 * applications to search for a particular attribute certificate without fetching and parsing the
+ 		 * certificate itself. (default empty)
+		 */
+		getAttributeTypes(): Buffer;
+	}
+	
+	/**
+	 * Data object
+	 */
+	class Data extends SessionObject {
+		/**
+		 * Description of the application that manages the object (default empty)
+		 */
+		getApplication(): string
+		
+		/**
+		 * DER-encoding of the object identifier indicating the data object type (default empty)
+		 */
+		getObjectId(): Buffer;
+		
+		/**
+		 * Value of the object (default empty)
+		 */
+		getValue(): Buffer;
+	}
+
+	class Digest {
+		session: SessionObject;
+	
+		/**
+		 * Do digest operation
+		 */
+		update(data: Buffer);	
+		
+		/**
+		 * Returns hash of digest operation.
+		 */
+		final(): Buffer;
+	}
+	
+	class Sign {
+		session: SessionObject;
+	
+		/**
+		 * Do sign operation
+		 */
+		update(data: Buffer);	
+		
+		/**
+		 * Finalize sign operation.
+		 */
+		final(): Buffer;
+	}
+	
+	class Verify {
+		session: SessionObject;
+	
+		/**
+		 * Do verify operation
+		 */
+		update(data: Buffer);	
+		
+		/**
+		 * Returns true if verify operation is ok.
+		 * @param signature DER-encoding signature value
+		 */
+		final(signature: Buffer): boolean;
+	}
+	
+	class Encrypt {
+		session: SessionObject;
+	
+		/**
+		 * Returns encrypted data from data
+		 */
+		update(data: Buffer): Buffer;	
+		
+		/**
+		 * Finalize encrypt operation.
+		 */
+		final(): Buffer;
+	}
+	
+	class Decrypt {
+		session: SessionObject;
+	
+		/**
+		 * Returns decrypted data from encrypted data
+		 */
+		update(data: Buffer): Buffer;	
+		
+		/**
+		 * Finalize decrypt operation.
+		 */
+		final(): Buffer;
+	}
 }

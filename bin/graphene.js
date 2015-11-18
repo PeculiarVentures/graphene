@@ -332,7 +332,7 @@ function print_alg_info(slot, algName) {
   console.log("  %s%s", rpud("Is sign recover:", PADDING_1), alg.isSignRecover());
   console.log("  %s%s", rpud("Is verify:", PADDING_1), alg.isVerify());
   console.log("  %s%s", rpud("Is verify recover:", PADDING_1), alg.isVerifyRecover());
-  console.log("  %s%s", rpud("Is generate key:", PADDING_1), alg.isGenerate());
+  console.log("  %s%s", rpud("Is generate key:", PADDING_1), alg.isGenerateKey());
   console.log("  %s%s", rpud("Is generate key pair:", PADDING_1), alg.isGenerateKeyPair());
   console.log("  %s%s", rpud("Is wrap key:", PADDING_1), alg.isWrap());
   console.log("  %s%s", rpud("Is unwrap key:", PADDING_1), alg.isUnwrap());
@@ -386,7 +386,7 @@ function print_slot_algs_row(alg) {
     print_bool(alg.isDecrypt()),
     print_bool(alg.isWrap()),
     print_bool(alg.isUnwrap()),
-    print_bool(alg.isGenerate() || alg.isGenerateKeyPair()),
+    print_bool(alg.isGenerateKey() || alg.isGenerateKeyPair()),
     print_bool(alg.isDerive()),
     print_bool(alg.isExtension())
     );
@@ -442,7 +442,7 @@ var cmdSlotCiphers = cmdSlot.command("algs", {
         d = true;
       if (!d && f.indexOf("u") >= 0 && alg.isUnwrap())
         d = true;
-      if (!d && f.indexOf("g") >= 0 && (alg.isGenerate() || alg.isGenerateKeyPair))
+      if (!d && f.indexOf("g") >= 0 && (alg.isGenerateKey() || alg.isGenerateKeyPair))
         d = true;
       if (!d)
         continue;

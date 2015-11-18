@@ -34,3 +34,6 @@ describe("Slot", function () {
 		//assert(false, "Error on assert 1");
 	})
 })
+
+var graphene = require("graphene");
+graphene.Enum
