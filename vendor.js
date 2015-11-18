@@ -1,0 +1,12 @@
+// Vendor
+module.exports = {
+	"chrystoki": {
+		AES_CFB8: 		0x80000118,
+		AES_CFB128: 	0x80000119,
+		AES_OFB: 		0x8000011A,
+		AES_GCM: 		0x8000011C,
+		DSA_SHA224: 	0x80000140,
+		DSA_SHA256: 	0x80000141,
+		NIST_PRF_KDF: 	0x80000A02
+	}
+}
