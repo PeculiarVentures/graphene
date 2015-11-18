@@ -1,7 +1,7 @@
 {
-  "name": "pk11",
+  "name": "graphene",
   "version": "1.0.0",
-  "description": "cryptoki wrapper",
+  "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI libraries in NodeJS",
   "main": "./lib/index.js",
   "scripts": {
     "test": "mocha"
@@ -21,10 +21,14 @@
   },
   "keywords": [
     "pkcs11",
-    "cryptographi",
+    "cryptography",
     "cryptoki",
     "token",
-    "RSA"
+    "smartcard",
+    "hsm",
+    "bitcoin",
+    "RSA",
+    "ECC"
   ],
   "author": "PeculiarVentures",
   "license": "MIT"
