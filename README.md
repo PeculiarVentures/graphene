@@ -503,6 +503,7 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 - [.NET PKCS #11 binding](https://github.com/jariq/Pkcs11Interop)
 - [Ruby PKCS #11 binding](https://github.com/larskanis/pkcs11)
 - [OCaml PKCS #11 binding](https://github.com/ANSSI-FR/caml-crush)
+- [OCaml PKCS #11 CLI](https://github.com/ANSSI-FR/opkcs11-tool)
 - [Go PKCS #11 binding](https://github.com/miekg/pkcs11) 
 - [PKCS #11 Admin](http://www.pkcs11admin.net)
 - [Node.js Foreign Function Interface](https://github.com/node-ffi/node-ffi)
