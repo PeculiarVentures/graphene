@@ -1,7 +1,7 @@
 process.env['SOFTHSM2_CONF'] = '/etc/softhsm2.conf';
 
 module.exports = {
-	lib: "usr/local/lib/softhsm/libsofthsm2.so",
-	libName: "SoftSHM",
-	pin: "1234",
+	lib: "/usr/safenet/lunaclient/lib/libCryptoki2_64.so",
+	libName: "Luna 5",
+	pin: "FLH6-X6Gb-/CSL-YtAY",
 }
