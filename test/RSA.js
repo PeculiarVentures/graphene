@@ -26,7 +26,18 @@ describe("RSA", function () {
 		mod.finalize();
 	})
 
+	var key;
 	it("generate", function () {
-		var key = session.generateRSA({modulusLength: 1024, publicExponent: 3, keyUsages: ["sign", "verify"]});
+		key = session.generateRSA({modulusLength: 1024, publicExponent: 3, keyUsages: ["sign", "verify"]});
 	})
+	
+	it("sign/verify", function () {
+		var sig = key.sign("sha-1", "Hello!!!");
+		assert.equal(true, key.verify("sha-1", sig, "Hello!!!", "Correct"));
+		assert.equal(true, key.verify("sha-1", sig, "Hello!!!1", "Wrong data"));
+	});
+	
+	it("delete", function () {
+		key.delete();
+	});
 })
