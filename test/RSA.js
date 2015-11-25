@@ -6,6 +6,9 @@ var Enums = pkcs11.Enums;
 
 describe("RSA", function () {
 	var mod, slots, slot, session, key;
+	
+	var MSG = "Hello world!!!";
+	var MSG_WRONG = MSG+"!";
 
 	before(function () {
 		mod = Module.load(config.lib, config.libName);
@@ -31,10 +34,32 @@ describe("RSA", function () {
 		key = session.generateRSA({modulusLength: 1024, publicExponent: 3, keyUsages: ["sign", "verify"]});
 	})
 	
-	it("sign/verify", function () {
-		var sig = key.sign("sha-1", "Hello!!!");
-		assert.equal(true, key.verify("sha-1", sig, "Hello!!!", "Correct"));
-		assert.equal(true, key.verify("sha-1", sig, "Hello!!!1", "Wrong data"));
+	it("sign/verify SHA-1", function () {
+		var alg = "sha-1"
+		var sig = key.sign(alg, MSG);
+		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
+		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
+	});
+	
+	it("sign/verify SHA-256", function () {
+		var alg = "sha-256"
+		var sig = key.sign(alg, MSG);
+		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
+		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
+	});
+	
+	it("sign/verify SHA-384", function () {
+		var alg = "sha-384"
+		var sig = key.sign(alg, MSG);
+		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
+		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
+	});
+	
+	it("sign/verify SHA-512", function () {
+		var alg = "sha-512"
+		var sig = key.sign(alg, MSG);
+		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
+		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
 	});
 	
 	it("delete", function () {
