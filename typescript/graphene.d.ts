@@ -125,7 +125,7 @@ interface NodeBuffer {
     fill(value: any, offset?: number, end?: number): void;
 }
 
-declare module "graphene" {
+declare module "graphene-pk11" {
 
 	export var Enums: {
 		ObjectClass: ObjectClass;
