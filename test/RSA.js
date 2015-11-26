@@ -41,6 +41,13 @@ describe("RSA", function () {
 		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
 	});
 	
+	it("sign/verify SHA-224", function () {
+		var alg = "sha-224"
+		var sig = key.sign(alg, MSG);
+		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
+		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
+	});
+	
 	it("sign/verify SHA-256", function () {
 		var alg = "sha-256"
 		var sig = key.sign(alg, MSG);
@@ -60,6 +67,12 @@ describe("RSA", function () {
 		var sig = key.sign(alg, MSG);
 		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
 		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
+	});
+	
+	it("OAEP encrypt/decrypt default SHA-1", function () {
+		var oaep = key.toOAEP()
+		var enc = oaep.encrypt(MSG);
+		assert.equal(MSG, oaep.decrypt(enc).toString("urf8"), "Correct");
 	});
 	
 	it("delete", function () {
