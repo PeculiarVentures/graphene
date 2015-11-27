@@ -6,10 +6,28 @@ var Enums = pkcs11.Enums;
 var RSA = pkcs11.RSA;
 
 describe("RSA", function () {
-	var mod, slots, slot, session, key;
+	var mod, slots, slot, session, key, skey;
 
 	var MSG = "Hello world!!!";
 	var MSG_WRONG = MSG + "!";
+	
+	function generateKey() {
+		var _key = session.generateKey("AES_KEY_GEN", {
+			"class": Enums.ObjectClass.SecretKey,
+			"keyType": Enums.KeyType.AES,
+			"valueLen": 32,
+			"label": "test key AES",
+			"private": true,
+			"sensitive": true,
+			"token": true,
+			"encrypt": true,
+			"decrypt": true,
+			"wrap": true,
+			"unwrap": true,
+			"extractable": true,
+		})
+		return _key;
+	}
 
 	before(function () {
 		mod = Module.load(config.lib, config.libName);
@@ -20,10 +38,12 @@ describe("RSA", function () {
 		session = slot.session;
 		session.start(2 | 4);
 		session.login(config.pin);
+		skey = generateKey();
 	})
 
 	after(function () {
 		if (session) {
+			session.destroyObject(skey);
 			session.logout();
 			session.stop();
 		}
@@ -32,7 +52,7 @@ describe("RSA", function () {
 
 	var key;
 	it("generate", function () {
-		key = session.generateRSA({ modulusLength: 1024, publicExponent: 3, keyUsages: ["sign", "verify", "encrypt", "decrypt"] });
+		key = session.generateRSA({ modulusLength: 1024, publicExponent: 3, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"] });
 	})
 
 	it("sign/verify SHA-1", function () {
@@ -86,6 +106,13 @@ describe("RSA", function () {
 		var oaep = key.toOAEP(new RSA.RsaOAEPParams(Enums.Mechanism.SHA1, Enums.MGF1.SHA1, new Buffer([1, 2, 3, 4, 5])));
 		var enc = oaep.encrypt(MSG);
 		assert.equal(MSG, oaep.decrypt(enc).toString("utf8"), "Correct");
+	});
+	
+	it("OAEP wrap/unwrap SHA-1", function () {
+		var oaep = key.toOAEP();
+		var wkey = oaep.wrapKey(skey);
+		console.log("Wrapped key:", wkey.toString("hex"));
+		//assert.equal(MSG, oaep.decrypt(enc).toString("utf8"), "Correct");
 	});
 
 	it("delete", function () {
