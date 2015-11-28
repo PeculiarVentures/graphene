@@ -10,9 +10,9 @@ describe("RSA", function () {
 
 	var MSG = "Hello world!!!";
 	var MSG_WRONG = MSG + "!";
-	
+
 	function generateKey() {
-		var _key = session.generateKey("AES_KEY_GEN", {
+		var _key = session.generateKey("AES_KEY_GEN",{
 			"class": Enums.ObjectClass.SecretKey,
 			"keyType": Enums.KeyType.AES,
 			"valueLen": 32,
@@ -25,7 +25,7 @@ describe("RSA", function () {
 			"wrap": true,
 			"unwrap": true,
 			"extractable": true,
-		})
+		});
 		return _key;
 	}
 
@@ -107,11 +107,12 @@ describe("RSA", function () {
 		var enc = oaep.encrypt(MSG);
 		assert.equal(MSG, oaep.decrypt(enc).toString("utf8"), "Correct");
 	});
-	
+
 	it("OAEP wrap/unwrap SHA-1", function () {
 		var oaep = key.toOAEP();
 		var wkey = oaep.wrapKey(skey);
-		console.log("Wrapped key:", wkey.toString("hex"));
+		var ukey = oaep.unwrapKey(wkey);
+		session.destroyObject(ukey);
 		//assert.equal(MSG, oaep.decrypt(enc).toString("utf8"), "Correct");
 	});
 
