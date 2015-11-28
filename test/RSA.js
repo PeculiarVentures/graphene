@@ -115,6 +115,26 @@ describe("RSA", function () {
 		session.destroyObject(ukey);
 		//assert.equal(MSG, oaep.decrypt(enc).toString("utf8"), "Correct");
 	});
+	
+	it("RSA 1.5 sign/verify", function () {
+		var rsa1 = key.toRSA1();
+		var sig = rsa1.sign(MSG);
+		assert.equal(true, rsa1.verify(sig, MSG), "Correct");
+		assert.equal(false, rsa1.verify(sig, MSG_WRONG), "Wrong data");
+	});
+	
+	it("RSA 1.5 encrypt/decrypt", function () {
+		var rsa1 = key.toRSA1();
+		var enc = rsa1.encrypt(MSG);
+		assert.equal(MSG, rsa1.decrypt(enc).toString("utf8"), "Correct");
+	});
+	
+	it("RSA 1.5 wrap/unwrap", function () {
+		var rsa1 = key.toRSA1();
+		var wkey = rsa1.wrapKey(skey);
+		var ukey = rsa1.unwrapKey(wkey);
+		session.destroyObject(ukey);
+	});
 
 	it("delete", function () {
 		key.delete();
