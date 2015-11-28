@@ -135,6 +135,13 @@ describe("RSA", function () {
 		var ukey = rsa1.unwrapKey(wkey);
 		session.destroyObject(ukey);
 	});
+	
+	it("RSA PSS sign/verify", function () {
+		var pss = key.toPSS({name: "SHA1_RSA_PKCS_PSS", params: new RSA.RsaPSS()});
+		var sig = pss.sign(MSG);
+		assert.equal(true, pss.verify(sig, MSG), "Correct");
+		assert.equal(false, pss.verify(sig, MSG_WRONG), "Wrong data");
+	});
 
 	it("delete", function () {
 		key.delete();
