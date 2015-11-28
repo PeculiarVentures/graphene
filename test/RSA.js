@@ -136,8 +136,22 @@ describe("RSA", function () {
 		session.destroyObject(ukey);
 	});
 	
-	it("RSA PSS sign/verify", function () {
-		var pss = key.toPSS({name: "SHA1_RSA_PKCS_PSS", params: new RSA.RsaPSS()});
+	it("RSA PSS sign/verify SHA1 default", function () {
+		var pss = key.toPSS();
+		var sig = pss.sign(MSG);
+		assert.equal(true, pss.verify(sig, MSG), "Correct");
+		assert.equal(false, pss.verify(sig, MSG_WRONG), "Wrong data");
+	});
+	
+	it("RSA PSS sign/verify SHA1", function () {
+		var pss = key.toPSS({name: "SHA1_RSA_PKCS_PSS", params: new RSA.RsaPSSParams()});
+		var sig = pss.sign(MSG);
+		assert.equal(true, pss.verify(sig, MSG), "Correct");
+		assert.equal(false, pss.verify(sig, MSG_WRONG), "Wrong data");
+	});
+	
+	it("RSA PSS sign/verify SHA256", function () {
+		var pss = key.toPSS({name: "SHA256_RSA_PKCS_PSS", params: new RSA.RsaPSSParams(Enums.Mechanism.SHA256, Enums.MGF1.SHA256, 0)});
 		var sig = pss.sign(MSG);
 		assert.equal(true, pss.verify(sig, MSG), "Correct");
 		assert.equal(false, pss.verify(sig, MSG_WRONG), "Wrong data");
