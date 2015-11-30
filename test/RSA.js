@@ -12,7 +12,7 @@ describe("RSA", function () {
 	var MSG_WRONG = MSG + "!";
 
 	function generateKey() {
-		var _key = session.generateKey("AES_KEY_GEN",{
+		var _key = session.generateKey("AES_KEY_GEN", {
 			"class": Enums.ObjectClass.SecretKey,
 			"keyType": Enums.KeyType.AES,
 			"valueLen": 32,
@@ -55,106 +55,92 @@ describe("RSA", function () {
 		key = session.generateRSA({ modulusLength: 1024, publicExponent: 3, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"] });
 	})
 
+	function test_sign_verify(RsaClass, alg) {
+		var rsa = key.toType(RsaClass, alg);
+		var sig = rsa.sign(MSG);
+		assert.equal(true, rsa.verify(sig, MSG), "Correct");
+		assert.equal(false, rsa.verify(sig, MSG_WRONG), "Wrong data");
+	}
+
+	function test_encrypt_decrypt(RsaClass, alg) {
+		var rsa = key.toType(RsaClass, alg);
+		var enc = rsa.encrypt(MSG);
+		assert.equal(MSG, rsa.decrypt(enc).toString("utf8"), "Correct");
+	}
+
+	function test_wrap_unwrap(RsaClass, alg) {
+		var rsa = key.toType(RsaClass, alg);
+		var wkey = rsa.wrapKey(skey);
+		var ukey = rsa.unwrapKey(wkey);
+		session.destroyObject(ukey);
+	}
+
 	it("sign/verify SHA-1", function () {
-		var alg = "sha-1"
-		var sig = key.sign(alg, MSG);
-		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
-		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
+		test_sign_verify(RSA.RsaSignature, "SHA1_RSA_PKCS");
 	});
 
 	it("sign/verify SHA-224", function () {
-		var alg = "sha-224"
-		var sig = key.sign(alg, MSG);
-		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
-		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
+		test_sign_verify(RSA.RsaSignature, "SHA224_RSA_PKCS");
 	});
 
 	it("sign/verify SHA-256", function () {
-		var alg = "sha-256"
-		var sig = key.sign(alg, MSG);
-		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
-		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
+		test_sign_verify(RSA.RsaSignature, "SHA256_RSA_PKCS");
 	});
 
 	it("sign/verify SHA-384", function () {
-		var alg = "sha-384"
-		var sig = key.sign(alg, MSG);
-		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
-		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
+		test_sign_verify(RSA.RsaSignature, "SHA384_RSA_PKCS");
 	});
 
 	it("sign/verify SHA-512", function () {
-		var alg = "sha-512"
-		var sig = key.sign(alg, MSG);
-		assert.equal(true, key.verify(alg, sig, MSG), "Correct");
-		assert.equal(false, key.verify(alg, sig, MSG_WRONG), "Wrong data");
+		test_sign_verify(RSA.RsaSignature, "SHA512_RSA_PKCS");
 	});
 
 	it("OAEP encrypt/decrypt default SHA-1", function () {
-		var oaep = key.toOAEP()
-		var enc = oaep.encrypt(MSG);
-		assert.equal(MSG, oaep.decrypt(enc).toString("utf8"), "Correct");
+		test_encrypt_decrypt(RSA.RsaOAEP, { name: "RSA_PKCS_OAEP", params: new RSA.RsaOAEPParams() })
 	});
 
 	it("OAEP encrypt/decrypt SHA-1", function () {
-		var oaep = key.toOAEP(new RSA.RsaOAEPParams(Enums.Mechanism.SHA1, Enums.MGF1.SHA1));
-		var enc = oaep.encrypt(MSG);
-		assert.equal(MSG, oaep.decrypt(enc).toString("utf8"), "Correct");
+		test_encrypt_decrypt(RSA.RsaOAEP, { name: "RSA_PKCS_OAEP", params: new RSA.RsaOAEPParams(Enums.Mechanism.SHA1, Enums.MGF1.SHA1) })
 	});
 
 	it("OAEP encrypt/decrypt SHA-1 with params", function () {
-		var oaep = key.toOAEP(new RSA.RsaOAEPParams(Enums.Mechanism.SHA1, Enums.MGF1.SHA1, new Buffer([1, 2, 3, 4, 5])));
-		var enc = oaep.encrypt(MSG);
-		assert.equal(MSG, oaep.decrypt(enc).toString("utf8"), "Correct");
+		test_encrypt_decrypt(RSA.RsaOAEP, { name: "RSA_PKCS_OAEP", params: new RSA.RsaOAEPParams(Enums.Mechanism.SHA1, Enums.MGF1.SHA1, new Buffer([1, 2, 3, 4, 5])) })
 	});
 
 	it("OAEP wrap/unwrap SHA-1", function () {
-		var oaep = key.toOAEP();
-		var wkey = oaep.wrapKey(skey);
-		var ukey = oaep.unwrapKey(wkey);
-		session.destroyObject(ukey);
-		//assert.equal(MSG, oaep.decrypt(enc).toString("utf8"), "Correct");
+		test_wrap_unwrap(RSA.RsaOAEP, { name: "RSA_PKCS_OAEP", params: new RSA.RsaOAEPParams(Enums.Mechanism.SHA1, Enums.MGF1.SHA1) });
 	});
-	
+
 	it("RSA 1.5 sign/verify", function () {
-		var rsa1 = key.toRSA1();
-		var sig = rsa1.sign(MSG);
-		assert.equal(true, rsa1.verify(sig, MSG), "Correct");
-		assert.equal(false, rsa1.verify(sig, MSG_WRONG), "Wrong data");
+		test_sign_verify(RSA.Rsa1_5, "RSA_PKCS");
 	});
-	
+
 	it("RSA 1.5 encrypt/decrypt", function () {
-		var rsa1 = key.toRSA1();
-		var enc = rsa1.encrypt(MSG);
-		assert.equal(MSG, rsa1.decrypt(enc).toString("utf8"), "Correct");
+		test_encrypt_decrypt(RSA.RsaOAEP, "RSA_PKCS")
 	});
-	
+
 	it("RSA 1.5 wrap/unwrap", function () {
-		var rsa1 = key.toRSA1();
-		var wkey = rsa1.wrapKey(skey);
-		var ukey = rsa1.unwrapKey(wkey);
-		session.destroyObject(ukey);
+		test_wrap_unwrap(RSA.RsaOAEP, "RSA_PKCS");
 	});
-	
-	it("RSA PSS sign/verify SHA1 default", function () {
-		var pss = key.toPSS();
-		var sig = pss.sign(MSG);
-		assert.equal(true, pss.verify(sig, MSG), "Correct");
-		assert.equal(false, pss.verify(sig, MSG_WRONG), "Wrong data");
-	});
-	
+
 	it("RSA PSS sign/verify SHA1", function () {
-		var pss = key.toPSS({name: "SHA1_RSA_PKCS_PSS", params: new RSA.RsaPSSParams()});
-		var sig = pss.sign(MSG);
-		assert.equal(true, pss.verify(sig, MSG), "Correct");
-		assert.equal(false, pss.verify(sig, MSG_WRONG), "Wrong data");
+		test_sign_verify(RSA.RsaPSS, { name: "SHA1_RSA_PKCS_PSS", params: new RSA.RsaPSSParams(Enums.Mechanism.SHA1, Enums.MGF1.SHA1) });
 	});
-	
+
+	it("RSA PSS sign/verify SHA224", function () {
+		test_sign_verify(RSA.RsaPSS, { name: "SHA224_RSA_PKCS_PSS", params: new RSA.RsaPSSParams(Enums.Mechanism.SHA224, Enums.MGF1.SHA224) });
+	});
+
 	it("RSA PSS sign/verify SHA256", function () {
-		var pss = key.toPSS({name: "SHA256_RSA_PKCS_PSS", params: new RSA.RsaPSSParams(Enums.Mechanism.SHA256, Enums.MGF1.SHA256, 0)});
-		var sig = pss.sign(MSG);
-		assert.equal(true, pss.verify(sig, MSG), "Correct");
-		assert.equal(false, pss.verify(sig, MSG_WRONG), "Wrong data");
+		test_sign_verify(RSA.RsaPSS, { name: "SHA256_RSA_PKCS_PSS", params: new RSA.RsaPSSParams(Enums.Mechanism.SHA256, Enums.MGF1.SHA256) });
+	});
+
+	it("RSA PSS sign/verify SHA384", function () {
+		test_sign_verify(RSA.RsaPSS, { name: "SHA384_RSA_PKCS_PSS", params: new RSA.RsaPSSParams(Enums.Mechanism.SHA384, Enums.MGF1.SHA384) });
+	});
+
+	it("RSA PSS sign/verify SHA512", function () {
+		test_sign_verify(RSA.RsaPSS, { name: "SHA512_RSA_PKCS_PSS", params: new RSA.RsaPSSParams(Enums.Mechanism.SHA512, Enums.MGF1.SHA512) });
 	});
 
 	it("delete", function () {
