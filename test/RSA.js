@@ -11,24 +11,6 @@ describe("RSA", function () {
 	var MSG = "Hello world!!!";
 	var MSG_WRONG = MSG + "!";
 
-	function generateKey() {
-		var _key = session.generateKey("AES_KEY_GEN", {
-			"class": Enums.ObjectClass.SecretKey,
-			"keyType": Enums.KeyType.AES,
-			"valueLen": 32,
-			"label": "test key AES",
-			"private": true,
-			"sensitive": true,
-			"token": true,
-			"encrypt": true,
-			"decrypt": true,
-			"wrap": true,
-			"unwrap": true,
-			"extractable": true,
-		});
-		return _key;
-	}
-
 	before(function () {
 		mod = Module.load(config.lib, config.libName);
 		mod.initialize();
@@ -38,7 +20,6 @@ describe("RSA", function () {
 		session = slot.session;
 		session.start(2 | 4);
 		session.login(config.pin);
-		skey = generateKey();
 	})
 
 	after(function () {
@@ -51,8 +32,12 @@ describe("RSA", function () {
 	})
 
 	var key;
-	it("generate", function () {
-		key = session.generateRSA({ modulusLength: 1024, publicExponent: 3, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"] });
+	it("generate RSA", function () {
+		key = session.generateRsa({ modulusLength: 1024, publicExponent: 3, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"] });
+	})
+
+	it("generate AES", function () {
+		key = session.generateAes({ length: 128, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"] });
 	})
 
 	function test_sign_verify(RsaClass, alg) {
@@ -141,6 +126,10 @@ describe("RSA", function () {
 
 	it("RSA PSS sign/verify SHA512", function () {
 		test_sign_verify(RSA.RsaPSS, { name: "SHA512_RSA_PKCS_PSS", params: new RSA.RsaPSSParams(Enums.Mechanism.SHA512, Enums.MGF1.SHA512) });
+	});
+
+	it("AesCBC encrypt/decrypt", function () {
+		test_encrypt_decrypt(RSA.AesCBC, { name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) });
 	});
 
 	it("delete", function () {
