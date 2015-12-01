@@ -4,6 +4,7 @@ var pkcs11 = require('../lib');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 var RSA = pkcs11.RSA;
+var AES = pkcs11.AES;
 
 describe("RSA", function () {
 	var mod, slots, slot, session, key, skey;
