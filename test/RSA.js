@@ -8,7 +8,7 @@ var RSA = pkcs11.RSA;
 describe("RSA", function () {
 	var mod, slots, slot, session, key, skey;
 
-	var MSG = "Hello world!!!";
+	var MSG = "1234567890123456";
 	var MSG_WRONG = MSG + "!";
 
 	before(function () {
@@ -24,7 +24,6 @@ describe("RSA", function () {
 
 	after(function () {
 		if (session) {
-			session.destroyObject(skey);
 			session.logout();
 			session.stop();
 		}
@@ -37,7 +36,7 @@ describe("RSA", function () {
 	})
 
 	it("generate AES", function () {
-		key = session.generateAes({ length: 128, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"] });
+		skey = session.generateAes({ length: 128, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"], extractable: true });
 	})
 
 	function test_sign_verify(RsaClass, alg) {
@@ -47,16 +46,24 @@ describe("RSA", function () {
 		assert.equal(false, rsa.verify(sig, MSG_WRONG), "Wrong data");
 	}
 
-	function test_encrypt_decrypt(RsaClass, alg) {
-		var rsa = key.toType(RsaClass, alg);
+	function test_encrypt_decrypt(RsaClass, alg, _key) {
+		_key = _key || key;
+		var rsa = _key.toType(RsaClass, alg);
 		var enc = rsa.encrypt(MSG);
 		assert.equal(MSG, rsa.decrypt(enc).toString("utf8"), "Correct");
 	}
 
-	function test_wrap_unwrap(RsaClass, alg) {
-		var rsa = key.toType(RsaClass, alg);
-		var wkey = rsa.wrapKey(skey);
-		var ukey = rsa.unwrapKey(wkey);
+	function test_wrap_unwrap(RsaClass, alg, _key) {
+		_key = _key || key;
+		var rsa = _key.toType(RsaClass, alg);
+		var wkey = rsa.wrapKey(skey.key);
+		var ukey = rsa.unwrapKey(wkey, {
+			"class": Enums.ObjectClass.SecretKey,
+			"keyType": Enums.KeyType.AES,
+			"valueLen": 128 / 8,
+			"encrypt": true,
+			"decrypt": true
+		});
 		session.destroyObject(ukey);
 	}
 
@@ -129,10 +136,24 @@ describe("RSA", function () {
 	});
 
 	it("AesCBC encrypt/decrypt", function () {
-		test_encrypt_decrypt(RSA.AesCBC, { name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) });
+		test_encrypt_decrypt(
+			RSA.AesCBC,
+			{ name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) },
+			skey);
 	});
 
-	it("delete", function () {
+	it("AesCBC wrap/unwrap", function () {
+		test_wrap_unwrap(
+			RSA.AesCBC,
+			{ name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) },
+			skey);
+	});
+
+	it("delete RSA", function () {
 		key.delete();
+	});
+
+	it("delete Aes", function () {
+		skey.delete();
 	});
 })
