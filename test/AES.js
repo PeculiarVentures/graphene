@@ -3,9 +3,13 @@ var config = require('./config');
 var pkcs11 = require('../lib');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
+var AES = pkcs11.AES;
 
 describe("AES", function () {
-	var mod, slots, slot, session, key;
+	var mod, slots, slot, session, key, skey;
+
+	var MSG = "1234567890123456";
+	var MSG_WRONG = MSG + "!";
 
 	before(function () {
 		mod = Module.load(config.lib, config.libName);
@@ -16,43 +20,7 @@ describe("AES", function () {
 		session = slot.session;
 		session.start(2 | 4);
 		session.login(config.pin);
-
-		key = getKey();
-		if (!key)
-			key = generateKey();
 	})
-
-	function getKey() {
-		var objects = session.findObjects();
-		for (var i in objects) {
-			var obj = objects[i];
-			if (obj.getClass() == Enums.ObjectClass.SecretKey) {
-				var key = obj.toType();
-				if (key.getType() == Enums.KeyType.AES) {
-					return key;
-				}
-			}
-		}
-		return null
-	}
-
-	function generateKey() {
-		var _key = session.generateKey("AES_KEY_GEN", {
-			"class": Enums.ObjectClass.SecretKey,
-			"keyType": Enums.KeyType.AES,
-			"valueLen": 32,
-			"label": "test key AES",
-			"private": true,
-			"sensitive": true,
-			"token": true,
-			"encrypt": true,
-			"decrypt": true,
-			"wrap": true,
-			"unwrap": true,
-			"extractable": false,
-		})
-		return _key;
-	}
 
 	after(function () {
 		if (session) {
@@ -62,32 +30,66 @@ describe("AES", function () {
 		mod.finalize();
 	})
 
-	function encrypt(algName) {
-		var enc = session.createEncrypt(algName, key);
-		var msg = new Buffer(0);
-		msg = Buffer.concat([msg, enc.update("secret word!")]);
-		msg = Buffer.concat([msg, enc.update("secret word!")]);
-		return msg = Buffer.concat([msg, enc.final()]);
-	}
-
-	function decrypt(algName, encMsg) {
-		var dec = session.createDecrypt(algName, key);
-		var msg = new Buffer(0);
-		msg = Buffer.concat([msg, dec.update(encMsg)]);
-		return msg = Buffer.concat([msg, dec.final()]);;
-	}
-
-	function testDecryptEncrypt(algName) {
-		var msg = encrypt(algName);
-		assert(msg.length, "Encrypted message by " + algName + " can not be null");
-		var res = decrypt(algName, msg);
-		assert.equal("secret word!secret word!", res.toString(), "Decrypted message is not valid");
-	}
-
-	it("#encrypt/decrypt AES_CBC_PAD", function () {
-		testDecryptEncrypt({
-			name: "AES_CBC_PAD",
-			params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
-		});
+	it("generate AES", function () {
+		skey = session.generateAes({ length: 128, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"], extractable: true });
 	})
+
+	function test_sign_verify(_key, KeyClass, alg) {
+		var nkey = _key.toType(KeyClass, alg);
+		var sig = nkey.sign(MSG);
+		assert.equal(true, nkey.verify(sig, MSG), "Correct");
+		assert.equal(false, nkey.verify(sig, MSG_WRONG), "Wrong data");
+	}
+
+	function test_encrypt_decrypt(_key, KeyClass, alg) {
+		var nkey = _key.toType(KeyClass, alg);
+		var enc = nkey.encrypt(MSG);
+		assert.equal(MSG, nkey.decrypt(enc).toString("utf8"), "Correct");
+	}
+
+	function test_wrap_unwrap(_key, KeyClass, alg, _skey) {
+		var nkey = _key.toType(KeyClass, alg);
+		var wkey = nkey.wrapKey(_skey.key);
+		var ukey = nkey.unwrapKey(wkey, {
+			"class": Enums.ObjectClass.SecretKey,
+			"keyType": Enums.KeyType.AES,
+			"valueLen": 128 / 8,
+			"encrypt": true,
+			"decrypt": true
+		});
+		session.destroyObject(ukey);
+	}
+
+	it("AesCBC encrypt/decrypt", function () {
+		test_encrypt_decrypt(
+			skey,
+			AES.AesCBC,
+			{ name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) });
+	});
+
+	it("AesCBC wrap/unwrap", function () {
+		test_wrap_unwrap(
+			skey,
+			AES.AesCBC,
+			{ name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) },
+			skey);
+	});
+
+	it("AesCBCPad encrypt/decrypt", function () {
+		test_encrypt_decrypt(
+			skey,
+			AES.AesCBC,
+			{ name: "AES_CBC_PAD", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) });
+	});
+
+	it("AesGCM default encrypt/decrypt", function () {
+		test_encrypt_decrypt(
+			skey,
+			AES.AesGCM,
+			{ name: "AES_GCM", params: new AES.AesGCMParams(new Buffer("123456789012"), null) });
+	});
+
+	it("delete Aes", function () {
+		skey.delete();
+	});
 })

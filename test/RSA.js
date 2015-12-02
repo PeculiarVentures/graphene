@@ -136,20 +136,6 @@ describe("RSA", function () {
 		test_sign_verify(RSA.RsaPSS, { name: "SHA512_RSA_PKCS_PSS", params: new RSA.RsaPSSParams(Enums.Mechanism.SHA512, Enums.MGF1.SHA512) });
 	});
 
-	it("AesCBC encrypt/decrypt", function () {
-		test_encrypt_decrypt(
-			RSA.AesCBC,
-			{ name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) },
-			skey);
-	});
-
-	it("AesCBC wrap/unwrap", function () {
-		test_wrap_unwrap(
-			RSA.AesCBC,
-			{ name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) },
-			skey);
-	});
-
 	it("delete RSA", function () {
 		key.delete();
 	});
