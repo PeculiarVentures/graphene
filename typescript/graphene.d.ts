@@ -2016,11 +2016,15 @@ declare module "graphene-pk11" {
 		 * @param params Set of params for Key    
 		 */
 		generateKey(alg: AlgParams, params: Object): Key;
+		
+		generateRsa(props: RsaGenParams): Rsa;
+		
+		generateAes(props: AesGenParams): Aes;
 	}
 
 	interface AlgParams {
 		name: string;
-		params: Buffer;
+		params?: Buffer;
 	}
 
 	interface KeyPair {
@@ -2666,4 +2670,143 @@ declare module "graphene-pk11" {
 		 */
 		final(): Buffer;
 	}
+	
+	export var RSA: {
+		Rsa: Rsa
+		Rsa1_5: Rsa1_5
+		RsaOAEP: RsaOAEP
+		RsaOAEPParams: RsaOAEPParams
+		RsaPSS: RsaPSS
+		RsaPSSParams: RsaPSSParams
+	}
+	
+	export var AES: {
+		Aes: Aes
+		AesCBC: AesCBC
+		AesGCM: AesGCM
+		AesGCMParams: AesGCMParams
+	}
+	
+	class AsymmetricKey{
+		session: Session
+		publicKey: Key
+		privateKey: Key	
+		algorithm: string | AlgParams
+	}
+	
+	class SymmetricKey{
+		session: Session
+		key: Key	
+		algorithm: string | AlgParams
+	}
+		
+	interface GenParams {
+      label?: string
+      extractable?: boolean
+      keyUsages: Array<string>
+	}
+	
+	interface RsaGenParams extends GenParams{
+		modulusLength: number
+		publicExponent: number
+	}
+	
+	interface AesGenParams extends GenParams{
+		length: number
+	}
+	
+	class Rsa extends AsymmetricKey{
+		modulusLength: number
+		publicExponent: number
+		
+		generate(session: Session, algorithm: string | AlgParams, props: RsaGenParams): Rsa;
+	}
+	
+	interface ISign{
+		sign(data: Buffer): Buffer
+	}
+	
+	interface IVerify{
+		verify(signature: Buffer, data: Buffer): boolean
+	}
+	
+	interface IEncrypt{
+		encrypt(data: Buffer): Buffer
+	}
+	
+	interface IDecrypt{
+		decrypt(data: Buffer): Buffer
+	}
+	
+	interface IWrapKey{
+		wrapKey(key: Key): Buffer
+	}
+	
+	interface IUnwrapKey{
+		wrapKey(data: Buffer): Key
+	}
+	
+	class Rsa1_5 extends Rsa implements ISign, IVerify, IEncrypt, IDecrypt, IWrapKey, IUnwrapKey{
+		sign(data: Buffer): Buffer
+		verify(signature: Buffer, data: Buffer): boolean
+		encrypt(data: Buffer): Buffer
+		decrypt(data: Buffer): Buffer
+		wrapKey(key: Key): Buffer
+		wrapKey(data: Buffer): Key
+	}	
+	
+	class RsaOAEP extends Rsa implements IEncrypt, IDecrypt, IWrapKey, IUnwrapKey{
+		encrypt(data: Buffer): Buffer
+		decrypt(data: Buffer): Buffer
+		wrapKey(key: Key): Buffer
+		wrapKey(data: Buffer): Key
+	}
+	
+	interface ICkiConverter{
+		toCKI(): Object
+	}
+	
+	class RsaOAEPParams implements ICkiConverter{
+		constructor(hashAlgs: number, mgf: number, sourceData?: number, source?: Buffer)
+		toCKI(): Object
+	}
+	
+	class RsaPSS extends Rsa implements ISign, IVerify{
+		sign(data: Buffer): Buffer
+		verify(signature: Buffer, data: Buffer): boolean
+	}
+	
+	class RsaPSSParams implements ICkiConverter{
+		constructor(hashAlgs: number, mgf: number, soltLength: number)
+		toCKI(): Object
+	}
+	
+	class RsaSignature extends Rsa implements ISign, IVerify{
+		sign(data: Buffer): Buffer
+		verify(signature: Buffer, data: Buffer): boolean
+	}
+	
+	class Aes extends SymmetricKey{
+		length: number
+		
+		generate(session: Session, algorithm: string | AlgParams, props: AesGenParams): Aes;
+	}	
+	
+	class AesCBC extends Aes implements IEncrypt, IDecrypt, IWrapKey, IUnwrapKey{
+		encrypt(data: Buffer): Buffer
+		decrypt(data: Buffer): Buffer
+		wrapKey(key: Key): Buffer
+		wrapKey(data: Buffer): Key
+	}
+	
+	class AesGCMParams implements ICkiConverter{
+		constructor(iv: Buffer, additionalData?: Buffer, tagLength?: number)
+		toCKI(): Object
+	}
+	
+	class AesGCM extends Aes implements IEncrypt, IDecrypt{
+		encrypt(data: Buffer): Buffer
+		decrypt(data: Buffer): Buffer
+	}	
+	
 }
