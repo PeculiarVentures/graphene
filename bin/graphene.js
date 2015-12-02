@@ -6,6 +6,8 @@ var readline = require('readline');
 var pkcs11 = require('../lib');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
+var RSA = pkcs11.RSA;
+var AES = pkcs11.AEs;
 
 var common = require("../lib/common.js");
 
@@ -648,7 +650,7 @@ var cmdHash = commander.createCommand("hash", {
   .option('alg', {
     description: 'the algorithm to hash the file with. Default SHA1.' + '\n\n' +
     pud('', 14) + 'to get list of supported algoriphms use command' + '\n\n' +
-    pud('', 16) + '> slot algs -s {num} -f h'+'\n',
+    pud('', 16) + '> slot algs -s {num} -f h' + '\n',
     value: "sha1"
   })
   .option('in', {
@@ -675,61 +677,18 @@ var cmdHash = commander.createCommand("hash", {
    Test
    ==========*/
 function gen_AES(session, len) {
-		var _key = session.generateKey("AES_KEY_GEN", {
-    "class": Enums.ObjectClass.SecretKey,
-    "keyType": Enums.KeyType.AES,
-    "valueLen": len,
-    "label": "test AES " + len * 8 + " bits",
-    "private": true,
-    "sensitive": true,
-    "token": true,
-    "encrypt": true,
-    "decrypt": true,
-    "wrap": true,
-    "unwrap": true,
-    "extractable": false,
-		});
-		return _key;
+  return session.generateAes({
+    length: len || 128,
+    keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"]
+  });
 }
 
 function gen_RSA(session, size, exp) {
-  size = size || 1024;
-  exp = exp || new Buffer([3]);
-		var _key = session.generateKeyPair("RSA_PKCS_KEY_PAIR_GEN", {
-    "class": Enums.ObjectClass.PublicKey,
-    "keyType": Enums.KeyType.RSA,
-    "label": "test key RSA " + size + " exp " + exp,
-    //"private": true,
-    //"sensitive": true,
-    "token": true,
-    //"id": new Buffer("1"),
-    //"sign": true,
-    "verify": true,
-    //"encrypt": true,
-    //"decrypt": true,
-    //"wrap": true,
-    //"unwrap": true,
-    //"extractable": false,
-    "modulusBits": size,
-    "publicExp": exp
-		},
-    {
-      "class": Enums.ObjectClass.PrivateKey,
-      "keyType": Enums.KeyType.RSA,
-      "label": "test key RSA " + size + " exp " + exp,
-      "private": true,
-      "sensitive": true,
-      "token": true,
-      //"id": new Buffer("1"),
-      "sign": true,
-      //"verify": true,
-      //"encrypt": true,
-      //"decrypt": true,
-      //"wrap": true,
-      //"unwrap": true,
-      "extractable": false
-    });
-		return _key;
+  return session.generateRsa({
+    modulusLength: size || 1024,
+    publicExponent: exp || 3,
+    keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"]
+  });
 }
 
 function gen_ECDSA(session, name, hexOid) {
@@ -829,13 +788,13 @@ function gen_ECDSA_brainpoolP320r1(session) {
 }
 
 function gen_AES_128(session) {
-  return gen_AES(session, 128 / 8);
+  return gen_AES(session, 128);
 }
 function gen_AES_192(session) {
-  return gen_AES(session, 192 / 8);
+  return gen_AES(session, 192);
 }
 function gen_AES_256(session) {
-  return gen_AES(session, 256 / 8);
+  return gen_AES(session, 256);
 }
 
 var BUF_SIZE_DEFAULT = 1024;
@@ -1027,25 +986,10 @@ function generate_iv(session, block_size) {
   return iv;
 }
 
-var CK_AES_GCM_PARAMS = common.RefStruct({
-  pIv: common.CKI.CK_BYTE_PTR,
-  ulIvLen: common.CKI.CK_ULONG,
-  ulIvBits: common.CKI.CK_ULONG,
-  pAAD: common.CKI.CK_BYTE_PTR,
-  ulAADLen: common.CKI.CK_ULONG,
-  ulTagBits: common.CKI.CK_ULONG
-});
-
 function build_gcm_params(iv) {
-  var gcm = new CK_AES_GCM_PARAMS({
-    pIv: iv,
-    ulIvLen: iv.length,
-    ulIvBits: iv.length * 8,
-    pAAD: null,
-    ulAADLen: 0,
-    ulTagBits: 128
-  });
-  return gcm;
+  return new AES.AesGCMParams({
+    iv: iv,
+  })
 }
 
 /**
@@ -1099,7 +1043,7 @@ var cmdTestEnc = cmdTest.command("enc", {
     };
     var AES_GCM_PARAMS = {
       name: "AES_GCM",
-      params: build_gcm_params(generate_iv(session, 16)).ref()
+      params: build_gcm_params(generate_iv(session, 16))
     };
     test_enc(session, cmd, "aes", "cbc128", AES_CBC_PARAMS);
     test_enc(session, cmd, "aes", "cbc192", AES_CBC_PARAMS);
@@ -1182,12 +1126,12 @@ function test_gen(session, cmd, prefix, postfix) {
         var key = gen[prefix][postfix](session);
         tGen.stop();
         time += tGen.time;
-        if (key.private) {
-          session.destroyObject(key.private);
-          session.destroyObject(key.public);
+        if (key.privateKey) {
+          session.destroyObject(key.privateKey);
+          session.destroyObject(key.publicKey);
         }
         else {
-          session.destroyObject(key);
+          session.destroyObject(key.key);
         }
       }
       var t1 = Math.round((time / cmd.it) * 1000) / 1000 + "ms";
