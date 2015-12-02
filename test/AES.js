@@ -82,11 +82,18 @@ describe("AES", function () {
 			{ name: "AES_CBC_PAD", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) });
 	});
 
-	it("AesGCM default encrypt/decrypt", function () {
+	it("AesGCM encrypt/decrypt default", function () {
 		test_encrypt_decrypt(
 			skey,
 			AES.AesGCM,
 			{ name: "AES_GCM", params: new AES.AesGCMParams(new Buffer("123456789012"), null) });
+	});
+	
+	it("AesGCM encrypt/decrypt with additionalData", function () {
+		test_encrypt_decrypt(
+			skey,
+			AES.AesGCM,
+			{ name: "AES_GCM", params: new AES.AesGCMParams(new Buffer("123456789012"), new Buffer('data for alg')) });
 	});
 
 	it("delete Aes", function () {
