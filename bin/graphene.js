@@ -7,7 +7,7 @@ var pkcs11 = require('../lib');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 var RSA = pkcs11.RSA;
-var AES = pkcs11.AEs;
+var AES = pkcs11.AES;
 
 var common = require("../lib/common.js");
 
@@ -711,7 +711,7 @@ function gen_ECDSA(session, name, hexOid) {
       "sign": true,
       "unwrap": false,
     });
-		return _keys;
+		return { privateKey: _keys.private, publicKey: _keys.public };
 }
 
 var gen = {
@@ -803,7 +803,7 @@ var BUF_STEP = BUF_SIZE;
 var BUF = new Buffer(BUF_STEP);
 
 function test_sign_operation(session, buf, key, algName) {
-  var sig = session.createSign(algName, key.private);
+  var sig = session.createSign(algName, key.key || key.privateKey);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
 		  sig.update(buf);
   }
@@ -812,7 +812,7 @@ function test_sign_operation(session, buf, key, algName) {
 }
 
 function test_verify_operation(session, buf, key, algName, sig) {
-  var verify = session.createVerify(algName, key.public);
+  var verify = session.createVerify(algName, key.key || key.publicKey);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
 		  verify.update(buf);
   }
@@ -821,7 +821,7 @@ function test_verify_operation(session, buf, key, algName, sig) {
 }
 
 function test_encrypt_operation(session, buf, key, alg) {
-  var enc = session.createEncrypt(alg, key);
+  var enc = session.createEncrypt(alg, key.key || key.publicKey);
   var msg = new Buffer(0);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
 		  msg = Buffer.concat([msg, enc.update(buf)]);
@@ -832,7 +832,7 @@ function test_encrypt_operation(session, buf, key, alg) {
 
 function test_decrypt_operation(session, key, alg, message) {
   var decMsg = new Buffer(0);
-  var dec = session.createDecrypt(alg, key);
+  var dec = session.createDecrypt(alg, key.key || key.piblicKey);
   //for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
   decMsg = Buffer.concat([decMsg, dec.update(message)]);
   //}
@@ -877,12 +877,20 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
         var rs2 = Math.round((1000 / (t2.time / cmd.it)) * 1000) / 1000;
         print_test_sign_row(alg, r1, r2, rs1, rs2);
       } catch (e) {
-        session.destroyObject(key.privet);
-        session.destroyObject(key.public);
+        if (key.key)
+          session.destroyObject(key.key);
+        else {
+          session.destroyObject(key.privateKey);
+          session.destroyObject(key.publicKey);
+        }
         throw e;
       }
-      session.destroyObject(key.private);
-      session.destroyObject(key.public);
+      if (key.key)
+        session.destroyObject(key.key);
+      else {
+        session.destroyObject(key.privateKey);
+        session.destroyObject(key.publicKey);
+      }
     }
     return true;
   }
@@ -910,6 +918,7 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
          * TODO: We need to determine why the first call to the device is so much slower, 
          * it may be the FFI initialization. For now we will exclude this one call from results.
          */
+        
         test_encrypt_operation(session, buf, key, encAlg);
         t1.start();
         for (var i = 0; i < cmd.it; i++)
@@ -930,31 +939,42 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
         var rs2 = Math.round((1000 / (t2.time / cmd.it)) * 1000) / 1000;
         print_test_sign_row(alg, r1, r2, rs1, rs2);
       } catch (e) {
-        session.destroyObject(key);
+        if (key.key)
+          session.destroyObject(key.key);
+        else {
+          session.destroyObject(key.privateKey);
+          session.destroyObject(key.publicKey);
+        }
         throw e;
       }
-      session.destroyObject(key);
+      if (key.key)
+        session.destroyObject(key.key);
+      else {
+        session.destroyObject(key.privateKey);
+        session.destroyObject(key.publicKey);
+      }
     }
     return true;
   }
   catch (e) {
     debug("%s-%s\n  %s", prefix, postfix, e.message);
+    debug(e.stack);
   }
   return false;
 }
 
 function print_test_sign_header() {
-  console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Sign", 8), lpud("Verify", 8), lpud("Sign/s", 8), lpud("Verify/s", 8));
-  console.log("|%s|%s:|%s:|%s:|%s:|", rpud("", 27, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"));
+  console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Sign", 8), lpud("Verify", 8), lpud("Sign/s", 9), lpud("Verify/s", 9));
+  console.log("|%s|%s:|%s:|%s:|%s:|", rpud("", 27, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 10, "-"), rpud("", 10, "-"));
 }
 
 function print_test_enc_header() {
-  console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Encrypt", 8), lpud("Decrypt", 8), lpud("Encrypt/s", 8), lpud("Decrypt/s", 8));
+  console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Encrypt", 8), lpud("Decrypt", 8), lpud("Encrypt/s", 9), lpud("Decrypt/s", 9));
   console.log("|%s|%s:|%s:|%s-:|%s-:|", rpud("", 27, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"));
 }
 
 function print_test_sign_row(alg, t1, t2, ts1, ts2) {
-  console.log("| %s | %s | %s | %s | %s |", rpud(alg.toUpperCase(), 25), lpud(t1, 8), lpud(t2, 8), lpud(ts1, 8), lpud(ts2, 8));
+  console.log("| %s | %s | %s | %s | %s |", rpud(alg.toUpperCase(), 25), lpud(t1, 8), lpud(t2, 8), lpud(ts1, 9), lpud(ts2, 9));
 }
 
 var cmdTest = commander.createCommand("test", {
@@ -987,9 +1007,7 @@ function generate_iv(session, block_size) {
 }
 
 function build_gcm_params(iv) {
-  return new AES.AesGCMParams({
-    iv: iv,
-  })
+  return new AES.AesGCMParams(iv);
 }
 
 /**
