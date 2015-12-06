@@ -31,26 +31,26 @@ describe("AES", function () {
 	})
 
 	it("generate AES", function () {
-		skey = session.generateAes({ length: 128, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"], extractable: true });
+		skey = session.generate("AES", null, { length: 128, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"], extractable: true });
 	})
 
-	function test_sign_verify(_key, KeyClass, alg) {
-		var nkey = _key.toType(KeyClass, alg);
-		var sig = nkey.sign(MSG);
-		assert.equal(true, nkey.verify(sig, MSG), "Correct");
-		assert.equal(false, nkey.verify(sig, MSG_WRONG), "Wrong data");
+	function test_sign_verify(_key, alg) {
+		_key.algorithm = alg;
+		var sig = _key.sign(MSG);
+		assert.equal(true, _key.verify(sig, MSG), "Correct");
+		assert.equal(false, _key.verify(sig, MSG_WRONG), "Wrong data");
 	}
 
-	function test_encrypt_decrypt(_key, KeyClass, alg) {
-		var nkey = _key.toType(KeyClass, alg);
-		var enc = nkey.encrypt(MSG);
-		assert.equal(MSG, nkey.decrypt(enc).toString("utf8"), "Correct");
+	function test_encrypt_decrypt(_key, alg) {
+		_key.algorithm = alg;
+		var enc = _key.encrypt(MSG);
+		assert.equal(MSG, _key.decrypt(enc).toString("utf8"), "Correct");
 	}
 
-	function test_wrap_unwrap(_key, KeyClass, alg, _skey) {
-		var nkey = _key.toType(KeyClass, alg);
-		var wkey = nkey.wrapKey(_skey.key);
-		var ukey = nkey.unwrapKey(wkey, {
+	function test_wrap_unwrap(_key, alg, _skey) {
+		_key.algorithm = alg;
+		var wkey = _key.wrapKey(_skey.key);
+		var ukey = _key.unwrapKey(wkey, {
 			"class": Enums.ObjectClass.SecretKey,
 			"keyType": Enums.KeyType.AES,
 			"valueLen": 128 / 8,
@@ -63,14 +63,12 @@ describe("AES", function () {
 	it("AesCBC encrypt/decrypt", function () {
 		test_encrypt_decrypt(
 			skey,
-			AES.AesCBC,
 			{ name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) });
 	});
 
 	it("AesCBC wrap/unwrap", function () {
 		test_wrap_unwrap(
 			skey,
-			AES.AesCBC,
 			{ name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) },
 			skey);
 	});
@@ -78,21 +76,18 @@ describe("AES", function () {
 	it("AesCBCPad encrypt/decrypt", function () {
 		test_encrypt_decrypt(
 			skey,
-			AES.AesCBC,
 			{ name: "AES_CBC_PAD", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) });
 	});
 
 	it("AesGCM encrypt/decrypt default", function () {
 		test_encrypt_decrypt(
 			skey,
-			AES.AesGCM,
 			{ name: "AES_GCM", params: new AES.AesGCMParams(new Buffer("123456789012"), null) });
 	});
-	
+
 	it("AesGCM encrypt/decrypt with additionalData", function () {
 		test_encrypt_decrypt(
 			skey,
-			AES.AesGCM,
 			{ name: "AES_GCM", params: new AES.AesGCMParams(new Buffer("123456789012"), new Buffer('data for alg')) });
 	});
 

@@ -677,18 +677,24 @@ var cmdHash = commander.createCommand("hash", {
    Test
    ==========*/
 function gen_AES(session, len) {
-  return session.generateAes({
-    length: len || 128,
-    keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"]
-  });
+  return session.generate(
+    "AES",
+    null,
+    {
+      length: len || 128,
+      keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"]
+    });
 }
 
 function gen_RSA(session, size, exp) {
-  return session.generateRsa({
-    modulusLength: size || 1024,
-    publicExponent: exp || 3,
-    keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"]
-  });
+  return session.generate(
+    "RSA",
+    null,
+    {
+      modulusLength: size || 1024,
+      publicExponent: exp || 3,
+      keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"]
+    });
 }
 
 function gen_ECDSA(session, name, hexOid) {
@@ -918,7 +924,7 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
          * TODO: We need to determine why the first call to the device is so much slower, 
          * it may be the FFI initialization. For now we will exclude this one call from results.
          */
-        
+
         test_encrypt_operation(session, buf, key, encAlg);
         t1.start();
         for (var i = 0; i < cmd.it; i++)
