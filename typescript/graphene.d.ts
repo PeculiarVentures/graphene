@@ -2017,9 +2017,15 @@ declare module "graphene-pk11" {
 		 */
 		generateKey(alg: AlgParams, params: Object): Key;
 		
-		generateRsa(props: RsaGenParams): Rsa;
+		/**
+		 * Derives a key from a base key, creating a new key object
+		 * @param alg Key derivation algorithm
+		 * @param key Key object which must be derived
+		 * @param template Template for the new key
+		 */
+		deriveKey(alg: AlgParams | String, key: Key, template: Object): Key;
 		
-		generateAes(props: AesGenParams): Aes;
+		generate(keyType: number, algorithm: AlgParams, props: Object): Key;
 	}
 
 	interface AlgParams {
