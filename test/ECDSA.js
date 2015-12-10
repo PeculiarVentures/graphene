@@ -4,6 +4,7 @@ var pkcs11 = require('../lib');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 var AES = pkcs11.AES;
+var ECDSA = pkcs11.ECDSA;
 
 describe("ECDSA", function () {
 	var mod, slots, slot, session, key, skey;
@@ -33,19 +34,19 @@ describe("ECDSA", function () {
 	it("generate AES", function () {
 		skey = session.generate("AES", null, { length: 128, keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"], extractable: true });
 	})
-	
+
 	it("generate ECDSA secp192r1 by OID", function () {
 		var _key = session.generate("ECDSA", null, { namedCurve: "1.2.840.10045.3.1.1", keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"], extractable: true });
 		_key.delete();
 	})
-	
+
 	it("generate ECDSA secp192r1 by name", function () {
 		var _key = session.generate("ECDSA", null, { namedCurve: "secp192r1", keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"], extractable: true });
 		_key.delete();
 	})
-	
+
 	it("generate ECDSA secp192r1 by Buffer", function () {
-		key = session.generate("ECDSA", null, { namedCurve: new Buffer("06082A8648CE3D030101", "hex"), keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"], extractable: true });
+		key = session.generate("ECDSA", null, { namedCurve: new Buffer("06082A8648CE3D030101", "hex"), keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey", "deriveKey"], extractable: true });
 	})
 
 	function test_sign_verify(_key, alg) {
@@ -61,6 +62,12 @@ describe("ECDSA", function () {
 		assert.equal(MSG, _key.decrypt(enc).toString("utf8"), "Correct");
 	}
 
+	function test_derive(_key, alg, template) {
+		_key.algorithm = alg;
+		var dkey = _key.deriveKey(template);
+		dkey.delete();
+	}
+
 	function test_wrap_unwrap(_key, alg, _skey) {
 		_key.algorithm = alg;
 		var wkey = _key.wrapKey(_skey.key);
@@ -73,25 +80,47 @@ describe("ECDSA", function () {
 		});
 		session.destroyObject(ukey);
 	}
-	
+
 	it("sign/verify SHA-1", function () {
 		test_sign_verify(key, "ECDSA_SHA1");
 	});
-	
+
 	it("sign/verify SHA-224", function () {
 		test_sign_verify(key, "ECDSA_SHA224");
 	});
-	
+
 	it("sign/verify SHA-256", function () {
 		test_sign_verify(key, "ECDSA_SHA256");
 	});
-	
+
 	it("sign/verify SHA-384", function () {
 		test_sign_verify(key, "ECDSA_SHA384");
 	});
-	
+
 	it("sign/verify SHA-512", function () {
 		test_sign_verify(key, "ECDSA_SHA512");
+	});
+
+	it("derive AES", function () {
+		//console.log("pkey is derived:", key.privateKey.isDerived());
+		//console.log("pubkey is derived:", key.publicKey.isDerived());
+		//console.log("pubkey:", key.publicKey.getBinaryAttribute(0x00000161).toString("hex"));
+		test_derive(
+			key,
+			{
+				name: "ECDH1_DERIVE",
+				params: new ECDSA.EcdhParams(
+					0,
+					null,
+					new Buffer("047e2d958256d20011386a3111670fab5b1b3a91861316ff3ac18d819a6745734c7c6478c2727270f2aec58b66421587f90781965e4b022c2512f57549d51e20f4", "hex")
+				)},
+			{
+				"class": Enums.ObjectClass.SecretKey,
+				"keyType": Enums.KeyType.AES,
+				"valueLen": 192 / 8,
+				"encrypt": true,
+				"decrypt": true
+			});
 	});
 
 	it("delete Aes", function () {
