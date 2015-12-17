@@ -112,7 +112,7 @@ describe("ECDSA", function () {
 				params: new ECDSA.EcdhParams(
 					0,
 					null,
-					new Buffer("047e2d958256d20011386a3111670fab5b1b3a91861316ff3ac18d819a6745734c7c6478c2727270f2aec58b66421587f90781965e4b022c2512f57549d51e20f4", "hex")
+					key.publicKey.toType().getBinaryAttribute(key.CKI.CKA_EC_POINT)
 				)},
 			{
 				"class": Enums.ObjectClass.SecretKey,
