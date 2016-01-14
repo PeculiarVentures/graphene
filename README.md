@@ -10,8 +10,8 @@ It has been tested with :
 
 **NOTE:** For testing purposes it may be easier to work with SoftHSM which is a software implementation of PKCS#11 based on OpenSSL or Botan.
 
-## SoftHSM
-* Install SoftHSM
+## SoftHSM2
+* Install SoftHSM2
 
     `apt-get install softhsm`
 
