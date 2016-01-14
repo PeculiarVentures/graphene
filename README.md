@@ -4,7 +4,7 @@ A simple layer for interacting with PKCS #11 / CryptoKI libraries in NodeJS
 PKCS #11 (also known as CryptoKI or PKCS11) is the standard interface for interacting with hardware crypto devices such as Smart Cards and Hardware Security Modules (HSMs). It wraps the library closely, but uses attempts to look like 'node.crypto' where it makes sense. 
 
 It has been tested with :
-- [SoftHSM](https://www.opendnssec.org/softhsm/)
+- [SoftHSM2](https://www.opendnssec.org/softhsm/)
 - [Safenet Luna HSMs](http://www.safenet-inc.com/)
 - [RuToken](http://www.rutoken.ru/)
 
