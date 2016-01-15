@@ -34,7 +34,7 @@ It has been tested with :
 ## Examples
 ### Listing capabilities
 ```
-var pkcs11 = require('pkcs11');
+var pkcs11 = require('graphene-pk11');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 
@@ -121,7 +121,7 @@ SHA224_RSA_PKCS            -/+/+/-/-/-/-
 
 ### Hashing
 ```
-var pkcs11 = require('pkcs11');
+var pkcs11 = require('graphene-pk11');
 var Module = pkcs11.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
@@ -155,7 +155,7 @@ mod.finalize();
 ### Generating keys
 #### AES
 ```
-var pkcs11 = require('pkcs11');
+var pkcs11 = require('graphene-pk11');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 
@@ -199,7 +199,7 @@ mod.finalize();
 
 #### ECC
 ```
-var pkcs11 = require('pkcs11');
+var pkcs11 = require('graphene-pk11');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 
@@ -258,7 +258,7 @@ mod.finalize();
 
 ### Signing
 ```
-var pkcs11 = require('pkcs11');
+var pkcs11 = require('graphene-pk11');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 
@@ -311,7 +311,7 @@ mod.finalize();
 ```
 ### Verifying
 ```
-var pkcs11 = require('pkcs11');
+var pkcs11 = require('graphene-pk11');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 
@@ -365,7 +365,7 @@ mod.finalize();
 ```
 ### Encrypting
 ```
-var pkcs11 = require('pkcs11');
+var pkcs11 = require('graphene-pk11');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 
@@ -426,7 +426,7 @@ mod.finalize();
 ```
 ### Decrypting
 ```
-var pkcs11 = require('pkcs11');
+var pkcs11 = require('graphene-pk11');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 
