@@ -8,7 +8,7 @@ It has been tested with :
 - [Safenet Luna HSMs](http://www.safenet-inc.com/)
 - [RuToken](http://www.rutoken.ru/)
 
-**NOTE:** For testing purposes it may be easier to work with SoftHSM which is a software implementation of PKCS#11 based on OpenSSL or Botan.
+**NOTE:** For testing purposes it may be easier to work with SoftHSM2 which is a software implementation of PKCS#11 based on OpenSSL or Botan.
 
 ## SoftHSM2
 * Install SoftHSM2
