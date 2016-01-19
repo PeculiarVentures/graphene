@@ -512,6 +512,7 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 - [PKCS#11 Tests](https://github.com/google/pkcs11test)
 - [OpenCryptoKi](http://sourceforge.net/projects/opencryptoki/)
 - [SoftHSM](https://www.opendnssec.org/softhsm/)
+- [SofHSM2 for Windows](https://github.com/disig/SoftHSM2-for-Windows/)
 - [node-pcsc](https://github.com/santigimeno/node-pcsclite)
 - [PKCS#11 URIs](https://tools.ietf.org/html/rfc7512)
 - [Key Length Recommendations](http://www.keylength.com/en/compare/)
