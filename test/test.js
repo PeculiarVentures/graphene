@@ -6,6 +6,19 @@ var pkcs11 = require('../lib');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
 var RSA = pkcs11.RSA;
+var KeyConvert = pkcs11.KeyConvert;
+
+var SPKI_BASE64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6PhxUMiPu5xWNLAoQIyqywHZ5c9joRINeLlTmQ/Vb9/8RLRE193M3P5T69QGxlyPeXh9im+KpirCs7ghERKQqmXIUGPA4iDqLEjpDTKwapNbQ7iHdFuZeHqZbCTrWhIBH88mqTPQQIuENu1+v1o8ObK/kgGZ9Xp4sYHnEOeOp5uxrmr5WzDzsj4Da8KhJjnj9+DyiqZx9S6zy4EnXHiHe8vVMLloyQkOVFpYBU5YZ+GA+zaFH8FW/OF3M4ZTur8F8EjJmbWpop15eDiPMmMApJcd3G42jCbirfkwe/y0xdpO9PpHk4TvGJ+HAmeSB3JziQG4IFvhcMu3kQ2yylYuPQIDAQAB";
+
+var spki = new Buffer(SPKI_BASE64, "base64"); 
+console.log(spki.toString("hex"));
+
+var jwk = KeyConvert.RSA_spki_to_jwk(new Uint8Array(spki).buffer);
+console.log(jwk);
+
+console.log(KeyConvert.RSA_jwk_to_spki(jwk));
+
+throw new Error("End!!!");
 
 const PKCS11_LOG = "pkcs11.log";
 const PKCS11_DEBUG = false;
