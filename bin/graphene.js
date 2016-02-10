@@ -6,6 +6,8 @@ var readline = require('readline');
 var pkcs11 = require('../lib');
 var Module = pkcs11.Module;
 var Enums = pkcs11.Enums;
+var RSA = pkcs11.RSA;
+var AES = pkcs11.AES;
 
 var common = require("../lib/common.js");
 
@@ -648,7 +650,7 @@ var cmdHash = commander.createCommand("hash", {
   .option('alg', {
     description: 'the algorithm to hash the file with. Default SHA1.' + '\n\n' +
     pud('', 14) + 'to get list of supported algoriphms use command' + '\n\n' +
-    pud('', 16) + '> slot algs -s {num} -f h'+'\n',
+    pud('', 16) + '> slot algs -s {num} -f h' + '\n',
     value: "sha1"
   })
   .option('in', {
@@ -675,61 +677,24 @@ var cmdHash = commander.createCommand("hash", {
    Test
    ==========*/
 function gen_AES(session, len) {
-		var _key = session.generateKey("AES_KEY_GEN", {
-    "class": Enums.ObjectClass.SecretKey,
-    "keyType": Enums.KeyType.AES,
-    "valueLen": len,
-    "label": "test AES " + len * 8 + " bits",
-    "private": true,
-    "sensitive": true,
-    "token": true,
-    "encrypt": true,
-    "decrypt": true,
-    "wrap": true,
-    "unwrap": true,
-    "extractable": false,
-		});
-		return _key;
+  return session.generate(
+    "AES",
+    null,
+    {
+      length: len || 128,
+      keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"]
+    });
 }
 
 function gen_RSA(session, size, exp) {
-  size = size || 1024;
-  exp = exp || new Buffer([3]);
-		var _key = session.generateKeyPair("RSA_PKCS_KEY_PAIR_GEN", {
-    "class": Enums.ObjectClass.PublicKey,
-    "keyType": Enums.KeyType.RSA,
-    "label": "test key RSA " + size + " exp " + exp,
-    //"private": true,
-    //"sensitive": true,
-    "token": true,
-    //"id": new Buffer("1"),
-    //"sign": true,
-    "verify": true,
-    //"encrypt": true,
-    //"decrypt": true,
-    //"wrap": true,
-    //"unwrap": true,
-    //"extractable": false,
-    "modulusBits": size,
-    "publicExp": exp
-		},
+  return session.generate(
+    "RSA",
+    null,
     {
-      "class": Enums.ObjectClass.PrivateKey,
-      "keyType": Enums.KeyType.RSA,
-      "label": "test key RSA " + size + " exp " + exp,
-      "private": true,
-      "sensitive": true,
-      "token": true,
-      //"id": new Buffer("1"),
-      "sign": true,
-      //"verify": true,
-      //"encrypt": true,
-      //"decrypt": true,
-      //"wrap": true,
-      //"unwrap": true,
-      "extractable": false
+      modulusLength: size || 1024,
+      publicExponent: exp || 3,
+      keyUsages: ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey"]
     });
-		return _key;
 }
 
 function gen_ECDSA(session, name, hexOid) {
@@ -752,7 +717,7 @@ function gen_ECDSA(session, name, hexOid) {
       "sign": true,
       "unwrap": false,
     });
-		return _keys;
+		return { privateKey: _keys.private, publicKey: _keys.public };
 }
 
 var gen = {
@@ -829,13 +794,13 @@ function gen_ECDSA_brainpoolP320r1(session) {
 }
 
 function gen_AES_128(session) {
-  return gen_AES(session, 128 / 8);
+  return gen_AES(session, 128);
 }
 function gen_AES_192(session) {
-  return gen_AES(session, 192 / 8);
+  return gen_AES(session, 192);
 }
 function gen_AES_256(session) {
-  return gen_AES(session, 256 / 8);
+  return gen_AES(session, 256);
 }
 
 var BUF_SIZE_DEFAULT = 1024;
@@ -844,7 +809,7 @@ var BUF_STEP = BUF_SIZE;
 var BUF = new Buffer(BUF_STEP);
 
 function test_sign_operation(session, buf, key, algName) {
-  var sig = session.createSign(algName, key.private);
+  var sig = session.createSign(algName, key.key || key.privateKey);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
 		  sig.update(buf);
   }
@@ -853,7 +818,7 @@ function test_sign_operation(session, buf, key, algName) {
 }
 
 function test_verify_operation(session, buf, key, algName, sig) {
-  var verify = session.createVerify(algName, key.public);
+  var verify = session.createVerify(algName, key.key || key.publicKey);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
 		  verify.update(buf);
   }
@@ -862,7 +827,7 @@ function test_verify_operation(session, buf, key, algName, sig) {
 }
 
 function test_encrypt_operation(session, buf, key, alg) {
-  var enc = session.createEncrypt(alg, key);
+  var enc = session.createEncrypt(alg, key.key || key.publicKey);
   var msg = new Buffer(0);
   for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
 		  msg = Buffer.concat([msg, enc.update(buf)]);
@@ -873,7 +838,7 @@ function test_encrypt_operation(session, buf, key, alg) {
 
 function test_decrypt_operation(session, key, alg, message) {
   var decMsg = new Buffer(0);
-  var dec = session.createDecrypt(alg, key);
+  var dec = session.createDecrypt(alg, key.key || key.piblicKey);
   //for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
   decMsg = Buffer.concat([decMsg, dec.update(message)]);
   //}
@@ -918,12 +883,20 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
         var rs2 = Math.round((1000 / (t2.time / cmd.it)) * 1000) / 1000;
         print_test_sign_row(alg, r1, r2, rs1, rs2);
       } catch (e) {
-        session.destroyObject(key.privet);
-        session.destroyObject(key.public);
+        if (key.key)
+          session.destroyObject(key.key);
+        else {
+          session.destroyObject(key.privateKey);
+          session.destroyObject(key.publicKey);
+        }
         throw e;
       }
-      session.destroyObject(key.private);
-      session.destroyObject(key.public);
+      if (key.key)
+        session.destroyObject(key.key);
+      else {
+        session.destroyObject(key.privateKey);
+        session.destroyObject(key.publicKey);
+      }
     }
     return true;
   }
@@ -951,6 +924,7 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
          * TODO: We need to determine why the first call to the device is so much slower, 
          * it may be the FFI initialization. For now we will exclude this one call from results.
          */
+
         test_encrypt_operation(session, buf, key, encAlg);
         t1.start();
         for (var i = 0; i < cmd.it; i++)
@@ -971,31 +945,42 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
         var rs2 = Math.round((1000 / (t2.time / cmd.it)) * 1000) / 1000;
         print_test_sign_row(alg, r1, r2, rs1, rs2);
       } catch (e) {
-        session.destroyObject(key);
+        if (key.key)
+          session.destroyObject(key.key);
+        else {
+          session.destroyObject(key.privateKey);
+          session.destroyObject(key.publicKey);
+        }
         throw e;
       }
-      session.destroyObject(key);
+      if (key.key)
+        session.destroyObject(key.key);
+      else {
+        session.destroyObject(key.privateKey);
+        session.destroyObject(key.publicKey);
+      }
     }
     return true;
   }
   catch (e) {
     debug("%s-%s\n  %s", prefix, postfix, e.message);
+    debug(e.stack);
   }
   return false;
 }
 
 function print_test_sign_header() {
-  console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Sign", 8), lpud("Verify", 8), lpud("Sign/s", 8), lpud("Verify/s", 8));
-  console.log("|%s|%s:|%s:|%s:|%s:|", rpud("", 27, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"));
+  console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Sign", 8), lpud("Verify", 8), lpud("Sign/s", 9), lpud("Verify/s", 9));
+  console.log("|%s|%s:|%s:|%s:|%s:|", rpud("", 27, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 10, "-"), rpud("", 10, "-"));
 }
 
 function print_test_enc_header() {
-  console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Encrypt", 8), lpud("Decrypt", 8), lpud("Encrypt/s", 8), lpud("Decrypt/s", 8));
+  console.log("| %s | %s | %s | %s | %s |", rpud("Algorithm", 25), lpud("Encrypt", 8), lpud("Decrypt", 8), lpud("Encrypt/s", 9), lpud("Decrypt/s", 9));
   console.log("|%s|%s:|%s:|%s-:|%s-:|", rpud("", 27, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"), rpud("", 9, "-"));
 }
 
 function print_test_sign_row(alg, t1, t2, ts1, ts2) {
-  console.log("| %s | %s | %s | %s | %s |", rpud(alg.toUpperCase(), 25), lpud(t1, 8), lpud(t2, 8), lpud(ts1, 8), lpud(ts2, 8));
+  console.log("| %s | %s | %s | %s | %s |", rpud(alg.toUpperCase(), 25), lpud(t1, 8), lpud(t2, 8), lpud(ts1, 9), lpud(ts2, 9));
 }
 
 var cmdTest = commander.createCommand("test", {
@@ -1027,25 +1012,8 @@ function generate_iv(session, block_size) {
   return iv;
 }
 
-var CK_AES_GCM_PARAMS = common.RefStruct({
-  pIv: common.CKI.CK_BYTE_PTR,
-  ulIvLen: common.CKI.CK_ULONG,
-  ulIvBits: common.CKI.CK_ULONG,
-  pAAD: common.CKI.CK_BYTE_PTR,
-  ulAADLen: common.CKI.CK_ULONG,
-  ulTagBits: common.CKI.CK_ULONG
-});
-
 function build_gcm_params(iv) {
-  var gcm = new CK_AES_GCM_PARAMS({
-    pIv: iv,
-    ulIvLen: iv.length,
-    ulIvBits: iv.length * 8,
-    pAAD: null,
-    ulAADLen: 0,
-    ulTagBits: 128
-  });
-  return gcm;
+  return new AES.AesGCMParams(iv);
 }
 
 /**
@@ -1099,7 +1067,7 @@ var cmdTestEnc = cmdTest.command("enc", {
     };
     var AES_GCM_PARAMS = {
       name: "AES_GCM",
-      params: build_gcm_params(generate_iv(session, 16)).ref()
+      params: build_gcm_params(generate_iv(session, 16))
     };
     test_enc(session, cmd, "aes", "cbc128", AES_CBC_PARAMS);
     test_enc(session, cmd, "aes", "cbc192", AES_CBC_PARAMS);
@@ -1182,12 +1150,12 @@ function test_gen(session, cmd, prefix, postfix) {
         var key = gen[prefix][postfix](session);
         tGen.stop();
         time += tGen.time;
-        if (key.private) {
-          session.destroyObject(key.private);
-          session.destroyObject(key.public);
+        if (key.privateKey) {
+          session.destroyObject(key.privateKey);
+          session.destroyObject(key.publicKey);
         }
         else {
-          session.destroyObject(key);
+          session.destroyObject(key.key);
         }
       }
       var t1 = Math.round((time / cmd.it) * 1000) / 1000 + "ms";

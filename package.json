@@ -14,14 +14,15 @@
     "graphene": "./bin/graphene.js"
   },
   "dependencies": {
+    "base64url": "^1.0.5",
+    "debug": "^2.2.0",
     "ffi": "^2.0.0",
     "ref": "^1.1.0",
-    "ref-struct": "^1.0.2",
     "ref-array": "^1.1.2",
-    "debug": "^2.2.0"
+    "ref-struct": "^1.0.2"
   },
   "devDependencies": {
-    "mocha":"^2.3.3"
+    "mocha": "^2.3.3"
   },
   "keywords": [
     "pkcs11",
