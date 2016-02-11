@@ -17,35 +17,35 @@ export interface IModuleInfo {
 
 export class Module extends core.BaseObject implements IModuleInfo {
 
-    libFile: string = "";
+    public libFile: string = "";
     libName: string = "";
 
     /**
      * Cryptoki interface version
      */
-    cryptokiVersion: IVersion;
+    public cryptokiVersion: IVersion;
 
     /**
      * blank padded manufacturer ID
      */
-    manufacturerID: string;
+    public manufacturerID: string;
 
     /**
      * must be zero
      */
-    flags: number;
+    public flags: number;
 
     /**
      * blank padded library description
      */
-    libraryDescription: string;
+    public libraryDescription: string;
 
     /**
      * version of library
      */
-    libraryVersion: IVersion;
+    public libraryVersion: IVersion;
 
-    constructor(lib: pkcs11.Pkcs11) {
+    public constructor(lib: pkcs11.Pkcs11) {
         super(lib);
 
         this.getInfo();
@@ -74,7 +74,7 @@ export class Module extends core.BaseObject implements IModuleInfo {
     /**
      * initializes the Cryptoki library
      */
-    initialize() {
+    public initialize() {
         let rv = this.lib.C_Initialize();
         if (rv) throw new core.Pkcs11Error(rv, "C_Initialize");
     }
@@ -82,7 +82,7 @@ export class Module extends core.BaseObject implements IModuleInfo {
     /**
      * indicates that an application is done with the Cryptoki library
      */
-    finalize() {
+    public finalize() {
         let rv = this.lib.C_Finalize();
         if (rv) throw new core.Pkcs11Error(rv, "C_Finalize");
     }
@@ -91,7 +91,7 @@ export class Module extends core.BaseObject implements IModuleInfo {
      * obtains a list of slots in the system
      * @param {number} tokenPresent only slots with tokens. Default `True`
      */
-    getSlots(tokenPresent: boolean = true): slot.SlotCollection {
+    public getSlots(tokenPresent: boolean = true): slot.SlotCollection {
         let $len = core.Ref.alloc(pkcs11.CK_ULONG);
         let rv = this.lib.C_GetSlotList(tokenPresent, null, $len);
         if (rv) throw new core.Pkcs11Error(rv, "C_GetSlotList");

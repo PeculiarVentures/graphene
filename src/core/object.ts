@@ -19,5 +19,5 @@ export class HandleObject extends BaseObject {
         this.handle = handle;
     }
 
-    protected getInfo(): void{};
+    protected getInfo(): void { };
 }

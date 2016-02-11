@@ -144,7 +144,7 @@ export class Pkcs11 {
      * @param {Buffer} Notify callback function
      * @param {Buffer} phSession gets session handle
      */
-    C_OpenSession(slotID: number, flags: number, pApplication: Buffer = NULL_PTR, Notify = NULL_PTR, phSession = NULL_PTR): number {
+    C_OpenSession(slotID: number, flags: number, pApplication: Buffer = NULL_PTR, Notify: Buffer = NULL_PTR, phSession: Buffer = NULL_PTR): number {
         return this.lib.C_OpenSession(slotID, flags, pApplication, Notify, phSession);
     }
 
