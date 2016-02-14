@@ -138,10 +138,10 @@ export class Token extends core.HandleObject {
         if (rv) throw new core.Pkcs11Error(rv, "C_GetTokenInfo");
 
         let info: ITokenInfo = $info.deref();
-        this.label = info.label.toString().trim();
-        this.manufacturerID = info.manufacturerID.toString().trim();
-        this.model = info.model.toString().trim();
-        this.serialNumber = info.serialNumber.toString().trim();
+        this.label = new Buffer(info.label).toString().trim();
+        this.manufacturerID = new Buffer(info.manufacturerID).toString().trim();
+        this.model = new Buffer(info.model).toString().trim();
+        this.serialNumber = new Buffer(info.serialNumber).toString().trim();
         this.flags = info.flags;
         this.maxSessionCount = info.ulMaxSessionCount;
         this.sessionCount = info.ulSessionCount;
