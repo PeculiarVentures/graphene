@@ -1,8 +1,10 @@
 import * as pkcs11 from "./pkcs11";
 import * as core from "./core";
 import {Slot} from "./slot";
-import * as object from "./object";
-import * as tmpl from "./template";
+import {SessionObject, SessionObjectCollection} from "./object";
+import {Template, ITemplate} from "./template";
+
+const ObjectArray = core.RefArray(pkcs11.CK_OBJECT_HANDLE);
 
 export enum SessionOpenFlag {
     /**
@@ -150,16 +152,48 @@ export class Session extends core.HandleObject {
      * creates a new object
      * - Only session objects can be created during a read-only session. 
      * - Only public objects can be created unless the normal user is logged in.
-     * @param {IAttribute} template the object's template
+     * @param {ITemplate} template the object's template
      */
-    createObject(template: tmpl.IAttribute) {
-        let pTemplate = tmpl.Template.convert(template);
-        let tmpllen = Object.keys(template).length;
+    create(template: ITemplate): SessionObject {
+        let tmpl = new Template(template);
         let $obj = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
 
-        let rv = this.lib.C_CreateObject(this.handle, pTemplate, tmpllen, $obj);
+        let rv = this.lib.C_CreateObject(this.handle, tmpl.ref(), tmpl.length, $obj);
         if (rv) throw new core.Pkcs11Error(rv, "C_CreateObject");
 
-        return new object.Object($obj.deref(), this.lib);
+        return new SessionObject($obj.deref(), this, this.lib);
+    }
+
+    /**
+     * returns a collection of session objects mached to template
+     * @param template template
+     * @param callback optional callback function wich is called for each founded object
+     * - if callback function returns false, it breaks find function.
+     */
+    find(template: ITemplate, callback?: (obj: SessionObject) => boolean): SessionObjectCollection {
+        let tmpl = new Template(template);
+
+        let rv = this.lib.C_FindObjectsInit(this.handle, tmpl.ref(), tmpl.length);
+        if (rv) throw new core.Pkcs11Error(rv, "C_FindObjectsInit");
+
+        let $objects = new ObjectArray(1);
+        let $objlen = core.Ref.alloc(pkcs11.CK_ULONG);
+        let objects: number[] = [];
+
+        while (true) {
+            rv = this.lib.C_FindObjects(this.handle, $objects.buffer, 1, $objlen);
+            if (rv !== pkcs11.CKR_OK || $objlen.deref() === 0)
+                break;
+            let hObject: number = <any>$objects[0];
+            if (callback && callback(new SessionObject(hObject, this, this.lib)) === false) {
+                break;
+            }
+            objects.push(hObject);
+        }
+
+        rv = this.lib.C_FindObjectsFinal(this.handle);
+        if (rv) throw new core.Pkcs11Error(rv, "C_FindObjectsFinal");
+
+        return new SessionObjectCollection(objects, this, this.lib);
     }
 }
