@@ -11,7 +11,7 @@ export class Data extends Storage {
     /**
      * Description of the application that manages the object (default empty)
      */
-    get keyType(): string {
+    get application(): string {
         return this.get("application");
     }
 
