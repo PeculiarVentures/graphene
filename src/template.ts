@@ -83,7 +83,7 @@ export interface ITemplate {
     /**
      * CKA_NAME_HASH_ALGORITHM
      */
-    digestName: number;
+    digestName?: number;
     /**
      * CKA_CHECK_VALUE
      */
@@ -239,7 +239,7 @@ export interface ITemplate {
     /**
      * CKA_COPYABLE
      */
-    copyable: boolean;
+    copyable?: boolean;
     /**
      * CKA_ECDSA_PARAMS
      */
