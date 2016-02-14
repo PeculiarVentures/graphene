@@ -3,9 +3,12 @@ export class Pkcs11Error extends Error {
     func: string;
 
     constructor(code: number, func: string) {
-        super(`Pkcs11Error: Error in ${func} function ${Pkcs11Result[code]}(${code})`);
+        super();
+        this.message = `Pkcs11Error: Error in ${func} function ${Pkcs11Result[code]}(${code})`;
         this.code = code;
         this.func = func;
+
+        this.stack = (new Error()).stack;
     }
 }
 
