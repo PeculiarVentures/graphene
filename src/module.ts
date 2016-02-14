@@ -62,8 +62,8 @@ export class Module extends core.BaseObject implements IModuleInfo {
             major: info.cryptokiVersion.major,
             minor: info.cryptokiVersion.minor,
         };
-        this.manufacturerID = info.manufacturerID.toString().trim();
-        this.libraryDescription = info.libraryVersion.toString().trim();
+        this.manufacturerID = new Buffer(info.manufacturerID).toString().trim();
+        this.libraryDescription = new Buffer(info.libraryDescription).toString().trim();
         this.flags = info.flags;
         this.libraryVersion = {
             major: info.libraryVersion.major,

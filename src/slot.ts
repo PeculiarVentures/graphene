@@ -36,14 +36,20 @@ export class Slot extends core.HandleObject implements ISlotInfo {
     hardwareVersion: IVersion;
     firmwareVersion: IVersion;
 
+    constructor(handle: number, lib: pkcs11.Pkcs11) {
+        super(handle, lib);
+
+        this.getInfo();
+    }
+
     protected getInfo(): void {
         let $info = core.Ref.alloc(pkcs11.CK_SLOT_INFO);
         let rv = this.lib.C_GetSlotInfo(this.handle, $info);
         if (rv) throw new core.Pkcs11Error(rv, "C_GetSlotInfo");
 
         let info: ISlotInfo = $info.deref();
-        this.slotDescription = info.slotDescription.toString().trim();
-        this.manufacturerID = info.manufacturerID.toString().trim();
+        this.slotDescription = new Buffer(info.slotDescription).toString().trim();
+        this.manufacturerID = new Buffer(info.manufacturerID).toString().trim();
         this.flags = info.flags;
         this.hardwareVersion = {
             major: info.hardwareVersion.major,
