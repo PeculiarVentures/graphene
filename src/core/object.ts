@@ -12,7 +12,7 @@ export class HandleObject extends BaseObject {
     /**
      * handle to pkcs11 object
      */
-    protected handle: number;
+    handle: number;
 
     constructor(handle: number, lib: pkcs11.Pkcs11) {
         super(lib);
