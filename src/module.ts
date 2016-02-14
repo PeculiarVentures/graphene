@@ -47,8 +47,6 @@ export class Module extends core.BaseObject implements IModuleInfo {
 
     public constructor(lib: pkcs11.Pkcs11) {
         super(lib);
-
-        this.getInfo();
     }
 
     protected getInfo() {
@@ -76,7 +74,9 @@ export class Module extends core.BaseObject implements IModuleInfo {
      */
     public initialize() {
         let rv = this.lib.C_Initialize();
-        if (rv) throw new core.Pkcs11Error(rv, "C_Initialize");
+            if (rv) throw new core.Pkcs11Error(rv, "C_Initialize");
+        
+        this.getInfo();
     }
 
     /**
@@ -114,7 +114,7 @@ export class Module extends core.BaseObject implements IModuleInfo {
         let lib = new pkcs11.Pkcs11(libFile);
         let module = new Module(lib);
         module.libFile = libFile;
-        module.libName = libFile;
+        module.libName = libName || libFile;
         return module;
     }
 
