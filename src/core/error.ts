@@ -8,7 +8,7 @@ export class Pkcs11Error extends Error {
         this.code = code;
         this.func = func;
 
-        this.stack = (new Error()).stack;
+        this.stack = (new Error(this.message)).stack;
     }
 }
 
