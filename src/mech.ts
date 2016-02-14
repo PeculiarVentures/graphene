@@ -1,11 +1,17 @@
 import * as pkcs11 from "./pkcs11";
 import * as core from "./core";
 import {Slot} from "./slot";
+import {MechanismEnum} from "./mech_enum";
 
 interface IMechanismInfo {
     ulMinKeySize: number;
     ulMaxKeySize: number;
     flags: number;
+}
+
+export interface IAlgorithm {
+    name: string;
+    params: Buffer;
 }
 
 export enum MechanismFlag {
@@ -87,6 +93,8 @@ export class Mechanism extends core.HandleObject {
     constructor(handle: number, slotHandle: number, lib: pkcs11.Pkcs11) {
         super(handle, lib);
         this.slotHandle = slotHandle;
+
+        this.getInfo();
     }
 
     protected getInfo(): void {
@@ -98,6 +106,37 @@ export class Mechanism extends core.HandleObject {
         this.minKeySize = info.ulMinKeySize;
         this.maxKeySize = info.ulMaxKeySize;
         this.flags = info.flags;
+    }
+
+    static create(algName: string);
+    static create(alg: IAlgorithm);
+    static create(alg) {
+        let res = null;
+
+        let _alg: IAlgorithm;
+        if (core.isString(alg)) {
+            _alg = { name: alg, params: null };
+        }
+
+        let hAlg = MechanismEnum[_alg.name.toUpperCase()];
+        if (core.isEmpty(hAlg)) throw new TypeError(`Unknown mechanism name '${_alg.name}'`);
+
+        let pParams = null;
+        if (alg.params) {
+            throw new Error("Not implemented");
+            // if (alg.params.toCKI)
+            //     // Convert object with toCKI to Buffer
+            //     pParams = alg.params.toCKI().ref();
+            // else
+            //     pParams = alg.params;
+        }
+
+        res = new pkcs11.CK_MECHANISM({
+            mechanism: hAlg,
+            pParameter: pParams,
+            ulParameterLen: pParams ? pParams.length : 0
+        });
+        return res;
     }
 
 }

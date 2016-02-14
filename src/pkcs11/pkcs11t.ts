@@ -489,6 +489,10 @@ export const CKK_CAMELLIA = 0x00000025;
 /* ARIA is new for PKCS #11 v2.20 amendment 3 */
 export const CKK_ARIA = 0x00000026;
 
+export const CKK_GOSTR3410 = 0x00000030;
+export const CKK_GOSTR3411 = 0x00000031;
+export const CKK_GOST28147 = 0x00000032;
+
 
 export const CKK_VENDOR_DEFINED = 0x80000000;
 
@@ -1052,6 +1056,8 @@ export const CKM_AES_CBC = 0x00001082;
 export const CKM_AES_MAC = 0x00001083;
 export const CKM_AES_MAC_GENERAL = 0x00001084;
 export const CKM_AES_CBC_PAD = 0x00001085;
+export const CKM_AES_CMAC = 0x0000108A;
+export const CKM_AES_CMAC_GENERAL = 0x0000108B;
 
 /* AES counter mode is new for PKCS #11 v2.20 amendment 3 */
 export const CKM_AES_CTR = 0x00001086;
@@ -1070,6 +1076,19 @@ export const CKM_DES3_ECB_ENCRYPT_DATA = 0x00001102;
 export const CKM_DES3_CBC_ENCRYPT_DATA = 0x00001103;
 export const CKM_AES_ECB_ENCRYPT_DATA = 0x00001104;
 export const CKM_AES_CBC_ENCRYPT_DATA = 0x00001105;
+
+export const CKM_GOSTR3410_KEY_PAIR_GEN = 0x00001200;
+export const CKM_GOSTR3410 = 0x00001201;
+export const CKM_GOSTR3410_WITH_GOSTR3411 = 0x00001202;
+export const CKM_GOSTR3410_KEY_WRAP = 0x00001203;
+export const CKM_GOSTR3410_DERIVE = 0x00001204;
+export const CKM_GOSTR3411 = 0x00001210;
+export const CKM_GOSTR3411_HMAC = 0x00001211;
+export const CKM_GOST28147_KEY_GEN = 0x00001220;
+export const CKM_GOST28147_ECB = 0x00001221;
+export const CKM_GOST28147 = 0x00001222;
+export const CKM_GOST28147_MAC = 0x00001223;
+export const CKM_GOST28147_KEY_WRAP = 0x00001224;
 
 export const CKM_DSA_PARAMETER_GEN = 0x00002000;
 export const CKM_DH_PKCS_PARAMETER_GEN = 0x00002001;

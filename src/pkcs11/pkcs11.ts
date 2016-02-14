@@ -317,10 +317,10 @@ export class Pkcs11 {
     /** 
      * C_EncryptInit initializes an encryption operation. 
      * @param {number} hSession the session's handle 
-     * @param {number} pMechanism the encryption mechanism 
+     * @param {Buffer} pMechanism the encryption mechanism 
      * @param {number} hKey handle of encryption key 
      */
-    C_EncryptInit(hSession: number, pMechanism: number, hKey: number): number {
+    C_EncryptInit(hSession: number, pMechanism: Buffer, hKey: number): number {
         return this.lib.C_EncryptInit(hSession, pMechanism, hKey);
     }
 
