@@ -596,9 +596,11 @@ export class Attribute {
             case "bool":
                 return this.$value[0] === 1;
             case "utf8":
-                return new Buffer(this.$value).toString("utf8");
+                // for $value = null, return 0-length Buffer
+                return new Buffer(<any>this.$value || 0).toString("utf8");
             case "buffer":
-                return new Buffer(this.$value);
+                // for $value = null, return 0-length Buffer
+                return new Buffer(<any>this.$value || 0);
             default:
                 throw new Error(`Uknown convertType in use '${this.convertType}'`);
         }
