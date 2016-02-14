@@ -1,7 +1,9 @@
 import * as pkcs11 from "./pkcs11";
 import * as core from "./core";
 
-export interface IAttribute {
+let AttributeArray = core.RefArray(pkcs11.CK_ATTRIBUTE);
+
+export interface ITemplate {
     /**
      * CKA_CLASS
      */
@@ -69,15 +71,15 @@ export interface IAttribute {
     /**
      * CKA_URL
      */
-    url?: number;
+    url?: string;
     /**
      * CKA_HASH_OF_SUBJECT_PUBLIC_KEY
      */
-    spki?: Buffer;
+    ski?: Buffer;
     /**
      * CKA_HASH_OF_ISSUER_PUBLIC_KEY
      */
-    ipki?: Buffer;
+    aki?: Buffer;
     /**
      * CKA_NAME_HASH_ALGORITHM
      */
@@ -434,10 +436,10 @@ let attribute = {
 	/* CKA_CERTIFICATE_CATEGORY ...
 	 * CKA_CHECK_VALUE are new for v2.20 */
     certCategory: { v: pkcs11.CKA_CERTIFICATE_CATEGORY, t: "ulong" },
-    javaDomain: { v: pkcs11.CKA_CERTIFICATE_CATEGORY, t: "ulong" },
-    url: { v: pkcs11.CKA_URL, t: "ulong" },
-    spki: { v: pkcs11.CKA_HASH_OF_SUBJECT_PUBLIC_KEY, t: "buffer" },
-    ipki: { v: pkcs11.CKA_HASH_OF_ISSUER_PUBLIC_KEY, t: "buffer" },
+    javaDomain: { v: pkcs11.CKA_JAVA_MIDP_SECURITY_DOMAIN, t: "ulong" },
+    url: { v: pkcs11.CKA_URL, t: "string" },
+    ski: { v: pkcs11.CKA_HASH_OF_SUBJECT_PUBLIC_KEY, t: "buffer" },
+    aki: { v: pkcs11.CKA_HASH_OF_ISSUER_PUBLIC_KEY, t: "buffer" },
     digestName: { v: pkcs11.CKA_NAME_HASH_ALGORITHM, t: "ulong" },
     checkValue: { v: pkcs11.CKA_CHECK_VALUE, t: "buffer" },
 
@@ -551,64 +553,158 @@ let attribute = {
     allowedMechanisms: pkcs11.CKA_ALLOWED_MECHANISMS
 };
 
-export class Template {
-    static convert(attrs: IAttribute): Buffer {
-        let tpl = [];
-        for (let i in attrs) {
-            let at = attribute[i];
-            if (at) {
-                if (at && at.t) {
-                    let val = prepare_value(i, at, attrs[i]);
-                    let attr = attribute_create(at.v, val, val.length);
-                    tpl.push(attr);
-                }
-                else
-                    throw new TypeError(`'${i}' attribute is not supported'`);
-            }
-            else
-                throw new Error(`'${i}' attribute is not founded'`);
+/**
+ * converts name of attribute to id
+ * @param {string} name name of attribute
+ */
+function n2i(name) {
+    let attr = attribute[name];
+    if (attr && "v" in attr)
+        return attr.v;
+    throw new Error("Unsupported attribute name '" + name + "'");
+}
+
+/**
+ * converts id of attribute to name
+ * @param {number} cka id of attribute
+ */
+function i2n(cka) {
+    console.log("cka", cka);
+    for (let i in attribute) {
+        let attr = attribute[i];
+        if (attr && "v" in attr && attr.v === cka)
+            return i;
+    }
+    throw new Error("Unsupported attribute ID '" + cka + "'");
+}
+
+export class Attribute {
+
+    protected $value: Buffer;
+    type: number;
+    name: string;
+    convertType: string;
+
+    get length(): number {
+        return (this.$value === null) ? 0 : this.$value.length;
+    }
+
+    get value(): any {
+        switch (this.convertType) {
+            case "ulong":
+                return this.$value[`readUInt${this.$value.length * 8}LE`](0);
+            case "bool":
+                return this.$value[0] === 1;
+            case "utf8":
+                return new Buffer(this.$value).toString("utf8");
+            case "buffer":
+                return new Buffer(this.$value);
+            default:
+                throw new Error(`Uknown convertType in use '${this.convertType}'`);
         }
-        if (!tpl.length)
-            throw new Error("Template hasn't got any attributes");
-        return Buffer.concat(tpl);
     }
+
+    set value(v: any) {
+        if (v === null)
+            this.$value = null;
+        else {
+            switch (this.convertType) {
+                case "ulong":
+                    this.$value = core.Ref.alloc(pkcs11.CK_ULONG, v);
+                    break;
+                case "bool":
+                    this.$value = core.Ref.alloc(pkcs11.CK_BBOOL, v);
+                    break;
+                case "utf8":
+                    this.$value = new Buffer(v, "utf8");
+                    break;
+                case "buffer":
+                    this.$value = v;
+                    break;
+                default:
+                    throw new Error(`Uknown convertType in use '${this.convertType}'`);
+            }
+        }
+    }
+
+    constructor(type: number, value?: any);
+    constructor(type: string, value?: any);
+    constructor(type, value: any = null) {
+        if (core.isString(type)) {
+            this.name = type;
+            this.type = n2i(type);
+        }
+        else {
+            this.type = type;
+            this.name = i2n(type);
+        }
+        this.convertType = attribute[this.name].t;
+        this.value = value;
+    }
+
+    get() {
+        return pkcs11.CK_ATTRIBUTE({
+            type: this.type,
+            pValue: this.$value,
+            ulValueLen: !this.$value ? 0 : this.$value.length
+        });
+    }
+
+    set(template: any) {
+        if ("type" in template && "pValue" in template && "ulValueLen" in template) {
+            if (this.type !== template.type) throw new Error(`Wrong type value '${template.type}', must be '${this.type}'`);
+            if (template.ulValueLen !== 0 && !this.$value) {
+                // current attr value is init (null)
+                this.$value = new Buffer(template.ulValueLen);
+            }
+        }
+        else {
+            throw new TypeError(`Parameter 1 is not template`);
+        }
+    }
+
 }
 
-function attribute_create(t: string, v: any, l: number): Buffer {
-    return (new pkcs11.CK_ATTRIBUTE({ type: t, pValue: v, ulValueLen: l })).ref();
-}
+export class Template {
 
-function prepare_value(attrName: string, attrTmpl: IAttributeTemplate, value: any) {
-    let buf;
-    switch (attrTmpl.t) {
-        case "ulong":
-            if (!core.isNumber(value))
-                throw new TypeError(`Template: Parameter 3 must be a Number`);
-            let size = core.Ref.types.ulong.size;
-            buf = new Buffer(size);
-            if (size === 8)
-                buf.writeUInt64LE(value, 0);
-            else
-                buf.writeUInt32LE(value, 0);
-            break;
-        case "bool":
-            buf = new Buffer([value == 1]);
-            break;
-        case "utf8":
-            if (!core.isString(value))
-                throw new TypeError(`Template: Parameter 3 must be a String`);
-            buf = new Buffer(value, "utf8");
-            break;
-        case "buffer":
-            if (!Buffer.isBuffer(value))
-                throw new TypeError(`Template: Parameter 3 must be a Buffer`);
-            buf = value;
-            break;
-        case "date":
-            throw new Error("Not supported in this implementation");
-            break;
-        default:
-            throw new TypeError(`Unknown type '${attrTmpl.t}' in enum Attribute value '${attrName}'.`);
+    protected attrs: Attribute[] = [];
+
+    get length(): number {
+        return this.attrs.length;
     }
-    return buf;
+
+    constructor(template: ITemplate);
+    constructor(template: string[]);
+    constructor(template) {
+        for (let key in template) {
+            this.attrs.push(new Attribute(key, template[key]));
+        }
+    }
+
+    set(v: any): Template {
+        let array = AttributeArray(v);
+        for (let i in this.attrs) {
+            let attr = this.attrs[i];
+            this.attrs[i].set(array[i]);
+        }
+        return this;
+    }
+
+    ref(): Buffer {
+        let attrs = [];
+        for (let i in this.attrs) {
+            attrs.push(this.attrs[i].get());
+        }
+        return AttributeArray(attrs).buffer;
+    }
+
+    serialize(): any {
+        let res = {};
+        for (let i in this.attrs) {
+            let attr = this.attrs[i];
+            res[attr.name] = attr.value;
+        }
+        return res;
+    }
+
 }
