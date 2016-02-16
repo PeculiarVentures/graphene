@@ -187,6 +187,30 @@ export class Session extends core.HandleObject {
     }
 
     /**
+     * removes all session objects matched to template
+     * - if template is null, removes all session objects
+     * - returns a number of destroied session objects
+     * @param template template
+     * 
+     */
+    destroy(template?: ITemplate): number {
+        let objs = this.find(template);
+        let removed = objs.length;
+        for (let i = 0; i < objs.length; i++) {
+            objs.items(i).destroy();
+        }
+        return removed;
+    }
+    
+    /**
+     * removes all session objects
+     * - returns a number of destroied session objects
+     */
+    clear(): number {
+        return this.destroy();
+    }
+
+    /**
      * returns a collection of session objects mached to template
      * @param template template
      * @param callback optional callback function wich is called for each founded object
