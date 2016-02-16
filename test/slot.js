@@ -1,35 +1,51 @@
-var assert = require('assert');
-var config = require('./config');
-var pkcs11 = require('../lib');
-var Module = pkcs11.Module;
-var Enums = pkcs11.Enums;
+var assert = require("assert");
+var config = require("./config.json");
+var graphene = require("../build/graphene");
+
+var Module = graphene.Module;
 
 describe("Slot", function () {
-	var mod, slots;
-	
-	before(function(){
-		mod = Module.load(config.lib, config.libName);
-		mod.initialize();
-		slots = mod.getSlots();
-	})
-	
-	after(function(){
-		mod.finalize();
-	})
-	
-	it("#info", function () {
-		var slot = slots[0];
-		assert.equal(false, slot.isHardware());
-		assert.equal(false, slot.isRemovable());
-		assert.equal(true, slot.isAccessible());
-		assert.equal(true, slot.isInitialized());
-		
-		var slotNotInit = slots[3];
-		assert.equal(false, slotNotInit.isInitialized());
-	})
 
-	it("#second()", function () {
-		assert.equal(1, 1, "Error on assert");
-		//assert(false, "Error on assert 1");
-	})
+    var mod, slots;
+
+    before(function () {
+        mod = Module.load(config.init.lib, config.init.libName);
+        mod.initialize();
+    })
+
+    after(function () {
+        mod.finalize();
+    })
+
+    it("getSlots with tokens", function () {
+        slots = mod.getSlots(true);
+        assert.equal(slots.length, config.controlValues.slotsCount, "Wrong number of slots");
+    })
+
+    it("getSlots without tokens", function () {
+        slots = mod.getSlots(false);
+        assert.equal(slots.length, config.controlValues.slotsCount, "Wrong number of slots");
+    })
+
+    it("slot props", function () {
+        var slot = slots.items(0);
+		
+        // slot
+        assert.equal(slot.flags, 1);
+        assert.equal(slot.manufacturerID, "SoftHSM project");
+        assert.equal(slot.slotDescription, "SoftHSM slot 0");
+    })
+
+    it("slot props", function () {
+        var slot = slots.items(0);
+		
+        // token
+        var token = slot.getToken();
+
+        assert.equal(token.flags, config.controlValues.token.flags);
+        assert.equal(token.label, config.controlValues.token.label);
+        assert.equal(token.manufacturerID, config.controlValues.token.manufacturerID);
+        assert.equal(token.minPinLen, config.controlValues.token.minPinLen);
+        assert.equal(token.serialNumber, config.controlValues.token.serialNumber);
+    })
 })
