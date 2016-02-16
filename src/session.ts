@@ -93,6 +93,28 @@ export class Session extends core.HandleObject {
         let rv = this.lib.C_CloseSession(this.handle);
         if (rv) throw new core.Pkcs11Error(rv, "C_CloseSession");
     }
+    
+    /**
+     * initializes the normal user's PIN
+     * @param {string} pin the normal user's PIN
+     */
+    initPin(pin: string) {
+        let bufPin = new Buffer(pin, "utf8");
+        let rv = this.lib.C_InitPIN(this.handle, bufPin, bufPin.length);
+        if (rv) throw new core.Pkcs11Error(rv, "C_InitPIN");
+    }
+
+    /**
+     * modifies the PIN of the user who is logged in
+     * @param {string} oldPin 
+     * @param {string} newPin
+     */
+    setPin(oldPin: string, newPin: string) {
+        let bufOldPin = new Buffer(oldPin, "utf8");
+        let bufNewPin = new Buffer(newPin, "utf8");
+        let rv = this.lib.C_SetPIN(this.handle, bufOldPin, bufOldPin.length, bufNewPin, bufNewPin.length);
+        if (rv) throw new core.Pkcs11Error(rv, "C_SetPIN");
+    }
 
     /**
      * obtains a copy of the cryptographic operations state of a session, encoded as a string of bytes
