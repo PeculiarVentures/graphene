@@ -89,9 +89,19 @@ export class Module extends core.BaseObject implements IModuleInfo {
 
     /**
      * obtains a list of slots in the system
+     * @param {number} index index of an element in collection
      * @param {number} tokenPresent only slots with tokens. Default `True`
      */
-    public getSlots(tokenPresent: boolean = true): slot.SlotCollection {
+    public getSlots(index: number, tokenPresent?: boolean): slot.Slot;
+    /**
+     * @param {number} tokenPresent only slots with tokens. Default `True`
+     */
+    public getSlots(tokenPresent?: boolean): slot.SlotCollection;
+    public getSlots(index, tokenPresent: boolean = true): any {
+        if (!core.isEmpty(index) && core.isBoolean(index)){
+            tokenPresent = index;
+        }
+        
         let $len = core.Ref.alloc(pkcs11.CK_ULONG);
         let rv = this.lib.C_GetSlotList(tokenPresent, null, $len);
         if (rv) throw new core.Pkcs11Error(rv, "C_GetSlotList");
@@ -104,7 +114,11 @@ export class Module extends core.BaseObject implements IModuleInfo {
             }
             arr = $slots.deref();
         }
-        return new slot.SlotCollection(arr, this.lib);
+        let col = new slot.SlotCollection(arr, this, this.lib);
+        if (core.isNumber(index)){
+            return col.items(index);
+        }
+        return col;
     }
 
     /**
