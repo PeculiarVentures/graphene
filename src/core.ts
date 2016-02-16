@@ -2,6 +2,7 @@ export * from "./core/object";
 export * from "./core/error";
 export * from "./core/collection";
 export * from "./core/type";
+export * from "./core/utc";
 
 import * as ref from "ref";
 import * as refStruct from "ref-struct";

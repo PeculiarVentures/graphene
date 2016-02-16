@@ -130,7 +130,13 @@ export class Token extends core.HandleObject {
      * current time as a character-string of length 16, 
      * represented in the format YYYYMMDDhhmmssxx
      */
-    utcTime: string;
+    utcTime: Date;
+    
+    constructor(handle: number, lib: pkcs11.Pkcs11){
+        super(handle, lib)
+        
+        this.getInfo();
+    }
 
     protected getInfo() {
         let $info = core.Ref.alloc(pkcs11.CK_TOKEN_INFO);
@@ -162,7 +168,7 @@ export class Token extends core.HandleObject {
             major: info.firmwareVersion.major,
             minor: info.firmwareVersion.minor
         };
-        this.utcTime = info.utcTime.toString("ascii");
+        this.utcTime = core.dateFromString(new Buffer(info.utcTime).toString("ascii"));
     }
 
 }
