@@ -675,11 +675,16 @@ export class Template {
         return this.attrs.length;
     }
 
+    constructor(template: string);
     constructor(template: ITemplate);
-    constructor(template: string[]);
     constructor(template) {
-        for (let key in template) {
-            this.attrs.push(new Attribute(key, template[key]));
+        let _template: ITemplate = {};
+        if (core.isString(template))
+            _template[template] = null;
+        else
+            _template = template;
+        for (let key in _template) {
+            this.attrs.push(new Attribute(key, _template[key]));
         }
     }
 

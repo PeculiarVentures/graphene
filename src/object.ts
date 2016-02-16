@@ -77,13 +77,7 @@ export class SessionObject extends core.HandleObject {
     getAttribute(attr: string): ITemplate;
     getAttribute(attrs: ITemplate): ITemplate;
     getAttribute(attrs: any): ITemplate {
-        let _attrs: string[] = null;
-        if (core.isString(attrs))
-            _attrs = [attrs];
-        else
-            _attrs = attrs;
-
-        let tmpl = new Template(_attrs);
+        let tmpl = new Template(attrs);
 
         // get size of values of attributes
         let $tmpl = tmpl.ref();
@@ -99,13 +93,20 @@ export class SessionObject extends core.HandleObject {
         return o;
     }
 
-    setAttribute(attrs: ITemplate) {
+    setAttribute(attrs: string, value: any);
+    setAttribute(attrs: ITemplate);
+    setAttribute(attrs, value?) {
+        if (core.isString(attrs)){
+            let tmp = {};
+            tmp[attrs] = value;
+            attrs = tmp;
+        }
         let tmpl = new Template(attrs);
 
         // get size of values of attributes
         let $tmpl = tmpl.ref();
         let rv = this.lib.C_SetAttributeValue(this.session.handle, this.handle, $tmpl, tmpl.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetAttributeValue");
+        if (rv) throw new core.Pkcs11Error(rv, "C_SetAttributeValue");
         return this;
     }
 
