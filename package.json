@@ -2,7 +2,7 @@
   "name": "graphene-pk11",
   "version": "2.0.0",
   "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI libraries in NodeJS",
-  "main": "./lib/index.js",
+  "main": "./build/graphene.js",
   "scripts": {
     "test": "mocha"
   },
@@ -22,7 +22,9 @@
     "ref-struct": "^1.0.2"
   },
   "devDependencies": {
-    "mocha": "^2.3.3"
+    "mocha": "^2.3.3",
+    "typescript": "^1.7.5",
+    "tds": "^0.1.0"
   },
   "keywords": [
     "pkcs11",

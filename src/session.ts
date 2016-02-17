@@ -52,6 +52,11 @@ interface ISessionInfo {
     ulDeviceError: number;
 }
 
+export interface IKeyPair {
+    privateKey: objects.PrivateKey;
+    publicKey: objects.PublicKey;
+}
+
 /**
  * provides information about a session
  */
@@ -95,7 +100,7 @@ export class Session extends core.HandleObject {
         let rv = this.lib.C_CloseSession(this.handle);
         if (rv) throw new core.Pkcs11Error(rv, "C_CloseSession");
     }
-    
+
     /**
      * initializes the normal user's PIN
      * @param {string} pin the normal user's PIN
@@ -203,7 +208,7 @@ export class Session extends core.HandleObject {
         }
         return removed;
     }
-    
+
     /**
      * removes all session objects
      * - returns a number of destroied session objects
@@ -255,17 +260,49 @@ export class Session extends core.HandleObject {
     generateKey(mechanism, template: ITemplate = null): objects.SecretKey {
         let pMech = mech.Mechanism.create(mechanism);
         // init default template params
-        if (template){
-            template.class = ObjectClass.SECRET_KEY
+        if (template) {
+            template.class = ObjectClass.SECRET_KEY;
         }
         let pTemplate = new Template(template);
         let hKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
-        
-        // console.log(this.handle, pMech , pTemplate.ref(), pTemplate.length, hKey);
-        let rv = this.lib.C_GenerateKey(this.handle, pMech["ref.buffer"] , pTemplate.ref(), pTemplate.length, hKey);
+
+        let rv = this.lib.C_GenerateKey(this.handle, pMech["ref.buffer"], pTemplate.ref(), pTemplate.length, hKey);
         if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKey");
-        
+
         let obj = new SessionObject(hKey.deref(), this, this.lib);
         return obj.toType<objects.SecretKey>();
+    }
+
+    generateKeyPair(mechanism: mech.IAlgorithm, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair;
+    generateKeyPair(mechanism: string, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair;
+    generateKeyPair(mechanism: number, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair;
+    generateKeyPair(mechanism, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair {
+        let pMech = mech.Mechanism.create(mechanism);
+        // init default public key template
+        if (publicTemplate) {
+            publicTemplate.class = ObjectClass.PUBLIC_KEY;
+        }
+        let pubTmpl = new Template(publicTemplate);
+        let hPubKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+
+        // init default private key template
+        if (privateTemplate) {
+            privateTemplate.class = ObjectClass.PRIVATE_KEY;
+            privateTemplate.private = true;
+        }
+        let prvTmpl = new Template(privateTemplate);
+        let hPrvKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+
+        let rv = this.lib.C_GenerateKeyPair(
+            this.handle, pMech["ref.buffer"],
+            pubTmpl.ref(), pubTmpl.length,
+            prvTmpl.ref(), prvTmpl.length,
+            hPubKey, hPrvKey);
+        if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKeyPair");
+
+        return {
+            publicKey: new objects.PublicKey(hPubKey.deref(), this, this.lib),
+            privateKey: new objects.PrivateKey(hPrvKey.deref(), this, this.lib)
+        };
     }
 }

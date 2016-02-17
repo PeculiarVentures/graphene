@@ -1,6 +1,7 @@
 import * as pkcs11 from "./pkcs11";
 import * as core from "./core";
 import {Slot} from "./slot";
+import * as obj from "./object";
 import {MechanismEnum} from "./mech_enum";
 
 interface IMechanismInfo {
@@ -108,6 +109,7 @@ export class Mechanism extends core.HandleObject {
         this.flags = info.flags;
     }
 
+    static create(algName: number);
     static create(algName: string);
     static create(alg: IAlgorithm);
     static create(alg) {
@@ -116,6 +118,9 @@ export class Mechanism extends core.HandleObject {
         let _alg: IAlgorithm;
         if (core.isString(alg)) {
             _alg = { name: alg, params: null };
+        }
+        else if (core.isNumber(alg)) {
+            _alg = { name: MechanismEnum[alg], params: null };
         }
 
         let hAlg = MechanismEnum[_alg.name.toUpperCase()];

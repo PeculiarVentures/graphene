@@ -75,7 +75,7 @@ export class Module extends core.BaseObject implements IModuleInfo {
     public initialize() {
         let rv = this.lib.C_Initialize();
             if (rv) throw new core.Pkcs11Error(rv, "C_Initialize");
-        
+
         this.getInfo();
     }
 
@@ -98,10 +98,10 @@ export class Module extends core.BaseObject implements IModuleInfo {
      */
     public getSlots(tokenPresent?: boolean): slot.SlotCollection;
     public getSlots(index, tokenPresent: boolean = true): any {
-        if (!core.isEmpty(index) && core.isBoolean(index)){
+        if (!core.isEmpty(index) && core.isBoolean(index)) {
             tokenPresent = index;
         }
-        
+
         let $len = core.Ref.alloc(pkcs11.CK_ULONG);
         let rv = this.lib.C_GetSlotList(tokenPresent, null, $len);
         if (rv) throw new core.Pkcs11Error(rv, "C_GetSlotList");
@@ -115,7 +115,7 @@ export class Module extends core.BaseObject implements IModuleInfo {
             arr = $slots.deref();
         }
         let col = new slot.SlotCollection(arr, this, this.lib);
-        if (core.isNumber(index)){
+        if (core.isNumber(index)) {
             return col.items(index);
         }
         return col;

@@ -120,9 +120,9 @@ export class Slot extends core.HandleObject implements ISlotInfo {
 }
 
 export class SlotCollection extends core.Collection<Slot> {
-    
+
     module: Module;
-    
+
     items(index: number): Slot {
         return new Slot(this.items_[index], this.module, this.lib);
     }

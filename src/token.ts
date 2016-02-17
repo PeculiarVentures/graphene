@@ -131,10 +131,10 @@ export class Token extends core.HandleObject {
      * represented in the format YYYYMMDDhhmmssxx
      */
     utcTime: Date;
-    
-    constructor(handle: number, lib: pkcs11.Pkcs11){
-        super(handle, lib)
-        
+
+    constructor(handle: number, lib: pkcs11.Pkcs11) {
+        super(handle, lib);
+
         this.getInfo();
     }
 

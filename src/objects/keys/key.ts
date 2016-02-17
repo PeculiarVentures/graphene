@@ -143,6 +143,7 @@ export class Key extends Storage {
      * or in the process of copying object with a `C_CopyObject` call. 
      * However, it is possible that a particular token may not permit modification 
      * of the attribute during the course of a `C_CopyObject` call.
+     * @returns boolean
      */
     get derive(): boolean {
         return this.get("derive");

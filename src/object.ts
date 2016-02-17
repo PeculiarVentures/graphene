@@ -96,7 +96,7 @@ export class SessionObject extends core.HandleObject {
     setAttribute(attrs: string, value: any);
     setAttribute(attrs: ITemplate);
     setAttribute(attrs, value?) {
-        if (core.isString(attrs)){
+        if (core.isString(attrs)) {
             let tmp = {};
             tmp[attrs] = value;
             attrs = tmp;
