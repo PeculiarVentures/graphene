@@ -702,7 +702,7 @@ export class Template {
         for (let i in this.attrs) {
             attrs.push(this.attrs[i].get());
         }
-        return AttributeArray(attrs).buffer;
+        return this.attrs.length ? AttributeArray(attrs).buffer : null;
     }
 
     serialize(): any {

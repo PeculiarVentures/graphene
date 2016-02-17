@@ -50,7 +50,7 @@ describe("Session", function () {
             objectId: new Buffer("objectId"),
             value: new Buffer("value")
         })
-        
+
         var data = obj.toType();
         assert.equal(data.application, "application");
         assert.equal(data.objectId.toString(), "objectId");
@@ -60,10 +60,10 @@ describe("Session", function () {
         objs = session.find();
         assert.equal(objs.length, 2, "Wrong objs length");
     })
-    
+
     it("find", function () {
         var count = session.find().length;
-        
+
         session.create({
             class: graphene.ObjectClass.DATA,
             application: "testFind",
@@ -82,19 +82,19 @@ describe("Session", function () {
             objectId: new Buffer("objectId"),
             value: new Buffer("3")
         })
-        assert.equal(session.find().length, count+3);
+        assert.equal(session.find().length, count + 3);
         var objs = session.find({
             application: "testFind"
         });
-        assert.equal(objs.length, 3);        
-        assert.equal(objs.items(0).toType().value.toString(), "1");        
-        assert.equal(objs.items(1).toType().value.toString(), "2");        
-        assert.equal(objs.items(2).toType().value.toString(), "3");        
+        assert.equal(objs.length, 3);
+        assert.equal(objs.items(0).toType().value.toString(), "1");
+        assert.equal(objs.items(1).toType().value.toString(), "2");
+        assert.equal(objs.items(2).toType().value.toString(), "3");
     })
-    
+
     it("destroy", function () {
         var count = session.find().length;
-        
+
         session.create({
             class: graphene.ObjectClass.DATA,
             label: "destroy",
@@ -110,20 +110,34 @@ describe("Session", function () {
             value: new Buffer("2")
         })
 
-        assert.equal(session.find().length, count+2);
-        
-        session.destroy({label:"destroy"});
-        
+        assert.equal(session.find().length, count + 2);
+
+        session.destroy({ label: "destroy" });
+
         assert.equal(session.find().length, count);
-                                
+
     })
-    
+
     it("clear", function () {
         assert.equal(session.find().length !== 0, true);
-                
+
         session.clear();
-        
+
         assert.equal(session.find().length === 0, true);
-                                
+
+    })
+
+    it("generate key AES", function () {
+        var keylen = 256 / 8;
+        var key = session.generateKey("AES_KEY_GEN", {
+            keyType: graphene.KeyType.AES,
+            label: "label",
+            valueLen: keylen,
+            extractable: true,
+            encrypt: true
+        });
+        assert.equal(!key.checkValue, false);
+        assert.equal(key.encrypt, true);
+        assert.equal(key.getAttribute("value").value.length, keylen);
     })
 })

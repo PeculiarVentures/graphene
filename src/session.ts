@@ -1,8 +1,10 @@
 import * as pkcs11 from "./pkcs11";
 import * as core from "./core";
 import {Slot} from "./slot";
-import {SessionObject, SessionObjectCollection} from "./object";
+import {SessionObject, SessionObjectCollection, ObjectClass} from "./object";
 import {Template, ITemplate} from "./template";
+import * as mech from "./mech";
+import * as objects from "./objects/common";
 
 const ObjectArray = core.RefArray(pkcs11.CK_OBJECT_HANDLE);
 
@@ -241,5 +243,29 @@ export class Session extends core.HandleObject {
         if (rv) throw new core.Pkcs11Error(rv, "C_FindObjectsFinal");
 
         return new SessionObjectCollection(objects, this, this.lib);
+    }
+
+    /**
+     * generates a secret key or set of domain parameters, creating a new object.
+     * @param mechanism generation mechanism
+     * @param template template for the new key or set of domain parameters
+     */
+    generateKey(mechanism: string, template?: ITemplate): objects.SecretKey;
+    generateKey(mechanism: mech.IAlgorithm, template?: ITemplate): objects.SecretKey;
+    generateKey(mechanism, template: ITemplate = null): objects.SecretKey {
+        let pMech = mech.Mechanism.create(mechanism);
+        // init default template params
+        if (template){
+            template.class = ObjectClass.SECRET_KEY
+        }
+        let pTemplate = new Template(template);
+        let hKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+        
+        // console.log(this.handle, pMech , pTemplate.ref(), pTemplate.length, hKey);
+        let rv = this.lib.C_GenerateKey(this.handle, pMech["ref.buffer"] , pTemplate.ref(), pTemplate.length, hKey);
+        if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKey");
+        
+        let obj = new SessionObject(hKey.deref(), this, this.lib);
+        return obj.toType<objects.SecretKey>();
     }
 }
