@@ -12,12 +12,12 @@ describe("Session", function () {
         mod.initialize();
         session = mod.getSlots(0).open();
         session.login(config.init.pin);
-    })
+    });
 
     after(function () {
         session.logout();
         mod.finalize();
-    })
+    });
 
     it("copy", function () {
         var count = session.find().length;
@@ -28,16 +28,16 @@ describe("Session", function () {
             wrap: true,
             modulus: new Buffer([1, 0, 1]),
             publicExponent: new Buffer(1024)
-        })
+        });
 
         var copy = obj.copy({
             wrap: false
-        })
-        assert.equal(copy != null, true);
+        });
+        assert.equal(!copy, false);
         var key = copy.toType();
         assert.equal(key.wrap, false);
         assert.equal(session.find().length, count + 2);
-    })
+    });
 
     it("get attribute by name", function () {
         var obj = session.create({
@@ -51,7 +51,7 @@ describe("Session", function () {
 
         var attrs = obj.getAttribute("wrap");
         assert.equal(attrs.wrap, true);
-    })
+    });
 
     it("get attribute by template", function () {
         var obj = session.create({
@@ -69,7 +69,7 @@ describe("Session", function () {
         });
         assert.equal(attrs.wrap, true);
         assert.equal(attrs.label, "label");
-    })
+    });
 
     it("set attribute by name", function () {
         var obj = session.create({
@@ -83,7 +83,7 @@ describe("Session", function () {
 
         obj.setAttribute("wrap", false);
         assert.equal(obj.getAttribute("wrap").wrap, false);
-    })
+    });
 
     it("set attribute by template", function () {
         var obj = session.create({
@@ -101,7 +101,7 @@ describe("Session", function () {
         });
         assert.equal(obj.getAttribute("wrap").wrap, false);
         assert.equal(obj.getAttribute("label").label, "new label");
-    })
+    });
 
     it("destroy", function () {
         var count = session.find().length;
@@ -117,6 +117,6 @@ describe("Session", function () {
         
         obj.destroy();
         assert.equal(session.find().length, count);
-    })
+    });
 
-})
+});

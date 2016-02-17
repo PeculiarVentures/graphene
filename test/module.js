@@ -1,6 +1,6 @@
 var assert = require('assert');
-var config = require('./config.json')
-var graphene = require('../build/graphene')
+var config = require('./config.json');
+var graphene = require('../build/graphene');
 
 var Module = graphene.Module;
 
@@ -14,15 +14,16 @@ describe("Module", function () {
             Module.load("unknown/path/name", "");
         }, Error);
         assert(Module.load(config.init.lib, config.init.libName));
-    })
+    });
+    
     it("initialize/finalize", function () {
         assert.doesNotThrow(function () {
             var mod = Module.load(config.init.lib, config.init.libName);
             mod.initialize();
 
             mod.finalize();
-        }, Error)
-    })
+        }, Error);
+    });
 
     it("getSlots", function () {
         var mod = Module.load(config.init.lib, config.init.libName);
@@ -45,5 +46,5 @@ describe("Module", function () {
         assert.equal(mod.libraryDescription, config.controlValues.module.libraryDescription, "Wrong libraryDescription");                       
         
         mod.finalize();
-    })
-})
+    });
+});
