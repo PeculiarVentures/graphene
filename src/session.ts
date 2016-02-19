@@ -209,7 +209,7 @@ export class Session extends core.HandleObject {
 
         if (param instanceof SessionObject) {
             // destroy(object: SessionObject): number;
-            let rv = this.lib.C_DestroyObject(this.handle, param.hamdle);
+            let rv = this.lib.C_DestroyObject(this.handle, param.handle);
             if (rv) throw new core.Pkcs11Error(rv, "C_DestroyObject");
             return 1;
         }
