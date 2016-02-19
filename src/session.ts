@@ -237,9 +237,9 @@ export class Session extends core.HandleObject {
      * @param callback optional callback function wich is called for each founded object
      * - if callback function returns false, it breaks find function.
      */
-    find(callback?: (obj: SessionObject) => boolean): SessionObjectCollection;
-    find(template: ITemplate, callback?: (obj: SessionObject) => boolean): SessionObjectCollection;
-    find(template, callback?: (obj: SessionObject) => boolean): SessionObjectCollection {
+    find(callback?: (obj: SessionObject) => any): SessionObjectCollection;
+    find(template: ITemplate, callback?: (obj: SessionObject) => any): SessionObjectCollection;
+    find(template, callback?: (obj: SessionObject) => any): SessionObjectCollection {
         if (core.isFunction(template)) {
             callback = template;
             template = null;
@@ -268,6 +268,25 @@ export class Session extends core.HandleObject {
         if (rv) throw new core.Pkcs11Error(rv, "C_FindObjectsFinal");
 
         return new SessionObjectCollection(objects, this, this.lib);
+    }
+    /**
+     * Returns object from session by handle
+     * @param  {number} handle handle of object
+     * @returns T
+     */
+    getObject<T extends SessionObject>(handle: number): T {
+        let res: SessionObject = null;
+        this.find(null, (obj) => {
+            if (obj.handle === handle) {
+                res = obj;
+                return false;
+            }
+            if (obj.handle > handle) return false;
+        });
+        if (res)
+            return res.toType<T>();
+        else
+            return null;
     }
 
     /**
