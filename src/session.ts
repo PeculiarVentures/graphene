@@ -197,16 +197,30 @@ export class Session extends core.HandleObject {
      * removes all session objects matched to template
      * - if template is null, removes all session objects
      * - returns a number of destroied session objects
-     * @param template template
-     * 
+     * @param {ITemplate} template template
      */
-    destroy(template?: ITemplate): number {
-        let objs = this.find(template);
-        let removed = objs.length;
-        for (let i = 0; i < objs.length; i++) {
-            objs.items(i).destroy();
+    destroy(template: ITemplate): number;
+    /**
+     * @param {SessionObject} object
+     */
+    destroy(object: SessionObject): number;
+    destroy(): number;
+    destroy(param?): number {
+
+        if (param instanceof SessionObject) {
+            // destroy(object: SessionObject): number;
+            let rv = this.lib.C_DestroyObject(this.handle, param.hamdle);
+            if (rv) throw new core.Pkcs11Error(rv, "C_DestroyObject");
+            return 1;
         }
-        return removed;
+        else {
+            let objs = this.find(param);
+            let removed = objs.length;
+            for (let i = 0; i < objs.length; i++) {
+                objs.items(i).destroy();
+            }
+            return removed;
+        }
     }
 
     /**
@@ -223,7 +237,13 @@ export class Session extends core.HandleObject {
      * @param callback optional callback function wich is called for each founded object
      * - if callback function returns false, it breaks find function.
      */
-    find(template: ITemplate, callback?: (obj: SessionObject) => boolean): SessionObjectCollection {
+    find(callback?: (obj: SessionObject) => boolean): SessionObjectCollection;
+    find(template: ITemplate, callback?: (obj: SessionObject) => boolean): SessionObjectCollection;
+    find(template, callback?: (obj: SessionObject) => boolean): SessionObjectCollection {
+        if (core.isFunction(template)) {
+            callback = template;
+            template = null;
+        }
         let tmpl = new Template(template);
 
         let rv = this.lib.C_FindObjectsInit(this.handle, tmpl.ref(), tmpl.length);
