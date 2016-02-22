@@ -183,3 +183,4 @@ export class SessionObjectCollection extends core.Collection<SessionObject> {
 // import must be here, because other class from SessioObject must be initialized
 import * as objects from "./objects/common";
 export * from "./objects/common";
+export * from "./keys/common";

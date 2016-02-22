@@ -1456,6 +1456,10 @@ export const CK_EC_KDF_TYPE = CK_ULONG;
 /* The following EC Key Derivation Functions are defined */
 export const CKD_NULL = 0x00000001;
 export const CKD_SHA1_KDF = 0x00000002;
+export const CKD_SHA224_KDF = 0x00000003;
+export const CKD_SHA256_KDF = 0x00000004;
+export const CKD_SHA384_KDF = 0x00000005;
+export const CKD_SHA512_KDF = 0x00000006;
 
 /**
  * CK_ECDH1_DERIVE_PARAMS is new for v2.11.
@@ -2009,6 +2013,27 @@ export const CK_AES_CTR_PARAMS = RefStruct({
 });
 
 export const CK_AES_CTR_PARAMS_PTR = Ref.refType(CK_AES_CTR_PARAMS);
+
+export const CK_GCM_PARAMS = RefStruct({
+    pIv: CK_BYTE_PTR,
+    ulIvLen: CK_ULONG,
+    pAAD: CK_BYTE_PTR,
+    ulADDLen: CK_ULONG,
+    ulTagBits: CK_ULONG
+});
+
+export const CK_GCM_PARAMS_PTR = Ref.refType(CK_GCM_PARAMS);
+
+export const CK_CCM_PARAMS = RefStruct({
+    ulDataLen: CK_ULONG,        /*plaintext or ciphertext */
+    pNonce: CK_BYTE_PTR,
+    ulNonceLen: CK_ULONG,
+    pAAD: CK_BYTE_PTR,
+    ulADDLen: CK_ULONG,
+    ulMACLen: CK_ULONG
+});
+
+export const CK_CCM_PARAMS_PTR = Ref.refType(CK_CCM_PARAMS);
 
 /* CK_CAMELLIA_CTR_PARAMS is new for PKCS #11 v2.20 amendment 3 */
 export const CK_CAMELLIA_CTR_PARAMS = RefStruct({

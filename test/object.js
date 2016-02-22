@@ -4,7 +4,7 @@ var graphene = require("../build/graphene");
 
 var Module = graphene.Module;
 
-describe("Session", function () {
+describe("Object", function () {
     var mod, session;
 
     before(function () {

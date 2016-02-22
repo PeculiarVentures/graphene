@@ -3,6 +3,7 @@ import * as core from "./core";
 import {Slot} from "./slot";
 import * as obj from "./object";
 import {MechanismEnum} from "./mech_enum";
+export * from "./mech_enum";
 
 interface IMechanismInfo {
     ulMinKeySize: number;
@@ -14,6 +15,8 @@ export interface IAlgorithm {
     name: string;
     params: Buffer;
 }
+
+export type MechanismType = MechanismEnum | obj.KeyGenMechanism | IAlgorithm | string;
 
 export enum MechanismFlag {
     /**
@@ -91,6 +94,13 @@ export class Mechanism extends core.HandleObject {
      */
     flags: number;
 
+    /**
+     * returns string name from MechanismEnum
+     */
+    get name(): string {
+        return MechanismEnum[this.handle] || "unknown";
+    }
+
     constructor(handle: number, slotHandle: number, lib: pkcs11.Pkcs11) {
         super(handle, lib);
         this.slotHandle = slotHandle;
@@ -109,9 +119,7 @@ export class Mechanism extends core.HandleObject {
         this.flags = info.flags;
     }
 
-    static create(algName: number);
-    static create(algName: string);
-    static create(alg: IAlgorithm);
+    static create(alg: MechanismType): Buffer;
     static create(alg) {
         let res = null;
 
@@ -122,18 +130,20 @@ export class Mechanism extends core.HandleObject {
         else if (core.isNumber(alg)) {
             _alg = { name: MechanismEnum[alg], params: null };
         }
+        else{
+            _alg = alg;
+        }
 
         let hAlg = MechanismEnum[_alg.name.toUpperCase()];
         if (core.isEmpty(hAlg)) throw new TypeError(`Unknown mechanism name '${_alg.name}'`);
 
         let pParams = null;
         if (alg.params) {
-            throw new Error("Not implemented");
-            // if (alg.params.toCKI)
-            //     // Convert object with toCKI to Buffer
-            //     pParams = alg.params.toCKI().ref();
-            // else
-            //     pParams = alg.params;
+            if (alg.params.toCKI)
+                 // Convert object with toCKI to Buffer
+                 pParams = alg.params.toCKI();
+            else
+                 pParams = alg.params;
         }
 
         res = new pkcs11.CK_MECHANISM({
@@ -141,7 +151,7 @@ export class Mechanism extends core.HandleObject {
             pParameter: pParams,
             ulParameterLen: pParams ? pParams.length : 0
         });
-        return res;
+        return res["ref.buffer"];
     }
 
 }

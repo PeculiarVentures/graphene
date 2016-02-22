@@ -1,10 +1,12 @@
 import * as pkcs11 from "./pkcs11";
 import * as core from "./core";
 import {Slot} from "./slot";
-import {SessionObject, SessionObjectCollection, ObjectClass} from "./object";
+import {SessionObject, SessionObjectCollection, ObjectClass, Key} from "./object";
 import {Template, ITemplate} from "./template";
-import * as mech from "./mech";
+import {Mechanism, MechanismType} from "./mech";
 import * as objects from "./objects/common";
+
+import {Sign, Verify, Cipher, Decipher} from "./crypto/common";
 
 const ObjectArray = core.RefArray(pkcs11.CK_OBJECT_HANDLE);
 
@@ -294,10 +296,8 @@ export class Session extends core.HandleObject {
      * @param mechanism generation mechanism
      * @param template template for the new key or set of domain parameters
      */
-    generateKey(mechanism: string, template?: ITemplate): objects.SecretKey;
-    generateKey(mechanism: mech.IAlgorithm, template?: ITemplate): objects.SecretKey;
-    generateKey(mechanism, template: ITemplate = null): objects.SecretKey {
-        let pMech = mech.Mechanism.create(mechanism);
+    generateKey(mechanism: MechanismType, template: ITemplate = null): objects.SecretKey {
+        let pMech = Mechanism.create(mechanism);
         // init default template params
         if (template) {
             template.class = ObjectClass.SECRET_KEY;
@@ -305,18 +305,15 @@ export class Session extends core.HandleObject {
         let pTemplate = new Template(template);
         let hKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
 
-        let rv = this.lib.C_GenerateKey(this.handle, pMech["ref.buffer"], pTemplate.ref(), pTemplate.length, hKey);
+        let rv = this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey);
         if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKey");
 
         let obj = new SessionObject(hKey.deref(), this, this.lib);
         return obj.toType<objects.SecretKey>();
     }
 
-    generateKeyPair(mechanism: mech.IAlgorithm, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair;
-    generateKeyPair(mechanism: string, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair;
-    generateKeyPair(mechanism: number, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair;
-    generateKeyPair(mechanism, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair {
-        let pMech = mech.Mechanism.create(mechanism);
+    generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair {
+        let pMech = Mechanism.create(mechanism);
         // init default public key template
         if (publicTemplate) {
             publicTemplate.class = ObjectClass.PUBLIC_KEY;
@@ -333,7 +330,7 @@ export class Session extends core.HandleObject {
         let hPrvKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
 
         let rv = this.lib.C_GenerateKeyPair(
-            this.handle, pMech["ref.buffer"],
+            this.handle, pMech,
             pubTmpl.ref(), pubTmpl.length,
             prvTmpl.ref(), prvTmpl.length,
             hPubKey, hPrvKey);
@@ -344,4 +341,21 @@ export class Session extends core.HandleObject {
             privateKey: new objects.PrivateKey(hPrvKey.deref(), this, this.lib)
         };
     }
+
+    createSign(alg: MechanismType, key: Key): Sign {
+        return new Sign(this, alg, key, this.lib);
+    }
+
+    createVerify(alg: MechanismType, key: Key): Verify {
+        return new Verify(this, alg, key, this.lib);
+    }
+
+    createCipher(alg: MechanismType, key: Key): Cipher {
+        return new Cipher(this, alg, key, this.lib);
+    }
+
+    createDecipher(alg: MechanismType, key: Key): Decipher {
+        return new Decipher(this, alg, key, this.lib);
+    }
+
 }

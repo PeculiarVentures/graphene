@@ -2,6 +2,8 @@ var assert = require('assert');
 var config = require("./config.json");
 var graphene = require("../build/graphene");
 
+var TEST_MESSAGE = "Test message for crypto oprations";
+
 var Module = graphene.Module;
 
 describe("Session", function () {
@@ -92,7 +94,7 @@ describe("Session", function () {
         assert.equal(objs.items(2).toType().value.toString(), "3");
     });
 
-    it("destroy", function () {
+    it("destroy by template", function () {
         var count = session.find().length;
 
         session.create({
@@ -115,6 +117,32 @@ describe("Session", function () {
         session.destroy({ label: "destroy" });
 
         assert.equal(session.find().length, count);
+
+    });
+
+    it("destroy by object", function () {
+        var count = session.find().length;
+
+        var obj = session.create({
+            class: graphene.ObjectClass.DATA,
+            label: "destroy",
+            application: "application",
+            objectId: new Buffer("objectId"),
+            value: new Buffer("1")
+        });
+        session.create({
+            class: graphene.ObjectClass.DATA,
+            label: "destroy",
+            application: "application",
+            objectId: new Buffer("objectId"),
+            value: new Buffer("2")
+        });
+
+        assert.equal(session.find().length, count + 2);
+
+        session.destroy(obj);
+
+        assert.equal(session.find().length, count + 1);
 
     });
 
@@ -142,12 +170,12 @@ describe("Session", function () {
     });
 
     it("generate key pair RSA", function () {
-        var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA_PKCS, {
-                keyType: graphene.KeyType.RSA,
-                encrypt: true,
-                modulusBits: 1024,
-                publicExponent: new Buffer([3])
-            },
+        var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
+            keyType: graphene.KeyType.RSA,
+            encrypt: true,
+            modulusBits: 1024,
+            publicExponent: new Buffer([3])
+        },
             {
                 keyType: graphene.KeyType.RSA,
                 decrypt: true
@@ -155,6 +183,47 @@ describe("Session", function () {
         assert.equal(!keys, false);
         assert.equal(keys.publicKey.class, graphene.ObjectClass.PUBLIC_KEY);
         assert.equal(keys.privateKey.class, graphene.ObjectClass.PRIVATE_KEY);
+    });
+
+    it("getObject wrong handle", function () {
+        assert.equal(!session.getObject(-1), true);
+    });
+
+    it("getObject", function () {
+        var obj;
+        session.find(function (o) {
+            obj = o;
+            return false; // exit on first element
+        });
+        assert.equal(!session.getObject(obj.handle), false);
+    });
+
+    function test_sign(alg, key1, key2) {
+        var sign = session.createSign(alg, key1);
+        sign.update(TEST_MESSAGE);
+        sign.update(TEST_MESSAGE);
+        var signature = sign.final();
+        assert.equal(!!signature.length, true);
+
+        var verify = session.createVerify(alg, key2);
+        verify.update(TEST_MESSAGE);
+        verify.update(TEST_MESSAGE);
+        assert.equal(verify.final(signature), true);
+    }
+
+    it("sign/verify RSA", function () {
+        var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
+            keyType: graphene.KeyType.RSA,
+            encrypt: true,
+            modulusBits: 1024,
+            publicExponent: new Buffer([3])
+        },
+            {
+                keyType: graphene.KeyType.RSA,
+                decrypt: true
+            });
+
+        test_sign(graphene.MechanismEnum.SHA1_RSA_PKCS, keys.privateKey, keys.publicKey);
     });
 
 });

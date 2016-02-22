@@ -39,7 +39,8 @@ export enum KeyType {
 }
 
 export enum KeyGenMechanism {
-    RSA_PKCS = pkcs11.CKM_RSA_PKCS_KEY_PAIR_GEN,
+    AES = pkcs11.CKM_AES_KEY_GEN,
+    RSA = pkcs11.CKM_RSA_PKCS_KEY_PAIR_GEN,
     RSA_X9_31 = pkcs11.CKM_RSA_X9_31_KEY_PAIR_GEN,
     DSA = pkcs11.CKM_DSA_KEY_PAIR_GEN,
     DH_PKCS = pkcs11.CKM_DH_PKCS_KEY_PAIR_GEN,
