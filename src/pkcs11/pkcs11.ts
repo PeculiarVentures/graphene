@@ -8,6 +8,11 @@ export const NULL_PTR = null;
 
 export type CK_PTR = Buffer;
 
+/**
+ * callback function for PKCS11 functions
+ */
+export type Callback = (err: Error, rv: number) => void;
+
 export class Pkcs11 {
 
     lib: any;
@@ -22,30 +27,50 @@ export class Pkcs11 {
         (<any>this).lib = FFI.Library(libFile, <any>CK_FUNCTIONS);
     }
 
+    protected callFunction(funcName: string, args): number {
+        let func = this.lib[funcName];
+        if (typeof args[args.length - 1] === "function")
+            func.async.apply(this, args);
+        else
+            return func.apply(this, args);
+    }
+
     /**
      * C_Initialize initializes the Cryptoki library.
      * @param pInitArgs   if this is not NULL_PTR, it gets
      *                    cast to CK_C_INITIALIZE_ARGS_PTR
      *                    and dereferenced
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_Initialize(pInitArgs: CK_PTR = NULL_PTR): number {
-        return this.lib.C_Initialize(pInitArgs);
+    C_Initialize(pInitArgs?: CK_PTR): number;
+    C_Initialize(pInitArgs: CK_PTR, cllback: Callback): void;
+    C_Initialize(pInitArgs: CK_PTR = NULL_PTR, callback?: Callback): number {
+        return this.callFunction("C_Initialize", callback ? [pInitArgs, callback] : [pInitArgs]);
     }
 
     /**
      * C_Finalize indicates that an application is done with the Cryptoki library.
      * @param pReserved   reserved. Should be NULL_PTR 
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_Finalize(pReserved: CK_PTR = NULL_PTR): number {
-        return this.lib.C_Finalize(pReserved);
+    C_Finalize(pReserved?: CK_PTR): number;
+    C_Finalize(pReserved: CK_PTR, callback: Callback): void;
+    C_Finalize(pReserved: CK_PTR = NULL_PTR, callback?: Callback): number {
+        return this.callFunction("C_Finalize", callback ? [pReserved, callback] : [pReserved]);
     }
 
     /**
      * C_GetInfo returns general information about Cryptoki. 
      * @param pInfo       location that receives information
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_GetInfo(pInfo: CK_PTR): number {
-        return this.lib.C_GetInfo(pInfo);
+    C_GetInfo(pInfo: CK_PTR): number;
+    C_GetInfo(pInfo: CK_PTR, callback: Callback): void;
+    C_GetInfo(pInfo: CK_PTR, callback?: Callback): number {
+        return this.callFunction("C_GetInfo", arguments);
     }
 
     /** 
@@ -53,9 +78,13 @@ export class Pkcs11 {
      * @param {boolean} tokenPresent only slots with tokens?
      * @param pSlotList receives array of slot IDs
      * @param pulCount receives number of slots
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
+    C_GetSlotList(tokenPresent: boolean, pSlotList: CK_PTR, pulCount: CK_PTR): number;
+    C_GetSlotList(tokenPresent: boolean, pSlotList: CK_PTR, pulCount: CK_PTR, callback: Callback): void;
     C_GetSlotList(tokenPresent: boolean, pSlotList: CK_PTR, pulCount: CK_PTR): number {
-        return this.lib.C_GetSlotList(tokenPresent, pSlotList, pulCount);
+        return this.callFunction("C_GetSlotList", arguments);
     }
 
     /** 
@@ -63,9 +92,13 @@ export class Pkcs11 {
      * the system.
      * @param {number} slotID the ID of the slot
      * @param {Buffer} pInfo receives the slot information 
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_GetSlotInfo(slotID: number, pInfo: CK_PTR): number {
-        return this.lib.C_GetSlotInfo(slotID, pInfo);
+    C_GetSlotInfo(slotID: number, pInfo: CK_PTR): number;
+    C_GetSlotInfo(slotID: number, pInfo: CK_PTR, callback: Callback): void;
+    C_GetSlotInfo(slotID: number, pInfo: CK_PTR, callback?: Callback): number {
+        return this.callFunction("C_GetSlotInfo", arguments);
     }
 
     /** 
@@ -73,10 +106,13 @@ export class Pkcs11 {
      * in the system.
      * @param {number} slotID ID of the token's slot
      * @param {Buffer} pInfo receives the token information
-     *  
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_GetTokenInfo(slotID: number, pInfo: Buffer): number {
-        return this.lib.C_GetTokenInfo(slotID, pInfo);
+    C_GetTokenInfo(slotID: number, pInfo: Buffer): number;
+    C_GetTokenInfo(slotID: number, pInfo: Buffer, callback: Callback): void;
+    C_GetTokenInfo(slotID: number, pInfo: Buffer, callback?: Callback): number {
+        return this.callFunction("C_GetTokenInfo", arguments);
     }
 
     /**
@@ -85,9 +121,13 @@ export class Pkcs11 {
      * @param {number} slotID ID of the token's slot
      * @param {number} pMechanismList gets mech. array
      * @param {number} pulCount gets # of mechs
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_GetMechanismList(slotID: number, pMechanismList: Buffer, pulCount: Buffer): number {
-        return this.lib.C_GetMechanismList(slotID, pMechanismList, pulCount);
+    C_GetMechanismList(slotID: number, pMechanismList: Buffer, pulCount: Buffer): number;
+    C_GetMechanismList(slotID: number, pMechanismList: Buffer, pulCount: Buffer, callback: Callback): void;
+    C_GetMechanismList(slotID: number, pMechanismList: Buffer, pulCount: Buffer, callback?: Callback): number {
+        return this.callFunction("C_GetMechanismList", arguments);
     }
 
     /** C_GetMechanismInfo obtains information about a particular
@@ -95,9 +135,13 @@ export class Pkcs11 {
      * @param {number} slotID ID of the token's slot
      * @param {number} type type of mechanism
      * @param {Buffer} pInfo receives mechanism info
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_GetMechanismInfo(slotID: number, type: number, pInfo): number {
-        return this.lib.C_GetMechanismInfo(slotID, type, pInfo);
+    C_GetMechanismInfo(slotID: number, type: number, pInfo: Buffer): number;
+    C_GetMechanismInfo(slotID: number, type: number, pInfo: Buffer, callback: Callback): void;
+    C_GetMechanismInfo(slotID: number, type: number, pInfo: Buffer, callback?: Callback): number {
+        return this.callFunction("C_GetMechanismInfo", arguments);
     }
 
     /** 
@@ -106,9 +150,13 @@ export class Pkcs11 {
      * @param {Buffer} pPin the SO's initial PIN
      * @param {number} ulPinLen length in bytes of the PIN
      * @param {number} pLabel 32-byte token label (blank padded)
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_InitToken(slotID: number, pPin: Buffer, ulPinLen: number, pLabel: Buffer): number {
-        return this.lib.C_GetMechanismInfo(slotID, pPin, ulPinLen, pLabel);
+    C_InitToken(slotID: number, pPin: Buffer, ulPinLen: number, pLabel: Buffer): number;
+    C_InitToken(slotID: number, pPin: Buffer, ulPinLen: number, pLabel: Buffer, callback: Callback): void;
+    C_InitToken(slotID: number, pPin: Buffer, ulPinLen: number, pLabel: Buffer, callback?: Callback): number {
+        return this.callFunction("C_InitToken", arguments);
     }
 
     /**
@@ -116,9 +164,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle 
      * @param {Buffer} pPin the normal user's PIN 
      * @param {number} ulPinLen length in bytes of the PIN
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_InitPIN(hSession: number, pPin: Buffer, ulPinLen): number {
-        return this.lib.C_InitPIN(hSession, pPin, ulPinLen);
+    C_InitPIN(hSession: number, pPin: Buffer, ulPinLen: number): number;
+    C_InitPIN(hSession: number, pPin: Buffer, ulPinLen: number, callback: Callback): void;
+    C_InitPIN(hSession: number, pPin: Buffer, ulPinLen: number, callback?: Callback): number {
+        return this.callFunction("C_InitPIN", arguments);
     }
 
     /** 
@@ -128,9 +180,13 @@ export class Pkcs11 {
      * @param {number} ulOldLen length of the old PIN 
      * @param {Buffer} pNewPin the new PIN 
      * @param {number} ulNewLen length of the new PIN 
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_SetPIN(hSession, pOldPin: Buffer, ulOldLen: number, pNewPin: Buffer, ulNewLen: number): number {
-        return this.lib.C_SetPIN(hSession, pOldPin, ulOldLen, pNewPin, ulNewLen);
+    C_SetPIN(hSession, pOldPin: Buffer, ulOldLen: number, pNewPin: Buffer, ulNewLen: number): number;
+    C_SetPIN(hSession, pOldPin: Buffer, ulOldLen: number, pNewPin: Buffer, ulNewLen: number, callback: Callback): void;
+    C_SetPIN(hSession, pOldPin: Buffer, ulOldLen: number, pNewPin: Buffer, ulNewLen: number, callback?: Callback): number {
+        return this.callFunction("C_SetPIN", arguments);
     }
 
     /* Session management */
@@ -143,34 +199,50 @@ export class Pkcs11 {
      * @param {Buffer} pApplication passed to callback
      * @param {Buffer} Notify callback function
      * @param {Buffer} phSession gets session handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_OpenSession(slotID: number, flags: number, pApplication: Buffer = NULL_PTR, Notify: Buffer = NULL_PTR, phSession: Buffer = NULL_PTR): number {
-        return this.lib.C_OpenSession(slotID, flags, pApplication, Notify, phSession);
+    C_OpenSession(slotID: number, flags: number, pApplication?: Buffer, notify?: Buffer, phSession?: Buffer): number;
+    C_OpenSession(slotID: number, flags: number, pApplication: Buffer, notify: Buffer, phSession: Buffer, callback: Callback): void;
+    C_OpenSession(slotID: number, flags: number, pApplication: Buffer = NULL_PTR, notify: Buffer = NULL_PTR, phSession: Buffer = NULL_PTR, callback?: Callback): number {
+        return this.callFunction("C_OpenSession", callback ? [slotID, flags, pApplication, notify, phSession, callback] : [slotID, flags, pApplication, notify, phSession]);
     }
 
     /**
      * C_CloseSession closes a session between an application and a token. 
-     * @param {number} hSession the session's handle 
+     * @param {number} hSession the session's handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_CloseSession(hSession: number): number {
-        return this.lib.C_CloseSession(hSession);
+    C_CloseSession(hSession: number): number;
+    C_CloseSession(hSession: number, callback: Callback): void;
+    C_CloseSession(hSession: number, callback?: Callback): number {
+        return this.callFunction("C_CloseSession", arguments);
     }
 
     /** 
      * C_CloseAllSessions closes all sessions with a token. 
      * @param {number} slotID ID of the token's slot
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_CloseAllSessions(slotID: number): number {
-        return this.lib.C_CloseAllSessions(slotID);
+    C_CloseAllSessions(slotID: number): number;
+    C_CloseAllSessions(slotID: number, callback: Callback): void;
+    C_CloseAllSessions(slotID: number, callback?: Callback): number {
+        return this.callFunction("C_CloseAllSessions", arguments);
     }
 
     /**
      * C_GetSessionInfo obtains information about the session. 
      * @param {number} hSession the session's handle 
-     * @param {Buffer} pInfo receives session info 
+     * @param {Buffer} pInfo receives session info
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_GetSessionInfo(hSession: number, pInfo: Buffer): number {
-        return this.lib.C_GetSessionInfo(hSession, pInfo);
+    C_GetSessionInfo(hSession: number, pInfo: Buffer): number;
+    C_GetSessionInfo(hSession: number, pInfo: Buffer, callback: Callback): void;
+    C_GetSessionInfo(hSession: number, pInfo: Buffer, callback?: Callback): number {
+        return this.callFunction("C_GetSessionInfo", arguments);
     }
 
     /**
@@ -178,9 +250,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle 
      * @param {Buffer} pOperationState gets state
      * @param {Buffer} pulOperationStateLen gets state length
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_GetOperationState(hSession: number, pOperationState: Buffer, pulOperationStateLen: Buffer): number {
-        return this.lib.C_GetOperationState(hSession, pOperationState, pulOperationStateLen);
+    C_GetOperationState(hSession: number, pOperationState: Buffer, pulOperationStateLen: Buffer): number;
+    C_GetOperationState(hSession: number, pOperationState: Buffer, pulOperationStateLen: Buffer, callback: Callback): void;
+    C_GetOperationState(hSession: number, pOperationState: Buffer, pulOperationStateLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_GetOperationState", arguments);
     }
 
     /**
@@ -190,9 +266,13 @@ export class Pkcs11 {
      * @param {number} ulOperationStateLen holds holds state length
      * @param {number} hEncryptionKey en/decryption key
      * @param {number} hAuthenticationKey sign/verify key
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_SetOperationState(hSession: number, pOperationState: Buffer, ulOperationStateLen: number, hEncryptionKey, hAuthenticationKey): number {
-        return this.lib.C_SetOperationState(hSession, pOperationState, ulOperationStateLen, hEncryptionKey, hAuthenticationKey);
+    C_SetOperationState(hSession: number, pOperationState: Buffer, ulOperationStateLen: number, hEncryptionKey: number, hAuthenticationKey: number): number;
+    C_SetOperationState(hSession: number, pOperationState: Buffer, ulOperationStateLen: number, hEncryptionKey: number, hAuthenticationKey: number, callback: Callback): void;
+    C_SetOperationState(hSession: number, pOperationState: Buffer, ulOperationStateLen: number, hEncryptionKey: number, hAuthenticationKey: number, callback?: Callback): number {
+        return this.callFunction("C_SetOperationState", arguments);
     }
 
     /**
@@ -201,17 +281,25 @@ export class Pkcs11 {
      * @param {number} userType the user type 
      * @param {Buffer} pPin the user's PIN
      * @param {number} ulPinLen the length of the PIN
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_Login(hSession: number, userType: number, pPin: Buffer, ulPinLen: number): number {
-        return this.lib.C_Login(hSession, userType, pPin, ulPinLen);
+    C_Login(hSession: number, userType: number, pPin: Buffer, ulPinLen: number): number;
+    C_Login(hSession: number, userType: number, pPin: Buffer, ulPinLen: number, callback: Callback): void;
+    C_Login(hSession: number, userType: number, pPin: Buffer, ulPinLen: number, callback?: Callback): number {
+        return this.callFunction("C_Login", arguments);
     }
 
     /** 
      * C_Logout logs a user out from a token. 
-     * @param {number} hSession the session's handle 
+     * @param {number} hSession the session's handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_Logout(hSession: number): number {
-        return this.lib.C_Logout(hSession);
+    C_Logout(hSession: number): number;
+    C_Logout(hSession: number, callback: Callback): void;
+    C_Logout(hSession: number, callback?: Callback): number {
+        return this.callFunction("C_Logout", arguments);
     }
 
     /* Object management */
@@ -221,10 +309,14 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle 
      * @param {Buffer} pTemplate the object's template 
      * @param {number} ulCount attributes in template 
-     * @param {Buffer} phObject gets new object's handle 
+     * @param {Buffer} phObject gets new object's handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_CreateObject(hSession: number, pTemplate: Buffer, ulCount: number, phObject: Buffer): number {
-        return this.lib.C_CreateObject(hSession, pTemplate, ulCount, phObject);
+    C_CreateObject(hSession: number, pTemplate: Buffer, ulCount: number, phObject: Buffer): number;
+    C_CreateObject(hSession: number, pTemplate: Buffer, ulCount: number, phObject: Buffer, callback: Callback): void;
+    C_CreateObject(hSession: number, pTemplate: Buffer, ulCount: number, phObject: Buffer, callback?: Callback): number {
+        return this.callFunction("C_CreateObject", arguments);
     }
 
     /** 
@@ -233,29 +325,41 @@ export class Pkcs11 {
      * @param {number} hObject the object's handle 
      * @param {Buffer} pTemplate template for new object 
      * @param {number} ulCount attributes in template 
-     * @param {Buffer} phNewObject receives handle of copy 
+     * @param {Buffer} phNewObject receives handle of copy
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_CopyObject(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number, phNewObject: Buffer): number {
-        return this.lib.C_CopyObject(hSession, hObject, pTemplate, ulCount, phNewObject);
+    C_CopyObject(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number, phNewObject: Buffer): number;
+    C_CopyObject(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number, phNewObject: Buffer, callback: Callback): void;
+    C_CopyObject(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number, phNewObject: Buffer, callback?: Callback): number {
+        return this.callFunction("C_CopyObject", arguments);
     }
 
     /** 
      * C_DestroyObject destroys an object. 
      * @param {number} hSession the session's handle 
-     * @param {number} hObject the object's handle 
+     * @param {number} hObject the object's handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_DestroyObject(hSession: number, hObject: number): number {
-        return this.lib.C_DestroyObject(hSession, hObject);
+    C_DestroyObject(hSession: number, hObject: number): number;
+    C_DestroyObject(hSession: number, hObject: number, callback: Callback): void;
+    C_DestroyObject(hSession: number, hObject: number, callback?: Callback): number {
+        return this.callFunction("C_DestroyObject", arguments);
     }
 
     /** 
      * C_GetObjectSize gets the size of an object in bytes. 
      * @param {number} hSession the session's handle 
      * @param {number} hObject the object's handle 
-     * @param {Buffer} pulSize receives size of object 
+     * @param {Buffer} pulSize receives size of object
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_GetObjectSize(hSession: number, hObject: number, pulSize: Buffer): number {
-        return this.lib.C_GetObjectSize(hSession, hObject, pulSize);
+    C_GetObjectSize(hSession: number, hObject: number, pulSize: Buffer): number;
+    C_GetObjectSize(hSession: number, hObject: number, pulSize: Buffer, callback: Callback): void;
+    C_GetObjectSize(hSession: number, hObject: number, pulSize: Buffer, callback?: Callback): number {
+        return this.callFunction("C_GetObjectSize", arguments);
     }
 
     /** 
@@ -264,9 +368,13 @@ export class Pkcs11 {
      * @param {number} hObject the object's handle 
      * @param {Buffer} pTemplate specifies attrs; gets vals 
      * @param {number} ulCount attributes in template
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_GetAttributeValue(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number): number {
-        return this.lib.C_GetAttributeValue(hSession, hObject, pTemplate, ulCount);
+    C_GetAttributeValue(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number): number;
+    C_GetAttributeValue(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number, callback: Callback): void;
+    C_GetAttributeValue(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number, callback?: Callback): number {
+        return this.callFunction("C_GetAttributeValue", arguments);
     }
 
     /**
@@ -275,9 +383,13 @@ export class Pkcs11 {
      * @param {number} hObject the object's handle 
      * @param {Buffer} pTemplate specifies attrs and values 
      * @param {number} ulCount attributes in template
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_SetAttributeValue(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number): number {
-        return this.lib.C_SetAttributeValue(hSession, hObject, pTemplate, ulCount);
+    C_SetAttributeValue(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number): number;
+    C_SetAttributeValue(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number, callback: Callback): void;
+    C_SetAttributeValue(hSession: number, hObject: number, pTemplate: Buffer, ulCount: number, callback?: Callback): number {
+        return this.callFunction("C_SetAttributeValue", arguments);
     }
 
     /**
@@ -286,9 +398,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle 
      * @param {Buffer} pTemplate attribute values to match 
      * @param {number} ulCount attrs in search template
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_FindObjectsInit(hSession: number, pTemplate: Buffer, ulCount: number): number {
-        return this.lib.C_FindObjectsInit(hSession, pTemplate, ulCount);
+    C_FindObjectsInit(hSession: number, pTemplate: Buffer, ulCount: number): number;
+    C_FindObjectsInit(hSession: number, pTemplate: Buffer, ulCount: number, callback: Callback): void;
+    C_FindObjectsInit(hSession: number, pTemplate: Buffer, ulCount: number, callback?: Callback): number {
+        return this.callFunction("C_FindObjectsInit", arguments);
     }
 
     /**
@@ -298,18 +414,26 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle 
      * @param {Buffer} phObject gets obj. handles 
      * @param {number} ulMaxObjectCount max handles to get 
-     * @param {Buffer} pulObjectCount actual # returned 
+     * @param {Buffer} pulObjectCount actual # returned
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_FindObjects(hSession: number, phObject: Buffer, ulMaxObjectCount: number, pulObjectCount: Buffer): number {
-        return this.lib.C_FindObjects(hSession, phObject, ulMaxObjectCount, pulObjectCount);
+    C_FindObjects(hSession: number, phObject: Buffer, ulMaxObjectCount: number, pulObjectCount: Buffer): number;
+    C_FindObjects(hSession: number, phObject: Buffer, ulMaxObjectCount: number, pulObjectCount: Buffer, callback: Callback): void;
+    C_FindObjects(hSession: number, phObject: Buffer, ulMaxObjectCount: number, pulObjectCount: Buffer, callback?: Callback): number {
+        return this.callFunction("C_FindObjects", arguments);
     }
 
     /**
      * C_FindObjectsFinal finishes a search for token and session objects. 
-     * @param {number} hSession the session's handle 
+     * @param {number} hSession the session's handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_FindObjectsFinal(hSession: number): number {
-        return this.lib.C_FindObjectsFinal(hSession);
+    C_FindObjectsFinal(hSession: number): number;
+    C_FindObjectsFinal(hSession: number, callback: Callback): void;
+    C_FindObjectsFinal(hSession: number, callback?: Callback): number {
+        return this.callFunction("C_FindObjectsFinal", arguments);
     }
 
     /* Encryption and decryption */
@@ -318,10 +442,14 @@ export class Pkcs11 {
      * C_EncryptInit initializes an encryption operation. 
      * @param {number} hSession the session's handle 
      * @param {Buffer} pMechanism the encryption mechanism 
-     * @param {number} hKey handle of encryption key 
+     * @param {number} hKey handle of encryption key
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_EncryptInit(hSession: number, pMechanism: Buffer, hKey: number): number {
-        return this.lib.C_EncryptInit(hSession, pMechanism, hKey);
+    C_EncryptInit(hSession: number, pMechanism: Buffer, hKey: number): number;
+    C_EncryptInit(hSession: number, pMechanism: Buffer, hKey: number, callback: Callback): void;
+    C_EncryptInit(hSession: number, pMechanism: Buffer, hKey: number, callback?: Callback): number {
+        return this.callFunction("C_EncryptInit", arguments);
     }
 
     /**
@@ -331,9 +459,13 @@ export class Pkcs11 {
      * @param {number} ulDataLen bytes of plaintext
      * @param {Buffer} pEncryptedData gets ciphertext
      * @param {Buffer} pulEncryptedDataLen gets c-text size
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_Encrypt(hSession: number, pData: Buffer, ulDataLen: number, pEncryptedData: Buffer, pulEncryptedDataLen: Buffer): number {
-        return this.lib.C_Encrypt(hSession, pData, ulDataLen, pEncryptedData, pulEncryptedDataLen);
+    C_Encrypt(hSession: number, pData: Buffer, ulDataLen: number, pEncryptedData: Buffer, pulEncryptedDataLen: Buffer): number;
+    C_Encrypt(hSession: number, pData: Buffer, ulDataLen: number, pEncryptedData: Buffer, pulEncryptedDataLen: Buffer, callback: Callback): void;
+    C_Encrypt(hSession: number, pData: Buffer, ulDataLen: number, pEncryptedData: Buffer, pulEncryptedDataLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_Encrypt", arguments);
     }
 
     /** 
@@ -343,9 +475,13 @@ export class Pkcs11 {
      * @param {number} ulPartLen plaintext data len
      * @param {Buffer} pEncryptedPart gets ciphertext
      * @param {Buffer} pulEncryptedPartLen gets c-text size
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_EncryptUpdate(hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen): number {
-        return this.lib.C_EncryptUpdate(hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen);
+    C_EncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer): number;
+    C_EncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer, callback: Callback): void;
+    C_EncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_EncryptUpdate", arguments);
     }
 
     /** 
@@ -353,9 +489,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pLastEncryptedPart last c-text
      * @param {Buffer} pulLastEncryptedPartLen gets last size
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_EncryptFinal(hSession: number, pLastEncryptedPart: Buffer, pulLastEncryptedPartLen: Buffer) {
-        return this.lib.C_EncryptFinal(hSession, pLastEncryptedPart, pulLastEncryptedPartLen);
+    C_EncryptFinal(hSession: number, pLastEncryptedPart: Buffer, pulLastEncryptedPartLen: Buffer): number;
+    C_EncryptFinal(hSession: number, pLastEncryptedPart: Buffer, pulLastEncryptedPartLen: Buffer, callback: Callback): void;
+    C_EncryptFinal(hSession: number, pLastEncryptedPart: Buffer, pulLastEncryptedPartLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_EncryptFinal", arguments);
     }
 
     /** 
@@ -363,9 +503,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pMechanism the decryption mechanism 
      * @param {number} hKey handle of decryption key
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DecryptInit(hSession: number, pMechanism: Buffer, hKey: number) {
-        return this.lib.C_DecryptInit(hSession, pMechanism, hKey);
+    C_DecryptInit(hSession: number, pMechanism: Buffer, hKey: number);
+    C_DecryptInit(hSession: number, pMechanism: Buffer, hKey: number, callback: Callback): void;
+    C_DecryptInit(hSession: number, pMechanism: Buffer, hKey: number, callback?: Callback): number {
+        return this.callFunction("C_DecryptInit", arguments);
     }
 
     /** 
@@ -375,9 +519,13 @@ export class Pkcs11 {
      * @param {number} ulEncryptedDataLen ciphertext length
      * @param {Buffer} pData gets plaintext
      * @param {number} pulDataLen gets p-text size
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_Decrypt(hSession: number, pEncryptedData: Buffer, ulEncryptedDataLen: number, pData: Buffer, pulDataLen: Buffer): number {
-        return this.lib.C_Decrypt(hSession, pEncryptedData, ulEncryptedDataLen, pData, pulDataLen);
+    C_Decrypt(hSession: number, pEncryptedData: Buffer, ulEncryptedDataLen: number, pData: Buffer, pulDataLen: Buffer): number;
+    C_Decrypt(hSession: number, pEncryptedData: Buffer, ulEncryptedDataLen: number, pData: Buffer, pulDataLen: Buffer, callback: Callback): void;
+    C_Decrypt(hSession: number, pEncryptedData: Buffer, ulEncryptedDataLen: number, pData: Buffer, pulDataLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_Decrypt", arguments);
     }
 
     /**
@@ -387,9 +535,13 @@ export class Pkcs11 {
      * @param {number} ulEncryptedPartLen input length
      * @param {Buffer} pPart gets plaintext
      * @param {Buffer} pulPartLen p-text size
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DecryptUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer): number {
-        return this.lib.C_DecryptUpdate(hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen);
+    C_DecryptUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer): number;
+    C_DecryptUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer, callback: Callback): void;
+    C_DecryptUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_DecryptUpdate", arguments);
     }
 
     /**
@@ -397,9 +549,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pLastPart gets plaintext
      * @param {Buffer} pulLastPartLen p-text size
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DecryptFinal(hSession: number, pLastPart: Buffer, pulLastPartLen: Buffer): number {
-        return this.lib.C_DecryptFinal(hSession, pLastPart, pulLastPartLen);
+    C_DecryptFinal(hSession: number, pLastPart: Buffer, pulLastPartLen: Buffer): number;
+    C_DecryptFinal(hSession: number, pLastPart: Buffer, pulLastPartLen: Buffer, callback: Callback): void;
+    C_DecryptFinal(hSession: number, pLastPart: Buffer, pulLastPartLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_DecryptFinal", arguments);
     }
 
     /* Message digesting */
@@ -408,9 +564,13 @@ export class Pkcs11 {
      * C_DigestInit initializes a message-digesting operation. 
      * @param {number} hSession the session's handle
      * @param {Buffer} pMechanism the digesting mechanism
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DigestInit(hSession: number, pMechanism: Buffer): number {
-        return this.lib.C_DigestInit(hSession, pMechanism);
+    C_DigestInit(hSession: number, pMechanism: Buffer): number;
+    C_DigestInit(hSession: number, pMechanism: Buffer, callback: Callback): void;
+    C_DigestInit(hSession: number, pMechanism: Buffer, callback?: Callback): number {
+        return this.callFunction("C_DigestInit", arguments);
     }
 
     /** 
@@ -420,9 +580,13 @@ export class Pkcs11 {
      * @param {number} ulDataLen bytes of data to digest
      * @param {Buffer} pDigest gets the message digest
      * @param {Buffer} pulDigestLen gets digest length
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_Digest(hSession: number, pData: Buffer, ulDataLen: number, pDigest: Buffer, pulDigestLen: Buffer): number {
-        return this.lib.C_Digest(hSession, pData, ulDataLen, pDigest, pulDigestLen);
+    C_Digest(hSession: number, pData: Buffer, ulDataLen: number, pDigest: Buffer, pulDigestLen: Buffer): number;
+    C_Digest(hSession: number, pData: Buffer, ulDataLen: number, pDigest: Buffer, pulDigestLen: Buffer, callback: Callback): void;
+    C_Digest(hSession: number, pData: Buffer, ulDataLen: number, pDigest: Buffer, pulDigestLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_Digest", arguments);
     }
 
     /** 
@@ -430,9 +594,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pPart data to be digested
      * @param {number} ulPartLen bytes of data to be digested
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DigestUpdate(hSession: number, pPart: Buffer, ulPartLen: number): number {
-        return this.lib.C_DigestUpdate(hSession, pPart, ulPartLen);
+    C_DigestUpdate(hSession: number, pPart: Buffer, ulPartLen: number): number;
+    C_DigestUpdate(hSession: number, pPart: Buffer, ulPartLen: number, callback: Callback): void;
+    C_DigestUpdate(hSession: number, pPart: Buffer, ulPartLen: number, callback?: Callback): number {
+        return this.callFunction("C_DigestUpdate", arguments);
     }
 
     /** 
@@ -441,9 +609,13 @@ export class Pkcs11 {
      * the data already digested.
      * @param {number} hSession the session's handle
      * @param {number} hKey secret key to digest
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DigestKey(hSession: number, hKey: number): number {
-        return this.lib.C_DigestKey(hSession, hKey);
+    C_DigestKey(hSession: number, hKey: number): number;
+    C_DigestKey(hSession: number, hKey: number, callback: Callback): void;
+    C_DigestKey(hSession: number, hKey: number, callback?: Callback): number {
+        return this.callFunction("C_DigestKey", arguments);
     }
 
     /**
@@ -452,9 +624,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pDigest gets the message digest
      * @param {Buffer} pulDigestLen gets byte count of digest
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DigestFinal(hSession: number, pDigest: Buffer, pulDigestLen: Buffer): number {
-        return this.lib.C_DigestFinal(hSession, pDigest, pulDigestLen);
+    C_DigestFinal(hSession: number, pDigest: Buffer, pulDigestLen: Buffer): number;
+    C_DigestFinal(hSession: number, pDigest: Buffer, pulDigestLen: Buffer, callback: Callback): void;
+    C_DigestFinal(hSession: number, pDigest: Buffer, pulDigestLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_DigestKey", arguments);
     }
 
     /* Signing and MACing */
@@ -466,9 +642,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle 
      * @param {Buffer} pMechanism the signature mechanism 
      * @param {number} hKey handle of signature key
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_SignInit(hSession: number, pMechanism: Buffer, hKey: number): number {
-        return this.lib.C_SignInit(hSession, pMechanism, hKey);
+    C_SignInit(hSession: number, pMechanism: Buffer, hKey: number): number;
+    C_SignInit(hSession: number, pMechanism: Buffer, hKey: number, callback: Callback): void;
+    C_SignInit(hSession: number, pMechanism: Buffer, hKey: number, callback?: Callback): number {
+        return this.callFunction("C_SignInit", arguments);
     }
 
     /**
@@ -480,9 +660,13 @@ export class Pkcs11 {
      * @param {number} ulDataLen count of bytes to sign
      * @param {Buffer} pSignature gets the signature
      * @param {Buffer} pulSignatureLen gets signature length
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_Sign(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, pulSignatureLen: Buffer): number {
-        return this.lib.C_Sign(hSession, pData, ulDataLen, pSignature, pulSignatureLen);
+    C_Sign(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, pulSignatureLen: Buffer): number;
+    C_Sign(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, pulSignatureLen: Buffer, callback: Callback): void;
+    C_Sign(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, pulSignatureLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_Sign", arguments);
     }
 
     /**
@@ -491,10 +675,14 @@ export class Pkcs11 {
      * and plaintext cannot be recovered from the signature. 
      * @param {number} hSession the session's handle 
      * @param {Buffer} pPart the data to sign 
-     * @param {number} ulPartLen count of bytes to sign 
+     * @param {number} ulPartLen count of bytes to sign
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_SignUpdate(hSession: number, pPart: Buffer, ulPartLen: Buffer): number {
-        return this.lib.C_SignUpdate(hSession, pPart, ulPartLen);
+    C_SignUpdate(hSession: number, pPart: Buffer, ulPartLen: Buffer): number;
+    C_SignUpdate(hSession: number, pPart: Buffer, ulPartLen: Buffer, callback: Callback): void;
+    C_SignUpdate(hSession: number, pPart: Buffer, ulPartLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_SignUpdate", arguments);
     }
 
     /**
@@ -503,9 +691,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pSignature gets the signature
      * @param {Buffer} pulSignatureLen gets signature length
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_SignFinal(hSession: number, pSignature: Buffer, pulSignatureLen: Buffer): number {
-        return this.lib.C_SignFinal(hSession, pSignature, pulSignatureLen);
+    C_SignFinal(hSession: number, pSignature: Buffer, pulSignatureLen: Buffer): number;
+    C_SignFinal(hSession: number, pSignature: Buffer, pulSignatureLen: Buffer, callback: Callback): void;
+    C_SignFinal(hSession: number, pSignature: Buffer, pulSignatureLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_SignFinal", arguments);
     }
 
     /**
@@ -514,9 +706,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pMechanism the signature mechanism 
      * @param {number} hKey handle of the signature key
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_SignRecoverInit(hSession: number, pMechanism: Buffer, hKey: number): number {
-        return this.lib.C_SignRecoverInit(hSession, pMechanism, hKey);
+    C_SignRecoverInit(hSession: number, pMechanism: Buffer, hKey: number): number;
+    C_SignRecoverInit(hSession: number, pMechanism: Buffer, hKey: number, callback: Callback): void;
+    C_SignRecoverInit(hSession: number, pMechanism: Buffer, hKey: number, callback?: Callback): number {
+        return this.callFunction("C_SignRecoverInit", arguments);
     }
 
     /**
@@ -527,9 +723,13 @@ export class Pkcs11 {
      * @param {number} ulDataLen count of bytes to sign
      * @param {Buffer} pSignature gets the signature
      * @param {Buffer} pulSignatureLen gets signature length
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_SignRecover(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, pulSignatureLen: Buffer): number {
-        return this.lib.C_SignRecover(hSession, pData, ulDataLen, pSignature, pulSignatureLen);
+    C_SignRecover(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, pulSignatureLen: Buffer): number;
+    C_SignRecover(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, pulSignatureLen: Buffer, callback: Callback): void;
+    C_SignRecover(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, pulSignatureLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_SignRecover", arguments);
     }
 
     /* Verifying signatures and MACs */
@@ -540,10 +740,14 @@ export class Pkcs11 {
      * cannot be recovered from the signature (e.g. DSA). 
      * @param {number} hSession the session's handle
      * @param {Buffer} pMechanism the verification mechanism 
-     * @param {number} hKey verification key 
+     * @param {number} hKey verification key
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_VerifyInit(hSession: number, pMechanism: Buffer, hKey: number): number {
-        return this.lib.C_VerifyInit(hSession, pMechanism, hKey);
+    C_VerifyInit(hSession: number, pMechanism: Buffer, hKey: number): number;
+    C_VerifyInit(hSession: number, pMechanism: Buffer, hKey: number, callback: Callback): void;
+    C_VerifyInit(hSession: number, pMechanism: Buffer, hKey: number, callback?: Callback): number {
+        return this.callFunction("C_VerifyInit", arguments);
     }
 
     /**
@@ -555,9 +759,13 @@ export class Pkcs11 {
      * @param {number} ulDataLen length of signed data
      * @param {Buffer} pSignature signature
      * @param {number} ulSignatureLen signature length
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_Verify(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, ulSignatureLen: Buffer): number {
-        return this.lib.C_Verify(hSession, pData, ulDataLen, pSignature, ulSignatureLen);
+    C_Verify(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, ulSignatureLen: Buffer): number;
+    C_Verify(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, ulSignatureLen: Buffer, callback: Callback): void;
+    C_Verify(hSession: number, pData: Buffer, ulDataLen: number, pSignature: Buffer, ulSignatureLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_Verify", arguments);
     }
 
     /**
@@ -567,11 +775,14 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pPart signed data
      * @param {number} ulPartLen length of signed data
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_VerifyUpdate(hSession: number, pPart: Buffer, ulPartLen: number): number {
-        return this.lib.C_VerifyUpdate(hSession, pPart, ulPartLen);
+    C_VerifyUpdate(hSession: number, pPart: Buffer, ulPartLen: number): number;
+    C_VerifyUpdate(hSession: number, pPart: Buffer, ulPartLen: number, callback: Callback): void;
+    C_VerifyUpdate(hSession: number, pPart: Buffer, ulPartLen: number, callback?: Callback): number {
+        return this.callFunction("C_VerifyUpdate", arguments);
     }
-
 
     /**
      * C_VerifyFinal finishes a multiple-part verification
@@ -579,11 +790,14 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pSignature signature to verify
      * @param {number} ulSignatureLen signature length
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_VerifyFinal(hSession: number, pSignature: Buffer, ulSignatureLen: number): number {
-        return this.lib.C_VerifyFinal(hSession, pSignature, ulSignatureLen);
+    C_VerifyFinal(hSession: number, pSignature: Buffer, ulSignatureLen: number): number;
+    C_VerifyFinal(hSession: number, pSignature: Buffer, ulSignatureLen: number, callback: Callback): void;
+    C_VerifyFinal(hSession: number, pSignature: Buffer, ulSignatureLen: number, callback?: Callback): number {
+        return this.callFunction("C_VerifyFinal", arguments);
     }
-
 
     /**
      * C_VerifyRecoverInit initializes a signature verification
@@ -591,11 +805,14 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pMechanism the verification mechanism
      * @param {number} hKey verification key
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_VerifyRecoverInit(hSession: number, pMechanism: Buffer, hKey: number): number {
-        return this.lib.C_VerifyRecoverInit(hSession, pMechanism, hKey);
+    C_VerifyRecoverInit(hSession: number, pMechanism: Buffer, hKey: number): number;
+    C_VerifyRecoverInit(hSession: number, pMechanism: Buffer, hKey: number, callback: Callback): void;
+    C_VerifyRecoverInit(hSession: number, pMechanism: Buffer, hKey: number, callback?: Callback): number {
+        return this.callFunction("C_VerifyRecoverInit", arguments);
     }
-
 
     /**
      * C_VerifyRecover verifies a signature in a single-part
@@ -605,9 +822,13 @@ export class Pkcs11 {
      * @param {number} ulSignatureLen signature length
      * @param {Buffer} pData gets signed data
      * @param {Buffer} pulDataLen gets signed data len
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_VerifyRecover(hSession: number, pSignature: Buffer, ulSignatureLen: number, pData: Buffer, pulDataLen: Buffer): number {
-        return this.lib.C_VerifyRecover(hSession, pSignature, ulSignatureLen, pData, pulDataLen);
+    C_VerifyRecover(hSession: number, pSignature: Buffer, ulSignatureLen: number, pData: Buffer, pulDataLen: Buffer): number;
+    C_VerifyRecover(hSession: number, pSignature: Buffer, ulSignatureLen: number, pData: Buffer, pulDataLen: Buffer, callback: Callback): void;
+    C_VerifyRecover(hSession: number, pSignature: Buffer, ulSignatureLen: number, pData: Buffer, pulDataLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_VerifyRecovers", arguments);
     }
 
     /* Dual-function cryptographic operations */
@@ -620,9 +841,13 @@ export class Pkcs11 {
      * @param {number} ulPartLen plaintext length
      * @param {Buffer} pEncryptedPart gets ciphertext
      * @param {Buffer} pulEncryptedPartLen gets c-text length
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DigestEncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer): number {
-        return this.lib.C_DigestEncryptUpdate(hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen);
+    C_DigestEncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer): number;
+    C_DigestEncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer, callback: Callback): void;
+    C_DigestEncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_DigestEncryptUpdate", arguments);
     }
 
     /**
@@ -633,9 +858,13 @@ export class Pkcs11 {
      * @param {number} ulEncryptedPartLen ciphertext length
      * @param {Buffer} pPart gets plaintext
      * @param {Buffer} pulPartLen gets plaintext len
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DecryptDigestUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer): number {
-        return this.lib.C_DecryptDigestUpdate(hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen);
+    C_DecryptDigestUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer): number;
+    C_DecryptDigestUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer, callback: Callback): void;
+    C_DecryptDigestUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_DecryptDigestUpdate", arguments);
     }
 
     /**
@@ -646,9 +875,13 @@ export class Pkcs11 {
      * @param {number} ulPartLen plaintext length
      * @param {Buffer} pEncryptedPart gets ciphertext
      * @param {Buffer} pulEncryptedPartLen gets c-text length
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_SignEncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer): number {
-        return this.lib.C_SignEncryptUpdate(hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen);
+    C_SignEncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer): number;
+    C_SignEncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer, callback: Callback): void;
+    C_SignEncryptUpdate(hSession: number, pPart: Buffer, ulPartLen: number, pEncryptedPart: Buffer, pulEncryptedPartLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_SignEncryptUpdate", arguments);
     }
 
     /**
@@ -659,9 +892,13 @@ export class Pkcs11 {
      * @param {number} ulEncryptedPartLen ciphertext length
      * @param {Buffer} pPart gets plaintext
      * @param {Buffer} pulPartLen gets p-text length
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DecryptVerifyUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer): number {
-        return this.lib.C_DecryptVerifyUpdate(hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen);
+    C_DecryptVerifyUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer): number;
+    C_DecryptVerifyUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer, callback: Callback): void;
+    C_DecryptVerifyUpdate(hSession: number, pEncryptedPart: Buffer, ulEncryptedPartLen: number, pPart: Buffer, pulPartLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_DecryptVerifyUpdate", arguments);
     }
 
     /* Key management */
@@ -673,9 +910,13 @@ export class Pkcs11 {
      * @param {Buffer} pTemplate template for new key
      * @param {number} ulCount # of attrs in template
      * @param {Buffer} phKey gets handle of new key
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_GenerateKey(hSession: number, pMechanism: Buffer, pTemplate: Buffer, ulCount: number, phKey: Buffer): number {
-        return this.lib.C_GenerateKey(hSession, pMechanism, pTemplate, ulCount, phKey);
+    C_GenerateKey(hSession: number, pMechanism: Buffer, pTemplate: Buffer, ulCount: number, phKey: Buffer): number;
+    C_GenerateKey(hSession: number, pMechanism: Buffer, pTemplate: Buffer, ulCount: number, phKey: Buffer, callback: Callback);
+    C_GenerateKey(hSession: number, pMechanism: Buffer, pTemplate: Buffer, ulCount: number, phKey: Buffer, callback?: Callback): number {
+        return this.callFunction("C_GenerateKey", arguments);
     }
 
     /**
@@ -688,10 +929,14 @@ export class Pkcs11 {
      * @param {Buffer} pPrivateKeyTemplate template for private key
      * @param {number} ulPrivateKeyAttributeCount private attrs
      * @param {Buffer} phPublicKey gets public key handle 
-     * @param {Buffer} phPrivateKey gets private key handle 
+     * @param {Buffer} phPrivateKey gets private key handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value 
      */
-    C_GenerateKeyPair(hSession: number, pMechanism: Buffer, pPublicKeyTemplate: Buffer, ulPublicKeyAttributeCount: number, pPrivateKeyTemplate: Buffer, ulPrivateKeyAttributeCount: number, phPublicKey: Buffer, phPrivateKey: Buffer): number {
-        return this.lib.C_GenerateKeyPair(hSession, pMechanism, pPublicKeyTemplate, ulPublicKeyAttributeCount, pPrivateKeyTemplate, ulPrivateKeyAttributeCount, phPublicKey, phPrivateKey);
+    C_GenerateKeyPair(hSession: number, pMechanism: Buffer, pPublicKeyTemplate: Buffer, ulPublicKeyAttributeCount: number, pPrivateKeyTemplate: Buffer, ulPrivateKeyAttributeCount: number, phPublicKey: Buffer, phPrivateKey: Buffer): number;
+    C_GenerateKeyPair(hSession: number, pMechanism: Buffer, pPublicKeyTemplate: Buffer, ulPublicKeyAttributeCount: number, pPrivateKeyTemplate: Buffer, ulPrivateKeyAttributeCount: number, phPublicKey: Buffer, phPrivateKey: Buffer, callback: Callback): void;
+    C_GenerateKeyPair(hSession: number, pMechanism: Buffer, pPublicKeyTemplate: Buffer, ulPublicKeyAttributeCount: number, pPrivateKeyTemplate: Buffer, ulPrivateKeyAttributeCount: number, phPublicKey: Buffer, phPrivateKey: Buffer, callback?: Callback): number {
+        return this.callFunction("C_GenerateKeyPair", arguments);
     }
 
     /**
@@ -702,9 +947,13 @@ export class Pkcs11 {
      * @param {number} hKey key to be wrapped
      * @param {Buffer} pWrappedKey gets wrapped key
      * @param {Buffer} pulWrappedKeyLen gets wrapped key size
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_WrapKey(hSession: number, pMechanism: Buffer, hWrappingKey: number, hKey: number, pWrappedKey: Buffer, pulWrappedKeyLen: Buffer): number {
-        return this.lib.C_WrapKey(hSession, pMechanism, hWrappingKey, hKey, pWrappedKey, pulWrappedKeyLen);
+    C_WrapKey(hSession: number, pMechanism: Buffer, hWrappingKey: number, hKey: number, pWrappedKey: Buffer, pulWrappedKeyLen: Buffer): number;
+    C_WrapKey(hSession: number, pMechanism: Buffer, hWrappingKey: number, hKey: number, pWrappedKey: Buffer, pulWrappedKeyLen: Buffer, callback: Callback): void;
+    C_WrapKey(hSession: number, pMechanism: Buffer, hWrappingKey: number, hKey: number, pWrappedKey: Buffer, pulWrappedKeyLen: Buffer, callback?: Callback): number {
+        return this.callFunction("C_WrapKey", arguments);
     }
 
     /**
@@ -719,9 +968,13 @@ export class Pkcs11 {
      * @param {Buffer} pTemplate new key template
      * @param {number} ulAttributeCount template length
      * @param {Buffer} phKey gets new handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_UnwrapKey(hSession: number, pMechanism: Buffer, hUnwrappingKey: number, pWrappedKey: Buffer, ulWrappedKeyLen: number, pTemplate: Buffer, ulAttributeCount: number, phKey: Buffer): number {
-        return this.lib.C_UnwrapKey(hSession, pMechanism, hUnwrappingKey, pWrappedKey, ulWrappedKeyLen, pTemplate, ulAttributeCount, phKey);
+    C_UnwrapKey(hSession: number, pMechanism: Buffer, hUnwrappingKey: number, pWrappedKey: Buffer, ulWrappedKeyLen: number, pTemplate: Buffer, ulAttributeCount: number, phKey: Buffer): number;
+    C_UnwrapKey(hSession: number, pMechanism: Buffer, hUnwrappingKey: number, pWrappedKey: Buffer, ulWrappedKeyLen: number, pTemplate: Buffer, ulAttributeCount: number, phKey: Buffer, callback: Callback): void;
+    C_UnwrapKey(hSession: number, pMechanism: Buffer, hUnwrappingKey: number, pWrappedKey: Buffer, ulWrappedKeyLen: number, pTemplate: Buffer, ulAttributeCount: number, phKey: Buffer, callback?: Callback): number {
+        return this.callFunction("C_UnwrapKey", arguments);
     }
 
     /**
@@ -732,9 +985,13 @@ export class Pkcs11 {
      * @param {Buffer} pTemplate new key template
      * @param {number} ulAttributeCount template length
      * @param {Buffer} phKey gets new handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_DeriveKey(hSession: number, pMechanism: Buffer, hBaseKey: number, pTemplate: Buffer, ulAttributeCount: number, phKey: Buffer): number {
-        return this.lib.C_DeriveKey(hSession, pMechanism, hBaseKey, pTemplate, ulAttributeCount, phKey);
+    C_DeriveKey(hSession: number, pMechanism: Buffer, hBaseKey: number, pTemplate: Buffer, ulAttributeCount: number, phKey: Buffer): number;
+    C_DeriveKey(hSession: number, pMechanism: Buffer, hBaseKey: number, pTemplate: Buffer, ulAttributeCount: number, phKey: Buffer, callback: Callback): void;
+    C_DeriveKey(hSession: number, pMechanism: Buffer, hBaseKey: number, pTemplate: Buffer, ulAttributeCount: number, phKey: Buffer, callback?: Callback): number {
+        return this.callFunction("C_DeriveKey", arguments);
     }
 
     /* Random number generation */
@@ -745,9 +1002,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pSeed the seed material
      * @param {number} ulSeedLen length of seed material
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_SeedRandom(hSession: number, pSeed: Buffer, ulSeedLen: number): number {
-        return this.lib.C_SeedRandom(hSession, pSeed, ulSeedLen);
+    C_SeedRandom(hSession: number, pSeed: Buffer, ulSeedLen: number): number;
+    C_SeedRandom(hSession: number, pSeed: Buffer, ulSeedLen: number, callback: Callback): void;
+    C_SeedRandom(hSession: number, pSeed: Buffer, ulSeedLen: number, callback?: Callback): number {
+        return this.callFunction("C_SeedRandom", arguments);
     }
 
     /**
@@ -755,9 +1016,13 @@ export class Pkcs11 {
      * @param {number} hSession the session's handle
      * @param {Buffer} pRandomData receives the random data
      * @param {number} ulRandomLen # of bytes to generate
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_GenerateRandom(hSession: number, pRandomData: Buffer, ulRandomLen: number): number {
-        return this.lib.C_GenerateRandom(hSession, pRandomData, ulRandomLen);
+    C_GenerateRandom(hSession: number, pRandomData: Buffer, ulRandomLen: number): number;
+    C_GenerateRandom(hSession: number, pRandomData: Buffer, ulRandomLen: number, callback: Callback): void;
+    C_GenerateRandom(hSession: number, pRandomData: Buffer, ulRandomLen: number, callback?: Callback): number {
+        return this.callFunction("C_GenerateRandom", arguments);
     }
 
     /* Parallel function management */
@@ -767,18 +1032,26 @@ export class Pkcs11 {
      * updated status of a function running in parallel with an
      * application. 
      * @param {number} hSession the session's handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_GetFunctionStatus(hSession: number): number {
-        return this.lib.C_GetFunctionStatus(hSession);
+    C_GetFunctionStatus(hSession: number): number;
+    C_GetFunctionStatus(hSession: number, callback: Callback): void;
+    C_GetFunctionStatus(hSession: number, callback?: Callback): number {
+        return this.callFunction("C_GetFunctionStatus", arguments);
     }
 
     /**
      * C_CancelFunction is a legacy function; it cancels a function
      * running in parallel. 
      * @param {number} hSession the session's handle
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_CancelFunction(hSession: number): number {
-        return this.lib.C_CancelFunction(hSession);
+    C_CancelFunction(hSession: number): number;
+    C_CancelFunction(hSession: number, callback: Callback): void;
+    C_CancelFunction(hSession: number, callback?: Callback): number {
+        return this.callFunction("C_CancelFunction", arguments);
     }
 
     /* Functions added in for Cryptoki Version 2.01 or later */
@@ -789,9 +1062,13 @@ export class Pkcs11 {
      * @param {number} flags blocking/nonblocking flag
      * @param {Buffer} pSlot location that receives the slot ID
      * @param {Buffer} pRserved reserved.  Should be NULL_PTR
+     * @param {Callback} callback callback function with PKCS11 result value
+     * @returns void PKCS11 result value
      */
-    C_WaitForSlotEvent(flags: number, pSlot: Buffer, pRserved: Buffer = NULL_PTR): number {
-        return this.lib.C_WaitForSlotEvent(flags, pSlot, pRserved);
+    C_WaitForSlotEvent(flags: number, pSlot: Buffer, pRserved: Buffer): number;
+    C_WaitForSlotEvent(flags: number, pSlot: Buffer, pRserved: Buffer, callback: Callback): number;
+    C_WaitForSlotEvent(flags: number, pSlot: Buffer, pRserved: Buffer = NULL_PTR, callback?: Callback): number {
+        return this.callFunction("C_WaitForSlotEvent", arguments);
     }
 
 } 
