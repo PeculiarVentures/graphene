@@ -296,7 +296,9 @@ export class Session extends core.HandleObject {
      * @param mechanism generation mechanism
      * @param template template for the new key or set of domain parameters
      */
-    generateKey(mechanism: MechanismType, template: ITemplate = null): objects.SecretKey {
+    generateKey(mechanism: MechanismType, template?: ITemplate): objects.SecretKey;
+    generateKey(mechanism: MechanismType, template: ITemplate, callback: (err, key: objects.SecretKey) => void): void;
+    generateKey(mechanism: MechanismType, template: ITemplate = null, callback?: (err, key: objects.SecretKey) => void): objects.SecretKey {
         let pMech = Mechanism.create(mechanism);
         // init default template params
         if (template) {
@@ -305,11 +307,26 @@ export class Session extends core.HandleObject {
         let pTemplate = new Template(template);
         let hKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
 
-        let rv = this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKey");
+        if (callback) {
+            this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey, (err, rv: number) => {
+                if (err) {
+                    callback(err, null);
+                }
+                else {
+                    if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKey");
 
-        let obj = new SessionObject(hKey.deref(), this, this.lib);
-        return obj.toType<objects.SecretKey>();
+                    let obj = new SessionObject(hKey.deref(), this, this.lib);
+                    callback(null, obj.toType<objects.SecretKey>());
+                }
+            });
+        }
+        else {
+            let rv = this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey);
+            if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKey");
+
+            let obj = new SessionObject(hKey.deref(), this, this.lib);
+            return obj.toType<objects.SecretKey>();
+        }
     }
 
     generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair {

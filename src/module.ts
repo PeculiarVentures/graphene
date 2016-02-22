@@ -74,7 +74,7 @@ export class Module extends core.BaseObject implements IModuleInfo {
      */
     public initialize() {
         let rv = this.lib.C_Initialize();
-            if (rv) throw new core.Pkcs11Error(rv, "C_Initialize");
+        if (rv) throw new core.Pkcs11Error(rv, "C_Initialize");
 
         this.getInfo();
     }
