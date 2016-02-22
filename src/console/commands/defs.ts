@@ -3,6 +3,9 @@ import * as graphene from "../../graphene";
 export * from "../../graphene";
 export {commander, Command} from "../lib/commander";
 export * from "./print";
+import * as print from "./print";
+export * from "../lib/timer";
+export * from "../../core";
 
 // Constants
 export const CAPTION_UNDERLINE = "==============================";
@@ -85,4 +88,12 @@ export function check_session() {
       "  " + NOTE_SESSION);
     throw error;
   }
+}
+
+export function print_module_info(mod: graphene.Module) {
+    print.print_caption("Module info");
+    console.log(`  Library: ${mod.libFile}`);
+    console.log(`  Name: ${mod.libName}`);
+    console.log(`  Cryptoki version: ${mod.cryptokiVersion.major}.${mod.cryptokiVersion.minor}`);
+    console.log();
 }

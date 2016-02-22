@@ -10,6 +10,7 @@ import * as cmdModule from "./commands/module";
 import * as cmdSlot from "./commands/slot";
 import * as cmdObject from "./commands/object";
 import * as cmdHash from "./commands/hash";
+import * as cmdTest from "./commands/test";
 
 cmdModule.cmdModuleLoad;
 cmdModule.cmdModuleInfo;
@@ -24,6 +25,9 @@ cmdObject.cmdObjectDelete;
 cmdObject.cmdObjectInfo;
 cmdObject.cmdObjectList;
 cmdHash.cmdHash;
+cmdTest.cmdTest;
+cmdTest.cmdTestGen;
+cmdTest.cmdTestSign;
 
 // Console app init
 global["readline"] = readline.createInterface({

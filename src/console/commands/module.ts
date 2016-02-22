@@ -36,14 +36,6 @@ function print_module_note() {
     return msg;
 }
 
-function print_module_info(mod: defs.Module) {
-    defs.print_caption("Module info");
-    console.log(`  Library: ${mod.libFile}`);
-    console.log(`  Name: ${mod.libName}`);
-    console.log(`  Cryptoki version: ${mod.cryptokiVersion.major}.${mod.cryptokiVersion.minor}`);
-    console.log();
-}
-
 /**
  * load
  */
@@ -63,7 +55,7 @@ export let cmdModuleLoad: defs.Command = cmdModule.createCommand("load", {
     .on("call", function(cmd) {
         consoleApp.module = defs.Module.load(cmd.lib, cmd.name);
         consoleApp.module.initialize();
-        print_module_info(consoleApp.module);
+        defs.print_module_info(consoleApp.module);
     });
 
 /**
@@ -119,5 +111,5 @@ export let cmdModuleInfo: defs.Command = cmdModule.createCommand("info", {
 })
     .on("call", function(cmd) {
         defs.check_module();
-        print_module_info(consoleApp.module);
+        defs.print_module_info(consoleApp.module);
     });

@@ -2,7 +2,7 @@ import * as defs from "./defs";
 const {consoleApp} = defs;
 
 function print_slot(slot: defs.Slot) {
-    // print_module_info(consoleApp.module);
+    defs.print_module_info(consoleApp.module);
 }
 
 /* ==========
