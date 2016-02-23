@@ -9,3 +9,7 @@ export * from "./rsa/mgf";
 export * from "./rsa/oaep";
 export * from "./rsa/pss";
 
+// EC
+export * from "./ec/curves";
+export * from "./ec/kdf";
+export * from "./ec/ecdh";

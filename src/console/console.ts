@@ -28,6 +28,7 @@ cmdHash.cmdHash;
 cmdTest.cmdTest;
 cmdTest.cmdTestGen;
 cmdTest.cmdTestSign;
+cmdTest.cmdTestEnc;
 
 // Console app init
 global["readline"] = readline.createInterface({

@@ -318,78 +318,78 @@ function check_gen_algs(alg) {
     return check_sign_algs(alg) || ["aes", "aes-128", "aes-192", "aes-256"].indexOf(alg) !== -1;
 }
 
-function generate_iv(session, block_size) {
+function generate_iv(session: defs.Session, block_size: number) {
     let iv = session.generateRandom(block_size);
     if (iv.length !== block_size)
         throw new Error("IV has different size from block_size");
     return iv;
 }
 
-// function build_gcm_params(iv) {
-//     return new AES.AesGCMParams(iv);
-// }
+function build_gcm_params(iv) {
+    return new defs.AesGcmParams(iv);
+}
 
-// /**
-//  * enc
-//  */
-// let cmdTestEnc = cmdTest.createCommand("enc", {
-//     description: "test encryption and decryption performance" + "\n\n" +
-//     pud("", 10) + "    Supported algorithms:\n" +
-//     pud("", 10) + "      aes, aes-cbc128, aes-cbc192, aes-cbc256" + "\n" +
-//     pud("", 10) + "      aes-gcm128, aes-gcm192, aes-gcm256" + "\n",
-//     note: NOTE_SESSION,
-//     example: "> test enc --alg aes -it 100"
-// })
-//     .option('buf', {
-//         description: 'Buffer size (bytes)',
-//         set: function(v) {
-//             let _v = +v;
-//             if (!_v)
-//                 throw new TypeError("Parameter --buf must be Number (min 1024)");
-//             return _v;
-//         },
-//         value: BUF_SIZE_DEFAULT
-//     })
-//     .option('it', {
-//         description: 'Sets number of iterations. Default 1',
-//         set: function(v) {
-//             let res = +v;
-//             if (!Number.isInteger(res))
-//                 throw new TypeError("Parameter --it must be number");
-//             if (res <= 0)
-//                 throw new TypeError("Parameter --it must be more then 0");
-//             return res;
-//         },
-//         value: 1
-//     })
-//     .option('alg', {
-//         description: 'Algorithm name',
-//         isRequired: true
-//     })
-//     .on("call", function(cmd) {
-//         check_session();
-//         if (!check_enc_algs(cmd.alg)) {
-//             let error = new Error("No such algorithm");
-//             throw error;
-//         }
-//         console.log();
-//         print_test_enc_header();
-//         let AES_CBC_PARAMS = {
-//             name: "AES_CBC_PAD",
-//             params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
-//         };
-//         let AES_GCM_PARAMS = {
-//             name: "AES_GCM",
-//             params: build_gcm_params(generate_iv(session, 16))
-//         };
-//         test_enc(session, cmd, "aes", "cbc128", AES_CBC_PARAMS);
-//         test_enc(session, cmd, "aes", "cbc192", AES_CBC_PARAMS);
-//         test_enc(session, cmd, "aes", "cbc256", AES_CBC_PARAMS);
-//         test_enc(session, cmd, "aes", "gcm128", AES_GCM_PARAMS);
-//         test_enc(session, cmd, "aes", "gcm192", AES_GCM_PARAMS);
-//         test_enc(session, cmd, "aes", "gcm256", AES_GCM_PARAMS);
-//         console.log();
-//     });
+/**
+ * enc
+ */
+export let cmdTestEnc = cmdTest.createCommand("enc", {
+    description: "test encryption and decryption performance" + "\n\n" +
+    defs.pud("", 10) + "    Supported algorithms:\n" +
+    defs.pud("", 10) + "      aes, aes-cbc128, aes-cbc192, aes-cbc256" + "\n" +
+    defs.pud("", 10) + "      aes-gcm128, aes-gcm192, aes-gcm256" + "\n",
+    note: defs.NOTE_SESSION,
+    example: "> test enc --alg aes -it 100"
+})
+    .option("buf", {
+        description: "Buffer size (bytes)",
+        set: function(v) {
+            let _v = +v;
+            if (!_v)
+                throw new TypeError("Parameter --buf must be Number (min 1024)");
+            return _v;
+        },
+        value: BUF_SIZE_DEFAULT
+    })
+    .option("it", {
+        description: "Sets number of iterations. Default 1",
+        set: function(v) {
+            let res = +v;
+            if (!defs.isNumber(res))
+                throw new TypeError("Parameter --it must be number");
+            if (res <= 0)
+                throw new TypeError("Parameter --it must be more then 0");
+            return res;
+        },
+        value: 1
+    })
+    .option("alg", {
+        description: "Algorithm name",
+        isRequired: true
+    })
+    .on("call", function(cmd) {
+        defs.check_session();
+        if (!check_enc_algs(cmd.alg)) {
+            let error = new Error("No such algorithm");
+            throw error;
+        }
+        console.log();
+        print_test_enc_header();
+        let AES_CBC_PARAMS = {
+            name: "AES_CBC_PAD",
+            params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+        };
+        let AES_GCM_PARAMS = {
+            name: "AES_GCM",
+            params: build_gcm_params(generate_iv(consoleApp.session, 16))
+        };
+        test_enc(consoleApp.session, cmd, "aes", "cbc128", AES_CBC_PARAMS);
+        test_enc(consoleApp.session, cmd, "aes", "cbc192", AES_CBC_PARAMS);
+        test_enc(consoleApp.session, cmd, "aes", "cbc256", AES_CBC_PARAMS);
+        test_enc(consoleApp.session, cmd, "aes", "gcm128", AES_GCM_PARAMS);
+        test_enc(consoleApp.session, cmd, "aes", "gcm192", AES_GCM_PARAMS);
+        test_enc(consoleApp.session, cmd, "aes", "gcm256", AES_GCM_PARAMS);
+        console.log();
+    });
 
 /**
  * sign

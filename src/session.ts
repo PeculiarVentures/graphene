@@ -395,4 +395,15 @@ export class Session extends core.HandleObject {
         return new Key(phKey.deref(), this, this.lib);
     }
 
+    /**
+     * generates random data
+     * @param {number} size \# of bytes to generate 
+     */
+    generateRandom(size: number): Buffer {
+        let buf = new Buffer(size);
+        let rv = this.lib.C_GenerateRandom(this.handle, buf, buf.length);
+        if (rv) throw new core.Pkcs11Error(rv, "C_GenerateRandom");
+        return buf;
+    }
+
 }
