@@ -375,7 +375,7 @@ export class Session extends core.HandleObject {
         return new Decipher(this, alg, key, this.lib);
     }
 
-    wrap(alg: MechanismType, wrappingKey: Key, key: Key): Buffer {
+    wrapKey(alg: MechanismType, wrappingKey: Key, key: Key): Buffer {
         let pMech = Mechanism.create(alg);
         let pWrappedKey = new Buffer(4048);
         let pWrappedKeyLen = core.Ref.alloc(pkcs11.CK_ULONG);
@@ -385,7 +385,7 @@ export class Session extends core.HandleObject {
         return pWrappedKey.slice(0, pWrappedKeyLen.deref());
     }
 
-    unwrap(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate): Key {
+    unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate): Key {
         let pMech = Mechanism.create(alg);
         let pTemplate = new Template(template);
         let phKey = core.Ref.alloc(pkcs11.CK_ULONG);
