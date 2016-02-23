@@ -232,68 +232,55 @@ function test_sign(session: defs.Session, cmd, prefix: string, postfix: string, 
     return false;
 }
 
-// function test_enc(session, cmd, prefix, postfix, encAlg) {
-//     try {
-//         let alg = prefix + "-" + postfix;
-//         if (cmd.alg == "all" || cmd.alg == prefix || cmd.alg == alg) {
-//             let tGen = new Timer();
-//             tGen.start();
-//             let key = gen[prefix][postfix](session);
-//             tGen.stop();
-//             debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
-//             try {
-//                 let t1 = new Timer();
-//                 //create buffer
-//                 let buf = new Buffer(BUF_SIZE);
-//                 let enc = null;
-//                 /**
-//                  * TODO: We need to determine why the first call to the device is so much slower, 
-//                  * it may be the FFI initialization. For now we will exclude this one call from results.
-//                  */
+function test_enc(session: defs.Session, cmd, prefix: string, postfix: string, encAlg) {
+    try {
+        let alg = prefix + "-" + postfix;
+        if (cmd.alg === "all" || cmd.alg === prefix || cmd.alg === alg) {
+            let tGen = new defs.Timer();
+            tGen.start();
+            let key = gen[prefix][postfix](session);
+            tGen.stop();
+            // debug("Key generation:", alg.toUpperCase(), tGen.time + "ms");
+            try {
+                let t1 = new defs.Timer();
+                // create buffer
+                let buf = new Buffer(BUF_SIZE);
+                let enc = null;
+                /**
+                 * TODO: We need to determine why the first call to the device is so much slower, 
+                 * it may be the FFI initialization. For now we will exclude this one call from results.
+                 */
+                test_encrypt_operation(session, buf, key, encAlg);
+                t1.start();
+                for (let i = 0; i < cmd.it; i++)
+                    enc = test_encrypt_operation(session, buf, key, encAlg);
+                t1.stop();
 
-//                 test_encrypt_operation(session, buf, key, encAlg);
-//                 t1.start();
-//                 for (let i = 0; i < cmd.it; i++)
-//                     enc = test_encrypt_operation(session, buf, key, encAlg);
-//                 t1.stop();
+                let t2 = new defs.Timer();
+                t2.start();
+                let msg = null;
+                for (let i = 0; i < cmd.it; i++) {
+                    msg = test_decrypt_operation(session, key, encAlg, enc);
+                }
+                t2.stop();
 
-//                 let t2 = new Timer();
-//                 t2.start();
-//                 let msg = null;
-//                 for (let i = 0; i < cmd.it; i++) {
-//                     msg = test_decrypt_operation(session, key, encAlg, enc);
-//                 }
-//                 t2.stop();
-
-//                 let r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
-//                 let r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
-//                 let rs1 = Math.round((1000 / (t1.time / cmd.it)) * 1000) / 1000;
-//                 let rs2 = Math.round((1000 / (t2.time / cmd.it)) * 1000) / 1000;
-//                 print_test_sign_row(alg, r1, r2, rs1, rs2);
-//             } catch (e) {
-//                 if (key.key)
-//                     session.destroyObject(key.key);
-//                 else {
-//                     session.destroyObject(key.privateKey);
-//                     session.destroyObject(key.publicKey);
-//                 }
-//                 throw e;
-//             }
-//             if (key.key)
-//                 session.destroyObject(key.key);
-//             else {
-//                 session.destroyObject(key.privateKey);
-//                 session.destroyObject(key.publicKey);
-//             }
-//         }
-//         return true;
-//     }
-//     catch (e) {
-//         debug("%s-%s\n  %s", prefix, postfix, e.message);
-//         debug(e.stack);
-//     }
-//     return false;
-// }
+                let r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
+                let r2 = Math.round((t2.time / cmd.it) * 1000) / 1000 + "ms";
+                let rs1 = Math.round((1000 / (t1.time / cmd.it)) * 1000) / 1000;
+                let rs2 = Math.round((1000 / (t2.time / cmd.it)) * 1000) / 1000;
+                print_test_sign_row(alg, r1, r2, rs1, rs2);
+            } catch (e) {
+                throw e;
+            }
+        }
+        return true;
+    }
+    catch (e) {
+        // debug("%s-%s\n  %s", prefix, postfix, e.message);
+        // debug(e.stack);
+    }
+    return false;
+}
 
 function print_test_sign_header() {
     console.log("| %s | %s | %s | %s | %s |", defs.rpud("Algorithm", 25), defs.lpud("Sign", 8), defs.lpud("Verify", 8), defs.lpud("Sign/s", 9), defs.lpud("Verify/s", 9));

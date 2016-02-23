@@ -6,7 +6,7 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "node/node.d.ts": {
-      "commit": "1a5b2a729d35b1d41e2d15818db013a3644c6ba4"
+      "commit": "dade4414712ce84e3c63393f1aae407e9e7e6af7"
     },
     "mocha/mocha.d.ts": {
       "commit": "1a5b2a729d35b1d41e2d15818db013a3644c6ba4"
@@ -25,6 +25,18 @@
     },
     "node-ffi/node-ffi.d.ts": {
       "commit": "1a5b2a729d35b1d41e2d15818db013a3644c6ba4"
+    },
+    "gulp-typescript/gulp-typescript.d.ts": {
+      "commit": "dade4414712ce84e3c63393f1aae407e9e7e6af7"
+    },
+    "gulp/gulp.d.ts": {
+      "commit": "dade4414712ce84e3c63393f1aae407e9e7e6af7"
+    },
+    "orchestrator/orchestrator.d.ts": {
+      "commit": "dade4414712ce84e3c63393f1aae407e9e7e6af7"
+    },
+    "q/Q.d.ts": {
+      "commit": "dade4414712ce84e3c63393f1aae407e9e7e6af7"
     }
   }
 }

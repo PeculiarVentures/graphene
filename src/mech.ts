@@ -3,6 +3,7 @@ import * as core from "./core";
 import {Slot} from "./slot";
 import * as obj from "./object";
 import {MechanismEnum} from "./mech_enum";
+import {IParams} from "./keys/params";
 export * from "./mech_enum";
 
 interface IMechanismInfo {
@@ -13,7 +14,7 @@ interface IMechanismInfo {
 
 export interface IAlgorithm {
     name: string;
-    params: Buffer;
+    params: Buffer | IParams;
 }
 
 export type MechanismType = MechanismEnum | obj.KeyGenMechanism | IAlgorithm | string;
@@ -130,7 +131,7 @@ export class Mechanism extends core.HandleObject {
         else if (core.isNumber(alg)) {
             _alg = { name: MechanismEnum[alg], params: null };
         }
-        else{
+        else {
             _alg = alg;
         }
 

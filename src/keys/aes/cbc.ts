@@ -3,6 +3,8 @@ import * as pkcs11 from "../../pkcs11";
 import {MechanismEnum} from "../../mech";
 import {IParams} from "../params";
 
+let IvArray = core.RefArray(pkcs11.CK_BYTE, 16);
+
 export class AesCbcParams implements IParams {
 
     /**
@@ -21,8 +23,12 @@ export class AesCbcParams implements IParams {
     }
 
     toCKI(): Buffer {
-       return new pkcs11.CK_AES_CBC_ENCRYPT_DATA_PARAMS({
-            iv: this.iv,
+        // convert iv to array
+        let arIv = [];
+        for (let i = 0; i < this.iv.length; i++)
+            arIv.push(this.iv[i]);
+        return new pkcs11.CK_AES_CBC_ENCRYPT_DATA_PARAMS({
+            iv: arIv,
             pData: this.data,
             length: (this.data) ? this.data.length : 0
         })["ref.buffer"];

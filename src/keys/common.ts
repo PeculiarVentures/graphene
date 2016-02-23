@@ -1,3 +1,4 @@
+export * from "./params"
 // AES
 export * from "./aes/cbc"
 export * from "./aes/gcm"
