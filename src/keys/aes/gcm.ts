@@ -33,6 +33,7 @@ export class AesGcmParams implements IParams {
         return new pkcs11.CK_GCM_PARAMS({
             pIv: this.iv,
             ulIvLen: this.iv.length,
+            ulIvBits: this.iv.length * 8,
             pAAD: this.aad,
             ulADDLen: (this.aad) ? this.aad.length : 0,
             ulTagBits: this.tagBits

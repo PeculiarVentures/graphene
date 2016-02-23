@@ -2021,6 +2021,7 @@ export const CK_AES_CTR_PARAMS_PTR = Ref.refType(CK_AES_CTR_PARAMS);
 export const CK_GCM_PARAMS = RefStruct({
     pIv: CK_BYTE_PTR,
     ulIvLen: CK_ULONG,
+    ulIvBits: CK_ULONG,
     pAAD: CK_BYTE_PTR,
     ulADDLen: CK_ULONG,
     ulTagBits: CK_ULONG
