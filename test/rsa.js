@@ -26,14 +26,20 @@ describe("RSA", function () {
     })
 
     it("generate RSA", function () {
-        keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
+	keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
             keyType: graphene.KeyType.RSA,
             modulusBits: 1024,
             publicExponent: new Buffer([3]),
-            token: false
+            token: false,
+            verify: true,
+            encrypt: true,
+            wrap: true
         }, {
                 keyType: graphene.KeyType.RSA,
-                token: false
+                token: false,
+                sign: true,
+                decrypt: true,
+                unwrap: true
             });
     })
 
@@ -57,9 +63,12 @@ describe("RSA", function () {
     }
 
     function test_encrypt_decrypt(_key, alg) {
-        _key.algorithm = alg;
-        var enc = _key.encrypt(MSG);
-        assert.equal(MSG, _key.decrypt(enc).toString("utf8"), "Correct");
+        var cipher = session.createCipher(alg, _key.publicKey);
+	var enc = cipher.update(MSG);
+        enc = Buffer.concat([enc, cipher.final()]);
+        var decipher = session.createDecipher(alg, _key.privateKey);
+        var dec = decipher.update(enc);
+        assert.equal(Buffer.concat([dec, decipher.final()]).toString(), MSG, "Correct");
     }
 
     function test_wrap_unwrap(_key, alg, _skey) {
@@ -101,11 +110,11 @@ describe("RSA", function () {
     });
 
     it("OAEP encrypt/decrypt SHA-1", function () {
-        test_encrypt_decrypt(keys, { name: "RSA_PKCS_OAEP", params: new RSA.RsaOAEPParams(Enums.Mechanism.SHA1, Enums.MGF1.SHA1) })
+        test_encrypt_decrypt(keys, { name: "RSA_PKCS_OAEP", params: new graphene.RsaOaepParams(graphene.MechanismEnum.SHA1, graphene.RsaMgf.MGF1_SHA1) })
     });
 
     it("OAEP encrypt/decrypt SHA-1 with params", function () {
-        test_encrypt_decrypt(keys, { name: "RSA_PKCS_OAEP", params: new RSA.RsaOAEPParams(Enums.Mechanism.SHA1, Enums.MGF1.SHA1, new Buffer([1, 2, 3, 4, 5])) })
+        test_encrypt_decrypt(keys, { name: "RSA_PKCS_OAEP", params: new graphene.RsaOaepParams(graphene.MechanismEnum.SHA1, graphene.RsaMgf.MGF1_SHA1, new Buffer([1,2,3,4,5,6,7,8,9,0])) })
     });
 
     it("OAEP wrap/unwrap SHA-1", function () {
