@@ -1068,6 +1068,10 @@ export const CKM_BLOWFISH_CBC = 0x00001091;
 export const CKM_TWOFISH_KEY_GEN = 0x00001092;
 export const CKM_TWOFISH_CBC = 0x00001093;
 
+export const CKM_AES_GCM = 0x00001087;
+export const CKM_AES_CCM = 0x00001088;
+export const CKM_AES_KEY_WRAP = 0x00001090;
+export const CKM_AES_KEY_WRAP_PAD = 0x00001091;
 
 /* CKM_xxx_ENCRYPT_DATA mechanisms are new for v2.20 */
 export const CKM_DES_ECB_ENCRYPT_DATA = 0x00001100;

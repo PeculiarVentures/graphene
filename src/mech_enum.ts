@@ -274,6 +274,10 @@ export enum MechanismEnum {
     TWOFISH_KEY_GEN = pkcs11.CKM_TWOFISH_KEY_GEN,
     TWOFISH_CBC = pkcs11.CKM_TWOFISH_CBC,
 
+    AES_GCM = pkcs11.CKM_AES_GCM,
+    AES_CCM = pkcs11.CKM_AES_CCM,
+    AES_KEY_WRAP = pkcs11.CKM_AES_KEY_WRAP,
+    AES_KEY_WRAP_PAD = pkcs11.CKM_AES_KEY_WRAP_PAD,
 
     /* CKM_xxx_ENCRYPT_DATA mechanisms are new for v2.20 */
     DES_ECB_ENCRYPT_DATA = pkcs11.CKM_DES_ECB_ENCRYPT_DATA,

@@ -2,7 +2,6 @@ var assert = require('assert');
 var config = require("./config.json");
 var graphene = require("../build/graphene");
 
-
 var Module = graphene.Module;
 
 describe("RSA", function () {
