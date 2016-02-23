@@ -82,22 +82,8 @@ describe("ECDSA", function () {
     }
 
 	function test_derive(_key, alg, template) {
-		_key.algorithm = alg;
-		var dkey = _key.deriveKey(template).toType();
-		assert.equal(dkey !== null, true, "Empty derived key");
-	}
-
-	function test_wrap_unwrap(_key, alg, _skey) {
-		_key.algorithm = alg;
-		var wkey = _key.wrapKey(_skey.key);
-		var ukey = _key.unwrapKey(wkey, {
-			"class": Enums.ObjectClass.SecretKey,
-			"keyType": Enums.KeyType.AES,
-			"valueLen": 256 / 8,
-			"encrypt": true,
-			"decrypt": true
-		});
-		session.destroyObject(ukey);
+		var dkey = session.deriveKey(alg, _key.privateKey, template).toType();
+		assert.equal(!!dkey, true, "Empty derived key");
 	}
 
 	it("sign/verify SHA-1", function () {
@@ -125,17 +111,15 @@ describe("ECDSA", function () {
 			keys,
 			{
 				name: "ECDH1_DERIVE",
-				params: new ECDSA.EcdhParams(
-					2,
+				params: new graphene.EcdhParams(
+					graphene.EcKdf.SHA224,
 					null,
-					key.publicKey.toType().getBinaryAttribute(0x00000181) //CKA_EC_POINT
+					keys.publicKey.pointEC
 				)},
 			{
-				"class": Enums.ObjectClass.SecretKey,
-				"sensitive": true,
-				"private": true,
+				"class": graphene.ObjectClass.SecretKey,
 				"token": false,
-				"keyType": Enums.KeyType.AES,
+				"keyType": graphene.KeyType.AES,
 				"valueLen": 192 / 8,
 				"encrypt": true,
 				"decrypt": true

@@ -1,7 +1,7 @@
 import * as pkcs11 from "./pkcs11";
 import * as core from "./core";
 import {Slot} from "./slot";
-import {SessionObject, SessionObjectCollection, ObjectClass, Key} from "./object";
+import {SessionObject, SessionObjectCollection, ObjectClass, Key, SecretKey} from "./object";
 import {Template, ITemplate} from "./template";
 import {Mechanism, MechanismType} from "./mech";
 import * as objects from "./objects/common";
@@ -393,6 +393,23 @@ export class Session extends core.HandleObject {
         if (rv) throw new core.Pkcs11Error(rv, "C_UnwrapKey");
 
         return new Key(phKey.deref(), this, this.lib);
+    }
+
+    /**
+     * derives a key from a base key, creating a new key object
+     * @param {MechanismType} alg key deriv. mech
+     * @param {Key} baseKey base key
+     * @param {ITemplate} template new key template
+     */
+    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate): SecretKey{
+        let pMech = Mechanism.create(alg);
+        let pTemplate = new Template(template);
+        let phKey = core.Ref.alloc(pkcs11.CK_ULONG);
+
+        let rv = this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate.ref(), pTemplate.length, phKey);
+        if (rv) throw new core.Pkcs11Error(rv, "C_DeriveKey");
+
+        return new SecretKey(phKey.deref(), this, this.lib);
     }
 
     /**
