@@ -72,17 +72,16 @@ describe("RSA", function () {
     }
 
     function test_wrap_unwrap(_key, alg, _skey) {
-        _key.algorithm = alg;
-        var wkey = _key.wrapKey(_skey.key);
-        var ukey = _key.unwrapKey(wkey, {
+        var wkey = session.wrapKey(alg, _key.publicKey, _skey);
+        var ukey = session.unwrapKey(alg, _key.privateKey, wkey, {
             "class": graphene.ObjectClass.SECRET_KEY,
             "keyType": graphene.KeyType.AES,
             "token": false,
-            "valueLen": 128 / 8,
+            "valueLen": 256 / 8,
             "encrypt": true,
             "decrypt": true
         });
-        session.destroyObject(ukey);
+	assert.equal(!!ukey.handle, true);
     }
 
     it("sign/verify SHA-1", function () {
@@ -118,7 +117,7 @@ describe("RSA", function () {
     });
 
     it("OAEP wrap/unwrap SHA-1", function () {
-        test_wrap_unwrap(keys, { name: "RSA_PKCS_OAEP", params: new RSA.RsaOAEPParams(Enums.Mechanism.SHA1, Enums.MGF1.SHA1) }, skey);
+        test_wrap_unwrap(keys, { name: "RSA_PKCS_OAEP", params: new graphene.RsaOaepParams() }, skey);
     });
 
     it("RSA 1.5 sign/verify", function () {
