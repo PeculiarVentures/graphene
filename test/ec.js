@@ -4,11 +4,6 @@ var graphene = require("../build/graphene");
 
 var Module = graphene.Module;
 
-process.env["PKCS11_LOGGER_LIBRARY_PATH"] = config.init.lib;
-process.env["PKCS11_LOGGER_LOG_FILE_PATH"] = "/home/microshine/tmp/pkcs11.log";
-
-config.init.lib = "/home/microshine/tmp/pkcs11-logger-x64.so";
-
 describe("ECDSA", function () {
 	var mod, slot, session, keys, skey;
 
