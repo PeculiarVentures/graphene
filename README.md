@@ -117,33 +117,26 @@ RSA_PKCS_OAEP              -/-/-/+/+/+/+
 
 ### Hashing
 ```
-var pkcs11 = require('graphene-pk11');
-var Module = pkcs11.Module;
+var graphene = require("graphene-pk11");
+var Module = graphene.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
-	
-var mod = Module.load(lib, "SoftHSM");
+
+var mod = Module.load(lib, "SafeNet");
 mod.initialize();
-	
-//get slots
-var slots = mod.getSlots(true);
-if (slots.length > 0) {
-	var slot = slots[0]; //get first slot;
-	if (slot.isInitialized()){
-		var session = slot.session;
-		session.start();
-	
-		var digest = session.createDigest("sha1");
-		digest.update("simple text 1");
-		digest.update("simple text 2");
-		var hash = digest.final();
-		console.log("Hash SHA1:", hash.toString("hex")); //Hash SHA1: e1dc1e52e9779cd69679b3e0af87d2e288190d34 
-	
-		session.stop();
-	}
-	else{
-		console.error('Slot is not initialized');
-	}
+
+var slot = mod.getSlots(0);
+if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
+    var session = slot.open();
+    var digest = session.createDigest("sha1");
+    digest.update("simple text 1");
+    digest.update("simple text 2");
+    var hash = digest.final();
+    console.log("Hash SHA1:", hash.toString("hex")); // Hash SHA1: e1dc1e52e9779cd69679b3e0af87d2e288190d34 
+    session.close();
+}
+else {
+    console.error("Slot is not initialized");
 }
 
 mod.finalize();
@@ -151,43 +144,36 @@ mod.finalize();
 ### Generating keys
 #### AES
 ```
-var pkcs11 = require('graphene-pk11');
-var Module = pkcs11.Module;
-var Enums = pkcs11.Enums;
+var graphene = require("graphene-pk11");
+var Module = graphene.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
 
-var mod = Module.load(lib, "SoftHSM");
+var mod = Module.load(lib, "SafeNet");
 mod.initialize();
 
-//get slots
-var slots = mod.getSlots(true);
-if (slots.length > 0) {
-	var slot = slots[1];
-	if (slot.isInitialized()) {
-		var session = slot.session;
-		session.start(2|4); //start session in RW mode
-
-		session.login("1234");
-		
-		var k = session.generateKey("AES_KEY_GEN", {
-			"class": Enums.ObjectClass.SecretKey,
-			"token": true,
-			"sensitive": true,
-			"valueLen": 32,
-			"keyType": Enums.KeyType.AES,
-			"label": "My AES secret key",
-			"private": true
-		})
-		console.log("Key.handle:", k.handle);
-		console.log("Key.type:", k.getType());
-
-		session.logout();
-		session.stop();
-	}
-	else {
-		console.error('Slot is not initialized');
-	}
+var slot = mod.getSlots(0);
+if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
+    var session = slot.open();
+    session.login("12345");
+    
+    var k = session.generateKey(graphene.KeyGenMechanism.AES, {
+        "class": graphene.ObjectClass.SECRET_KEY,
+        "token": false,
+        "valueLen": 256 / 8,
+        "keyType": graphene.KeyType.AES,
+        "label": "My AES secret key",
+        "private": true
+    });
+    
+    console.log("Key.handle:", k.handle);                 // Key.handle: 2
+    console.log("Key.type:", graphene.KeyType[k.type]);   // Key.type: AES
+    
+    session.logout();
+    session.close();
+}
+else {
+    console.error("Slot is not initialized");
 }
 
 mod.finalize();
@@ -195,289 +181,148 @@ mod.finalize();
 
 #### ECC
 ```
-var pkcs11 = require('graphene-pk11');
-var Module = pkcs11.Module;
-var Enums = pkcs11.Enums;
+var graphene = require("graphene-pk11");
+var Module = graphene.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
 
-var mod = Module.load(lib, "SoftHSM");
+var mod = Module.load(lib, "SafeNet");
 mod.initialize();
 
-//get slots
-var slots = mod.getSlots(true);
-if (slots.length > 0) {
-	var slot = slots[1];
-	if (slot.isInitialized()) {
-		var session = slot.session;
-		session.start(2 | 4); //start session in RW mode
-
-		session.login("1234");
-
-		var keyPair = session.generateKeyPair(
-			"EC_KEY_PAIR_GEN",
-			{
-				"token": true,
-				"private": true,
-				"verify": true,
-				"wrap": false,
-				"encrypt": false,
-				"paramsEC": new Buffer("06082A8648CE3D030101", "hex")
-			},
-			{
-				"token": true,
-				"private": true,
-				"sensitive": true,
-				"decrypt": false,
-				"sign": true,
-				"unwrap": false,
-
-			})
-		var pubKey = keyPair.public;
-		console.log("Key.handle:", pubKey.handle);
-		console.log("Key.type:", Enums.KeyType.getText(pubKey.getType()));
-		
-		var prvKey = keyPair.private;
-		console.log("Key.handle:", prvKey.handle);
-		console.log("Key.type:", Enums.KeyType.getText(prvKey.getType()));
-
-		session.logout();
-		session.stop();
-	}
-	else {
-		console.error('Slot is not initialized');
-	}
+var slot = mod.getSlots(0);
+if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
+    var session = slot.open();
+    session.login("12345");
+    
+    // generate ECDSA key pair
+    var keys = session.generateKeyPair(graphene.KeyGenMechanism.ECDSA, {
+        keyType: graphene.KeyType.ECDSA,
+        token: false,
+        verify: true,
+        paramsECDSA: graphene.NamedCurve.getByName("secp192r1").value
+    }, {
+        keyType: graphene.KeyType.ECDSA,
+        token: false,
+        sign: true
+    });
+    console.log("Key type:", graphene.KeyType[keys.privateKey.type]);            // Key type: ECDSA
+    console.log("Object's class:", graphene.ObjectClass[keys.privateKey.class]); // Object's class: PRIVATE_KEY 
+    
+    session.logout();
+    session.close();
+}
+else {
+    console.error("Slot is not initialized");
 }
 
 mod.finalize();
 ```
 
-### Signing
+### Signing / Verifying
 ```
-var pkcs11 = require('graphene-pk11');
-var Module = pkcs11.Module;
-var Enums = pkcs11.Enums;
+var graphene = require("graphene-pk11");
+var Module = graphene.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
 
-var mod = Module.load(lib, "SoftHSM");
+var mod = Module.load(lib, "SafeNet");
 mod.initialize();
 
-//get slots
-var slots = mod.getSlots(true);
-if (slots.length > 0) {
-	var slot = slots[1];
-	if (slot.isInitialized()){
-		var session = slot.session;
-		session.start();
-		
-		session.login("1234");
-		
-		var objects = session.findObjects();
-		
-		var key = null;
-		//Get first PrivateKey
-		for (var i in objects){
-			var object = objects[i];
-			if (object.getClass() == Enums.ObjectClass.PrivateKey){
-				key = object.toType(Enums.ObjectClass.PrivateKey);
-				break;
-			}
-		}
-		
-		console.log("PK lable:", key.getLabel()); 			//PK lable: My key
-		console.log("PK type:", Enums.KeyType.getText(key.getType()));	//PK type: RSA
-		console.log("PK is Sign:", key.isSign());			//PK is Sign: true
-	
-		var sign = session.createSign("SHA1_RSA_PKCS", key);
-		sign.update("simple text 1");
-		sign.update("simple text 2");
-		var signature = sign.final();
-		console.log("Signature RSA-SHA1:", signature.toString("hex"));	//Signature RSA-SHA1: 6102a66dc0d97fadb5...
-		
-		session.logout();
-		session.stop();
-	}
-	else{
-		console.error('Slot is not initialized');
-	}
+var slot = mod.getSlots(0);
+if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
+    var session = slot.open();
+    session.login("12345");
+    
+    // generate RSA key pair
+    var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
+        keyType: graphene.KeyType.RSA,
+        modulusBits: 1024,
+        publicExponent: new Buffer([3]),
+        token: false,
+        verify: true,
+        encrypt: true,
+        wrap: true
+    }, {
+        keyType: graphene.KeyType.RSA,
+        token: false,
+        sign: true,
+        decrypt: true,
+        unwrap: true
+    });
+    
+    // sign content
+    var sign = session.createSign("SHA1_RSA_PKCS", keys.privateKey);
+    sign.update("simple text 1");
+    sign.update("simple text 2");
+    var signature = sign.final();
+    console.log("Signature RSA-SHA1:", signature.toString("hex")); // Signature RSA-SHA1: 6102a66dc0d97fadb5...
+    
+    // verify content
+    var verify = session.createVerify("SHA1_RSA_PKCS", keys.publicKey);
+    verify.update("simple text 1");
+    verify.update("simple text 2");
+    var verify_result = verify.final(signature);
+    console.log("Signature RSA-SHA1 verify:", verify_result);      // Signature RSA-SHA1 verify: true
+    
+    session.logout();
+    session.close();
+}
+else {
+    console.error("Slot is not initialized");
 }
 
 mod.finalize();
 ```
-### Verifying
+### Encrypting / Decrypting
 ```
-var pkcs11 = require('graphene-pk11');
-var Module = pkcs11.Module;
-var Enums = pkcs11.Enums;
+var graphene = require("graphene-pk11");
+var Module = graphene.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
 
-var mod = Module.load(lib, "SoftHSM");
+var mod = Module.load(lib, "SafeNet");
 mod.initialize();
 
-//get slots
-var slots = mod.getSlots(true);
-if (slots.length > 0) {
-	var slot = slots[1];
-	if (slot.isInitialized()){
-		var session = slot.session;
-		session.start();
-		
-		session.login("1234");
-		
-		var objects = session.findObjects();
-		
-		var key = null;
-		//Get first PublicKey
-		for (var i in objects){
-			var object = objects[i];
-			if (object.getClass() == Enums.ObjectClass.PublicKey){
-				key = object.toType(Enums.ObjectClass.PublicKey);
-				break;
-			}
-		}
-		
-		console.log("PubK lable:", key.getLabel()); 				//PK lable: My key
-		console.log("PubK type:", Enums.KeyType.getText(key.getType()));	//PK type: RSA
-		console.log("PubK is Verify:", key.isVerify());				//PK is Sign: true
-	
-		var verify = session.createVerify("SHA1_RSA_PKCS", key);
-		verify.update("simple text 1");
-		verify.update("simple text 2");
-		var signature = new Buffer("6102a66dc0d97fadb53bda109b726714e0206b5a...","hex");
-		var res = verify.final(signature);
-		console.log("Verify RSA-SHA1:", res);					//Verify RSA-SHA1: true
-		
-		session.logout();
-		session.stop();
-	}
-	else{
-		console.error('Slot is not initialized');
-	}
+var slot = mod.getSlots(0);
+if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
+    var session = slot.open();
+    session.login("12345");
+
+    // generate AES key
+    var key = session.generateKey(graphene.KeyGenMechanism.AES, {
+        "class": graphene.ObjectClass.SECRET_KEY,
+        "token": false,
+        "valueLen": 256 / 8,
+        "keyType": graphene.KeyType.AES,
+        "label": "My AES secret key",
+        "encrypt": true,
+        "decrypt": true
+    });
+    
+    // enc algorithm
+    var alg = {
+        name: "AES_CBC_PAD",
+        params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6]) // IV
+    };
+    var MESSAGE = "Encrypted message";
+    
+    // encrypting
+    var cipher = session.createCipher(alg, key);
+    var enc = cipher.update(MESSAGE);
+    enc = Buffer.concat([enc, cipher.final()]);
+    console.log("Enc:", enc.toString("hex"));           // Enc: eb21e15b896f728a4...
+    
+    // decrypting
+    var decipher = session.createDecipher(alg, key);
+    var dec = decipher.update(enc);
+    var msg = Buffer.concat([dec, decipher.final()]).toString();
+    console.log("Message:", msg.toString());            // Message: Encrypted message
+    
+    session.logout();
+    session.close();
 }
-
-mod.finalize();
-```
-### Encrypting
-```
-var pkcs11 = require('graphene-pk11');
-var Module = pkcs11.Module;
-var Enums = pkcs11.Enums;
-
-var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
-
-var mod = Module.load(lib, "SoftHSM");
-mod.initialize();
-
-//get slots
-var slots = mod.getSlots(true);
-if (slots.length > 0) {
-	var slot = slots[0]; //get slot by index
-	if (slot.isInitialized()) {
-		var session = slot.session;
-		session.start();
-
-		session.login("1234");
-
-		var objects = session.findObjects();
-
-		var key = null;
-		//Get AES key
-		for (var i in objects) {
-			var object = objects[i];
-			if (object.getClass() == Enums.ObjectClass.SecretKey) {
-				var _key = object.toType(); //converts object to SecretKey 
-				if (_key.getType() == Enums.KeyType.AES) {
-					key = object.toType(Enums.ObjectClass.PublicKey);
-					break;
-				}
-			}
-		}
-
-		console.log("Key lable:", key.getLabel()); 						//Key lable: test key AES
-		console.log("Key type:", Enums.KeyType.getText(key.getType()));	//Key type: AES
-		console.log("Key is Encrypt:", key.isEncrypt());				//Key is Encrypt: true
-
-		var encrypt = session.createEncrypt({
-			name: "AES_CBC_PAD",
-			params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
-		}, key);
-		var encMsg = new Buffer(0);
-		encMsg = Buffer.concat([encMsg, encrypt.update("simple text 1")]);
-		encMsg = Buffer.concat([encMsg, encrypt.update("simple text 2")]);
-		encMsg = Buffer.concat([encMsg, encrypt.final()]);
-		console.log("Encrypted AES_CBC_PAD:", encMsg.toString('base64'));	
-		//Encrypted AES_CBC_PAD: ByPGGo2xIcGsyRZBncjmI2nLiSAOSnmKG4U1p7LJIRM=
-	
-		session.logout();
-		session.stop();
-	}
-	else {
-		console.error('Slot is not initialized');
-	}
-}
-
-mod.finalize();
-```
-### Decrypting
-```
-var pkcs11 = require('graphene-pk11');
-var Module = pkcs11.Module;
-var Enums = pkcs11.Enums;
-
-var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
-
-var mod = Module.load(lib, "SoftHSM");
-mod.initialize();
-
-//get slots
-var slots = mod.getSlots(true);
-if (slots.length > 0) {
-	var slot = slots[0]; //get slot by index
-	if (slot.isInitialized()) {
-		var session = slot.session;
-		session.start();
-
-		session.login("1234");
-
-		var objects = session.findObjects();
-
-		var key = null;
-		//Get AES key
-		for (var i in objects) {
-			var object = objects[i];
-			if (object.getClass() == Enums.ObjectClass.SecretKey) {
-				var _key = object.toType(); //converts object to SecretKey 
-				if (_key.getType() == Enums.KeyType.AES) {
-					key = object.toType(Enums.ObjectClass.PublicKey);
-					break;
-				}
-			}
-		}
-
-		console.log("Key lable:", key.getLabel()); 						//Key lable: test key AES
-		console.log("Key type:", Enums.KeyType.getText(key.getType()));	//Key type: AES
-		console.log("Key is Encrypt:", key.isEncrypt());				//Key is Encrypt: true
-
-		var decrypt = session.createDecrypt({
-			name: "AES_CBC_PAD",
-			params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
-		}, key);
-		var msg = new Buffer(0);
-		msg = Buffer.concat([msg, decrypt.update(
-			new Buffer("ByPGGo2xIcGsyRZBncjmI2nLiSAOSnmKG4U1p7LJIRM=", "base64")
-			)]);
-		msg = Buffer.concat([msg, decrypt.final()]);
-		console.log("Decrypted AES_CBC_PAD:", msg.toString());	
-		//Decrypted AES_CBC_PAD: simple text 1simple text 2
-
-		session.logout();
-		session.stop();
-	}
-	else {
-		console.error('Slot is not initialized');
-	}
+else {
+    console.error("Slot is not initialized");
 }
 
 mod.finalize();

@@ -14,87 +14,86 @@
     u - mechanism can be used with C_UnwrapKey
     g - mechanism can be used with C_GenerateKey or C_GenerateKeyPair
     D - mechanism can be used with C_DeriveKey
-    E - true if there is an extension
 
 > slot algs -s 0
 
-| Algorithm name            | h | s | v | e | d | w | u | g | D | E |
-|---------------------------|---|---|---|---|---|---|---|---|---|---|
-| RSA_PKCS_KEY_PAIR_GEN     |   |   |   |   |   |   |   | x |   |   |
-| RSA_PKCS                  |   | x | x | x | x | x | x |   |   |   |
-| SHA1_RSA_PKCS             |   | x | x |   |   |   |   |   |   |   |
-| RSA_PKCS_OAEP             |   |   |   | x | x | x | x |   |   |   |
-| RSA_X9_31_KEY_PAIR_GEN    |   |   |   |   |   |   |   | x |   |   |
-| SHA1_RSA_X9_31            |   | x | x |   |   |   |   |   |   |   |
-| RSA_PKCS_PSS              |   | x | x |   |   |   |   |   |   |   |
-| SHA1_RSA_PKCS_PSS         |   | x | x |   |   |   |   |   |   |   |
-| DSA_KEY_PAIR_GEN          |   |   |   |   |   |   |   | x |   |   |
-| DSA                       |   | x | x |   |   |   |   |   |   |   |
-| SHA224_RSA_PKCS           |   | x | x |   |   |   |   |   |   |   |
-| SHA224_RSA_PKCS_PSS       |   | x | x |   |   |   |   |   |   |   |
-| SHA256_RSA_PKCS           |   | x | x |   |   |   |   |   |   |   |
-| SHA256_RSA_PKCS_PSS       |   | x | x |   |   |   |   |   |   |   |
-| SHA384_RSA_PKCS           |   | x | x |   |   |   |   |   |   |   |
-| SHA384_RSA_PKCS_PSS       |   | x | x |   |   |   |   |   |   |   |
-| SHA512_RSA_PKCS           |   | x | x |   |   |   |   |   |   |   |
-| SHA512_RSA_PKCS_PSS       |   | x | x |   |   |   |   |   |   |   |
-| DES2_KEY_GEN              |   |   |   |   |   |   |   | x |   |   |
-| DES3_KEY_GEN              |   |   |   |   |   |   |   | x |   |   |
-| DES3_ECB                  |   |   |   | x | x | x | x |   |   |   |
-| DES3_CBC                  |   |   |   | x | x | x | x |   |   |   |
-| DES3_MAC                  |   | x | x |   |   |   |   |   |   |   |
-| DES3_MAC_GENERAL          |   | x | x |   |   |   |   |   |   |   |
-| CKM_DES3_CMAC_GENERAL     |   | x | x |   |   |   |   |   |   |   |
-| CKM_DES3_CMAC             |   | x | x |   |   |   |   |   |   |   |
-| DES3_CBC_PAD              |   |   |   | x | x | x | x |   |   |   |
-| DES_CFB8                  |   |   |   | x | x |   |   |   |   |   |
-| DES_CFB64                 |   |   |   | x | x |   |   |   |   |   |
-| DES_OFB64                 |   |   |   | x | x |   |   |   |   |   |
-| AES_KEY_GEN               |   |   |   |   |   |   |   | x |   |   |
-| AES_ECB                   |   |   |   | x | x | x | x |   |   |   |
-| AES_CBC                   |   |   |   | x | x | x | x |   |   |   |
-| AES_MAC                   |   | x | x |   |   |   |   |   |   |   |
-| AES_MAC_GENERAL           |   | x | x |   |   |   |   |   |   |   |
-| AES_CMAC                  |   | x | x |   |   |   |   |   |   |   |
-| AES_CMAC_GENERAL          |   | x | x |   |   |   |   |   |   |   |
-| AES_CBC_PAD               |   |   |   | x | x | x | x |   |   |   |
-| AES_CFB8                  |   |   |   | x | x |   |   |   |   |   |
-| AES_CFB128                |   |   |   | x | x |   |   |   |   |   |
-| AES_OFB                   |   |   |   | x | x |   |   |   |   |   |
-| AES_GCM                   |   |   |   | x | x |   |   |   |   |   |
-| SHA1                      | x |   |   |   |   |   |   |   |   |   |
-| SHA224                    | x |   |   |   |   |   |   |   |   |   |
-| SHA224_HMAC               |   | x | x |   |   |   |   |   |   |   |
-| SHA224_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |   |
-| SHA256                    | x |   |   |   |   |   |   |   |   |   |
-| SHA256_HMAC               |   | x | x |   |   |   |   |   |   |   |
-| SHA256_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |   |
-| SHA384                    | x |   |   |   |   |   |   |   |   |   |
-| SHA384_HMAC               |   | x | x |   |   |   |   |   |   |   |
-| SHA384_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |   |
-| SHA512                    | x |   |   |   |   |   |   |   |   |   |
-| SHA512_HMAC               |   | x | x |   |   |   |   |   |   |   |
-| SHA512_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |   |
-| ECDSA_KEY_PAIR_GEN        |   |   |   |   |   |   |   | x |   |   |
-| ECDSA                     |   | x | x |   |   |   |   |   |   |   |
-| ECDSA_SHA1                |   | x | x |   |   |   |   |   |   |   |
-| ECDSA_SHA224              |   | x | x |   |   |   |   |   |   |   |
-| ECDSA_SHA256              |   | x | x |   |   |   |   |   |   |   |
-| ECDSA_SHA384              |   | x | x |   |   |   |   |   |   |   |
-| ECDSA_SHA512              |   | x | x |   |   |   |   |   |   |   |
-| ECDH1_DERIVE              |   |   |   |   |   |   |   |   | x |   |
-| ECDH1_COFACTOR_DERIVE     |   |   |   |   |   |   |   |   | x |   |
-| DES3_ECB_ENCRYPT_DATA     |   |   |   |   |   |   |   |   | x |   |
-| DES3_CBC_ENCRYPT_DATA     |   |   |   |   |   |   |   |   | x |   |
-| AES_ECB_ENCRYPT_DATA      |   |   |   |   |   |   |   |   | x |   |
-| AES_CBC_ENCRYPT_DATA      |   |   |   |   |   |   |   |   | x |   |
-| DSA_PARAMETER_GEN         |   |   |   |   |   |   |   | x |   |   |
-| GENERIC_SECRET_KEY_GEN    |   |   |   |   |   |   |   | x |   |   |
-| SHA_1_HMAC                |   | x | x |   |   |   |   |   |   |   |
-| SHA_1_HMAC_GENERAL        |   | x | x |   |   |   |   |   |   |   |
-| DSA_SHA224                |   | x | x |   |   |   |   |   |   |   |
-| DSA_SHA256                |   | x | x |   |   |   |   |   |   |   |
-| NIST_PRF_KDF              |   |   |   |   |   |   |   |   | x |   |
+| Algorithm name            | h | s | v | e | d | w | u | g | D |
+|---------------------------|---|---|---|---|---|---|---|---|---|
+| RSA_PKCS_KEY_PAIR_GEN     |   |   |   |   |   |   |   | x |   |
+| RSA_PKCS                  |   | x | x | x | x | x | x |   |   |
+| SHA1_RSA_PKCS             |   | x | x |   |   |   |   |   |   |
+| RSA_PKCS_OAEP             |   |   |   | x | x | x | x |   |   |
+| RSA_X9_31_KEY_PAIR_GEN    |   |   |   |   |   |   |   | x |   |
+| SHA1_RSA_X9_31            |   | x | x |   |   |   |   |   |   |
+| RSA_PKCS_PSS              |   | x | x |   |   |   |   |   |   |
+| SHA1_RSA_PKCS_PSS         |   | x | x |   |   |   |   |   |   |
+| DSA_KEY_PAIR_GEN          |   |   |   |   |   |   |   | x |   |
+| DSA                       |   | x | x |   |   |   |   |   |   |
+| SHA224_RSA_PKCS           |   | x | x |   |   |   |   |   |   |
+| SHA224_RSA_PKCS_PSS       |   | x | x |   |   |   |   |   |   |
+| SHA256_RSA_PKCS           |   | x | x |   |   |   |   |   |   |
+| SHA256_RSA_PKCS_PSS       |   | x | x |   |   |   |   |   |   |
+| SHA384_RSA_PKCS           |   | x | x |   |   |   |   |   |   |
+| SHA384_RSA_PKCS_PSS       |   | x | x |   |   |   |   |   |   |
+| SHA512_RSA_PKCS           |   | x | x |   |   |   |   |   |   |
+| SHA512_RSA_PKCS_PSS       |   | x | x |   |   |   |   |   |   |
+| DES2_KEY_GEN              |   |   |   |   |   |   |   | x |   |
+| DES3_KEY_GEN              |   |   |   |   |   |   |   | x |   |
+| DES3_ECB                  |   |   |   | x | x | x | x |   |   |
+| DES3_CBC                  |   |   |   | x | x | x | x |   |   |
+| DES3_MAC                  |   | x | x |   |   |   |   |   |   |
+| DES3_MAC_GENERAL          |   | x | x |   |   |   |   |   |   |
+| CKM_DES3_CMAC_GENERAL     |   | x | x |   |   |   |   |   |   |
+| CKM_DES3_CMAC             |   | x | x |   |   |   |   |   |   |
+| DES3_CBC_PAD              |   |   |   | x | x | x | x |   |   |
+| DES_CFB8                  |   |   |   | x | x |   |   |   |   |
+| DES_CFB64                 |   |   |   | x | x |   |   |   |   |
+| DES_OFB64                 |   |   |   | x | x |   |   |   |   |
+| AES_KEY_GEN               |   |   |   |   |   |   |   | x |   |
+| AES_ECB                   |   |   |   | x | x | x | x |   |   |
+| AES_CBC                   |   |   |   | x | x | x | x |   |   |
+| AES_MAC                   |   | x | x |   |   |   |   |   |   |
+| AES_MAC_GENERAL           |   | x | x |   |   |   |   |   |   |
+| AES_CMAC                  |   | x | x |   |   |   |   |   |   |
+| AES_CMAC_GENERAL          |   | x | x |   |   |   |   |   |   |
+| AES_CBC_PAD               |   |   |   | x | x | x | x |   |   |
+| AES_CFB8                  |   |   |   | x | x |   |   |   |   |
+| AES_CFB128                |   |   |   | x | x |   |   |   |   |
+| AES_OFB                   |   |   |   | x | x |   |   |   |   |
+| AES_GCM                   |   |   |   | x | x |   |   |   |   |
+| SHA1                      | x |   |   |   |   |   |   |   |   |
+| SHA224                    | x |   |   |   |   |   |   |   |   |
+| SHA224_HMAC               |   | x | x |   |   |   |   |   |   |
+| SHA224_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |
+| SHA256                    | x |   |   |   |   |   |   |   |   |
+| SHA256_HMAC               |   | x | x |   |   |   |   |   |   |
+| SHA256_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |
+| SHA384                    | x |   |   |   |   |   |   |   |   |
+| SHA384_HMAC               |   | x | x |   |   |   |   |   |   |
+| SHA384_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |
+| SHA512                    | x |   |   |   |   |   |   |   |   |
+| SHA512_HMAC               |   | x | x |   |   |   |   |   |   |
+| SHA512_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |
+| ECDSA_KEY_PAIR_GEN        |   |   |   |   |   |   |   | x |   |
+| ECDSA                     |   | x | x |   |   |   |   |   |   |
+| ECDSA_SHA1                |   | x | x |   |   |   |   |   |   |
+| ECDSA_SHA224              |   | x | x |   |   |   |   |   |   |
+| ECDSA_SHA256              |   | x | x |   |   |   |   |   |   |
+| ECDSA_SHA384              |   | x | x |   |   |   |   |   |   |
+| ECDSA_SHA512              |   | x | x |   |   |   |   |   |   |
+| ECDH1_DERIVE              |   |   |   |   |   |   |   |   | x |
+| ECDH1_COFACTOR_DERIVE     |   |   |   |   |   |   |   |   | x |
+| DES3_ECB_ENCRYPT_DATA     |   |   |   |   |   |   |   |   | x |
+| DES3_CBC_ENCRYPT_DATA     |   |   |   |   |   |   |   |   | x |
+| AES_ECB_ENCRYPT_DATA      |   |   |   |   |   |   |   |   | x |
+| AES_CBC_ENCRYPT_DATA      |   |   |   |   |   |   |   |   | x |
+| DSA_PARAMETER_GEN         |   |   |   |   |   |   |   | x |   |
+| GENERIC_SECRET_KEY_GEN    |   |   |   |   |   |   |   | x |   |
+| SHA_1_HMAC                |   | x | x |   |   |   |   |   |   |
+| SHA_1_HMAC_GENERAL        |   | x | x |   |   |   |   |   |   |
+| DSA_SHA224                |   | x | x |   |   |   |   |   |   |
+| DSA_SHA256                |   | x | x |   |   |   |   |   |   |
+| NIST_PRF_KDF              |   |   |   |   |   |   |   |   | x |
 
 75 algorithm(s) in list
 
