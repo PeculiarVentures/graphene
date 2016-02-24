@@ -34,89 +34,85 @@ It has been tested with :
 ## Examples
 ### Listing capabilities
 ```
-var pkcs11 = require('graphene-pk11');
-var Module = pkcs11.Module;
-var Enums = pkcs11.Enums;
-
+var graphene = require("graphene-pk11");
+var Module = graphene.Module;
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
-
-var mod = Module.load(lib, "SoftHSM");
+var mod = Module.load(lib, "SafeNet");
 mod.initialize();
-
-//get slots
+// get slots
 var slots = mod.getSlots(true);
 if (slots.length > 0) {
-	var slots = mod.getSlots(true);
-	for (var i in slots) {
-		var slot = slots[i];
-		console.log("Slot #" + (+i + 1));
-		console.log("\tDescription:", slot.description);
-		console.log("\tSerial:", slot.serial);
-		console.log("\tNeed login:", slot.needLogin);
-		console.log("\tPassword(min/max): %d/%d", slot.minPassword, slot.maxPassword);
-		console.log("\tIs hardware:", slot.isHardware());
-		console.log("\tIs removable:", slot.isRemovable());
-		console.log("\tIs initialized:", slot.isInitialized());
-
-		console.log("\n\nMechanisms:");
-		console.log("Name                       h/s/v/e/d/w/u");
-		console.log("========================================");
-		function b(v) {
-			return v ? '+' : '-';
-		};
-		function s(v) {
-			v = v.toString();
-			for (var i = v.length; i < 27; i++) {
-				v += ' ';
-			}
-			return v;
-		};
-		var mechs = slot.mechanismList;
-		for (var j in mechs) {
-			var mech = mechs[j];
-			console.log(
-				s(mech.name) +
-				b(mech.isDigest()) + '/' +
-				b(mech.isSign()) + '/' +
-				b(mech.isVerify()) + '/' +
-				b(mech.isEncrypt()) + '/' +
-				b(mech.isDecrypt()) + '/' +
-				b(mech.isWrap()) + '/' +
-				b(mech.isUnwrap())
-				);
-		}
-	}
+    for (var i = 0; i < slots.length; i++) {
+        var slot = slots.items(i);
+        console.log("Slot #" + slot.handle);
+        console.log("\tDescription:", slot.slotDescription);
+        console.log("\tSerial:", slot.getToken().serialNumber);
+        console.log("\tPassword(min/max): %d/%d", slot.getToken().minPinLen, slot.getToken().maxPinLen);
+        console.log("\tIs hardware:", !!(slot.flags & graphene.SlotFlag.HW_SLOT));
+        console.log("\tIs removable:", !!(slot.flags & graphene.SlotFlag.REMOVABLE_DEVICE));
+        console.log("\tIs initialized:", !!(slot.flags & graphene.SlotFlag.TOKEN_PRESENT));
+        console.log("\n\nMechanisms:");
+        console.log("Name                       h/s/v/e/d/w/u");
+        console.log("========================================");
+        function b(v) {
+            return v ? "+" : "-";
+        }
+        ;
+        function s(v) {
+            v = v.toString();
+            for (var i_1 = v.length; i_1 < 27; i_1++) {
+                v += " ";
+            }
+            return v;
+        }
+        ;
+        var mechs = slot.getMechanisms();
+        for (var j = 0; j < mechs.length; j++) {
+            var mech = mechs.items(j);
+            console.log(s(mech.name) +
+                b(mech.flags & graphene.MechanismFlag.DIGEST) + "/" +
+                b(mech.flags & graphene.MechanismFlag.SIGN) + "/" +
+                b(mech.flags & graphene.MechanismFlag.VERIFY) + "/" +
+                b(mech.flags & graphene.MechanismFlag.ENCRYPT) + "/" +
+                b(mech.flags & graphene.MechanismFlag.DECRYPT) + "/" +
+                b(mech.flags & graphene.MechanismFlag.WRAP) + "/" +
+                b(mech.flags & graphene.MechanismFlag.UNWRAP));
+        }
+    }
 }
-
 mod.finalize();
 ```
 
 ####Output
 ```
-Slot #1
-        Description: Luna UHD Slot
-        Serial: 486884
-        Need login: true
-        Password(min/max): 7/255
-        Is hardware: true
-        Is removable: false
-        Is initialized: true
-
-
+Slot #0
+	Description: SoftHSM slot 0
+	Serial: f89e34b310e83df2
+	Password(min/max): 4/255
+	Is hardware: false
+	Is removable: false
+	Is initialized: true
 Mechanisms:
 Name                       h/s/v/e/d/w/u
-=========================================
+========================================
+MD5                        +/-/-/-/-/-/-
+SHA_1                      +/-/-/-/-/-/-
+SHA224                     +/-/-/-/-/-/-
+SHA256                     +/-/-/-/-/-/-
+SHA384                     +/-/-/-/-/-/-
+SHA512                     +/-/-/-/-/-/-
+MD5_HMAC                   -/+/+/-/-/-/-
+SHA_1_HMAC                 -/+/+/-/-/-/-
+SHA224_HMAC                -/+/+/-/-/-/-
+SHA256_HMAC                -/+/+/-/-/-/-
+SHA384_HMAC                -/+/+/-/-/-/-
+SHA512_HMAC                -/+/+/-/-/-/-
 RSA_PKCS_KEY_PAIR_GEN      -/-/-/-/-/-/-
 RSA_PKCS                   -/+/+/+/+/+/+
+RSA_X_509                  -/+/+/+/+/-/-
+MD5_RSA_PKCS               -/+/+/-/-/-/-
 SHA1_RSA_PKCS              -/+/+/-/-/-/-
 RSA_PKCS_OAEP              -/-/-/+/+/+/+
-RSA_X9_31_KEY_PAIR_GEN     -/-/-/-/-/-/-
-SHA1_RSA_X9_31             -/+/+/-/-/-/-
-RSA_PKCS_PSS               -/+/+/-/-/-/-
-SHA1_RSA_PKCS_PSS          -/+/+/-/-/-/-
-DSA_KEY_PAIR_GEN           -/-/-/-/-/-/-
-DSA                        -/+/+/-/-/-/-
-SHA224_RSA_PKCS            -/+/+/-/-/-/-
 ```
 
 ### Hashing
@@ -508,7 +504,7 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 - [PKCS #11 Admin](http://www.pkcs11admin.net)
 - [Node.js Foreign Function Interface](https://github.com/node-ffi/node-ffi)
 - [GOST PKCS#11 constants](https://github.com/romanovskiy-k/pkcs11/blob/master/rtpkcs11t.h)
-- [PKCS#11 Logging Shim](https://github.com/jariq/pkcs11-logger)
+- [PKCS#11 logging proxy module](https://github.com/jariq/pkcs11-logger)
 - [PKCS#11 Proxy](https://github.com/iksaif/pkcs11-proxy)
 - [PKCS#11 Tests](https://github.com/google/pkcs11test)
 - [OpenCryptoKi](http://sourceforge.net/projects/opencryptoki/)
