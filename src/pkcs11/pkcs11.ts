@@ -630,7 +630,7 @@ export class Pkcs11 {
     C_DigestFinal(hSession: number, pDigest: Buffer, pulDigestLen: Buffer): number;
     C_DigestFinal(hSession: number, pDigest: Buffer, pulDigestLen: Buffer, callback: Callback): void;
     C_DigestFinal(hSession: number, pDigest: Buffer, pulDigestLen: Buffer, callback?: Callback): number {
-        return this.callFunction("C_DigestKey", arguments);
+        return this.callFunction("C_DigestFinal", arguments);
     }
 
     /* Signing and MACing */
