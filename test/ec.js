@@ -117,7 +117,7 @@ describe("ECDSA", function () {
 					keys.publicKey.pointEC
 				)},
 			{
-				"class": graphene.ObjectClass.SecretKey,
+				"class": graphene.ObjectClass.SECRET_KEY,
 				"token": false,
 				"keyType": graphene.KeyType.AES,
 				"valueLen": 192 / 8,
