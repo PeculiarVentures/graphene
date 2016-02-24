@@ -4,6 +4,11 @@ var graphene = require("../build/graphene");
 
 var Module = graphene.Module;
 
+process.env["PKCS11_LOGGER_LIBRARY_PATH"] = config.init.lib;
+process.env["PKCS11_LOGGER_LOG_FILE_PATH"] = "/home/microshine/tmp/pkcs11.log";
+
+config.init.lib = "/home/microshine/tmp/pkcs11-logger-x64.so";
+
 describe("ECDSA", function () {
 	var mod, slot, session, keys, skey;
 
@@ -38,22 +43,24 @@ describe("ECDSA", function () {
             token: false,
             verify: true,
             encrypt: true,
-            wrap: true
+            wrap: true,
+	    derive: true
         }, {
                 keyType: graphene.KeyType.EC,
                 token: false,
                 sign: true,
                 decrypt: true,
-                unwrap: true
+                unwrap: true,
+		derive: true
             });
     }
 
 	it("generate ECDSA secp192r1 by OID", function () {
-		test_generate(graphene.NamedCurve.getByOid("1.2.840.10045.3.1.1"));
+		test_generate(graphene.NamedCurve.getByOid("1.2.840.10045.3.1.1").value);
 	})
 
 	it("generate ECDSA secp256r1 by name", function () {
-		keys = test_generate(graphene.NamedCurve.getByName("secp256r1"));
+		keys = test_generate(graphene.NamedCurve.getByName("secp256r1").value);
 	})
 
 	it("generate ECDSA secp192r1 by Buffer", function () {
@@ -82,7 +89,7 @@ describe("ECDSA", function () {
     }
 
 	function test_derive(_key, alg, template) {
-		var dkey = session.deriveKey(alg, _key.privateKey, template).toType();
+		var dkey = session.deriveKey(alg, _key.privateKey, template);
 		assert.equal(!!dkey, true, "Empty derived key");
 	}
 
@@ -106,21 +113,21 @@ describe("ECDSA", function () {
 		test_sign_verify(keys, "ECDSA_SHA512");
 	});
 
-	it("derive AES", function () {		
+	it("derive AES", function(){
 		test_derive(
 			keys,
 			{
 				name: "ECDH1_DERIVE",
 				params: new graphene.EcdhParams(
-					graphene.EcKdf.SHA224,
+					graphene.EcKdf.SHA1,
 					null,
-					keys.publicKey.pointEC
+					keys.publicKey.getAttribute({pointEC: null}).pointEC
 				)},
 			{
 				"class": graphene.ObjectClass.SECRET_KEY,
 				"token": false,
 				"keyType": graphene.KeyType.AES,
-				"valueLen": 192 / 8,
+				"valueLen": 256 / 8,
 				"encrypt": true,
 				"decrypt": true
 			});
