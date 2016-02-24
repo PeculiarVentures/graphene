@@ -38,8 +38,9 @@ export class Cipher {
     }
 
     final(): Buffer {
-        let $enc = new Buffer(1024);
-        let $encLen = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
+        const BUF_SIZE = 4048;
+        let $enc = new Buffer(BUF_SIZE);
+        let $encLen = core.Ref.alloc(pkcs11.CK_ULONG, BUF_SIZE);
 
         let rv = this.lib.C_EncryptFinal(this.session.handle, $enc, $encLen);
         if (rv) throw new core.Pkcs11Error(rv, "C_EncryptFinal");

@@ -12,7 +12,7 @@ function gen_AES(session: defs.Session, len: number): defs.SecretKey {
             keyType: defs.KeyType.AES,
             token: false,
             modifiable: true,
-            valueLen: len || 128,
+            valueLen: (len || 128) / 8,
             sign: true,
             verify: true,
             encrypt: true,
@@ -48,7 +48,7 @@ function gen_ECDSA(session: defs.Session, name: string, hexOid) {
     let keys = session.generateKeyPair(
         defs.KeyGenMechanism.ECDSA,
         {
-            keyType: defs.KeyType.RSA,
+            keyType: defs.KeyType.ECDSA,
             token: false,
             wrap: true,
             encrypt: true,

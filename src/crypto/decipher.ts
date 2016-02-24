@@ -38,8 +38,9 @@ export class Decipher {
     }
 
     final(): Buffer {
-        let $dec = new Buffer(1024);
-        let $declen = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
+        const BUF_SIZE = 4048;
+        let $dec = new Buffer(BUF_SIZE);
+        let $declen = core.Ref.alloc(pkcs11.CK_ULONG, BUF_SIZE);
 
         let rv = this.lib.C_DecryptFinal(this.session.handle, $dec, $declen);
         if (rv) throw new core.Pkcs11Error(rv, "C_DecryptFinal");
