@@ -19,11 +19,11 @@ export class AesGcmParams implements IParams {
     aad: Buffer;
     /**
      * length of authentication tag (output following cipher text) in bits. 
-     * Can be any value between 0 and 128.
+     * Can be any value between 0 and 128. Default 128
      */
     tagBits: number;
 
-    constructor(iv: Buffer, aad: Buffer = null, tagBits: number = 0) {
+    constructor(iv: Buffer, aad: Buffer = null, tagBits: number = 128) {
         this.iv = iv;
         this.aad = aad;
         this.tagBits = tagBits;
