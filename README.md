@@ -30,6 +30,16 @@ It has been tested with :
 * The pkcs11 module you can now use can be found here:
 
   `/usr/lib/softhsm/libsofthsm.so`
+  
+* Adjust permissions so the user your code will run as can access softhsm config and tools:
+
+  ```
+  sudo chmod –R 755 /etc/softhsm
+  sudo chmod –R 755 /var/lib/softhsm
+  chown root:softhsmusers /etc/softhsm chown root:softhsmusers /var/lib/softhsm
+  ```
+ 
+  **NOTE**: This may be more generous than needed. It works out to : 0755 = User:rwx Group:r-x World:r-x. 
 
 ## Examples
 ### Listing capabilities
