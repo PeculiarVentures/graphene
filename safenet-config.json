@@ -1,5 +1,5 @@
 {
-    "lib": "/home/microshine/tmp/test/pkcs11-logger-x64.so",
+    "lib": "/usr/safenet/lunaclient/lib/libCryptoki2_64.so",
     "libName": "Safenet Luna",
     "slot": 0,
     "pin": "1234"

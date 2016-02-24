@@ -15,7 +15,7 @@ export let cmdObject = defs.commander.createCommand("object", {
 
 function print_object_info(obj: defs.Storage) {
     let TEMPLATE = "| %s | %s |";
-    let COL_1 = 10;
+    let COL_1 = 20;
     let COL_2 = 25;
     console.log(TEMPLATE, defs.rpud("Name", COL_1), defs.rpud("Value", COL_2));
     console.log(TEMPLATE.replace(/\s/g, "-"), defs.rpud("", COL_1, "-"), defs.rpud("", COL_2, "-"));
@@ -25,6 +25,40 @@ function print_object_info(obj: defs.Storage) {
     console.log(TEMPLATE, defs.rpud("Token", COL_1), defs.rpud(obj.token, COL_2));
     console.log(TEMPLATE, defs.rpud("Private", COL_1), defs.rpud(obj.private, COL_2));
     console.log(TEMPLATE, defs.rpud("Modifiable", COL_1), defs.rpud(obj.modifiable, COL_2));
+
+    if (obj.class === defs.ObjectClass.PRIVATE_KEY) {
+        let o: defs.PrivateKey = obj.toType<defs.PrivateKey>();
+        console.log(TEMPLATE, defs.rpud("Mechanism", COL_1), defs.rpud(defs.KeyGenMechanism[o.mechanism], COL_2));
+        console.log(TEMPLATE, defs.rpud("Local", COL_1), defs.rpud(o.local, COL_2));
+        console.log(TEMPLATE, defs.rpud("Sensitive", COL_1), defs.rpud(o.sensitive, COL_2));
+        console.log(TEMPLATE, defs.rpud("Extractable", COL_1), defs.rpud(o.extractable, COL_2));
+        console.log(TEMPLATE, defs.rpud("Derive", COL_1), defs.rpud(o.derive, COL_2));
+        console.log(TEMPLATE, defs.rpud("Decrypt", COL_1), defs.rpud(o.decrypt, COL_2));
+        console.log(TEMPLATE, defs.rpud("Sign", COL_1), defs.rpud(o.sign, COL_2));
+        console.log(TEMPLATE, defs.rpud("Sign recover", COL_1), defs.rpud(o.signRecover, COL_2));
+        console.log(TEMPLATE, defs.rpud("Unwrap", COL_1), defs.rpud(o.unwrap, COL_2));
+    } else if (obj.class === defs.ObjectClass.PUBLIC_KEY) {
+        let o: defs.PublicKey = obj.toType<defs.PublicKey>();
+        console.log(TEMPLATE, defs.rpud("Mechanism", COL_1), defs.rpud(defs.KeyGenMechanism[o.mechanism], COL_2));
+        console.log(TEMPLATE, defs.rpud("Local", COL_1), defs.rpud(o.local, COL_2));
+        console.log(TEMPLATE, defs.rpud("Derive", COL_1), defs.rpud(o.derive, COL_2));
+        console.log(TEMPLATE, defs.rpud("Encrypt", COL_1), defs.rpud(o.encrypt, COL_2));
+        console.log(TEMPLATE, defs.rpud("Verify", COL_1), defs.rpud(o.verify, COL_2));
+        console.log(TEMPLATE, defs.rpud("Wrap", COL_1), defs.rpud(o.wrap, COL_2));
+    } else if (obj.class === defs.ObjectClass.SECRET_KEY) {
+        let o: defs.SecretKey = obj.toType<defs.SecretKey>();
+        console.log(TEMPLATE, defs.rpud("Mechanism", COL_1), defs.rpud(defs.KeyGenMechanism[o.mechanism], COL_2));
+        console.log(TEMPLATE, defs.rpud("Local", COL_1), defs.rpud(o.local, COL_2));
+        console.log(TEMPLATE, defs.rpud("Sensitive", COL_1), defs.rpud(o.sensitive, COL_2));
+        console.log(TEMPLATE, defs.rpud("Extractable", COL_1), defs.rpud(o.extractable, COL_2));
+        console.log(TEMPLATE, defs.rpud("Derive", COL_1), defs.rpud(o.derive, COL_2));
+        console.log(TEMPLATE, defs.rpud("Encrypt", COL_1), defs.rpud(o.encrypt, COL_2));
+        console.log(TEMPLATE, defs.rpud("Decrypt", COL_1), defs.rpud(o.decrypt, COL_2));
+        console.log(TEMPLATE, defs.rpud("Sign", COL_1), defs.rpud(o.sign, COL_2));
+        console.log(TEMPLATE, defs.rpud("Verify", COL_1), defs.rpud(o.verify, COL_2));
+        console.log(TEMPLATE, defs.rpud("Unwrap", COL_1), defs.rpud(o.unwrap, COL_2));
+        console.log(TEMPLATE, defs.rpud("Wrap", COL_1), defs.rpud(o.wrap, COL_2));
+    }
 }
 
 function print_object_header() {

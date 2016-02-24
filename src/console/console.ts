@@ -1,6 +1,6 @@
 // #!/usr/bin/env node
 
-// module init -p ../../../graphene.json
+// module init -p ../../../safenet-config.json
 
 import * as fs from "fs";
 import * as readline from "readline";
