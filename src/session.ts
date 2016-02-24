@@ -6,7 +6,7 @@ import {Template, ITemplate} from "./template";
 import {Mechanism, MechanismType} from "./mech";
 import * as objects from "./objects/common";
 
-import {Sign, Verify, Cipher, Decipher} from "./crypto/common";
+import {Sign, Verify, Cipher, Decipher, Digest} from "./crypto/common";
 
 const ObjectArray = core.RefArray(pkcs11.CK_OBJECT_HANDLE);
 
@@ -373,6 +373,10 @@ export class Session extends core.HandleObject {
 
     createDecipher(alg: MechanismType, key: Key): Decipher {
         return new Decipher(this, alg, key, this.lib);
+    }
+
+    createDigest(alg: MechanismType): Digest {
+        return new Digest(this, alg, this.lib);
     }
 
     wrapKey(alg: MechanismType, wrappingKey: Key, key: Key): Buffer {
