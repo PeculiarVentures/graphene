@@ -10,34 +10,26 @@ It has been tested with :
 
 **NOTE:** For testing purposes it may be easier to work with SoftHSM2 which is a software implementation of PKCS#11 based on OpenSSL or Botan.
 
-## SoftHSM2
+## SoftHSM2 (assumes Ubuntu)
 * Install SoftHSM2
 
     `apt-get install softhsm`
-
-* Specify where your configuration file is
-
-    `export SOFTHSM2_CONF=/etc/softhsm/softhsm.conf`
-
-* Fix the configuation file to specify correct path to it's db
-
-    `%s:/lib\/lib/lib`
 
 * Initialize the first slot
 
     `softhsm2-util --init-token --slot 0 --label "My token 1"`
 
-* The pkcs11 module you can now use can be found here:
+* The PKCS1 #11 module you can now use can be found here:
 
-  `/usr/lib/softhsm/libsofthsm.so`
+  `/usr/local/lib/softhsm/libsofthsm.so`
   
-* Adjust permissions so the user your code will run as can access softhsm config and tools:
+* Adjust permissions so the user your code will be able to access the PKCS #11 module:
 
   ```
-  sudo chmod –R 755 /etc/softhsm
   sudo chmod –R 755 /var/lib/softhsm
-  chown root:softhsmusers /etc/softhsm
+  sudo chmod –R 755 /usr/local/lib/softhsm
   chown root:softhsmusers /var/lib/softhsm
+  chown root:softhsmusers /usr/local/lib/softhsm
   ```
  
   **NOTE**: This may be more generous than needed. It works out to : 0755 = User:rwx Group:r-x World:r-x. 
