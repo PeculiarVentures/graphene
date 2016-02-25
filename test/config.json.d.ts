@@ -2,13 +2,14 @@ interface IInit {
     lib: string;
     libName: string;
     pin: string;
+    vendor?: string;
 }
 
 interface IControlValues {
     module: {
         manufactureID: string;
         libraryDescription: string;
-    },
+    };
     token: {
         flags;
         label;

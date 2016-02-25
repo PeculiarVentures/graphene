@@ -16,6 +16,9 @@ describe("AES", function () {
         slot = mod.getSlots(0);
         session = slot.open();
         session.login(config.init.pin);
+        if (config.init.vendor){
+            graphene.Mechanism.vendor(config.init.vendor);
+        }
 	})
 
 	after(function () {
