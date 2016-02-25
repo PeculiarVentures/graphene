@@ -166,7 +166,7 @@ export class Mechanism extends core.HandleObject {
             let file = fs.readFileSync(name);
             let vendor = JSON.parse(file.toString());
             for (let i in vendor) {
-                let new_name = `V_${i}`;
+                let new_name = i;
                 let v = vendor[i];
                 mechs[new_name] = v;
                 mechs[v] = new_name;
@@ -174,7 +174,7 @@ export class Mechanism extends core.HandleObject {
         }
         else {
             // vendor(name: string, value: number)
-            let new_name = `V_${name}`;
+            let new_name = name;
             mechs[new_name] = value;
             mechs[value] = new_name;
         }

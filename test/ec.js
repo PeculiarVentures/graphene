@@ -96,19 +96,19 @@ describe("ECDSA", function () {
 	});
 
 	it("sign/verify SHA-224", function () {
-		test_sign_verify(keys, "V_ECDSA_SHA224");
+		test_sign_verify(keys, "ECDSA_SHA224");
 	});
 
 	it("sign/verify SHA-256", function () {
-		test_sign_verify(keys, "V_ECDSA_SHA256");
+		test_sign_verify(keys, "ECDSA_SHA256");
 	});
 
 	it("sign/verify SHA-384", function () {
-		test_sign_verify(keys, "V_ECDSA_SHA384");
+		test_sign_verify(keys, "ECDSA_SHA384");
 	});
 
 	it("sign/verify SHA-512", function () {
-		test_sign_verify(keys, "V_ECDSA_SHA512");
+		test_sign_verify(keys, "ECDSA_SHA512");
 	});
 
 	it("derive AES", function(){

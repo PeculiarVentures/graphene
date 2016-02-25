@@ -113,6 +113,9 @@ export let cmdModuleInit: defs.Command = cmdModule.createCommand("init", {
                 let slot = consoleApp.module.getSlots(config.slot);
                 consoleApp.session = slot.open();
                 consoleApp.session.login(config.pin);
+                for (let i in config.vendor){
+                    defs.Mechanism.vendor(config.vendor[i]);
+                }
                 console.log("Ok");
             }
         }

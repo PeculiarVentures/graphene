@@ -109,13 +109,13 @@ describe("AES", function () {
 	it("AesGCM encrypt/decrypt default", function () {
 		test_encrypt_decrypt(
 			skey,
-			{ name: "V_AES_GCM", params: new graphene.AesGcmParams(new Buffer("123456789012")) });
+			{ name: "AES_GCM", params: new graphene.AesGcmParams(new Buffer("123456789012")) });
 	});
 
 	it("AesGCM encrypt/decrypt with additionalData", function () {
 		test_encrypt_decrypt(
 			skey,
-			{ name: "V_AES_GCM", params: new graphene.AesGcmParams(new Buffer("123456789012"), new Buffer("additional data")) });
+			{ name: "AES_GCM", params: new graphene.AesGcmParams(new Buffer("123456789012"), new Buffer("additional data")) });
 	});
     
 })
