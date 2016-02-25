@@ -51,6 +51,18 @@ defs.commander.on("error", (e) => {
     global["readline"].prompt();
 });
 
+
+/**
+ * version
+ */
+defs.commander.createCommand("version", "version of graphene")
+    .on("call", function() {
+        console.log();
+        console.log(`Version: 2.0.0`);
+        console.log();
+    });
+
+
 /* ==========
    exit
    ==========*/

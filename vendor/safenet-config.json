@@ -2,5 +2,6 @@
     "lib": "/usr/safenet/lunaclient/lib/libCryptoki2_64.so",
     "libName": "Safenet Luna",
     "slot": 0,
-    "pin": "1234"
+    "pin": "1234",
+    "vendor": ["vendor/safenet_v5_3.json"]
 }

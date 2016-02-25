@@ -37,6 +37,26 @@ function print_module_note() {
 }
 
 /**
+ * vendor
+ */
+export let cmdModuleVendor: defs.Command = cmdModule.createCommand("vendor", {
+    description: "get additional algorithms from JSON file",
+    example: defs.MODULE_EXAMPLE
+})
+    .option("file", {
+        description: "Path to json file",
+        set: defs.check_file,
+        isRequired: true
+    })
+    .on("call", function(cmd) {
+        console.log();
+        defs.Mechanism.vendor(cmd.file);
+        console.log("Algorithms was added");
+        console.log(defs.MechanismEnum);
+        console.log();
+    });
+
+/**
  * load
  */
 export let cmdModuleLoad: defs.Command = cmdModule.createCommand("load", {
@@ -83,6 +103,7 @@ export let cmdModuleInit: defs.Command = cmdModule.createCommand("init", {
             libName: string;
             slot: number;
             pin: string;
+            vendor?: string[];
         } = null;
         try {
             config = require(cmd.path);

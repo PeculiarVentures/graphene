@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as graphene from "../../graphene";
 export * from "../../graphene";
+export {Mechanism} from "../../mech";
 export {commander, Command} from "../lib/commander";
 export * from "./print";
 import * as print from "./print";

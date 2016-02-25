@@ -1027,10 +1027,10 @@ export const CKM_EC_KEY_PAIR_GEN = 0x00001040;
 
 export const CKM_ECDSA = 0x00001041;
 export const CKM_ECDSA_SHA1 = 0x00001042;
-export const CKM_ECDSA_SHA224 = 0x80000122;
-export const CKM_ECDSA_SHA256 = 0x80000123;
-export const CKM_ECDSA_SHA384 = 0x80000124;
-export const CKM_ECDSA_SHA512 = 0x80000125;
+export const CKM_ECDSA_SHA224 = 0x000001043;
+export const CKM_ECDSA_SHA256 = 0x000001044;
+export const CKM_ECDSA_SHA384 = 0x000001045;
+export const CKM_ECDSA_SHA512 = 0x000001046;
 
 /* CKM_ECDH1_DERIVE, CKM_ECDH1_COFACTOR_DERIVE, and CKM_ECMQV_DERIVE
  * are new for v2.11 */
@@ -1068,8 +1068,7 @@ export const CKM_BLOWFISH_CBC = 0x00001091;
 export const CKM_TWOFISH_KEY_GEN = 0x00001092;
 export const CKM_TWOFISH_CBC = 0x00001093;
 
-// export const CKM_AES_GCM = 0x00001087;
-export const CKM_AES_GCM = 0x8000011C;
+export const CKM_AES_GCM = 0x00001087;
 export const CKM_AES_CCM = 0x00001088;
 export const CKM_AES_KEY_WRAP = 0x00001090;
 export const CKM_AES_KEY_WRAP_PAD = 0x00001091;

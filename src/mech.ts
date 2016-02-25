@@ -1,5 +1,6 @@
 import * as pkcs11 from "./pkcs11";
 import * as core from "./core";
+import * as fs from "fs";
 import {Slot} from "./slot";
 import * as obj from "./object";
 import {MechanismEnum} from "./mech_enum";
@@ -141,10 +142,10 @@ export class Mechanism extends core.HandleObject {
         let pParams = null;
         if (alg.params) {
             if (alg.params.toCKI)
-                 // Convert object with toCKI to Buffer
-                 pParams = alg.params.toCKI();
+                // Convert object with toCKI to Buffer
+                pParams = alg.params.toCKI();
             else
-                 pParams = alg.params;
+                pParams = alg.params;
         }
 
         res = new pkcs11.CK_MECHANISM({
@@ -153,6 +154,30 @@ export class Mechanism extends core.HandleObject {
             ulParameterLen: pParams ? pParams.length : 0
         });
         return res["ref.buffer"];
+    }
+
+    static vendor(jsonFile: string);
+    static vendor(name: string, value: number);
+    static vendor(name: string, value?: number) {
+        let mechs: any = MechanismEnum;
+
+        if (core.isEmpty(value)) {
+            // vendor(jsonFile: string);
+            let file = fs.readFileSync(name);
+            let vendor = JSON.parse(file.toString());
+            for (let i in vendor) {
+                let new_name = `V_${i}`;
+                let v = vendor[i];
+                mechs[new_name] = v;
+                mechs[v] = new_name;
+            }
+        }
+        else {
+            // vendor(name: string, value: number)
+            let new_name = `V_${name}`;
+            mechs[new_name] = value;
+            mechs[value] = new_name;
+        }
     }
 
 }
