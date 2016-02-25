@@ -40,7 +40,7 @@ It has been tested with :
 var graphene = require("graphene-pk11");
 var Module = graphene.Module;
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
-var mod = Module.load(lib, "SafeNet");
+var mod = Module.load(lib, "SoftHSM");
 mod.initialize();
 // get slots
 var slots = mod.getSlots(true);
@@ -125,7 +125,7 @@ var Module = graphene.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
 
-var mod = Module.load(lib, "SafeNet");
+var mod = Module.load(lib, "SoftHSM");
 mod.initialize();
 
 var slot = mod.getSlots(0);
@@ -152,7 +152,7 @@ var Module = graphene.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
 
-var mod = Module.load(lib, "SafeNet");
+var mod = Module.load(lib, "SoftHSM");
 mod.initialize();
 
 var slot = mod.getSlots(0);
@@ -189,7 +189,7 @@ var Module = graphene.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
 
-var mod = Module.load(lib, "SafeNet");
+var mod = Module.load(lib, "SoftHSM");
 mod.initialize();
 
 var slot = mod.getSlots(0);
@@ -228,7 +228,7 @@ var Module = graphene.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
 
-var mod = Module.load(lib, "SafeNet");
+var mod = Module.load(lib, "SoftHSM");
 mod.initialize();
 
 var slot = mod.getSlots(0);
@@ -283,7 +283,7 @@ var Module = graphene.Module;
 
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
 
-var mod = Module.load(lib, "SafeNet");
+var mod = Module.load(lib, "SoftHSM");
 mod.initialize();
 
 var slot = mod.getSlots(0);
