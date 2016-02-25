@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var readline = require("readline");
 var defs = require("./commands/defs");
 var cmdModule = require("./commands/module");
