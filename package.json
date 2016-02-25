@@ -4,7 +4,6 @@
     "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI libraries in NodeJS",
     "main": "./build/graphene.js",
     "scripts": {
-        "install": "tsd install && tsc",
         "test": "mocha"
     },
     "repository": {
