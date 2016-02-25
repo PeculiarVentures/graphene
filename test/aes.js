@@ -45,12 +45,12 @@ describe("AES", function () {
 	   test_generate(128);
 	})
     
-	it("generate AES 256", function () {
-	   skey = test_generate(256);
+	it("generate AES 192", function () {
+	   skey = test_generate(192);
 	})
     
-	it("generate AES 512", function () {
-	   test_generate(512);
+	it("generate AES 256", function () {
+	   test_generate(256);
 	})
 
 	function test_sign_verify(_key, alg) {
