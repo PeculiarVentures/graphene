@@ -4,8 +4,9 @@
         "target": "es5",
         "rootDir": "src",
         "outDir": "build",
-        "sourceMap": true,
-        "declaration": true
+        "removeComments": true,
+        "sourceMap": false,
+        "declaration": false
     },
     "exclude": [
         "node_modules", "build"
