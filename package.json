@@ -1,41 +1,41 @@
 {
-  "name": "graphene-pk11",
-  "version": "2.0.0",
-  "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI libraries in NodeJS",
-  "main": "./build/graphene.js",
-  "scripts": {
-    "test": "mocha"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/PeculiarVentures/graphene.git"
-  },
-  "bin": {
-    "graphene": "./bin/graphene.js"
-  },
-  "dependencies": {
-    "debug": "^2.2.0",
-    "ffi": "^2.0.0",
-    "ref": "^1.1.0",
-    "ref-array": "^1.1.2",
-    "ref-struct": "^1.0.2"
-  },
-  "devDependencies": {
-    "mocha": "^2.3.3",
-    "typescript": "^1.7.5",
-    "tds": "^0.1.0"
-  },
-  "keywords": [
-    "pkcs11",
-    "cryptography",
-    "cryptoki",
-    "token",
-    "smartcard",
-    "hsm",
-    "bitcoin",
-    "RSA",
-    "ECC"
-  ],
-  "author": "PeculiarVentures",
-  "license": "MIT"
+    "name": "graphene-pk11",
+    "version": "2.0.0",
+    "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI libraries in NodeJS",
+    "main": "./build/graphene.js",
+    "scripts": {
+        "install": "tsd install & tsc",
+        "test": "mocha"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/PeculiarVentures/graphene.git"
+    },
+    "bin": {
+        "graphene": "./bin/graphene.js"
+    },
+    "dependencies": {
+        "ffi": "^2.0.0",
+        "ref": "^1.1.0",
+        "ref-array": "^1.1.2",
+        "ref-struct": "^1.0.2"
+    },
+    "devDependencies": {
+        "mocha": "^2.3.3",
+        "typescript": "^1.7.5",
+        "tds": "^0.1.0"
+    },
+    "keywords": [
+        "pkcs11",
+        "cryptography",
+        "cryptoki",
+        "token",
+        "smartcard",
+        "hsm",
+        "bitcoin",
+        "RSA",
+        "ECC"
+    ],
+    "author": "PeculiarVentures",
+    "license": "MIT"
 }
