@@ -10,6 +10,81 @@ It has been tested with :
 
 **NOTE:** For testing purposes it may be easier to work with SoftHSM2 which is a software implementation of PKCS#11 based on OpenSSL or Botan.
 
+```
+var graphene = require("graphene-pk11");
+var Module = graphene.Module;
+
+var mod = Module.load("/usr/local/lib/softhsm/libsofthsm2.so", "SoftHSM");
+
+mod.initialize();
+
+var session = mod.getSlots(0).open();
+session.login("password");
+
+// Get a number of private key objects on token
+console.log(session.find({class: graphene.ObjectClass.PRIVATE_KEY}).length);
+
+session.logout();
+mod.finalize();
+```
+
+## Installation
+
+```
+$ npm install graphene-pk11
+```
+
+## Quick start
+
+Install the executable
+```
+$ npm install graphene-pk11 --global
+```
+
+Create config file
+```
+// config.json
+{
+    "lib": "/usr/local/lib/softhsm/libsofthsm2.so",
+    "libName": "SoftHSMv2.0",
+    "slot": 0,
+    "pin": "password"
+}
+```
+
+Start console application
+```
+$ graphene
+```
+
+Load module from config file
+```
+$ > module init -p config.json
+```
+
+Get list of objects
+```
+$ > object list -s 0 
+```
+
+## Programing
+
+Install to your project
+```
+$ npm install graphene-pk11 --save
+```
+
+Install TypeScript definition using [TSD](https://www.npmjs.com/package/tsd) package manager
+```
+$ tsd install graphene-pk11 --save
+```
+
+Module loading
+```
+// file.js
+var graphene = require("graphene-pk11");
+```
+
 ## SoftHSM2 (assumes Ubuntu)
 * Install SoftHSM2
 
