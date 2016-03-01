@@ -34,9 +34,9 @@ mod.finalize();
 $ npm install graphene-pk11
 ```
 
-## Quick start
+## Using the CLI
 
-Install the executable
+Install the package
 ```
 $ npm install graphene-pk11 --global
 ```
@@ -67,9 +67,9 @@ Get list of objects
 $ > object list -s 0 
 ```
 
-## Programing
+## Using the Package
 
-Install to your project
+Install the package
 ```
 $ npm install graphene-pk11 --save
 ```
@@ -79,7 +79,7 @@ Install TypeScript definition using [TSD](https://www.npmjs.com/package/tsd) pac
 $ tsd install graphene-pk11 --save
 ```
 
-Module loading
+Load module
 ```
 // file.js
 var graphene = require("graphene-pk11");
