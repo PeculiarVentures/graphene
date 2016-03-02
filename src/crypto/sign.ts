@@ -21,23 +21,63 @@ export class Sign {
         if (rv) throw new core.Pkcs11Error(rv, "C_SignInit");
     }
 
-    update(text: string);
-    update(data: Buffer);
-    update(data) {
-        data = new Buffer(data);
+    update(data: string | Buffer): void;
+    update(data: string | Buffer, callback: (error: Error) => void): void;
+    update(data, callback?: (error: Error) => void): void {
+        try {
+            data = new Buffer(data);
 
-        let rv = this.lib.C_SignUpdate(this.session.handle, data, data.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_SignUpdate");
+            if (callback) {
+                this.lib.C_SignUpdate(this.session.handle, data, data.length, (err: Error, rv: number) => {
+                    if (err)
+                        callback(err);
+                    else if (rv)
+                        callback(new core.Pkcs11Error(rv, "C_SignUpdate"));
+                    else
+                        callback(null);
+                });
+            }
+            else {
+                let rv = this.lib.C_SignUpdate(this.session.handle, data, data.length);
+                if (rv) throw new core.Pkcs11Error(rv, "C_SignUpdate");
+            }
+        } catch (e) {
+            if (callback)
+                callback(e);
+            else
+                throw e;
+        }
     }
 
-    final(): Buffer {
-        let $sig = new Buffer(1024);
-        let $siglen = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
+    final(): Buffer;
+    final(callback: (err: Error, signature: Buffer) => void): void;
+    final(callback?: (err: Error, signature: Buffer) => void): Buffer {
+        try {
+            let $sig = new Buffer(1024);
+            let $siglen = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
 
-        let rv = this.lib.C_SignFinal(this.session.handle, $sig, $siglen);
-        if (rv) throw new core.Pkcs11Error(rv, "C_SignFinal");
+            if (callback) {
+                // async
+                this.lib.C_SignFinal(this.session.handle, $sig, $siglen, (err: Error, rv: number) => {
+                    if (err)
+                        callback(err, null);
+                    else if (rv)
+                        callback(new core.Pkcs11Error(rv, "C_SignFinal"), null);
+                    else
+                        callback(null, $sig.slice(0, $siglen.deref()));
+                });
+            }
+            else {
+                // sync
+                let rv = this.lib.C_SignFinal(this.session.handle, $sig, $siglen);
+                if (rv) throw new core.Pkcs11Error(rv, "C_SignFinal");
 
-        return $sig.slice(0, $siglen.deref());
+                return $sig.slice(0, $siglen.deref());
+            }
+        } catch (e) {
+            if (callback)
+                callback(e, null);
+        }
     }
 
 }

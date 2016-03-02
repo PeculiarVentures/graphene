@@ -299,64 +299,106 @@ export class Session extends core.HandleObject {
     generateKey(mechanism: MechanismType, template?: ITemplate): objects.SecretKey;
     generateKey(mechanism: MechanismType, template: ITemplate, callback: (err, key: objects.SecretKey) => void): void;
     generateKey(mechanism: MechanismType, template: ITemplate = null, callback?: (err, key: objects.SecretKey) => void): objects.SecretKey {
-        let pMech = Mechanism.create(mechanism);
-        // init default template params
-        if (template) {
-            template.class = ObjectClass.SECRET_KEY;
-        }
-        let pTemplate = new Template(template);
-        let hKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+        try {
+            let pMech = Mechanism.create(mechanism);
+            // init default template params
+            if (template) {
+                template.class = ObjectClass.SECRET_KEY;
+            }
+            let pTemplate = new Template(template);
+            let hKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
 
-        if (callback) {
-            this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey, (err, rv: number) => {
-                if (err) {
-                    callback(err, null);
-                }
-                else {
-                    if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKey");
+            if (callback) {
+                this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey, (err, rv: number) => {
+                    if (err) {
+                        callback(err, null);
+                    }
+                    else {
+                        if (rv)
+                            callback(new core.Pkcs11Error(rv, "C_GenerateKey"), null);
+                        else {
+                            let obj = new SessionObject(hKey.deref(), this, this.lib);
+                            callback(null, obj.toType<objects.SecretKey>());
+                        }
+                    }
+                });
+            }
+            else {
+                let rv = this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey);
+                if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKey");
 
-                    let obj = new SessionObject(hKey.deref(), this, this.lib);
-                    callback(null, obj.toType<objects.SecretKey>());
-                }
-            });
-        }
-        else {
-            let rv = this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey);
-            if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKey");
-
-            let obj = new SessionObject(hKey.deref(), this, this.lib);
-            return obj.toType<objects.SecretKey>();
+                let obj = new SessionObject(hKey.deref(), this, this.lib);
+                return obj.toType<objects.SecretKey>();
+            }
+        } catch (e) {
+            if (callback)
+                callback(e, null);
+            else
+                throw e;
         }
     }
 
-    generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair {
-        let pMech = Mechanism.create(mechanism);
-        // init default public key template
-        if (publicTemplate) {
-            publicTemplate.class = ObjectClass.PUBLIC_KEY;
+    generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair;
+    generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate, callback: (err: Error, keys: IKeyPair) => void): void;
+    generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate, callback?: (err: Error, keys: IKeyPair) => void): IKeyPair {
+        try {
+            let pMech = Mechanism.create(mechanism);
+            // init default public key template
+            if (publicTemplate) {
+                publicTemplate.class = ObjectClass.PUBLIC_KEY;
+            }
+            let pubTmpl = new Template(publicTemplate);
+            let hPubKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+
+            // init default private key template
+            if (privateTemplate) {
+                privateTemplate.class = ObjectClass.PRIVATE_KEY;
+                privateTemplate.private = true;
+            }
+            let prvTmpl = new Template(privateTemplate);
+            let hPrvKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+
+            if (callback) {
+                // async
+                this.lib.C_GenerateKeyPair(
+                    this.handle, pMech,
+                    pubTmpl.ref(), pubTmpl.length,
+                    prvTmpl.ref(), prvTmpl.length,
+                    hPubKey, hPrvKey,
+                    (err: Error, rv: number) => {
+                        if (err)
+                            callback(err, null);
+                        else {
+                            if (rv)
+                                callback(new core.Pkcs11Error(rv, "C_GenerateKeyPair"), null);
+                            else
+                                callback(null, {
+                                    publicKey: new objects.PublicKey(hPubKey.deref(), this, this.lib),
+                                    privateKey: new objects.PrivateKey(hPrvKey.deref(), this, this.lib)
+                                });
+                        }
+                    });
+            }
+            else {
+                // sync
+                let rv = this.lib.C_GenerateKeyPair(
+                    this.handle, pMech,
+                    pubTmpl.ref(), pubTmpl.length,
+                    prvTmpl.ref(), prvTmpl.length,
+                    hPubKey, hPrvKey);
+                if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKeyPair");
+
+                return {
+                    publicKey: new objects.PublicKey(hPubKey.deref(), this, this.lib),
+                    privateKey: new objects.PrivateKey(hPrvKey.deref(), this, this.lib)
+                };
+            }
+        } catch (e) {
+            if (callback)
+                callback(e, null);
+            else
+                throw e;
         }
-        let pubTmpl = new Template(publicTemplate);
-        let hPubKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
-
-        // init default private key template
-        if (privateTemplate) {
-            privateTemplate.class = ObjectClass.PRIVATE_KEY;
-            privateTemplate.private = true;
-        }
-        let prvTmpl = new Template(privateTemplate);
-        let hPrvKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
-
-        let rv = this.lib.C_GenerateKeyPair(
-            this.handle, pMech,
-            pubTmpl.ref(), pubTmpl.length,
-            prvTmpl.ref(), prvTmpl.length,
-            hPubKey, hPrvKey);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKeyPair");
-
-        return {
-            publicKey: new objects.PublicKey(hPubKey.deref(), this, this.lib),
-            privateKey: new objects.PrivateKey(hPrvKey.deref(), this, this.lib)
-        };
     }
 
     createSign(alg: MechanismType, key: Key): Sign {
@@ -379,24 +421,69 @@ export class Session extends core.HandleObject {
         return new Digest(this, alg, this.lib);
     }
 
-    wrapKey(alg: MechanismType, wrappingKey: Key, key: Key): Buffer {
-        let pMech = Mechanism.create(alg);
-        let pWrappedKey = new Buffer(4048);
-        let pWrappedKeyLen = core.Ref.alloc(pkcs11.CK_ULONG);
-        let rv = this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, pWrappedKey, pWrappedKeyLen);
-        if (rv) throw new core.Pkcs11Error(rv, "C_WrapKey");
+    wrapKey(alg: MechanismType, wrappingKey: Key, key: Key): Buffer;
+    wrapKey(alg: MechanismType, wrappingKey: Key, key: Key, callback: (err: Error, wkey: Buffer) => void): void;
+    wrapKey(alg: MechanismType, wrappingKey: Key, key: Key, callback?: (err: Error, wkey: Buffer) => void): Buffer {
+        try {
+            let pMech = Mechanism.create(alg);
+            let pWrappedKey = new Buffer(4048);
+            let pWrappedKeyLen = core.Ref.alloc(pkcs11.CK_ULONG);
+            if (callback) {
+                // async
+                this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, pWrappedKey, pWrappedKeyLen, (err: Error, rv: number) => {
+                    if (rv)
+                        callback(new core.Pkcs11Error(rv, "C_WrapKey"), null);
+                    else
+                        callback(null, pWrappedKey.slice(0, pWrappedKeyLen.deref()));
+                });
+            }
+            else {
+                // sync
+                let rv = this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, pWrappedKey, pWrappedKeyLen);
+                if (rv) throw new core.Pkcs11Error(rv, "C_WrapKey");
 
-        return pWrappedKey.slice(0, pWrappedKeyLen.deref());
+                return pWrappedKey.slice(0, pWrappedKeyLen.deref());
+            }
+        }
+        catch (e) {
+            if (callback)
+                callback(e, null);
+            else
+                throw e;
+        }
     }
 
-    unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate): Key {
-        let pMech = Mechanism.create(alg);
-        let pTemplate = new Template(template);
-        let phKey = core.Ref.alloc(pkcs11.CK_ULONG);
-        let rv = this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, wrappedKey.length, pTemplate.ref(), pTemplate.length, phKey);
-        if (rv) throw new core.Pkcs11Error(rv, "C_UnwrapKey");
+    unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate): Key;
+    unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate, callback: (err: Error, key: Key) => void): void;
+    unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate, callback?: (err: Error, key: Key) => void): Key {
+        try {
+            let pMech = Mechanism.create(alg);
+            let pTemplate = new Template(template);
+            let phKey = core.Ref.alloc(pkcs11.CK_ULONG);
 
-        return new Key(phKey.deref(), this, this.lib);
+            if (callback) {
+                // async
+                this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, wrappedKey.length, pTemplate.ref(), pTemplate.length, phKey, (err: Error, rv: number) => {
+                    if (rv)
+                        callback(new core.Pkcs11Error(rv, "C_UnwrapKey"), null);
+                    else
+                        callback(null, new Key(phKey.deref(), this, this.lib));
+                });
+            }
+            else {
+                // sync
+                let rv = this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, wrappedKey.length, pTemplate.ref(), pTemplate.length, phKey);
+                if (rv) throw new core.Pkcs11Error(rv, "C_UnwrapKey");
+            }
+
+            return new Key(phKey.deref(), this, this.lib);
+        }
+        catch (e) {
+            if (callback)
+                callback(e, null);
+            else
+                throw e;
+        }
     }
 
     /**
@@ -405,7 +492,7 @@ export class Session extends core.HandleObject {
      * @param {Key} baseKey base key
      * @param {ITemplate} template new key template
      */
-    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate): SecretKey{
+    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate): SecretKey {
         let pMech = Mechanism.create(alg);
         let pTemplate = new Template(template);
         let phKey = core.Ref.alloc(pkcs11.CK_ULONG);
