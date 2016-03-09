@@ -1,3 +1,4 @@
+"use strict";
 var pkcs11 = require("../../pkcs11");
 var mech_1 = require("../../mech");
 var mgf_1 = require("./mgf");
@@ -18,5 +19,5 @@ var RsaPssParams = (function () {
         })["ref.buffer"];
     };
     return RsaPssParams;
-})();
+}());
 exports.RsaPssParams = RsaPssParams;

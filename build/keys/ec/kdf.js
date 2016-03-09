@@ -1,3 +1,4 @@
+"use strict";
 var pkcs11 = require("../../pkcs11");
 (function (EcKdf) {
     EcKdf[EcKdf["NULL"] = pkcs11.CKD_NULL] = "NULL";

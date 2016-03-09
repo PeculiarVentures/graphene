@@ -1,3 +1,4 @@
+"use strict";
 var namedCurves = [
     { name: "secp192r1", oid: "1.2.840.10045.3.1.1", value: new Buffer("06082A8648CE3D030101", "hex"), size: 192 },
     { name: "secp256r1", oid: "1.2.840.10045.3.1.7", value: new Buffer("06082A8648CE3D030107", "hex"), size: 256 },
@@ -33,5 +34,5 @@ var NamedCurve = (function () {
         throw new Error("Can not find named curve by oid '" + oid + "'");
     };
     return NamedCurve;
-})();
+}());
 exports.NamedCurve = NamedCurve;

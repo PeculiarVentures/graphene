@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -64,5 +65,5 @@ var Token = (function (_super) {
         this.utcTime = core.dateFromString(new Buffer(info.utcTime).toString("ascii"));
     };
     return Token;
-})(core.HandleObject);
+}(core.HandleObject));
 exports.Token = Token;

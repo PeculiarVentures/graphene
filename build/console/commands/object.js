@@ -1,3 +1,4 @@
+"use strict";
 var defs = require("./defs");
 var consoleApp = defs.consoleApp;
 exports.cmdObject = defs.commander.createCommand("object", {
@@ -126,15 +127,15 @@ exports.cmdObjectDelete = exports.cmdObject.createCommand("delete", {
         });
     }
     else {
-        var obj = consoleApp.session.getObject(+cmd.obj);
-        if (!obj)
+        var obj_1 = consoleApp.session.getObject(+cmd.obj);
+        if (!obj_1)
             throw new Error("Object by ID '" + cmd.obj + "' is not found");
         defs.print_caption("Object info");
-        print_object_info(obj);
+        print_object_info(obj_1);
         console.log();
         global["readline"].question("Do you really want to remove this object (Y/N)?", function (answer) {
             if (answer && answer.toLowerCase() === "y") {
-                consoleApp.session.destroy(obj);
+                consoleApp.session.destroy(obj_1);
                 console.log();
                 console.log("Object was successfully removed");
                 console.log();

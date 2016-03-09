@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -79,7 +80,7 @@ var Slot = (function (_super) {
             throw new core.Pkcs11Error(rv, "C_CloseAllSessions");
     };
     return Slot;
-})(core.HandleObject);
+}(core.HandleObject));
 exports.Slot = Slot;
 var SlotCollection = (function (_super) {
     __extends(SlotCollection, _super);
@@ -92,5 +93,5 @@ var SlotCollection = (function (_super) {
         return new Slot(this.items_[index], this.module, this.lib);
     };
     return SlotCollection;
-})(core.Collection);
+}(core.Collection));
 exports.SlotCollection = SlotCollection;

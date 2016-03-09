@@ -1,3 +1,4 @@
+"use strict";
 var defs = require("./defs");
 var consoleApp = defs.consoleApp;
 exports.cmdHash = defs.commander.createCommand("hash", {

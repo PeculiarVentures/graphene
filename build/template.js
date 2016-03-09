@@ -1,3 +1,4 @@
+"use strict";
 var pkcs11 = require("./pkcs11");
 var core = require("./core");
 var AttributeArray = core.RefArray(pkcs11.CK_ATTRIBUTE);
@@ -198,7 +199,7 @@ var Attribute = (function () {
         }
     };
     return Attribute;
-})();
+}());
 exports.Attribute = Attribute;
 var Template = (function () {
     function Template(template) {
@@ -243,5 +244,5 @@ var Template = (function () {
         return res;
     };
     return Template;
-})();
+}());
 exports.Template = Template;

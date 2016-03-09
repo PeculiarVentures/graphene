@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -14,7 +15,7 @@ var CommandError = (function (_super) {
         this.stack = (new Error(this.message)).stack;
     }
     return CommandError;
-})(Error);
+}(Error));
 exports.CommandError = CommandError;
 var Command = (function (_super) {
     __extends(Command, _super);
@@ -147,7 +148,7 @@ var Command = (function (_super) {
         return o;
     };
     return Command;
-})(events_1.EventEmitter);
+}(events_1.EventEmitter));
 exports.Command = Command;
 function get_command_name(name) {
     return get_name(name, /^(\w[\w-]*|\?)$/i);
@@ -272,7 +273,7 @@ var Commander = (function (_super) {
         }
     };
     return Commander;
-})(events_1.EventEmitter);
+}(events_1.EventEmitter));
 exports.Commander = Commander;
 function pud(text, size, spaceChar, end) {
     if (spaceChar === void 0) { spaceChar = " "; }

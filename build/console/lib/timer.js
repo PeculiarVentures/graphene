@@ -1,3 +1,4 @@
+"use strict";
 var Timer = (function () {
     function Timer() {
         this.beginAt = null;
@@ -17,5 +18,5 @@ var Timer = (function () {
     };
     ;
     return Timer;
-})();
+}());
 exports.Timer = Timer;

@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -13,7 +14,7 @@ var Pkcs11Error = (function (_super) {
         this.stack = (new Error(this.message)).stack;
     }
     return Pkcs11Error;
-})(Error);
+}(Error));
 exports.Pkcs11Error = Pkcs11Error;
 var Pkcs11Result;
 (function (Pkcs11Result) {

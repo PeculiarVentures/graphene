@@ -1,3 +1,4 @@
+"use strict";
 var pkcs11 = require("../../pkcs11");
 var EcdhParams = (function () {
     function EcdhParams(kdf, sharedData, publicData) {
@@ -17,5 +18,5 @@ var EcdhParams = (function () {
         })["ref.buffer"];
     };
     return EcdhParams;
-})();
+}());
 exports.EcdhParams = EcdhParams;

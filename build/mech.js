@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -99,7 +100,7 @@ var Mechanism = (function (_super) {
         }
     };
     return Mechanism;
-})(core.HandleObject);
+}(core.HandleObject));
 exports.Mechanism = Mechanism;
 var MechanismCollection = (function (_super) {
     __extends(MechanismCollection, _super);
@@ -113,5 +114,5 @@ var MechanismCollection = (function (_super) {
         return new Mechanism(handle, this.slotHandle, this.lib);
     };
     return MechanismCollection;
-})(core.Collection);
+}(core.Collection));
 exports.MechanismCollection = MechanismCollection;

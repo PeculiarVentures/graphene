@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -138,7 +139,7 @@ var SessionObject = (function (_super) {
         }
     };
     return SessionObject;
-})(core.HandleObject);
+}(core.HandleObject));
 exports.SessionObject = SessionObject;
 var SessionObjectCollection = (function (_super) {
     __extends(SessionObjectCollection, _super);
@@ -151,7 +152,7 @@ var SessionObjectCollection = (function (_super) {
         return new SessionObject(this.items_[index], this.session, this.lib);
     };
     return SessionObjectCollection;
-})(core.Collection);
+}(core.Collection));
 exports.SessionObjectCollection = SessionObjectCollection;
 var objects = require("./objects/common");
 __export(require("./objects/common"));

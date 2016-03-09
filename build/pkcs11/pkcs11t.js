@@ -1,3 +1,4 @@
+"use strict";
 var Ffi = require("ffi");
 var Ref = require("ref");
 var RefStruct = require("ref-struct");

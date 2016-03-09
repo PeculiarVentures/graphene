@@ -1,3 +1,4 @@
+"use strict";
 var core = require("../core");
 var pkcs11 = require("../pkcs11");
 var mech_1 = require("../mech");
@@ -57,5 +58,5 @@ var Verify = (function () {
         }
     };
     return Verify;
-})();
+}());
 exports.Verify = Verify;

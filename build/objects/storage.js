@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -50,5 +51,5 @@ var Storage = (function (_super) {
         configurable: true
     });
     return Storage;
-})(object_1.SessionObject);
+}(object_1.SessionObject));
 exports.Storage = Storage;

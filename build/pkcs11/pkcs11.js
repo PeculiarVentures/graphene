@@ -1,3 +1,4 @@
+"use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
@@ -227,5 +228,5 @@ var Pkcs11 = (function () {
         return this.callFunction("C_WaitForSlotEvent", arguments);
     };
     return Pkcs11;
-})();
+}());
 exports.Pkcs11 = Pkcs11;

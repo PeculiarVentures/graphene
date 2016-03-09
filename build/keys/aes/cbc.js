@@ -1,3 +1,4 @@
+"use strict";
 var core = require("../../core");
 var pkcs11 = require("../../pkcs11");
 var IvArray = core.RefArray(pkcs11.CK_BYTE, 16);
@@ -17,5 +18,5 @@ var AesCbcParams = (function () {
         })["ref.buffer"];
     };
     return AesCbcParams;
-})();
+}());
 exports.AesCbcParams = AesCbcParams;

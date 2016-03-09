@@ -1,3 +1,4 @@
+"use strict";
 var pkcs11 = require("../../pkcs11");
 var AesGcmParams = (function () {
     function AesGcmParams(iv, aad, tagBits) {
@@ -18,5 +19,5 @@ var AesGcmParams = (function () {
         })["ref.buffer"];
     };
     return AesGcmParams;
-})();
+}());
 exports.AesGcmParams = AesGcmParams;

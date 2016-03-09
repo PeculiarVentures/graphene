@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -84,5 +85,5 @@ var Certificate = (function (_super) {
         configurable: true
     });
     return Certificate;
-})(storage_1.Storage);
+}(storage_1.Storage));
 exports.Certificate = Certificate;

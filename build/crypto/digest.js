@@ -1,3 +1,4 @@
+"use strict";
 var core = require("../core");
 var pkcs11 = require("../pkcs11");
 var mech = require("../mech");
@@ -28,5 +29,5 @@ var Digest = (function () {
         return $digest.slice(0, $digestlen.deref());
     };
     return Digest;
-})();
+}());
 exports.Digest = Digest;

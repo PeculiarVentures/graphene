@@ -1,3 +1,4 @@
+"use strict";
 var pkcs11 = require("../../pkcs11");
 var AesCcmParams = (function () {
     function AesCcmParams(dataLength, nonce, aad, macLength) {
@@ -19,5 +20,5 @@ var AesCcmParams = (function () {
         })["ref.buffer"];
     };
     return AesCcmParams;
-})();
+}());
 exports.AesCcmParams = AesCcmParams;

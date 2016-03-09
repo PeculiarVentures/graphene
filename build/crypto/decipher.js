@@ -1,3 +1,4 @@
+"use strict";
 var core = require("../core");
 var pkcs11 = require("../pkcs11");
 var mech_1 = require("../mech");
@@ -16,20 +17,20 @@ var Decipher = (function () {
     Decipher.prototype.update = function (data, callback) {
         try {
             data = new Buffer(data);
-            var $enc = new Buffer(data.length);
-            var $encLen = core.Ref.alloc(pkcs11.CK_ULONG, $enc.length);
+            var $enc_1 = new Buffer(data.length);
+            var $encLen_1 = core.Ref.alloc(pkcs11.CK_ULONG, $enc_1.length);
             if (callback) {
-                this.lib.C_DecryptUpdate(this.session.handle, data, data.length, $enc, $encLen, function (err, rv) {
+                this.lib.C_DecryptUpdate(this.session.handle, data, data.length, $enc_1, $encLen_1, function (err, rv) {
                     if (rv)
                         throw new core.Pkcs11Error(rv, "C_DecryptUpdate");
-                    callback(null, $enc.slice(0, $encLen.deref()));
+                    callback(null, $enc_1.slice(0, $encLen_1.deref()));
                 });
             }
             else {
-                var rv = this.lib.C_DecryptUpdate(this.session.handle, data, data.length, $enc, $encLen);
+                var rv = this.lib.C_DecryptUpdate(this.session.handle, data, data.length, $enc_1, $encLen_1);
                 if (rv)
                     throw new core.Pkcs11Error(rv, "C_DecryptUpdate");
-                return $enc.slice(0, $encLen.deref());
+                return $enc_1.slice(0, $encLen_1.deref());
             }
         }
         catch (e) {
@@ -42,24 +43,24 @@ var Decipher = (function () {
     Decipher.prototype.final = function (callback) {
         try {
             var BUF_SIZE = 4048;
-            var $dec = new Buffer(BUF_SIZE);
-            var $decLen = core.Ref.alloc(pkcs11.CK_ULONG, BUF_SIZE);
+            var $dec_1 = new Buffer(BUF_SIZE);
+            var $decLen_1 = core.Ref.alloc(pkcs11.CK_ULONG, BUF_SIZE);
             if (callback) {
-                this.lib.C_DecryptFinal(this.session.handle, $dec, $decLen, function (err, rv) {
+                this.lib.C_DecryptFinal(this.session.handle, $dec_1, $decLen_1, function (err, rv) {
                     if (err)
                         callback(err, null);
                     else {
                         if (rv)
                             callback(new core.Pkcs11Error(rv, "C_DecryptFinal"), null);
-                        callback(null, $dec.slice(0, $decLen.deref()));
+                        callback(null, $dec_1.slice(0, $decLen_1.deref()));
                     }
                 });
             }
             else {
-                var rv = this.lib.C_DecryptFinal(this.session.handle, $dec, $decLen);
+                var rv = this.lib.C_DecryptFinal(this.session.handle, $dec_1, $decLen_1);
                 if (rv)
                     throw new core.Pkcs11Error(rv, "C_DecryptFinal");
-                return $dec.slice(0, $decLen.deref());
+                return $dec_1.slice(0, $decLen_1.deref());
             }
         }
         catch (e) {
@@ -70,5 +71,5 @@ var Decipher = (function () {
         }
     };
     return Decipher;
-})();
+}());
 exports.Decipher = Decipher;

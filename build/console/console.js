@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+"use strict";
 var readline = require("readline");
 var defs = require("./commands/defs");
 var cmdModule = require("./commands/module");

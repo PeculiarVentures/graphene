@@ -1,3 +1,4 @@
+"use strict";
 var core = require("../core");
 var pkcs11 = require("../pkcs11");
 var mech = require("../mech");
@@ -41,23 +42,23 @@ var Sign = (function () {
     };
     Sign.prototype.final = function (callback) {
         try {
-            var $sig = new Buffer(1024);
-            var $siglen = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
+            var $sig_1 = new Buffer(1024);
+            var $siglen_1 = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
             if (callback) {
-                this.lib.C_SignFinal(this.session.handle, $sig, $siglen, function (err, rv) {
+                this.lib.C_SignFinal(this.session.handle, $sig_1, $siglen_1, function (err, rv) {
                     if (err)
                         callback(err, null);
                     else if (rv)
                         callback(new core.Pkcs11Error(rv, "C_SignFinal"), null);
                     else
-                        callback(null, $sig.slice(0, $siglen.deref()));
+                        callback(null, $sig_1.slice(0, $siglen_1.deref()));
                 });
             }
             else {
-                var rv = this.lib.C_SignFinal(this.session.handle, $sig, $siglen);
+                var rv = this.lib.C_SignFinal(this.session.handle, $sig_1, $siglen_1);
                 if (rv)
                     throw new core.Pkcs11Error(rv, "C_SignFinal");
-                return $sig.slice(0, $siglen.deref());
+                return $sig_1.slice(0, $siglen_1.deref());
             }
         }
         catch (e) {
@@ -66,5 +67,5 @@ var Sign = (function () {
         }
     };
     return Sign;
-})();
+}());
 exports.Sign = Sign;

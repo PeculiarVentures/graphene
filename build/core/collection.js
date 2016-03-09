@@ -1,3 +1,4 @@
+"use strict";
 var Collection = (function () {
     function Collection(items, lib, classType) {
         this.items_ = items;
@@ -16,5 +17,5 @@ var Collection = (function () {
         return new this.classType(handle, this.lib);
     };
     return Collection;
-})();
+}());
 exports.Collection = Collection;

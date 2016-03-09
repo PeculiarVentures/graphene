@@ -1,3 +1,4 @@
+"use strict";
 var CK = require("./pkcs11t");
 exports.CK_FUNCTIONS = {
     "C_Initialize": [CK.CK_RV, [CK.CK_VOID_PTR]],

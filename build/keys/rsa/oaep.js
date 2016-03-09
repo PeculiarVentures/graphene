@@ -1,3 +1,4 @@
+"use strict";
 var pkcs11 = require("../../pkcs11");
 var mech_1 = require("../../mech");
 var mgf_1 = require("./mgf");
@@ -21,5 +22,5 @@ var RsaOaepParams = (function () {
         })["ref.buffer"];
     };
     return RsaOaepParams;
-})();
+}());
 exports.RsaOaepParams = RsaOaepParams;

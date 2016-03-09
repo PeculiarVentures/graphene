@@ -1,3 +1,4 @@
+"use strict";
 var defs = require("./defs");
 function print_caption(name) {
     console.log("\n" + name + "\n" + defs.CAPTION_UNDERLINE + "\n");

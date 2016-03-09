@@ -1,3 +1,4 @@
+"use strict";
 var pkcs11 = require("./pkcs11");
 (function (MechanismEnum) {
     MechanismEnum[MechanismEnum["RSA_PKCS_KEY_PAIR_GEN"] = pkcs11.CKM_RSA_PKCS_KEY_PAIR_GEN] = "RSA_PKCS_KEY_PAIR_GEN";
