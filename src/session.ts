@@ -492,15 +492,36 @@ export class Session extends core.HandleObject {
      * @param {Key} baseKey base key
      * @param {ITemplate} template new key template
      */
-    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate): SecretKey {
-        let pMech = Mechanism.create(alg);
-        let pTemplate = new Template(template);
-        let phKey = core.Ref.alloc(pkcs11.CK_ULONG);
+    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate): SecretKey;
+    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate, callback: (err: Error, key: Key) => void): void;
+    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate, callback?: (err: Error, key: Key) => void): SecretKey {
+        try {
+            let pMech = Mechanism.create(alg);
+            let pTemplate = new Template(template);
+            let phKey = core.Ref.alloc(pkcs11.CK_ULONG);
 
-        let rv = this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate.ref(), pTemplate.length, phKey);
-        if (rv) throw new core.Pkcs11Error(rv, "C_DeriveKey");
+            if (callback) {
+                this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate.ref(), pTemplate.length, phKey, (err, rv) => {
+                    if (rv)
+                        callback(new core.Pkcs11Error(rv, "C_DeriveKey"), null);
+                    else
+                        callback(null, new SecretKey(phKey.deref(), this, this.lib));
+                });
+            }
+            else {
+                let rv = this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate.ref(), pTemplate.length, phKey);
+                if (rv) throw new core.Pkcs11Error(rv, "C_DeriveKey");
 
-        return new SecretKey(phKey.deref(), this, this.lib);
+                return new SecretKey(phKey.deref(), this, this.lib);
+            }
+        }
+        catch (e) {
+            if (callback) {
+                callback(e, null);
+            }
+            else
+                throw e;
+        }
     }
 
     /**
