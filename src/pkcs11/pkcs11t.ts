@@ -739,6 +739,10 @@ export const CKM_SHA1_RSA_PKCS_PSS = 0x0000000E;
 export const CKM_DSA_KEY_PAIR_GEN = 0x00000010;
 export const CKM_DSA = 0x00000011;
 export const CKM_DSA_SHA1 = 0x00000012;
+export const CKM_DSA_SHA224 = 0x00000013;
+export const CKM_DSA_SHA256 = 0x00000014;
+export const CKM_DSA_SHA384 = 0x00000015;
+export const CKM_DSA_SHA512 = 0x00000016;
 export const CKM_DH_PKCS_KEY_PAIR_GEN = 0x00000020;
 export const CKM_DH_PKCS_DERIVE = 0x00000021;
 
