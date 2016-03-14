@@ -28,7 +28,7 @@ export class Cipher {
         try {
             data = new Buffer(data);
 
-            let $enc = new Buffer(data.length);
+            let $enc = new Buffer(data.length + 1024); // RSA k + 2*mdlen + 2
             let $encLen = core.Ref.alloc(pkcs11.CK_ULONG, $enc.length);
 
             if (callback) {
@@ -73,7 +73,7 @@ export class Cipher {
                 // async
                 this.lib.C_EncryptFinal(this.session.handle, $enc, $encLen, (err, rv) => {
                     if (err)
-                        callback(err, null)
+                        callback(err, null);
                     else {
                         // check result
                         if (rv) callback(new core.Pkcs11Error(rv, "C_EncryptFinal"), null);

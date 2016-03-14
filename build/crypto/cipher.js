@@ -17,7 +17,7 @@ var Cipher = (function () {
     Cipher.prototype.update = function (data, callback) {
         try {
             data = new Buffer(data);
-            var $enc_1 = new Buffer(data.length);
+            var $enc_1 = new Buffer(data.length + 1024);
             var $encLen_1 = core.Ref.alloc(pkcs11.CK_ULONG, $enc_1.length);
             if (callback) {
                 this.lib.C_EncryptUpdate(this.session.handle, data, data.length, $enc_1, $encLen_1, function (err, rv) {
