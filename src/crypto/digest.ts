@@ -21,23 +21,65 @@ export class Digest {
         if (rv) throw new core.Pkcs11Error(rv, "C_DigestInit");
     }
 
-    update(text: string);
-    update(data: Buffer);
-    update(data) {
-        data = new Buffer(data);
+    update(data: string | Buffer): void;
+    update(data: string | Buffer, callback: (error: Error) => void): void;
+    update(data, callback?: (error: Error) => void): void {
+        try {
+            data = new Buffer(data);
 
-        let rv = this.lib.C_DigestUpdate(this.session.handle, data, data.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_DigestUpdate");
+            if (callback) {
+                this.lib.C_DigestUpdate(this.session.handle, data, data.length, (err, rv) => {
+                    if (err)
+                        callback(err);
+                    else if (rv)
+                        callback(new core.Pkcs11Error(rv, "C_DigestUpdate"));
+                    else
+                        callback(null);
+                });
+            }
+            else {
+                let rv = this.lib.C_DigestUpdate(this.session.handle, data, data.length);
+                if (rv) throw new core.Pkcs11Error(rv, "C_DigestUpdate");
+            }
+        }
+        catch (e) {
+            if (callback)
+                callback(e);
+            else
+                throw e;
+        }
     }
 
-    final(): Buffer {
-        let $digest = new Buffer(1024);
-        let $digestlen = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
+    final(): Buffer;
+    final(callback: (error: Error, digest: Buffer) => void): void;
+    final(callback?: (error: Error, digest: Buffer) => void): Buffer {
+        try {
+            let $digest = new Buffer(1024);
+            let $digestlen = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
 
-        let rv = this.lib.C_DigestFinal(this.session.handle, $digest, $digestlen);
-        if (rv) throw new core.Pkcs11Error(rv, "C_DigestFinal");
+            if (callback) {
+                this.lib.C_DigestFinal(this.session.handle, $digest, $digestlen, (err, rv) => {
+                    if (err)
+                        callback(err, null);
+                    else if (rv)
+                        callback(new core.Pkcs11Error(rv, "C_DigestFinal"), null);
+                    else
+                        callback(null, $digest.slice(0, $digestlen.deref()));
+                });
+            }
+            else {
+                let rv = this.lib.C_DigestFinal(this.session.handle, $digest, $digestlen);
+                if (rv) throw new core.Pkcs11Error(rv, "C_DigestFinal");
 
-        return $digest.slice(0, $digestlen.deref());
+                return $digest.slice(0, $digestlen.deref());
+            }
+        }
+        catch (e) {
+            if (callback)
+                callback(e, null);
+            else
+                throw e;
+        }
     }
 
 }
