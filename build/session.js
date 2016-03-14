@@ -267,7 +267,7 @@ var Session = (function (_super) {
         try {
             var pMech = mech_1.Mechanism.create(alg);
             var pWrappedKey_1 = new Buffer(4048);
-            var pWrappedKeyLen_1 = core.Ref.alloc(pkcs11.CK_ULONG);
+            var pWrappedKeyLen_1 = core.Ref.alloc(pkcs11.CK_ULONG, pWrappedKey_1.length);
             if (callback) {
                 this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, pWrappedKey_1, pWrappedKeyLen_1, function (err, rv) {
                     if (rv)

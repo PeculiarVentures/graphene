@@ -427,7 +427,7 @@ export class Session extends core.HandleObject {
         try {
             let pMech = Mechanism.create(alg);
             let pWrappedKey = new Buffer(4048);
-            let pWrappedKeyLen = core.Ref.alloc(pkcs11.CK_ULONG);
+            let pWrappedKeyLen = core.Ref.alloc(pkcs11.CK_ULONG, pWrappedKey.length);
             if (callback) {
                 // async
                 this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, pWrappedKey, pWrappedKeyLen, (err: Error, rv: number) => {
