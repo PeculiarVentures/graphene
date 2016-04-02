@@ -6,31 +6,31 @@ var TEST_MESSAGE = "Test message for crypto oprations";
 
 var Module = graphene.Module;
 
-describe("Session", function () {
+describe("Session", function() {
     var mod, slot, session;
 
-    before(function () {
+    before(function() {
         mod = Module.load(config.init.lib, config.init.libName);
         mod.initialize();
         slot = mod.getSlots(0);
     });
 
-    after(function () {
+    after(function() {
         if (session)
             session.logout();
         mod.finalize();
     });
 
-    it("login/logout", function () {
+    it("login/logout", function() {
         var session = slot.open();
-        assert.throws(function () {
+        assert.throws(function() {
             session.login("WrongPin");
         }, Error);
         session.login(config.init.pin);
         session.logout();
     });
 
-    it("create", function () {
+    it("create", function() {
         // create new session for current test
         session = slot.open();
         session.login(config.init.pin);
@@ -63,7 +63,38 @@ describe("Session", function () {
         assert.equal(objs.length, 2, "Wrong objs length");
     });
 
-    it("find", function () {
+    it("copy", function() {
+
+        session.clear();
+        var objs = session.find();
+        assert.equal(objs.length, 0, "Wrong init objs length");
+
+        var obj = session.generateKey("AES_KEY_GEN", {
+            keyType: graphene.KeyType.AES,
+            label: "label",
+            valueLen: 256/8,
+            extractable: false,
+            sensitive: false,
+            encrypt: true
+        });
+
+        // test objs length
+        objs = session.find();
+        assert.equal(objs.length, 1, "Wrong objs length");
+
+        var objCopy = session.copy(
+            obj,
+            {
+                label: "copy of key"
+            }
+        );
+
+        // test objs length
+        objs = session.find();
+        assert.equal(objs.length, 2, "Wrong objs length");
+    });
+
+    it("find", function() {
         var count = session.find().length;
 
         session.create({
@@ -94,7 +125,7 @@ describe("Session", function () {
         assert.equal(objs.items(2).toType().value.toString(), "3");
     });
 
-    it("destroy by template", function () {
+    it("destroy by template", function() {
         var count = session.find().length;
 
         session.create({
@@ -120,7 +151,7 @@ describe("Session", function () {
 
     });
 
-    it("destroy by object", function () {
+    it("destroy by object", function() {
         var count = session.find().length;
 
         var obj = session.create({
@@ -146,7 +177,7 @@ describe("Session", function () {
 
     });
 
-    it("clear", function () {
+    it("clear", function() {
         assert.equal(session.find().length !== 0, true);
 
         session.clear();
@@ -155,7 +186,7 @@ describe("Session", function () {
 
     });
 
-    it("generate key AES", function () {
+    it("generate key AES", function() {
         var keylen = 256 / 8;
         var key = session.generateKey("AES_KEY_GEN", {
             keyType: graphene.KeyType.AES,
@@ -169,7 +200,7 @@ describe("Session", function () {
         assert.equal(key.getAttribute("value").value.length, keylen);
     });
 
-    it("generate key pair RSA", function () {
+    it("generate key pair RSA", function() {
         var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
             keyType: graphene.KeyType.RSA,
             encrypt: true,
@@ -185,13 +216,13 @@ describe("Session", function () {
         assert.equal(keys.privateKey.class, graphene.ObjectClass.PRIVATE_KEY);
     });
 
-    it("getObject wrong handle", function () {
+    it("getObject wrong handle", function() {
         assert.equal(!session.getObject(-1), true);
     });
 
-    it("getObject", function () {
+    it("getObject", function() {
         var obj;
-        session.find(function (o) {
+        session.find(function(o) {
             obj = o;
             return false; // exit on first element
         });
@@ -211,7 +242,7 @@ describe("Session", function () {
         assert.equal(verify.final(signature), true);
     }
 
-    it("sign/verify RSA", function () {
+    it("sign/verify RSA", function() {
         var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
             keyType: graphene.KeyType.RSA,
             encrypt: true,

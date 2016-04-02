@@ -196,6 +196,21 @@ export class Session extends core.HandleObject {
     }
 
     /**
+     * Copies an object, creating a new object for the copy
+     * @param {SessionObject} object the copied object
+     * @param {ITemplate} template template for new object
+     */
+    copy(object: SessionObject, template: ITemplate): SessionObject {
+        let tmpl = new Template(template);
+        let $obj = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+
+        let rv = this.lib.C_CopyObject(this.handle, object.handle, tmpl.ref(), tmpl.length, $obj);
+        if (rv) throw new core.Pkcs11Error(rv, "C_CopyObject");
+
+        return new SessionObject($obj.deref(), this, this.lib);
+    }
+
+    /**
      * removes all session objects matched to template
      * - if template is null, removes all session objects
      * - returns a number of destroied session objects

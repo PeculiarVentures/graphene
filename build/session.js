@@ -100,6 +100,14 @@ var Session = (function (_super) {
             throw new core.Pkcs11Error(rv, "C_CreateObject");
         return new object_1.SessionObject($obj.deref(), this, this.lib);
     };
+    Session.prototype.copy = function (object, template) {
+        var tmpl = new template_1.Template(template);
+        var $obj = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+        var rv = this.lib.C_CopyObject(this.handle, object.handle, tmpl.ref(), tmpl.length, $obj);
+        if (rv)
+            throw new core.Pkcs11Error(rv, "C_CopyObject");
+        return new object_1.SessionObject($obj.deref(), this, this.lib);
+    };
     Session.prototype.destroy = function (param) {
         if (param instanceof object_1.SessionObject) {
             var rv = this.lib.C_DestroyObject(this.handle, param.handle);
