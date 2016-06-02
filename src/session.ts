@@ -428,8 +428,8 @@ export class Session extends core.HandleObject {
         return new Cipher(this, alg, key, this.lib);
     }
 
-    createDecipher(alg: MechanismType, key: Key): Decipher {
-        return new Decipher(this, alg, key, this.lib);
+    createDecipher(alg: MechanismType, key: Key, blockSize?: number): Decipher {
+        return new Decipher(this, alg, key, blockSize, this.lib);
     }
 
     createDigest(alg: MechanismType): Digest {

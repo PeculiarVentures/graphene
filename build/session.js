@@ -265,8 +265,8 @@ var Session = (function (_super) {
     Session.prototype.createCipher = function (alg, key) {
         return new common_1.Cipher(this, alg, key, this.lib);
     };
-    Session.prototype.createDecipher = function (alg, key) {
-        return new common_1.Decipher(this, alg, key, this.lib);
+    Session.prototype.createDecipher = function (alg, key, blockSize) {
+        return new common_1.Decipher(this, alg, key, blockSize, this.lib);
     };
     Session.prototype.createDigest = function (alg) {
         return new common_1.Digest(this, alg, this.lib);

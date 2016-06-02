@@ -4,14 +4,18 @@ import {Session} from "../session";
 import {Key} from "../object";
 import {Mechanism, MechanismType} from "../mech";
 
+const DEFAULT_BLOCK_SIZE = 256 >> 3;
+
 export class Decipher {
 
-    session: Session;
-    lib: pkcs11.Pkcs11;
+    protected session: Session;
+    protected lib: pkcs11.Pkcs11;
+    protected blockSize = DEFAULT_BLOCK_SIZE; 
 
-    constructor(session: Session, alg: MechanismType, key: Key, lib: pkcs11.Pkcs11) {
+    constructor(session: Session, alg: MechanismType, key: Key, blockSize: number, lib: pkcs11.Pkcs11) {
         this.session = session;
         this.lib = lib;
+        this.blockSize = blockSize || DEFAULT_BLOCK_SIZE;
 
         this.init(alg, key);
     }
@@ -28,7 +32,8 @@ export class Decipher {
         try {
             data = new Buffer(data);
 
-            let $enc = new Buffer(data.length);
+            let len = Math.ceil(data.length / this.blockSize) * this.blockSize;
+            let $enc = new Buffer(len);
             let $encLen = core.Ref.alloc(pkcs11.CK_ULONG, $enc.length);
 
             if (callback) {
@@ -61,9 +66,8 @@ export class Decipher {
     final(callback: (error: Error, enc: Buffer) => void): void;
     final(callback?: (error: Error, enc: Buffer) => void): Buffer {
         try {
-            const BUF_SIZE = 4048;
-            let $dec = new Buffer(BUF_SIZE);
-            let $decLen = core.Ref.alloc(pkcs11.CK_ULONG, BUF_SIZE);
+            let $dec = new Buffer(this.blockSize);
+            let $decLen = core.Ref.alloc(pkcs11.CK_ULONG, this.blockSize);
 
             if (callback) {
                 // async

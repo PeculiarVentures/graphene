@@ -2,10 +2,13 @@
 var core = require("../core");
 var pkcs11 = require("../pkcs11");
 var mech_1 = require("../mech");
+var DEFAULT_BLOCK_SIZE = 256 >> 3;
 var Decipher = (function () {
-    function Decipher(session, alg, key, lib) {
+    function Decipher(session, alg, key, blockSize, lib) {
+        this.blockSize = DEFAULT_BLOCK_SIZE;
         this.session = session;
         this.lib = lib;
+        this.blockSize = blockSize || DEFAULT_BLOCK_SIZE;
         this.init(alg, key);
     }
     Decipher.prototype.init = function (alg, key) {
@@ -17,7 +20,8 @@ var Decipher = (function () {
     Decipher.prototype.update = function (data, callback) {
         try {
             data = new Buffer(data);
-            var $enc_1 = new Buffer(data.length);
+            var len = Math.ceil(data.length / this.blockSize) * this.blockSize;
+            var $enc_1 = new Buffer(len);
             var $encLen_1 = core.Ref.alloc(pkcs11.CK_ULONG, $enc_1.length);
             if (callback) {
                 this.lib.C_DecryptUpdate(this.session.handle, data, data.length, $enc_1, $encLen_1, function (err, rv) {
@@ -42,9 +46,8 @@ var Decipher = (function () {
     };
     Decipher.prototype.final = function (callback) {
         try {
-            var BUF_SIZE = 4048;
-            var $dec_1 = new Buffer(BUF_SIZE);
-            var $decLen_1 = core.Ref.alloc(pkcs11.CK_ULONG, BUF_SIZE);
+            var $dec_1 = new Buffer(this.blockSize);
+            var $decLen_1 = core.Ref.alloc(pkcs11.CK_ULONG, this.blockSize);
             if (callback) {
                 this.lib.C_DecryptFinal(this.session.handle, $dec_1, $decLen_1, function (err, rv) {
                     if (err)
