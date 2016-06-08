@@ -88,7 +88,10 @@ Load module
 var graphene = require("graphene-pk11");
 ```
 
-## SoftHSM2 (assumes Ubuntu)
+### Install SoftHSM2
+
+**NOTE**: SoftHSM2 is optional, the bellow steps assume Ubuntu
+
 * Install SoftHSM2
 
     `apt-get install softhsm`
@@ -111,7 +114,7 @@ var graphene = require("graphene-pk11");
   ```
  
   **NOTE**: This may be more generous than needed. It works out to : 0755 = User:rwx Group:r-x World:r-x. 
-
+  
 ## Examples
 ### Listing capabilities
 ```
