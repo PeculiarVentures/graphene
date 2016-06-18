@@ -5,7 +5,7 @@ export const CK_FUNCTIONS = {
     "C_Initialize": [CK.CK_RV, [CK.CK_VOID_PTR]],
     "C_Finalize": [CK.CK_RV, [CK.CK_VOID_PTR]],
     "C_GetInfo": [CK.CK_RV, [CK.CK_INFO_PTR]],
-    // "C_GetFunctionList":[CK.CK_RV,[CK.CK_FUNCTION_LIST_PTR_PTR]],
+    "C_GetFunctionList":[CK.CK_RV,[CK.CK_FUNCTION_LIST_PTR_PTR]],
     "C_GetSlotList": [CK.CK_RV, [CK.CK_BBOOL, CK.CK_SLOT_ID_PTR, CK.CK_ULONG_PTR]],
     "C_GetSlotInfo": [CK.CK_RV, [CK.CK_SLOT_ID, CK.CK_SLOT_INFO_PTR]],
     "C_GetTokenInfo": [CK.CK_RV, [CK.CK_SLOT_ID, CK.CK_TOKEN_INFO_PTR]],

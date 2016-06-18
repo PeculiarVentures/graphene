@@ -221,7 +221,7 @@ export const CKF_RESTORE_KEY_NOT_NEEDED = 0x00000020;
 
 /** 
  * CKF_CLOCK_ON_TOKEN is new for v2.0.  If it is set, that means
- * that the token has some sort of clock.  The time on that
+ * that the token has some sort of clo  The time on that
  * clock is returned in the token info structure 
  */
 export const CKF_CLOCK_ON_TOKEN = 0x00000040;
@@ -1325,11 +1325,149 @@ export const CK_NOTIFY = Ffi.Function(CK_RV, [
  * Cryptoki functions 
  */
 /* CK_FUNCTION_LIST is new for v2.0 */
-// export const CK_FUNCTION_LIST = CK_FUNCTION_LIST;
+export const CK_FUNCTION_LIST = RefStruct({
+    version: CK_VERSION,
+    // CK_C_Initialize
+    CK_C_Initialize: Ffi.Function(CK_RV, [CK_VOID_PTR]),
+    // CK_C_Finalize 
+    CK_C_Finalize: Ffi.Function(CK_RV, [CK_VOID_PTR]),
+    // CK_C_GetInfo
+    CK_C_GetInfo: Ffi.Function(CK_RV, [CK_INFO_PTR]),
+    // CK_C_GetFunctionList
+    CK_C_GetFunctionList: Ffi.Function(CK_RV, [CK_VOID_PTR_PTR]),
+    // CK_C_GetSlotList
+    CK_C_GetSlotList: Ffi.Function(CK_RV, [CK_BBOOL, CK_SLOT_ID_PTR, CK_ULONG_PTR]),
+    // CK_C_GetSlotInfo
+    CK_C_GetSlotInfo: Ffi.Function(CK_RV, [CK_SLOT_ID, CK_SLOT_INFO_PTR]),
+    // CK_C_GetTokenInfo
+    CK_C_GetTokenInfo: Ffi.Function(CK_RV, [CK_SLOT_ID, CK_TOKEN_INFO_PTR]),
+    // CK_C_GetMechanismList
+    CK_C_GetMechanismList: Ffi.Function(CK_RV, [CK_SLOT_ID, CK_MECHANISM_TYPE_PTR, CK_ULONG_PTR]),
+    // CK_C_GetMechanismInfo
+    CK_C_GetMechanismInfo: Ffi.Function(CK_RV, [CK_SLOT_ID, CK_MECHANISM_TYPE, CK_MECHANISM_INFO_PTR]),
+    // CK_C_InitToken
+    CK_C_InitToken: Ffi.Function(CK_RV, [CK_SLOT_ID, CK_UTF8CHAR_PTR, CK_ULONG, CK_UTF8CHAR_PTR]),
+    // CK_C_InitPIN
+    CK_C_InitPIN: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_UTF8CHAR_PTR, CK_ULONG]),
+    // CK_C_SetPIN
+    CK_C_SetPIN: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_UTF8CHAR_PTR, CK_ULONG, CK_UTF8CHAR_PTR, CK_ULONG]),
+    // CK_C_OpenSession
+    CK_C_OpenSession: Ffi.Function(CK_RV, [CK_SLOT_ID, CK_FLAGS, CK_VOID_PTR, CK_VOID_PTR, CK_SESSION_HANDLE_PTR]),
+    // CK_C_CloseSession
+    CK_C_CloseSession: Ffi.Function(CK_RV, [CK_SESSION_HANDLE]),
+    // CK_C_CloseAllSessions
+    CK_C_CloseAllSessions: Ffi.Function(CK_RV, [CK_SLOT_ID]),
+    // CK_C_GetSessionInfo
+    CK_C_GetSessionInfo: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_SESSION_INFO_PTR]),
+    // CK_C_GetOperationState
+    CK_C_GetOperationState: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG]),
+    // CK_C_SetOperationState
+    CK_C_SetOperationState: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_OBJECT_HANDLE, CK_OBJECT_HANDLE]),
+    // CK_C_Login
+    CK_C_Login: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_USER_TYPE, CK_UTF8CHAR_PTR, CK_ULONG]),
+    // CK_C_Logout
+    CK_C_Logout: Ffi.Function(CK_RV, [CK_SESSION_HANDLE]),
+    // CK_C_CreateObject
+    CK_C_CreateObject: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_ATTRIBUTE_PTR, CK_ULONG, CK_OBJECT_HANDLE_PTR]),
+    // CK_C_CopyObject
+    CK_C_CopyObject: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_OBJECT_HANDLE, CK_ATTRIBUTE_PTR, CK_ULONG, CK_OBJECT_HANDLE_PTR]),
+    // CK_C_DestroyObject
+    CK_C_DestroyObject: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_OBJECT_HANDLE]),
+    // CK_C_GetObjectSize
+    CK_C_GetObjectSize: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_OBJECT_HANDLE, CK_ULONG_PTR]),
+    // CK_C_GetAttributeValue
+    CK_C_GetAttributeValue: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_OBJECT_HANDLE, CK_ATTRIBUTE_PTR, CK_ULONG]),
+    // CK_C_SetAttributeValue
+    CK_C_SetAttributeValue: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_OBJECT_HANDLE, CK_ATTRIBUTE_PTR, CK_ULONG]),
+    // CK_C_FindObjectsInit
+    CK_C_FindObjectsInit: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_ATTRIBUTE_PTR, CK_ULONG]),
+    // CK_C_FindObjects
+    CK_C_FindObjects: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_OBJECT_HANDLE_PTR, CK_ULONG, CK_ULONG_PTR]),
+    // CK_C_FindObjectsFinal
+    CK_C_FindObjectsFinal: Ffi.Function(CK_RV, [CK_SESSION_HANDLE]),
+    // CK_C_EncryptInit
+    CK_C_EncryptInit: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_OBJECT_HANDLE]),
+    // CK_C_Encrypt
+    CK_C_Encrypt: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_EncryptUpdate
+    CK_C_EncryptUpdate: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_EncryptFinal
+    CK_C_EncryptFinal: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_DecryptInit
+    CK_C_DecryptInit: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_OBJECT_HANDLE]),
+    // CK_C_Decrypt
+    CK_C_Decrypt: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_DecryptUpdate
+    CK_C_DecryptUpdate: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_DecryptFinal
+    CK_C_DecryptFinal: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_DigestInit
+    CK_C_DigestInit: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR]),
+    // CK_C_Digest
+    CK_C_Digest: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_DigestUpdate
+    CK_C_DigestUpdate: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG]),
+    // CK_C_DigestKey
+    CK_C_DigestKey: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_OBJECT_HANDLE]),
+    // CK_C_DigestFinal
+    CK_C_DigestFinal: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_SignInit
+    CK_C_SignInit: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_OBJECT_HANDLE]),
+    // CK_C_Sign
+    CK_C_Sign: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_SignUpdate
+    CK_C_SignUpdate: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG]),
+    // CK_C_SignFinal
+    CK_C_SignFinal: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_SignRecoverInit
+    CK_C_SignRecoverInit: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_OBJECT_HANDLE]),
+    // CK_C_SignRecover
+    CK_C_SignRecover: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_VerifyInit
+    CK_C_VerifyInit: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_OBJECT_HANDLE]),
+    // CK_C_Verify
+    CK_C_Verify: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG]),
+    // CK_C_VerifyUpdate
+    CK_C_VerifyUpdate: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG]),
+    // CK_C_VerifyFinal
+    CK_C_VerifyFinal: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG]),
+    // CK_C_VerifyRecoverInit
+    CK_C_VerifyRecoverInit: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_OBJECT_HANDLE]),
+    // CK_C_VerifyRecover
+    CK_C_VerifyRecover: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_DigestEncryptUpdate
+    CK_C_DigestEncryptUpdate: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_DecryptDigestUpdate
+    CK_C_DecryptDigestUpdate: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_SignEncryptUpdate
+    CK_C_SignEncryptUpdate: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_DecryptVerifyUpdate
+    CK_C_DecryptVerifyUpdate: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_GenerateKey
+    CK_C_GenerateKey: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_ATTRIBUTE_PTR, CK_ULONG, CK_OBJECT_HANDLE_PTR]),
+    // CK_C_GenerateKeyPair
+    CK_C_GenerateKeyPair: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_ATTRIBUTE_PTR, CK_ULONG, CK_ATTRIBUTE_PTR, CK_ULONG, CK_OBJECT_HANDLE_PTR, CK_OBJECT_HANDLE_PTR]),
+    // CK_C_WrapKey
+    CK_C_WrapKey: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_OBJECT_HANDLE, CK_OBJECT_HANDLE, CK_BYTE_PTR, CK_ULONG_PTR]),
+    // CK_C_UnwrapKey
+    CK_C_UnwrapKey: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_OBJECT_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_ATTRIBUTE_PTR, CK_ULONG, CK_OBJECT_HANDLE_PTR]),
+    // CK_C_DeriveKey
+    CK_C_DeriveKey: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_MECHANISM_PTR, CK_OBJECT_HANDLE, CK_ATTRIBUTE_PTR, CK_ULONG, CK_OBJECT_HANDLE_PTR]),
+    // CK_C_SeedRandom
+    CK_C_SeedRandom: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG]),
+    // CK_C_GenerateRandom
+    CK_C_GenerateRandom: Ffi.Function(CK_RV, [CK_SESSION_HANDLE, CK_BYTE_PTR, CK_ULONG]),
+    // CK_C_GetFunctionStatus
+    CK_C_GetFunctionStatus: Ffi.Function(CK_RV, [CK_SESSION_HANDLE]),
+    // CK_C_CancelFunction
+    CK_C_CancelFunction: Ffi.Function(CK_RV, [CK_SESSION_HANDLE]),
+    // CK_C_WaitForSlotEvent
+    CK_C_WaitForSlotEvent: Ffi.Function(CK_RV, [CK_FLAGS, CK_SLOT_ID_PTR, CK_VOID_PTR]),
+});
 
-// export const CK_FUNCTION_LIST_PTR = Ref.refType(CK_FUNCTION_LIST);
+export const CK_FUNCTION_LIST_PTR = Ref.refType(CK_FUNCTION_LIST);
 
-// export const CK_FUNCTION_LIST_PTR_PTR = Ref.refType(CK_FUNCTION_LIST_PTR);
+export const CK_FUNCTION_LIST_PTR_PTR = Ref.refType(CK_FUNCTION_LIST_PTR);
 
 
 /**

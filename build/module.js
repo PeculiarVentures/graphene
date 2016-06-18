@@ -68,6 +68,7 @@ var Module = (function (_super) {
     };
     Module.load = function (libFile, libName) {
         var lib = new pkcs11.Pkcs11(libFile);
+        lib.getFunctionList();
         var module = new Module(lib);
         module.libFile = libFile;
         module.libName = libName || libFile;

@@ -1,5 +1,6 @@
 export * from "./pkcs11t";
 import * as CKT from "./pkcs11t";
+import * as core from "../core";
 import * as FFI from "ffi";
 import * as Ref from "ref";
 import {CK_FUNCTIONS} from "./pkcs11f";
@@ -15,6 +16,7 @@ export type Callback = (err: Error, rv: number) => void;
 
 export class Pkcs11 {
 
+    private functionList: any = null;
     lib: any;
     /**
      * load a library with PKCS11 interface
@@ -28,11 +30,35 @@ export class Pkcs11 {
     }
 
     protected callFunction(funcName: string, args): number {
-        let func = this.lib[funcName];
+        let func = this.functionList ? this.functionList[`CK_${funcName}`] : this.lib[funcName];
         if (typeof args[args.length - 1] === "function")
             func.async.apply(this, args);
         else
             return func.apply(this, args);
+    }
+
+    public getFunctionList(): void {
+        let $funcs = Ref.alloc(CKT.CK_FUNCTION_LIST_PTR);
+        let rv = this.lib.C_GetFunctionList($funcs);
+        if (rv) throw new core.Pkcs11Error(rv, "C_GetFunctionList");
+
+        this.functionList = $funcs.deref().deref();
+    }
+
+    /**
+     * C_GetFunctionList obtains a pointer to the Cryptoki library's list of function pointers.
+     * @param {Buffer}  ppFunctionList points to a value which will receive a pointer to the 
+     *                  library's `CK_FUNCTION_LIST` structure, which in turn contains function 
+     *                  pointers for all the Cryptoki API routines in the library. 
+     *                  The pointer thus obtained may point into memory which is owned 
+     *                  by the Cryptoki library, and which may or may not be writable. 
+     *                  Whether or not this is the case, no attempt should be made to write 
+     *                  to this memory.
+     */
+    C_GetFunctionList(ppFunctionList: CK_PTR): number;
+    C_GetFunctionList(ppFunctionList: CK_PTR, callback: Callback): number;
+    C_GetFunctionList(ppFunctionList: CK_PTR, callback?: Callback): number {
+        return this.callFunction("C_GetFunctionList", callback ? [ppFunctionList, callback] : [ppFunctionList]);
     }
 
     /**
@@ -44,7 +70,7 @@ export class Pkcs11 {
      * @returns void PKCS11 result value
      */
     C_Initialize(pInitArgs?: CK_PTR): number;
-    C_Initialize(pInitArgs: CK_PTR, cllback: Callback): void;
+    C_Initialize(pInitArgs: CK_PTR, callback: Callback): void;
     C_Initialize(pInitArgs: CK_PTR = NULL_PTR, callback?: Callback): number {
         return this.callFunction("C_Initialize", callback ? [pInitArgs, callback] : [pInitArgs]);
     }

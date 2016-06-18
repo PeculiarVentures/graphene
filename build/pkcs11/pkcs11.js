@@ -3,22 +3,37 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 __export(require("./pkcs11t"));
+var CKT = require("./pkcs11t");
+var core = require("../core");
 var FFI = require("ffi");
+var Ref = require("ref");
 var pkcs11f_1 = require("./pkcs11f");
 exports.NULL_PTR = null;
 var Pkcs11 = (function () {
     function Pkcs11(libFile) {
+        this.functionList = null;
         Object.defineProperty(this, "lib", {
             writable: true
         });
         this.lib = FFI.Library(libFile, pkcs11f_1.CK_FUNCTIONS);
     }
     Pkcs11.prototype.callFunction = function (funcName, args) {
-        var func = this.lib[funcName];
+        var func = this.functionList ? this.functionList[("CK_" + funcName)] : this.lib[funcName];
+        console.log("Call", this.functionList ? "CK_" + funcName : funcName);
         if (typeof args[args.length - 1] === "function")
             func.async.apply(this, args);
         else
             return func.apply(this, args);
+    };
+    Pkcs11.prototype.getFunctionList = function () {
+        var $funcs = Ref.alloc(CKT.CK_FUNCTION_LIST_PTR);
+        var rv = this.lib.C_GetFunctionList($funcs);
+        if (rv)
+            throw new core.Pkcs11Error(rv, "C_GetFunctionList");
+        this.functionList = $funcs.deref().deref();
+    };
+    Pkcs11.prototype.C_GetFunctionList = function (ppFunctionList, callback) {
+        return this.callFunction("C_GetFunctionList", callback ? [ppFunctionList, callback] : [ppFunctionList]);
     };
     Pkcs11.prototype.C_Initialize = function (pInitArgs, callback) {
         if (pInitArgs === void 0) { pInitArgs = exports.NULL_PTR; }
