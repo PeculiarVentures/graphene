@@ -19,7 +19,6 @@ var Pkcs11 = (function () {
     }
     Pkcs11.prototype.callFunction = function (funcName, args) {
         var func = this.functionList ? this.functionList[("CK_" + funcName)] : this.lib[funcName];
-        console.log("Call", this.functionList ? "CK_" + funcName : funcName);
         if (typeof args[args.length - 1] === "function")
             func.async.apply(this, args);
         else
