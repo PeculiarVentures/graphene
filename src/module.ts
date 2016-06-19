@@ -126,7 +126,12 @@ export class Module extends core.BaseObject implements IModuleInfo {
      */
     static load(libFile: string, libName?: string): Module {
         let lib = new pkcs11.Pkcs11(libFile);
-        lib.getFunctionList();
+        try {
+            lib.getFunctionList();
+        }
+        catch (e) {
+            console.warn("Cannot get a list of PKCS11 functions with C_GetFunctionList.");
+        }
         let module = new Module(lib);
         module.libFile = libFile;
         module.libName = libName || libFile;
