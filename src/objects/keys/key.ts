@@ -1,5 +1,5 @@
 import {Storage} from "../storage";
-import * as pkcs11 from "../../pkcs11";
+import * as pkcs11 from "pkcs11js";
 
 export enum KeyType {
     RSA = pkcs11.CKK_RSA,

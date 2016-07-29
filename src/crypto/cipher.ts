@@ -1,102 +1,62 @@
+import * as pkcs11 from "pkcs11js";
 import * as core from "../core";
-import * as pkcs11 from "../pkcs11";
 import {Session} from "../session";
 import {Key} from "../object";
 import {Mechanism, MechanismType} from "../mech";
 
-export class Cipher {
+export class Cipher extends core.BaseObject {
 
     session: Session;
-    lib: pkcs11.Pkcs11;
 
-    constructor(session: Session, alg: MechanismType, key: Key, lib: pkcs11.Pkcs11) {
+    constructor(session: Session, alg: MechanismType, key: Key, lib: pkcs11.PKCS11) {
+        super(lib);
         this.session = session;
-        this.lib = lib;
 
         this.init(alg, key);
     }
 
     protected init(alg: MechanismType, key: Key) {
         let pMech = Mechanism.create(alg);
-        let rv = this.lib.C_EncryptInit(this.session.handle, pMech, key.handle);
-        if (rv) throw new core.Pkcs11Error(rv, "C_EncryptInit");
+        this.lib.C_EncryptInit(this.session.handle, pMech, key.handle);
     }
 
-    update(data: string | Buffer): Buffer;
-    update(data: string | Buffer, callback: (error: Error, enc: Buffer) => void): void;
-    update(data, callback?: (error: Error, enc: Buffer) => void): Buffer {
+    update(data: core.CryptoData): Buffer {
         try {
-            data = new Buffer(data);
+            data = new Buffer(data as string);
 
-            let $enc = new Buffer(data.length + 1024); // RSA k + 2*mdlen + 2
-            let $encLen = core.Ref.alloc(pkcs11.CK_ULONG, $enc.length);
+            let enc = new Buffer(data.length + 1024); // RSA k + 2*mdlen + 2
 
-            if (callback) {
-                // async
-                this.lib.C_EncryptUpdate(this.session.handle, data, data.length, $enc, $encLen, (err, rv) => {
-                    // check result
-                    if (rv) throw new core.Pkcs11Error(rv, "C_EncryptUpdate");
-                    if ($enc.length < $encLen.deref())
-                        callback(new Error(`Encrypted data wrong data size`), null);
-                    else {
-                        // return
-                        callback(null, $enc.slice(0, $encLen.deref()));
-                    }
-                });
-            }
-            else {
-                // sync
-                let rv = this.lib.C_EncryptUpdate(this.session.handle, data, data.length, $enc, $encLen);
-                if (rv) throw new core.Pkcs11Error(rv, "C_EncryptUpdate");
-                if ($enc.length < $encLen.deref()) throw new Error(`Encrypted data wrong data size`);
-
-                return $enc.slice(0, $encLen.deref());
-            }
+            let res = this.lib.C_EncryptUpdate(this.session.handle, data as Buffer, enc);
+            return res;
         }
         catch (e) {
-            if (callback)
-                callback(e, null);
-            else
-                throw e;
+            try {
+                // Finalize encrypt operation
+                this.final();
+            }
+            catch (e) { }
+
+            throw e;
         }
     }
 
-    final(): Buffer;
-    final(callback: (error: Error, enc: Buffer) => void): void;
-    final(callback?: (error: Error, enc: Buffer) => void): Buffer {
-        try {
-            const BUF_SIZE = 4048;
-            let $enc = new Buffer(BUF_SIZE);
-            let $encLen = core.Ref.alloc(pkcs11.CK_ULONG, BUF_SIZE);
+    final(): Buffer {
+        const BUF_SIZE = 4048;
+        let enc = new Buffer(BUF_SIZE);
 
-            if (callback) {
-                // async
-                this.lib.C_EncryptFinal(this.session.handle, $enc, $encLen, (err, rv) => {
-                    if (err)
-                        callback(err, null);
-                    else {
-                        // check result
-                        if (rv) callback(new core.Pkcs11Error(rv, "C_EncryptFinal"), null);
+        let res = this.lib.C_EncryptFinal(this.session.handle, enc);
 
-                        // return
-                        callback(null, $enc.slice(0, $encLen.deref()));
-                    }
-                });
-            }
-            else {
-                // sync
-                let rv = this.lib.C_EncryptFinal(this.session.handle, $enc, $encLen);
-                if (rv) throw new core.Pkcs11Error(rv, "C_EncryptFinal");
-
-                return $enc.slice(0, $encLen.deref());
-            }
-        }
-        catch (e) {
-            if (callback)
-                callback(e, null);
-            else
-                throw e;
-        }
+        return res;
     }
 
+    once(data: core.CryptoData, enc: Buffer): Buffer;
+    once(data: core.CryptoData, enc: Buffer, cb: (error: Error, data: Buffer) => void): void;
+    once(data: core.CryptoData, enc: Buffer, cb?: (error: Error, data: Buffer) => void): any {
+        let _data = new Buffer(data as string);
+        if (cb) {
+            this.lib.C_Encrypt(this.session.handle, _data, enc, cb);
+        }
+        else
+            return this.lib.C_Encrypt(this.session.handle, _data, enc);
+    }
 }

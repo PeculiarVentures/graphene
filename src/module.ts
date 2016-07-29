@@ -1,21 +1,8 @@
+import * as pkcs11 from "pkcs11js";
 import * as core from "./core";
-import * as pkcs11 from "./pkcs11";
 import * as slot from "./slot";
 
-export interface IVersion {
-    major: number;
-    minor: number;
-}
-
-export interface IModuleInfo {
-    cryptokiVersion: IVersion;
-    manufacturerID: string;
-    flags: number;
-    libraryDescription: string;
-    libraryVersion: IVersion;
-}
-
-export class Module extends core.BaseObject implements IModuleInfo {
+export class Module extends core.BaseObject {
 
     public libFile: string = "";
     libName: string = "";
@@ -23,7 +10,7 @@ export class Module extends core.BaseObject implements IModuleInfo {
     /**
      * Cryptoki interface version
      */
-    public cryptokiVersion: IVersion;
+    public cryptokiVersion: pkcs11.Version;
 
     /**
      * blank padded manufacturer ID
@@ -43,38 +30,27 @@ export class Module extends core.BaseObject implements IModuleInfo {
     /**
      * version of library
      */
-    public libraryVersion: IVersion;
+    public libraryVersion: pkcs11.Version;
 
-    public constructor(lib: pkcs11.Pkcs11) {
+    public constructor(lib: pkcs11.PKCS11) {
         super(lib);
     }
 
     protected getInfo() {
-        let $info = core.Ref.alloc(pkcs11.CK_INFO);
+        let info = this.lib.C_GetInfo();
 
-        let rv = this.lib.C_GetInfo($info);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetInfo");
-
-        let info: IModuleInfo = $info.deref();
-        this.cryptokiVersion = {
-            major: info.cryptokiVersion.major,
-            minor: info.cryptokiVersion.minor,
-        };
-        this.manufacturerID = new Buffer(info.manufacturerID).toString().trim();
-        this.libraryDescription = new Buffer(info.libraryDescription).toString().trim();
+        this.cryptokiVersion = info.cryptokiVersion;
+        this.manufacturerID = info.manufacturerID.trim();
+        this.libraryDescription = info.libraryDescription.trim();
         this.flags = info.flags;
-        this.libraryVersion = {
-            major: info.libraryVersion.major,
-            minor: info.libraryVersion.minor,
-        };
+        this.libraryVersion = info.libraryVersion;
     }
 
     /**
      * initializes the Cryptoki library
      */
     public initialize() {
-        let rv = this.lib.C_Initialize();
-        if (rv) throw new core.Pkcs11Error(rv, "C_Initialize");
+        this.lib.C_Initialize();
 
         this.getInfo();
     }
@@ -83,8 +59,7 @@ export class Module extends core.BaseObject implements IModuleInfo {
      * indicates that an application is done with the Cryptoki library
      */
     public finalize() {
-        let rv = this.lib.C_Finalize();
-        if (rv) throw new core.Pkcs11Error(rv, "C_Finalize");
+        this.lib.C_Finalize();
     }
 
     /**
@@ -97,23 +72,12 @@ export class Module extends core.BaseObject implements IModuleInfo {
      * @param {number} tokenPresent only slots with tokens. Default `True`
      */
     public getSlots(tokenPresent?: boolean): slot.SlotCollection;
-    public getSlots(index, tokenPresent: boolean = true): any {
+    public getSlots(index: any, tokenPresent: boolean = true): any {
         if (!core.isEmpty(index) && core.isBoolean(index)) {
             tokenPresent = index;
         }
 
-        let $len = core.Ref.alloc(pkcs11.CK_ULONG);
-        let rv = this.lib.C_GetSlotList(tokenPresent, null, $len);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetSlotList");
-        let arr = [],
-            len = $len.deref();
-        if (len) {
-            let $slots = core.Ref.alloc(core.RefArray(pkcs11.CK_SLOT_ID, len));
-            if (rv = this.lib.C_GetSlotList(tokenPresent, $slots, $len)) {
-                throw new core.Pkcs11Error(rv, "C_GetSlotList");
-            }
-            arr = $slots.deref();
-        }
+        let arr = this.lib.C_GetSlotList(tokenPresent);
         let col = new slot.SlotCollection(arr, this, this.lib);
         if (core.isNumber(index)) {
             return col.items(index);
@@ -123,15 +87,13 @@ export class Module extends core.BaseObject implements IModuleInfo {
 
     /**
      * loads pkcs11 lib
+     * @param libFile path to PKCS11 library
+     * @param libName name of PKCS11 library
      */
     static load(libFile: string, libName?: string): Module {
-        let lib = new pkcs11.Pkcs11(libFile);
-        try {
-            lib.getFunctionList();
-        }
-        catch (e) {
-            console.warn("Cannot get a list of PKCS11 functions with C_GetFunctionList.");
-        }
+        let lib = new pkcs11.PKCS11();
+        lib.load(libFile);
+
         let module = new Module(lib);
         module.libFile = libFile;
         module.libName = libName || libFile;

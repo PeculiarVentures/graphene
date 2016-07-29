@@ -1,9 +1,7 @@
+import * as pkcs11 from "pkcs11js";
 import * as core from "../../core";
-import * as pkcs11 from "../../pkcs11";
 import {MechanismEnum} from "../../mech";
 import {IParams} from "../params";
-
-let IvArray = core.RefArray(pkcs11.CK_BYTE, 16);
 
 export class AesCbcParams implements IParams {
 

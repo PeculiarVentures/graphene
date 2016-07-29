@@ -1,3 +1,3 @@
 export interface IParams{
-    toCKI(): Buffer;
+    toCKI(): any;
 }

@@ -4,6 +4,7 @@
 
 import * as fs from "fs";
 import * as readline from "readline";
+import {CommandError} from "./lib/error";
 import * as defs from "./commands/defs";
 
 import * as cmdModule from "./commands/module";
@@ -30,6 +31,8 @@ cmdTest.cmdTestGen;
 cmdTest.cmdTestSign;
 cmdTest.cmdTestEnc;
 
+declare let global: any;
+
 // Console app init
 global["readline"] = readline.createInterface({
     input: process.stdin,
@@ -37,7 +40,7 @@ global["readline"] = readline.createInterface({
 });
 
 // Init commander
-defs.commander.on("error", (e) => {
+defs.commander.on("error", (e: CommandError) => {
     console.log();
     console.log(e.message);
     console.log("Stack:", e.stack);
@@ -67,7 +70,7 @@ defs.commander.createCommand("version", "version of graphene")
    exit
    ==========*/
 defs.commander.createCommand("exit", "exit from the application")
-    .on("call", function(v) {
+    .on("call", function(v: any) {
         console.log();
         console.log("Thanks for using");
         console.log();
@@ -76,7 +79,7 @@ defs.commander.createCommand("exit", "exit from the application")
     });
 
 // Read line
-global["readline"].on("line", function(cmd) {
+global["readline"].on("line", function(cmd: any) {
     defs.commander.parse(cmd);
     global["readline"].prompt();
 });

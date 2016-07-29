@@ -1,4 +1,3 @@
-import * as pkcs11 from "../pkcs11";
 import * as core from "../core";
 import {SessionObject} from "../object";
 

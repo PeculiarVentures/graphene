@@ -1,124 +1,112 @@
-import * as pkcs11 from "./pkcs11";
+import * as pkcs11 from "pkcs11js";
+
 import * as core from "./core";
-import {IVersion, Module} from "./module";
+import {Module} from "./module";
 import * as token from "./token";
 import * as mech from "./mech";
 import * as session from "./session";
-
-export interface ISlotInfo {
-    slotDescription: string;
-    manufacturerID: string;
-    flags: number;
-    hardwareVersion: IVersion;
-    firmwareVersion: IVersion;
-}
 
 export enum SlotFlag {
     /**
      * `True` if a token is present in the slot (e.g., a device is in the reader)
      */
-    TOKEN_PRESENT = pkcs11.CKF_TOKEN_PRESENT,
+    TOKEN_PRESENT = 1,
     /**
      * `True` if the reader supports removable devices
      */
-    REMOVABLE_DEVICE = pkcs11.CKF_REMOVABLE_DEVICE,
+    REMOVABLE_DEVICE = 2,
     /**
      * True if the slot is a hardware slot, as opposed to a software slot implementing a "soft token"
      */
-    HW_SLOT = pkcs11.CKF_HW_SLOT
+    HW_SLOT = 4
 }
 
-export class Slot extends core.HandleObject implements ISlotInfo {
+export class Slot extends core.HandleObject {
 
     slotDescription: string;
     manufacturerID: string;
     flags: number;
-    hardwareVersion: IVersion;
-    firmwareVersion: IVersion;
+    hardwareVersion: pkcs11.Version;
+    firmwareVersion: pkcs11.Version;
     module: Module;
 
-    constructor(handle: number, module: Module, lib: pkcs11.Pkcs11) {
+    constructor(handle: number, module: Module, lib: pkcs11.PKCS11) {
         super(handle, lib);
 
         this.module = module;
         this.getInfo();
     }
 
+    /**
+     * Recieve information about Slot 
+     * 
+     * @protected
+     */
     protected getInfo(): void {
-        let $info = core.Ref.alloc(pkcs11.CK_SLOT_INFO);
-        let rv = this.lib.C_GetSlotInfo(this.handle, $info);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetSlotInfo");
+        let info = this.lib.C_GetSlotInfo(this.handle);
 
-        let info: ISlotInfo = $info.deref();
-        this.slotDescription = new Buffer(info.slotDescription).toString().trim();
-        this.manufacturerID = new Buffer(info.manufacturerID).toString().trim();
+        this.slotDescription = info.slotDescription.trim();
+        this.manufacturerID = info.manufacturerID.trim();
         this.flags = info.flags;
-        this.hardwareVersion = {
-            major: info.hardwareVersion.major,
-            minor: info.hardwareVersion.minor
-        };
-        this.firmwareVersion = {
-            major: info.firmwareVersion.major,
-            minor: info.firmwareVersion.minor
-        };
+        this.hardwareVersion = info.hardwareVersion;
+        this.firmwareVersion = info.firmwareVersion;
     }
 
+    /**
+     * Returns information about token
+     * 
+     * @returns {Token}
+     */
     getToken(): token.Token {
         return new token.Token(this.handle, this.lib);
     }
 
     /**
      * returns list of `MechanismInfo`
+     * 
+     * @returns {MechanismCollection}
      */
     getMechanisms(): mech.MechanismCollection {
-        let $len = core.Ref.alloc(pkcs11.CK_ULONG);
-        let rv = this.lib.C_GetMechanismList(this.handle, null, $len);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetMechanismList");
-        let arr = [],
-            len = $len.deref();
-        if (len) {
-            let $mechs = core.Ref.alloc(core.RefArray(pkcs11.CK_MECHANISM_TYPE, len));
-            if (rv = this.lib.C_GetMechanismList(this.handle, $mechs, $len)) {
-                throw new core.Pkcs11Error(rv, "C_GetMechanismList");
-            }
-            arr = $mechs.deref();
-        }
+        let arr = this.lib.C_GetMechanismList(this.handle);
         return new mech.MechanismCollection(arr, this.handle, this.lib);
     }
 
     /**
      * initializes a token
+     * 
      * @param {string} pin the SO's initial PIN
-     * @param {string} label label of the token
+     * @returns {string}
      */
-    initToken(pin: string, label: string) {
-        let bufPin = new Buffer(pin, "utf8");
-        let bufLable = new Buffer(32);
-        bufLable.write(label);
-        let rv = this.lib.C_InitToken(this.handle, bufPin, bufPin.length, bufLable);
-        if (rv) throw new core.Pkcs11Error(rv, "C_InitToken");
+    initToken(pin: string): string {
+        return this.lib.C_InitToken(this.handle, pin);
     }
 
     /**
      * opens a session between an application and a token in a particular slot
-     * @parsm flags indicates the type of session
+     * 
+     * @param {SessionFlag} [flags=session.SessionFlag.SERIAL_SESSION] indicates the type of session
+     * @returns {Session}
      */
-    open(flags: number = session.SessionOpenFlag.SERIAL_SESSION): session.Session {
-        let $hSession = core.Ref.alloc(pkcs11.CK_SESSION_HANDLE);
-        let rv = this.lib.C_OpenSession(this.handle, flags, null, null, $hSession);
-        if (rv) throw new core.Pkcs11Error(rv, "C_OpenSession");
-        return new session.Session($hSession.deref(), this, this.lib);
+    open(flags: session.SessionFlag = session.SessionFlag.SERIAL_SESSION): session.Session {
+        let hSession = this.lib.C_OpenSession(this.handle, flags);
+        return new session.Session(hSession, this, this.lib);
     }
 
     /**
      * closes all sessions an application has with a token
      */
     closeAll() {
-        let rv = this.lib.C_CloseAllSessions(this.handle);
-        if (rv) throw new core.Pkcs11Error(rv, "C_CloseAllSessions");
+        this.lib.C_CloseAllSessions(this.handle);
     }
 }
 
+/**
+ * Collection of slots
+ * 
+ * @export
+ * @class SlotCollection
+ * @extends {core.Collection<Slot>}
+ */
 export class SlotCollection extends core.Collection<Slot> {
 
     module: Module;
@@ -127,7 +115,7 @@ export class SlotCollection extends core.Collection<Slot> {
         return new Slot(this.items_[index], this.module, this.lib);
     }
 
-    constructor(items: Array<number>, module: Module, lib: pkcs11.Pkcs11, classType: any = Slot) {
+    constructor(items: Array<number>, module: Module, lib: pkcs11.PKCS11, classType: any = Slot) {
         super(items, lib, classType);
 
         this.module = module;

@@ -48,14 +48,14 @@ export class X509Certificate extends Certificate {
     }
 
     /**
-     * DER-encoding of the certificate serial number (default empty)
+     * HEX-encoding of the certificate serial number (default empty)
      */
-    get serialNumber(): Buffer {
-        return this.get("serial");
+    get serialNumber(): string {
+        return this.get("serial").toString("hex");
     }
 
-    set serialNumber(v: Buffer) {
-        this.set("serial", v);
+    set serialNumber(v: string) {
+        this.set("serial", new Buffer(v, "hex"));
     }
 
     /**

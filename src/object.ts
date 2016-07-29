@@ -1,4 +1,4 @@
-import * as pkcs11 from "./pkcs11";
+import * as pkcs11 from "pkcs11js";
 import * as core from "./core";
 import {Session} from "./session";
 import {ITemplate, Template} from "./template";
@@ -23,20 +23,30 @@ export class SessionObject extends core.HandleObject {
     session: Session;
 
     /**
-     * gets the size of an object in bytes
+     * gets the size of an object in bytes 
+     * 
+     * @readonly
+     * @type {number}
      */
     get size(): number {
-        let $size = core.Ref.alloc(pkcs11.CK_ULONG);
-
-        let rv = this.lib.C_GetObjectSize(this.session.handle, this.handle, $size);
-        if (rv) throw new core.Pkcs11Error(rv, "C_CopyObject");
-
-        return $size.deref();
+        return this.lib.C_GetObjectSize(this.session.handle, this.handle);
     }
 
+    /**
+     * Creates an instance of SessionObject.
+     * 
+     * @param {SessionObject} object
+     */
     constructor(object: SessionObject);
-    constructor(handle: number, session: Session, lib: pkcs11.Pkcs11);
-    constructor(handle, session?: Session, lib?: pkcs11.Pkcs11) {
+    /**
+     * Creates an instance of SessionObject.
+     * 
+     * @param {number} handle
+     * @param {Session} session
+     * @param {pkcs11.PKCS11} lib
+     */
+    constructor(handle: number, session: Session, lib: pkcs11.PKCS11);
+    constructor(handle: any, session?: Session, lib?: pkcs11.PKCS11) {
         if (handle instanceof SessionObject) {
             // constructor(object: SessionObjects)
             let obj: SessionObject = handle;
@@ -53,73 +63,66 @@ export class SessionObject extends core.HandleObject {
 
     /**
      * copies an object, creating a new object for the copy
+     * 
      * @param {ITemplate} template template for the new object
+     * @returns {SessionObject}
      */
     copy(template: ITemplate): SessionObject {
-        let tmpl = new Template(template);
+        let tmpl = Template.toPkcs11(template);
 
-        let $newObject = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+        let hObject = this.lib.C_CopyObject(this.session.handle, this.handle, tmpl);
 
-        let rv = this.lib.C_CopyObject(this.session.handle, this.handle, tmpl.ref(), tmpl.length, $newObject);
-        if (rv) throw new core.Pkcs11Error(rv, "C_CopyObject");
-
-        return new SessionObject($newObject.deref(), this.session, this.lib);
+        return new SessionObject(hObject, this.session, this.lib);
     }
 
     /**
      * destroys an object
      */
     destroy(): void {
-        let rv = this.lib.C_DestroyObject(this.session.handle, this.handle);
-        if (rv) throw new core.Pkcs11Error(rv, "C_DestroyObject");
+        this.lib.C_DestroyObject(this.session.handle, this.handle);
     }
 
     getAttribute(attr: string): ITemplate;
     getAttribute(attrs: ITemplate): ITemplate;
     getAttribute(attrs: any): ITemplate {
-        let tmpl = new Template(attrs);
+        let _attrs: ITemplate;
+        if (typeof attrs === "string") {
+            _attrs = {};
+            (_attrs as any)[attrs] = null;
+        }
+        else
+            _attrs = attrs;
+        let tmpl = Template.toPkcs11(_attrs);
 
         // get size of values of attributes
-        let $tmpl = tmpl.ref();
-        let rv = this.lib.C_GetAttributeValue(this.session.handle, this.handle, $tmpl, tmpl.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetAttributeValue");
+        tmpl = this.lib.C_GetAttributeValue(this.session.handle, this.handle, tmpl);
 
-        $tmpl = tmpl.set($tmpl).ref();
-        // get values to resized attributes
-        rv = this.lib.C_GetAttributeValue(this.session.handle, this.handle, $tmpl, tmpl.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetAttributeValue");
-
-        let o = tmpl.set($tmpl).serialize();
-        return o;
+        return Template.fromPkcs11(tmpl);
     }
 
-    setAttribute(attrs: string, value: any);
-    setAttribute(attrs: ITemplate);
-    setAttribute(attrs, value?) {
+    setAttribute(attrs: string, value: any): void;
+    setAttribute(attrs: ITemplate): void;
+    setAttribute(attrs: any, value?: any): void {
         if (core.isString(attrs)) {
-            let tmp = {};
-            tmp[attrs] = value;
+            let tmp: ITemplate = {};
+            (tmp as any)[attrs as string] = value;
             attrs = tmp;
         }
-        let tmpl = new Template(attrs);
+        let tmpl = Template.toPkcs11(attrs);
 
-        // get size of values of attributes
-        let $tmpl = tmpl.ref();
-        let rv = this.lib.C_SetAttributeValue(this.session.handle, this.handle, $tmpl, tmpl.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_SetAttributeValue");
-        return this;
+        this.lib.C_SetAttributeValue(this.session.handle, this.handle, tmpl);
     }
 
-    protected get(name: string): any {
+    public get(name: string): any {
         let tmpl: any = {};
         tmpl[name] = null;
-        return this.getAttribute(tmpl)[name];
+        return (this.getAttribute(tmpl) as any)[name];
     }
 
-    protected set(name: string, value: any) {
+    public set(name: string, value: any) {
         let tmpl: any = {};
         tmpl[name] = value;
-        this.setAttribute(tmpl)[name];
+        this.setAttribute(tmpl[name]);
     }
 
     get class(): ObjectClass {
@@ -173,7 +176,7 @@ export class SessionObjectCollection extends core.Collection<SessionObject> {
         return new SessionObject(this.items_[index], this.session, this.lib);
     }
 
-    constructor(items: Array<number>, session: Session, lib: pkcs11.Pkcs11, classType: any = SessionObject) {
+    constructor(items: Array<number>, session: Session, lib: pkcs11.PKCS11, classType: any = SessionObject) {
         super(items, lib, classType);
 
         this.session = session;

@@ -1,31 +1,20 @@
 import * as core from "../../core";
+import {CommandError, ICommand} from "./error";
 import {EventEmitter} from "events";
 
-export class CommandError extends Error {
-    command: ICommand;
-
-    constructor(command: ICommand, message: string) {
-        super();
-        this.message = `CommandError: ${message}`;
-        this.command = command;
-
-        this.stack = (new Error(this.message)).stack;
-    }
-}
-
 export interface IDescription {
-    description: string;
-    note: string;
+    description?: string;
+    note?: string;
     example?: string;
 }
 
 export interface IOptionParam {
     shortName?: string;
-    type: string;
-    description: string;
-    isRequired: boolean;
-    value: any;
-    set: (value: any) => any;
+    type?: string;
+    description?: string;
+    isRequired?: boolean;
+    value?: any;
+    set?: (value: any) => any;
 }
 
 export interface IOption extends IOptionParam {
@@ -34,10 +23,6 @@ export interface IOption extends IOptionParam {
 
 export interface IOptionArray {
     [name: string]: IOption;
-}
-
-export interface ICommand {
-
 }
 
 export interface ICommandArray {
@@ -53,19 +38,18 @@ export class Command extends EventEmitter implements IDescription, ICommand {
     note: string;
     example: string;
 
-    constructor(name: string, desc: string)
-    constructor(name: string, desc: IDescription);
-    constructor(name: string, desc) {
+    constructor(name: string, desc: string | IDescription) {
         super();
         this.name = name;
 
         if (core.isObject(desc)) {
-            this.description = desc.description;
-            this.note = desc.note;
-            this.example = desc.example;
+            let _desc = desc as IDescription;
+            this.description = _desc.description;
+            this.note = _desc.note;
+            this.example = _desc.example;
         }
         else
-            this.description = desc || "";
+            this.description = desc as string || "";
     }
 
     option(longName: string, param: IOptionParam) {
@@ -91,9 +75,9 @@ export class Command extends EventEmitter implements IDescription, ICommand {
         this.print("example");
     }
 
-    createCommand(name: string, desc: IDescription);
-    createCommand(name: string, desc: string);
-    createCommand(name: string, desc) {
+    createCommand(name: string, desc: IDescription): Command;
+    createCommand(name: string, desc: string): Command;
+    createCommand(name: string, desc: string | IDescription): Command {
         let cmd = new Command(name, desc);
         cmd.createCommandHelp();
         this.commands[name] = cmd;
@@ -171,10 +155,10 @@ export class Command extends EventEmitter implements IDescription, ICommand {
     static parse(cmd: string) {
         cmd = prepare_command(cmd);
         let arCmd = split_command(cmd);
-        let o = {
+        let o: any = {
             commands: []
         };
-        let _param = null;
+        let _param: string = null;
         let fCommand = true;
         for (let i = 0; i < arCmd.length; i++) {
             let word = arCmd[i];
@@ -198,24 +182,24 @@ export class Command extends EventEmitter implements IDescription, ICommand {
 }
 
 
-function get_command_name(name) {
+function get_command_name(name: string) {
     return get_name(name, /^(\w[\w-]*|\?)$/i);
 }
 
-function get_long_name(name) {
+function get_long_name(name: string) {
     return get_name(name, /^--(\w[\w-]*|\?)$/i);
 }
 
-function get_short_name(name) {
+function get_short_name(name: string) {
     return get_name(name, /^-(\w[\w-]*|\?)$/i);
 }
 
-function get_name(name, reg) {
-    let res = null;
+function get_name(name: string, reg: RegExp) {
+    let res: string[] = null;
     if (res = reg.exec(name)) {
-        res = res[1];
+        return res[1];
     }
-    return res;
+    return null;
 }
 
 function prepare_command(cmd: string) {
@@ -223,7 +207,7 @@ function prepare_command(cmd: string) {
     return res;
 }
 
-function trim_str(s) {
+function trim_str(s: string) {
     let res = "";
     let fSpace = true;
     for (let i = 0; i <= s.length; i++) {
@@ -246,7 +230,7 @@ function trim_str(s) {
  * Splits command by SPACE, ingnore SPACE into quotes
  */
 function split_command(cmd: string) {
-    let res = [];
+    let res: string[] = [];
     let _found = false;
     let _quote = false;
     let str = "";
@@ -276,13 +260,16 @@ export class Commander extends EventEmitter implements ICommand {
     options: IOptionArray = {};
     name: string;
 
-    createCommand(name: string, desc: IDescription);
-    createCommand(name: string, desc: string);
-    createCommand(name: string, desc: any) {
+    createCommand(name: string, desc: IDescription): Command;
+    createCommand(name: string, desc: string): Command;
+    createCommand(name: string, desc: any): Command {
         let cmd = new Command(name, desc);
         cmd.createCommandHelp();
         this.commands[name] = cmd;
         return cmd;
+    }
+
+    print(s: string) {
     }
 
     parse(cmd: string) {
@@ -305,7 +292,7 @@ export class Commander extends EventEmitter implements ICommand {
                     }
                 }
 
-                let opt = {};
+                let opt: {[longName: string]: string} = {};
                 for (let i in that.options) {
                     let _prop = that.options[i];
                     if (_prop.shortName in command || _prop.longName in command) {
@@ -342,7 +329,7 @@ export class Commander extends EventEmitter implements ICommand {
  */
 function pud(text: string, size: number, spaceChar: string = " ", end: boolean = false) {
     if (!spaceChar) spaceChar = " ";
-    let res, pad = "";
+    let res: string, pad = "";
     if (text.length < size) {
         for (let i = 0; i < (size - text.length); i++)
             pad += spaceChar;

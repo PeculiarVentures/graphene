@@ -1,4 +1,4 @@
-import * as pkcs11 from "../../pkcs11";
+import * as pkcs11 from "pkcs11js";
 
 export enum RsaMgf {
     MGF1_SHA1 = pkcs11.CKG_MGF1_SHA1,

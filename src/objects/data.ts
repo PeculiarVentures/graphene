@@ -1,4 +1,3 @@
-import * as pkcs11 from "../pkcs11";
 import * as core from "../core";
 import {Storage} from "./storage";
 
@@ -9,7 +8,9 @@ import {Storage} from "./storage";
 export class Data extends Storage {
 
     /**
-     * Description of the application that manages the object (default empty)
+     * Description of the application that manages the object (default empty) 
+     * 
+     * @type {string}
      */
     get application(): string {
         return this.get("application");
@@ -21,6 +22,8 @@ export class Data extends Storage {
 
     /**
      * DER-encoding of the object identifier indicating the data object type (default empty)
+     * 
+     * @type {Buffer}
      */
     get objectId(): Buffer {
         return this.get("objectId");
@@ -31,7 +34,9 @@ export class Data extends Storage {
     }
 
     /**
-     * Value of the object (default empty)
+     * Value of the object (default empty) 
+     * 
+     * @type {Buffer}
      */
     get value(): Buffer {
         return this.get("value");

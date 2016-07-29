@@ -20,7 +20,7 @@ export let cmdHash = defs.commander.createCommand("hash", {
         set: defs.check_file,
         isRequired: true
     })
-    .on("call", function(cmd) {
+    .on("call", function(cmd: any) {
         throw new Error("Not implemented");
         // defs.check_session();
         // let rs = fs.createReadStream(cmd.in);
@@ -32,4 +32,4 @@ export let cmdHash = defs.commander.createCommand("hash", {
         //     let hash = digest.final();
         //     console.log(hash.toString("hex"));
         // });
-    });
+    }) as defs.Command;

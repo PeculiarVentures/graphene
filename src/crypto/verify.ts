@@ -1,75 +1,54 @@
+import * as pkcs11 from "pkcs11js";
 import * as core from "../core";
-import * as pkcs11 from "../pkcs11";
 import {Session} from "../session";
 import {Key} from "../object";
 import {Mechanism, MechanismType} from "../mech";
 
-export class Verify {
+export class Verify extends core.BaseObject {
 
     session: Session;
-    lib: pkcs11.Pkcs11;
 
-    constructor(session: Session, alg: MechanismType, key: Key, lib: pkcs11.Pkcs11) {
+    constructor(session: Session, alg: MechanismType, key: Key, lib: pkcs11.PKCS11) {
+        super(lib);
         this.session = session;
-        this.lib = lib;
         this.init(alg, key);
     }
 
     protected init(alg: MechanismType, key: Key) {
         let pMech = Mechanism.create(alg);
-        let rv = this.lib.C_VerifyInit(this.session.handle, pMech, key.handle);
-        if (rv) throw new core.Pkcs11Error(rv, "C_VerifyInit");
+        this.lib.C_VerifyInit(this.session.handle, pMech, key.handle);
     }
 
-    update(data: string | Buffer): void;
-    update(data: string | Buffer, callback: (error: Error) => void): void;
-    update(data, callback?: (error: Error) => void): void {
+    update(data: core.CryptoData): void {
         try {
-            data = new Buffer(data);
+            let _data = new Buffer(data as string);
 
-            if (callback) {
-                // async
-                this.lib.C_VerifyUpdate(this.session.handle, data, data.length, (err: Error, rv: number) => {
-                    if (err)
-                        callback(err);
-                    else if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_VerifyUpdate"));
-                    else
-                        callback(null);
-                });
-            }
-            else {
-                // sync
-                let rv = this.lib.C_VerifyUpdate(this.session.handle, data, data.length);
-                if (rv) throw new core.Pkcs11Error(rv, "C_VerifyUpdate");
-            }
+            this.lib.C_VerifyUpdate(this.session.handle, _data);
         } catch (e) {
-            if (callback)
-                callback(e);
+            try {
+                // Finalize verify operation
+                this.final(new Buffer(0));
+            }
+            catch (e) { }
+
+            throw e;
         }
     }
 
-    final(signature: Buffer): boolean;
-    final(signature: Buffer, callback: (err: Error, verify: boolean) => void): boolean;
-    final(signature: Buffer, callback?: (err: Error, verify: boolean) => void): any {
-        try {
-            if (callback) {
-                // async
-                this.lib.C_VerifyFinal(this.session.handle, signature, signature.length, (err: Error, rv: number) => {
-                    if (err)
-                        callback(err, null);
-                    callback(null, rv === pkcs11.CKR_OK);
-                });
-            }
-            else {
-                // sync
-                let rv = this.lib.C_VerifyFinal(this.session.handle, signature, signature.length);
-                return rv === pkcs11.CKR_OK;
-            }
-        } catch (e) {
-            if (callback)
-                callback(e, null);
+    final(signature: Buffer): boolean {
+        let res = this.lib.C_VerifyFinal(this.session.handle, signature);
+        return res;
+    }
+
+    once(data: core.CryptoData, signature: Buffer): boolean;
+    once(data: core.CryptoData, signature: Buffer, cb: (error: Error, valid: boolean) => void): void;
+    once(data: core.CryptoData, signature: Buffer, cb?: (error: Error, valid: boolean) => void): any {
+        let _data = new Buffer(data as string);
+        if (cb) {
+            this.lib.C_Verify(this.session.handle, _data, signature, cb);
         }
+        else
+            return this.lib.C_Verify(this.session.handle, _data, signature);
     }
 
 }

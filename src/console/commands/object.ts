@@ -2,6 +2,8 @@ import * as defs from "./defs";
 import * as fs from "fs";
 const {consoleApp} = defs;
 
+declare let global: any;
+
 /* ==========
    object
    ==========*/
@@ -11,7 +13,7 @@ export let cmdObject = defs.commander.createCommand("object", {
 })
     .on("call", () => {
         cmdObject.help();
-    });
+    }) as defs.Command;
 
 function print_object_info(obj: defs.Storage) {
     let TEMPLATE = "| %s | %s |";
@@ -103,7 +105,7 @@ export let cmdObjectTest = cmdObject.createCommand("test", {
     note: defs.NOTE_SESSION,
     example: "> object test"
 })
-    .on("call", function(cmd) {
+    .on("call", function(cmd: any) {
         defs.check_session();
         let keys = consoleApp.session.generateKeyPair(defs.KeyGenMechanism.RSA, {
             keyType: defs.KeyType.RSA,
@@ -134,7 +136,7 @@ export let cmdObjectDelete = cmdObject.createCommand("delete", {
         defs.check_session();
         let objList = consoleApp.session.find();
         if (cmd.obj === "all") {
-            global["readline"].question("Do you really want to remove ALL objects (Y/N)?", (answer) => {
+            global["readline"].question("Do you really want to remove ALL objects (Y/N)?", (answer: string) => {
                 if (answer && answer.toLowerCase() === "y") {
                     consoleApp.session.destroy();
                     console.log();
@@ -151,7 +153,7 @@ export let cmdObjectDelete = cmdObject.createCommand("delete", {
             defs.print_caption(`Object info`);
             print_object_info(obj);
             console.log();
-            global["readline"].question("Do you really want to remove this object (Y/N)?", (answer) => {
+            global["readline"].question("Do you really want to remove this object (Y/N)?", (answer: string) => {
                 if (answer && answer.toLowerCase() === "y") {
                     consoleApp.session.destroy(obj);
                     console.log();

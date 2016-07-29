@@ -1,12 +1,12 @@
-import * as pkcs11 from "../pkcs11";
+import * as pkcs11 from "pkcs11js";
 import * as object from "./object";
 
-export class Collection<T extends object.HandleObject> {
+export class Collection<T extends object.HandleObject> extends object.BaseObject {
     protected items_: Array<number>;
     protected classType: any;
-    protected lib: pkcs11.Pkcs11;
 
-    constructor(items: Array<number>, lib: pkcs11.Pkcs11, classType: any) {
+    constructor(items: Array<number>, lib: pkcs11.PKCS11, classType: any) {
+        super(lib);
         this.items_ = items;
         this.lib = lib;
         this.classType = classType;

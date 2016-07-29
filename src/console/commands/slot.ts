@@ -8,18 +8,18 @@ function print_slot(slot: defs.Slot) {
 /* ==========
    Slot
    ==========*/
-export let cmdSlot: defs.Command = defs.commander.createCommand("slot", {
+export let cmdSlot = defs.commander.createCommand("slot", {
     description: "open a session to a slot and work with its contents",
     note: defs.NOTE
 })
     .on("call", function() {
         this.help();
-    });
+    }) as defs.Command;
 
 /**
  * list
  */
-export let cmdSlotList: defs.Command = cmdSlot.createCommand("list", {
+export let cmdSlotList = cmdSlot.createCommand("list", {
     description: "enumerates the available slots",
     note: defs.NOTE
 })
@@ -32,12 +32,12 @@ export let cmdSlotList: defs.Command = cmdSlot.createCommand("list", {
             let slot = consoleApp.slots.items(i);
             print_slot(slot);
         }
-    });
+    }) as defs.Command;
 
 function print_alg_info(slot: defs.Slot, algName: string) {
     let algList = slot.getMechanisms();
     // find alg
-    let alg = null;
+    let alg: any = null;
     for (let i = 0; i < algList.length; i++) {
         let item = algList.items(i);
         if (item.name === algName) {
@@ -88,7 +88,7 @@ export let cmdSlotInfo = cmdSlot.createCommand("info", {
         alg: string;
     }) {
         if (cmd.alg) {
-            if (defs.MechanismEnum[cmd.alg] !== undefined) {
+            if ((defs as any).MechanismEnum[cmd.alg] !== undefined) {
                 print_alg_info(cmd.slot, cmd.alg);
             }
             else
@@ -105,7 +105,7 @@ function print_slot_algs_header() {
     console.log(TEMPLATE.replace(/\s/g, "-"), defs.rpud("", 25, "-"), "-", "-", "-", "-", "-", "-", "-", "-", "-");
 }
 
-function print_slot_algs_row(alg) {
+function print_slot_algs_row(alg: any) {
     let TEMPLATE = "| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |";
     console.log(TEMPLATE,
         defs.rpud(alg.name, 25),

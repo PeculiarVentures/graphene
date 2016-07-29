@@ -1,4 +1,4 @@
-import * as pkcs11 from "../../pkcs11";
+import * as pkcs11 from "pkcs11js";
 
 /**
  * EcKdf is used to indicate the Key Derivation Function (KDF) 

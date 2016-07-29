@@ -1,4 +1,4 @@
-import * as pkcs11 from "./pkcs11";
+import * as pkcs11 from "pkcs11js";
 import * as core from "./core";
 import * as fs from "fs";
 import {Slot} from "./slot";
@@ -103,7 +103,7 @@ export class Mechanism extends core.HandleObject {
         return MechanismEnum[this.handle] || "unknown";
     }
 
-    constructor(handle: number, slotHandle: number, lib: pkcs11.Pkcs11) {
+    constructor(handle: number, slotHandle: number, lib: pkcs11.PKCS11) {
         super(handle, lib);
         this.slotHandle = slotHandle;
 
@@ -111,54 +111,50 @@ export class Mechanism extends core.HandleObject {
     }
 
     protected getInfo(): void {
-        let $info = core.Ref.alloc(pkcs11.CK_MECHANISM_INFO);
-        let rv = this.lib.C_GetMechanismInfo(this.slotHandle, this.handle, $info);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetMechanismInfo");
+        let info =  this.lib.C_GetMechanismInfo(this.slotHandle, this.handle);
 
-        let info: IMechanismInfo = $info.deref();
-        this.minKeySize = info.ulMinKeySize;
-        this.maxKeySize = info.ulMaxKeySize;
+        this.minKeySize = info.minKeySize;
+        this.maxKeySize = info.maxKeySize;
         this.flags = info.flags;
     }
 
-    static create(alg: MechanismType): Buffer;
-    static create(alg) {
-        let res = null;
+    static create(alg: MechanismType): pkcs11.Mechanism {
+        let res: pkcs11.Mechanism = null;
 
         let _alg: IAlgorithm;
         if (core.isString(alg)) {
-            _alg = { name: alg, params: null };
+            _alg = { name: alg as string, params: null };
         }
         else if (core.isNumber(alg)) {
-            _alg = { name: MechanismEnum[alg], params: null };
+            _alg = { name: MechanismEnum[alg as number], params: null };
         }
         else {
-            _alg = alg;
+            _alg = alg as IAlgorithm;
         }
 
-        let hAlg = MechanismEnum[_alg.name.toUpperCase()];
+        let hAlg = (MechanismEnum as any)[_alg.name.toUpperCase()];
         if (core.isEmpty(hAlg)) throw new TypeError(`Unknown mechanism name '${_alg.name}'`);
 
-        let pParams = null;
-        if (alg.params) {
-            if (alg.params.toCKI)
+        let params: any = null;
+        if ("params" in (alg as IAlgorithm)) {
+            let _alg: IAlgorithm = alg as IAlgorithm;
+            if ((_alg.params as IParams).toCKI)
                 // Convert object with toCKI to Buffer
-                pParams = alg.params.toCKI();
+                params = (_alg.params as IParams).toCKI();
             else
-                pParams = alg.params;
+                params = _alg.params;
         }
 
-        res = new pkcs11.CK_MECHANISM({
+        res = {
             mechanism: hAlg,
-            pParameter: pParams,
-            ulParameterLen: pParams ? pParams.length : 0
-        });
-        return res["ref.buffer"];
+            parameter: params
+        };
+        return res;
     }
 
-    static vendor(jsonFile: string);
-    static vendor(name: string, value: number);
-    static vendor(name: string, value?: number) {
+    static vendor(jsonFile: string): void;
+    static vendor(name: string, value: number): void;
+    static vendor(name: string, value?: number): void {
         let mechs: any = MechanismEnum;
 
         if (core.isEmpty(value)) {
@@ -185,7 +181,7 @@ export class Mechanism extends core.HandleObject {
 export class MechanismCollection extends core.Collection<Mechanism> {
     protected slotHandle: number;
 
-    constructor(items: Array<number>, slotHandle: number, lib: pkcs11.Pkcs11, classType = Mechanism) {
+    constructor(items: Array<number>, slotHandle: number, lib: pkcs11.PKCS11, classType = Mechanism) {
         super(items, lib, classType);
 
         this.slotHandle = slotHandle;

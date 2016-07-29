@@ -1,4 +1,5 @@
-import * as pkcs11 from "./pkcs11";
+import * as pkcs11 from "pkcs11js";
+
 import * as core from "./core";
 import {Slot} from "./slot";
 import {SessionObject, SessionObjectCollection, ObjectClass, Key, SecretKey} from "./object";
@@ -8,50 +9,31 @@ import * as objects from "./objects/common";
 
 import {Sign, Verify, Cipher, Decipher, Digest} from "./crypto/common";
 
-const ObjectArray = core.RefArray(pkcs11.CK_OBJECT_HANDLE);
-
-export enum SessionOpenFlag {
-    /**
-     * session is r/w
-     */
-    RW_SESSION = pkcs11.CKF_RW_SESSION,
-    /**
-     * no parallel
-     */
-    SERIAL_SESSION = pkcs11.CKF_SERIAL_SESSION
-}
 
 export enum SessionFlag {
     /**
      * `True` if the session is read/write; `false` if the session is read-only
      */
-    RW_SESSION = pkcs11.CKF_RW_SESSION,
+    RW_SESSION = 2,
     /**
      * This flag is provided for backward compatibility, and should always be set to `true`
      */
-    SERIAL_SESSION = pkcs11.CKF_SERIAL_SESSION
+    SERIAL_SESSION = 4
 }
 
 export enum UserType {
     /**
      * Security Officer
      */
-    SO = pkcs11.CKU_SO,
+    SO,
     /**
      * User
      */
-    USER = pkcs11.CKU_USER,
+    USER,
     /**
      * Context specific
      */
-    CONTEXT_SPECIFIC = pkcs11.CKU_CONTEXT_SPECIFIC
-}
-
-interface ISessionInfo {
-    slotID: number;
-    state: number;
-    flags: number;
-    ulDeviceError: number;
+    CONTEXT_SPECIFIC
 }
 
 export interface IKeyPair {
@@ -64,43 +46,52 @@ export interface IKeyPair {
  */
 export class Session extends core.HandleObject {
 
-    constructor(handle: number, slot: Slot, lib: pkcs11.Pkcs11) {
+    constructor(handle: number, slot: Slot, lib: pkcs11.PKCS11) {
         super(handle, lib);
 
         this.slot = slot;
     }
 
+    /**
+     * Slot 
+     * 
+     * @type {Slot}
+     */
     slot: Slot;
     /**
      * the state of the session
+     * 
+     * @type {number}
      */
     state: number;
+
     /**
      * bit flags that define the type of session
+     * 
+     * @type {number}
      */
     flags: number;
+
     /**
-     * an error code defined by the cryptographic device. Used for errors not covered by Cryptoki
+     * an error code defined by the cryptographic device. Used for errors not covered by Cryptoki 
+     * 
+     * @type {number}
      */
     deviceError: number;
 
     protected getInfo() {
-        let $info = core.Ref.alloc(pkcs11.CK_SESSION_INFO);
-        let rv = this.lib.C_GetSessionInfo(this.handle, $info);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetSessionInfo");
+        let info = this.lib.C_GetSessionInfo(this.slot.handle);
 
-        let info: ISessionInfo = $info.deref();
         this.state = info.state;
         this.flags = info.flags;
-        this.deviceError = info.ulDeviceError;
+        this.deviceError = info.deviceError;
     }
 
     /**
      * closes a session between an application and a token
      */
     close() {
-        let rv = this.lib.C_CloseSession(this.handle);
-        if (rv) throw new core.Pkcs11Error(rv, "C_CloseSession");
+        this.lib.C_CloseSession(this.handle);
     }
 
     /**
@@ -108,9 +99,7 @@ export class Session extends core.HandleObject {
      * @param {string} pin the normal user's PIN
      */
     initPin(pin: string) {
-        let bufPin = new Buffer(pin, "utf8");
-        let rv = this.lib.C_InitPIN(this.handle, bufPin, bufPin.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_InitPIN");
+        this.lib.C_InitPIN(this.handle, pin);
     }
 
     /**
@@ -119,23 +108,14 @@ export class Session extends core.HandleObject {
      * @param {string} newPin
      */
     setPin(oldPin: string, newPin: string) {
-        let bufOldPin = new Buffer(oldPin, "utf8");
-        let bufNewPin = new Buffer(newPin, "utf8");
-        let rv = this.lib.C_SetPIN(this.handle, bufOldPin, bufOldPin.length, bufNewPin, bufNewPin.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_SetPIN");
+        this.lib.C_SetPIN(this.handle, oldPin, newPin);
     }
 
     /**
      * obtains a copy of the cryptographic operations state of a session, encoded as a string of bytes
      */
     getOperationState(): Buffer {
-        let $len = core.Ref.alloc(pkcs11.CK_ULONG);
-        let rv = this.lib.C_GetOperationState(this.handle, null, $len);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetOperationState");
-        let buf = new Buffer($len.deref());
-        rv = this.lib.C_GetOperationState(this.handle, buf, $len);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetOperationState");
-        return buf;
+        throw new Error("Not implemented");
     }
 
     /**
@@ -153,9 +133,7 @@ export class Session extends core.HandleObject {
      * or because all the necessary key information is present in the saved state) 
      */
     setOperationState(state: Buffer, encryptionKey: number = 0, authenticationKey: number = 0) {
-        // let $len = core.Ref.alloc(pkcs11.CK_ULONG);
-        let rv = this.lib.C_SetOperationState(this.handle, state, state.length, encryptionKey, authenticationKey);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GetOperationState");
+        throw new Error("Not implemented");
     }
 
     /**
@@ -166,17 +144,14 @@ export class Session extends core.HandleObject {
      * @param {} userType the user type. Default is `USER`
      */
     login(pin: string, userType: UserType = UserType.USER) {
-        let bufPin = new Buffer(pin, "utf8");
-        let rv = this.lib.C_Login(this.handle, userType, bufPin, bufPin.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_Login");
+        this.lib.C_Login(this.handle, userType, pin);
     }
 
     /**
      * logs a user out from a token
      */
     logout() {
-        let rv = this.lib.C_Logout(this.handle);
-        if (rv) throw new core.Pkcs11Error(rv, "C_Logout");
+        this.lib.C_Logout(this.handle);
     }
 
     /**
@@ -184,30 +159,28 @@ export class Session extends core.HandleObject {
      * - Only session objects can be created during a read-only session. 
      * - Only public objects can be created unless the normal user is logged in.
      * @param {ITemplate} template the object's template
+     * @returns {SessionObject}
      */
     create(template: ITemplate): SessionObject {
-        let tmpl = new Template(template);
-        let $obj = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+        let tmpl = Template.toPkcs11(template);
 
-        let rv = this.lib.C_CreateObject(this.handle, tmpl.ref(), tmpl.length, $obj);
-        if (rv) throw new core.Pkcs11Error(rv, "C_CreateObject");
+        let hObject = this.lib.C_CreateObject(this.handle, tmpl);
 
-        return new SessionObject($obj.deref(), this, this.lib);
+        return new SessionObject(hObject, this, this.lib);
     }
 
     /**
      * Copies an object, creating a new object for the copy
      * @param {SessionObject} object the copied object
      * @param {ITemplate} template template for new object
+     * @returns {SessionObject}
      */
     copy(object: SessionObject, template: ITemplate): SessionObject {
-        let tmpl = new Template(template);
-        let $obj = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+        let tmpl = Template.toPkcs11(template);
 
-        let rv = this.lib.C_CopyObject(this.handle, object.handle, tmpl.ref(), tmpl.length, $obj);
-        if (rv) throw new core.Pkcs11Error(rv, "C_CopyObject");
+        let hObject = this.lib.C_CopyObject(this.handle, object.handle, tmpl);
 
-        return new SessionObject($obj.deref(), this, this.lib);
+        return new SessionObject(hObject, this, this.lib);
     }
 
     /**
@@ -222,12 +195,11 @@ export class Session extends core.HandleObject {
      */
     destroy(object: SessionObject): number;
     destroy(): number;
-    destroy(param?): number {
+    destroy(param?: SessionObject | ITemplate): number {
 
         if (param instanceof SessionObject) {
             // destroy(object: SessionObject): number;
-            let rv = this.lib.C_DestroyObject(this.handle, param.handle);
-            if (rv) throw new core.Pkcs11Error(rv, "C_DestroyObject");
+            this.lib.C_DestroyObject(this.handle, param.handle);
             return 1;
         }
         else {
@@ -255,43 +227,38 @@ export class Session extends core.HandleObject {
      * - if callback function returns false, it breaks find function.
      */
     find(callback?: (obj: SessionObject) => any): SessionObjectCollection;
-    find(template: ITemplate, callback?: (obj: SessionObject) => any): SessionObjectCollection;
-    find(template, callback?: (obj: SessionObject) => any): SessionObjectCollection {
+    find(template: ITemplate, callback?: (obj: SessionObject, index: number) => any): SessionObjectCollection;
+    find(template?: any, callback?: (obj: SessionObject, index: number) => any): SessionObjectCollection {
         if (core.isFunction(template)) {
             callback = template;
             template = null;
         }
-        let tmpl = new Template(template);
+        let tmpl = Template.toPkcs11(template);
 
-        let rv = this.lib.C_FindObjectsInit(this.handle, tmpl.ref(), tmpl.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_FindObjectsInit");
+        this.lib.C_FindObjectsInit(this.handle, tmpl);
 
-        let $objects = new ObjectArray(1);
-        let $objlen = core.Ref.alloc(pkcs11.CK_ULONG);
         let objects: number[] = [];
-
         while (true) {
-            rv = this.lib.C_FindObjects(this.handle, $objects.buffer, 1, $objlen);
-            if (rv !== pkcs11.CKR_OK || $objlen.deref() === 0)
+            let hObject = this.lib.C_FindObjects(this.handle);
+            if (!hObject)
                 break;
-            let hObject: number = <any>$objects[0];
-            if (callback && callback(new SessionObject(hObject, this, this.lib)) === false) {
+            if (callback && callback(new SessionObject(hObject, this, this.lib), objects.length) === false) {
                 break;
             }
             objects.push(hObject);
         }
 
-        rv = this.lib.C_FindObjectsFinal(this.handle);
-        if (rv) throw new core.Pkcs11Error(rv, "C_FindObjectsFinal");
+        this.lib.C_FindObjectsFinal(this.handle);
 
         return new SessionObjectCollection(objects, this, this.lib);
     }
+
     /**
      * Returns object from session by handle
      * @param  {number} handle handle of object
      * @returns T
      */
-    getObject<T extends SessionObject>(handle: number): T {
+    getObject<T extends SessionObject>(handle: number): T { 
         let res: SessionObject = null;
         this.find(null, (obj) => {
             if (obj.handle === handle) {
@@ -312,37 +279,33 @@ export class Session extends core.HandleObject {
      * @param template template for the new key or set of domain parameters
      */
     generateKey(mechanism: MechanismType, template?: ITemplate): objects.SecretKey;
-    generateKey(mechanism: MechanismType, template: ITemplate, callback: (err, key: objects.SecretKey) => void): void;
-    generateKey(mechanism: MechanismType, template: ITemplate = null, callback?: (err, key: objects.SecretKey) => void): objects.SecretKey {
+    generateKey(mechanism: MechanismType, template: ITemplate, callback: (err: Error, key: objects.SecretKey) => void): void;
+    generateKey(mechanism: MechanismType, template: ITemplate = null, callback?: (err: Error, key: objects.SecretKey) => void): objects.SecretKey {
         try {
             let pMech = Mechanism.create(mechanism);
             // init default template params
             if (template) {
                 template.class = ObjectClass.SECRET_KEY;
             }
-            let pTemplate = new Template(template);
-            let hKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+            let pTemplate = Template.toPkcs11(template);
 
             if (callback) {
-                this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey, (err, rv: number) => {
+                this.lib.C_GenerateKey(this.handle, pMech, pTemplate, (err, hKey) => {
                     if (err) {
                         callback(err, null);
                     }
                     else {
-                        if (rv)
-                            callback(new core.Pkcs11Error(rv, "C_GenerateKey"), null);
-                        else {
-                            let obj = new SessionObject(hKey.deref(), this, this.lib);
-                            callback(null, obj.toType<objects.SecretKey>());
-                        }
+                        // Wrap handle of kry to SecretKey
+                        let obj = new SessionObject(hKey, this, this.lib);
+                        callback(null, obj.toType<objects.SecretKey>());
                     }
                 });
             }
             else {
-                let rv = this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey);
-                if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKey");
+                let hKey = this.lib.C_GenerateKey(this.handle, pMech, pTemplate);
 
-                let obj = new SessionObject(hKey.deref(), this, this.lib);
+                // Wrap handle of kry to SecretKey
+                let obj = new SessionObject(hKey, this, this.lib);
                 return obj.toType<objects.SecretKey>();
             }
         } catch (e) {
@@ -362,50 +325,40 @@ export class Session extends core.HandleObject {
             if (publicTemplate) {
                 publicTemplate.class = ObjectClass.PUBLIC_KEY;
             }
-            let pubTmpl = new Template(publicTemplate);
-            let hPubKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+            let pubTmpl = Template.toPkcs11(publicTemplate);
 
             // init default private key template
             if (privateTemplate) {
                 privateTemplate.class = ObjectClass.PRIVATE_KEY;
                 privateTemplate.private = true;
             }
-            let prvTmpl = new Template(privateTemplate);
-            let hPrvKey = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+            let prvTmpl = Template.toPkcs11(privateTemplate);
 
             if (callback) {
                 // async
                 this.lib.C_GenerateKeyPair(
                     this.handle, pMech,
-                    pubTmpl.ref(), pubTmpl.length,
-                    prvTmpl.ref(), prvTmpl.length,
-                    hPubKey, hPrvKey,
-                    (err: Error, rv: number) => {
+                    pubTmpl,
+                    prvTmpl,
+                    (err, keys) => {
                         if (err)
                             callback(err, null);
                         else {
-                            if (rv)
-                                callback(new core.Pkcs11Error(rv, "C_GenerateKeyPair"), null);
-                            else
+                            if (keys)
                                 callback(null, {
-                                    publicKey: new objects.PublicKey(hPubKey.deref(), this, this.lib),
-                                    privateKey: new objects.PrivateKey(hPrvKey.deref(), this, this.lib)
+                                    publicKey: new objects.PublicKey(keys.publicKey, this, this.lib),
+                                    privateKey: new objects.PrivateKey(keys.privateKey, this, this.lib)
                                 });
                         }
                     });
             }
             else {
                 // sync
-                let rv = this.lib.C_GenerateKeyPair(
-                    this.handle, pMech,
-                    pubTmpl.ref(), pubTmpl.length,
-                    prvTmpl.ref(), prvTmpl.length,
-                    hPubKey, hPrvKey);
-                if (rv) throw new core.Pkcs11Error(rv, "C_GenerateKeyPair");
+                let keys = this.lib.C_GenerateKeyPair(this.handle, pMech, pubTmpl, prvTmpl);
 
                 return {
-                    publicKey: new objects.PublicKey(hPubKey.deref(), this, this.lib),
-                    privateKey: new objects.PrivateKey(hPrvKey.deref(), this, this.lib)
+                    publicKey: new objects.PublicKey(keys.publicKey, this, this.lib),
+                    privateKey: new objects.PrivateKey(keys.privateKey, this, this.lib)
                 };
             }
         } catch (e) {
@@ -441,23 +394,16 @@ export class Session extends core.HandleObject {
     wrapKey(alg: MechanismType, wrappingKey: Key, key: Key, callback?: (err: Error, wkey: Buffer) => void): Buffer {
         try {
             let pMech = Mechanism.create(alg);
-            let pWrappedKey = new Buffer(4048);
-            let pWrappedKeyLen = core.Ref.alloc(pkcs11.CK_ULONG, pWrappedKey.length);
+            let wrappedKey = new Buffer(8096);
             if (callback) {
                 // async
-                this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, pWrappedKey, pWrappedKeyLen, (err: Error, rv: number) => {
-                    if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_WrapKey"), null);
-                    else
-                        callback(null, pWrappedKey.slice(0, pWrappedKeyLen.deref()));
-                });
+                this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, wrappedKey, callback);
             }
             else {
                 // sync
-                let rv = this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, pWrappedKey, pWrappedKeyLen);
-                if (rv) throw new core.Pkcs11Error(rv, "C_WrapKey");
+                wrappedKey = this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, wrappedKey);
 
-                return pWrappedKey.slice(0, pWrappedKeyLen.deref());
+                return wrappedKey;
             }
         }
         catch (e) {
@@ -473,25 +419,23 @@ export class Session extends core.HandleObject {
     unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate, callback?: (err: Error, key: Key) => void): Key {
         try {
             let pMech = Mechanism.create(alg);
-            let pTemplate = new Template(template);
-            let phKey = core.Ref.alloc(pkcs11.CK_ULONG);
+            let pTemplate = Template.toPkcs11(template);
 
             if (callback) {
                 // async
-                this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, wrappedKey.length, pTemplate.ref(), pTemplate.length, phKey, (err: Error, rv: number) => {
-                    if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_UnwrapKey"), null);
+                this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, pTemplate, (err, hKey) => {
+                    if (hKey)
+                        callback(err, null);
                     else
-                        callback(null, new Key(phKey.deref(), this, this.lib));
+                        callback(null, new Key(hKey, this, this.lib));
                 });
             }
             else {
                 // sync
-                let rv = this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, wrappedKey.length, pTemplate.ref(), pTemplate.length, phKey);
-                if (rv) throw new core.Pkcs11Error(rv, "C_UnwrapKey");
+                let hKey = this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, pTemplate);
+                return new Key(hKey, this, this.lib);
             }
 
-            return new Key(phKey.deref(), this, this.lib);
         }
         catch (e) {
             if (callback)
@@ -512,22 +456,20 @@ export class Session extends core.HandleObject {
     deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate, callback?: (err: Error, key: Key) => void): SecretKey {
         try {
             let pMech = Mechanism.create(alg);
-            let pTemplate = new Template(template);
-            let phKey = core.Ref.alloc(pkcs11.CK_ULONG);
+            let pTemplate = Template.toPkcs11(template);
 
             if (callback) {
-                this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate.ref(), pTemplate.length, phKey, (err, rv) => {
-                    if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_DeriveKey"), null);
+                this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate, (err, hKey) => {
+                    if (hKey)
+                        callback(err, null);
                     else
-                        callback(null, new SecretKey(phKey.deref(), this, this.lib));
+                        callback(null, new SecretKey(hKey, this, this.lib));
                 });
             }
             else {
-                let rv = this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate.ref(), pTemplate.length, phKey);
-                if (rv) throw new core.Pkcs11Error(rv, "C_DeriveKey");
+                let hKey = this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate);
 
-                return new SecretKey(phKey.deref(), this, this.lib);
+                return new SecretKey(hKey, this, this.lib);
             }
         }
         catch (e) {
@@ -545,8 +487,7 @@ export class Session extends core.HandleObject {
      */
     generateRandom(size: number): Buffer {
         let buf = new Buffer(size);
-        let rv = this.lib.C_GenerateRandom(this.handle, buf, buf.length);
-        if (rv) throw new core.Pkcs11Error(rv, "C_GenerateRandom");
+        this.lib.C_GenerateRandom(this.handle, buf);
         return buf;
     }
 

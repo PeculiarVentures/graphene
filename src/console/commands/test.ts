@@ -44,7 +44,7 @@ function gen_RSA(session: defs.Session, size: number, exp: Buffer = new Buffer([
         });
 }
 
-function gen_ECDSA(session: defs.Session, name: string, hexOid) {
+function gen_ECDSA(session: defs.Session, name: string, hexOid: string) {
     let keys = session.generateKeyPair(
         defs.KeyGenMechanism.ECDSA,
         {
@@ -65,7 +65,7 @@ function gen_ECDSA(session: defs.Session, name: string, hexOid) {
     return keys;
 }
 
-let gen = {
+let gen: {[alg: string]: {[spec: string]: Function}} = {
     rsa: {
         "1024": gen_RSA_1024,
         "2048": gen_RSA_2048,
@@ -189,7 +189,7 @@ function test_decrypt_operation(session: defs.Session, key: defs.IKeyPair | defs
     return decMsg;
 }
 
-function test_sign(session: defs.Session, cmd, prefix: string, postfix: string, signAlg: string) {
+function test_sign(session: defs.Session, cmd: any, prefix: string, postfix: string, signAlg: string) {
     try {
         let alg = prefix + "-" + postfix;
         if (cmd.alg === "all" || cmd.alg === prefix || cmd.alg === alg) {
@@ -200,7 +200,7 @@ function test_sign(session: defs.Session, cmd, prefix: string, postfix: string, 
             // create buffer
             let buf = new Buffer(BUF_SIZE);
             let t1 = new defs.Timer();
-            let sig = null;
+            let sig: Buffer = null;
             /**
              * TODO: We need to determine why the first call to the device is so much slower, 
              * it may be the FFI initialization. For now we will exclude this one call from results.
@@ -232,7 +232,7 @@ function test_sign(session: defs.Session, cmd, prefix: string, postfix: string, 
     return false;
 }
 
-function test_enc(session: defs.Session, cmd, prefix: string, postfix: string, encAlg) {
+function test_enc(session: defs.Session, cmd: any, prefix: string, postfix: string, encAlg: any) {
     try {
         let alg = prefix + "-" + postfix;
         if (cmd.alg === "all" || cmd.alg === prefix || cmd.alg === alg) {
@@ -245,7 +245,7 @@ function test_enc(session: defs.Session, cmd, prefix: string, postfix: string, e
                 let t1 = new defs.Timer();
                 // create buffer
                 let buf = new Buffer(BUF_SIZE);
-                let enc = null;
+                let enc: Buffer = null;
                 /**
                  * TODO: We need to determine why the first call to the device is so much slower, 
                  * it may be the FFI initialization. For now we will exclude this one call from results.
@@ -258,7 +258,7 @@ function test_enc(session: defs.Session, cmd, prefix: string, postfix: string, e
 
                 let t2 = new defs.Timer();
                 t2.start();
-                let msg = null;
+                let msg: Buffer = null;
                 for (let i = 0; i < cmd.it; i++) {
                     msg = test_decrypt_operation(session, key, encAlg, enc);
                 }
@@ -292,7 +292,7 @@ function print_test_enc_header() {
     console.log("|%s|%s:|%s:|%s-:|%s-:|", defs.rpud("", 27, "-"), defs.rpud("", 9, "-"), defs.rpud("", 9, "-"), defs.rpud("", 9, "-"), defs.rpud("", 9, "-"));
 }
 
-function print_test_sign_row(alg, t1, t2, ts1, ts2) {
+function print_test_sign_row(alg: string, t1: string, t2: string, ts1: number, ts2: number) {
     console.log("| %s | %s | %s | %s | %s |", defs.rpud(alg.toUpperCase(), 25), defs.lpud(t1, 8), defs.lpud(t2, 8), defs.lpud(ts1, 9), defs.lpud(ts2, 9));
 }
 
@@ -300,21 +300,21 @@ export let cmdTest = defs.commander.createCommand("test", {
     description: "benchmark device performance for common algorithms",
     note: defs.NOTE_SESSION
 })
-    .on("call", function(cmd) {
+    .on("call", function(cmd: any) {
         this.help();
-    });
+    }) as defs.Command;
 
-function check_sign_algs(alg) {
+function check_sign_algs(alg: string) {
     let list = ["all", "rsa", "rsa-1024", "rsa-2048", "rsa-4096", "ecdsa", "ecdsa-secp192r1", "ecdsa-secp256r1", "ecdsa-secp384r1", "ecdsa-secp256k1",
         "ecdsa-brainpoolP192r1", "ecdsa-brainpoolP224r1", "ecdsa-brainpoolP256r1", "ecdsa-brainpoolP320r1"];
     return list.indexOf(alg) !== -1;
 }
-function check_enc_algs(alg) {
+function check_enc_algs(alg: string) {
     let list = ["all", "aes", "aes-cbc128", "aes-cbc192", "aes-cbc256", "aes-gcm128", "aes-gcm192", "aes-gcm256"];
     return list.indexOf(alg) !== -1;
 }
 
-function check_gen_algs(alg) {
+function check_gen_algs(alg: string) {
     return check_sign_algs(alg) || ["aes", "aes-128", "aes-192", "aes-256"].indexOf(alg) !== -1;
 }
 
@@ -325,7 +325,7 @@ function generate_iv(session: defs.Session, block_size: number) {
     return iv;
 }
 
-function build_gcm_params(iv) {
+function build_gcm_params(iv: Buffer) {
     return new defs.AesGcmParams(iv);
 }
 
@@ -342,7 +342,7 @@ export let cmdTestEnc = cmdTest.createCommand("enc", {
 })
     .option("buf", {
         description: "Buffer size (bytes)",
-        set: function(v) {
+        set: function(v: string) {
             let _v = +v;
             if (!_v)
                 throw new TypeError("Parameter --buf must be Number (min 1024)");
@@ -352,7 +352,7 @@ export let cmdTestEnc = cmdTest.createCommand("enc", {
     })
     .option("it", {
         description: "Sets number of iterations. Default 1",
-        set: function(v) {
+        set: function(v: string) {
             let res = +v;
             if (!defs.isNumber(res))
                 throw new TypeError("Parameter --it must be number");
@@ -366,7 +366,7 @@ export let cmdTestEnc = cmdTest.createCommand("enc", {
         description: "Algorithm name",
         isRequired: true
     })
-    .on("call", function(cmd) {
+    .on("call", function(cmd: any) {
         defs.check_session();
         if (!check_enc_algs(cmd.alg)) {
             let error = new Error("No such algorithm");
@@ -406,7 +406,7 @@ export let cmdTestSign = cmdTest.createCommand("sign", {
 })
     .option("buf", {
         description: "Buffer size (bytes)",
-        set: function(v) {
+        set: function(v: string) {
             let _v = +v;
             if (!_v)
                 throw new TypeError("Parameter --buf must be Number (min 1024)");
@@ -416,7 +416,7 @@ export let cmdTestSign = cmdTest.createCommand("sign", {
     })
     .option("it", {
         description: "Sets number of iterations. Default 1",
-        set: function(v) {
+        set: function(v: string) {
             let res = +v;
             if (!defs.isNull(res))
                 throw new TypeError("Parameter --it must be number");
@@ -430,7 +430,7 @@ export let cmdTestSign = cmdTest.createCommand("sign", {
         description: "Algorithm name",
         isRequired: true
     })
-    .on("call", function(cmd) {
+    .on("call", function(cmd: any) {
         defs.check_session();
         if (!check_sign_algs(cmd.alg)) {
             let error = new Error("No such algorithm");
@@ -452,7 +452,7 @@ export let cmdTestSign = cmdTest.createCommand("sign", {
         console.log();
     });
 
-function test_gen(session: defs.Session, cmd, prefix: string, postfix: string) {
+function test_gen(session: defs.Session, cmd: any, prefix: string, postfix: string) {
     try {
         let alg = prefix + "-" + postfix;
         if (cmd.alg === "all" || cmd.alg === prefix || cmd.alg === alg) {
@@ -483,7 +483,7 @@ function print_test_gen_header() {
     console.log("|-%s-|-%s:|-%s:|".replace(/\s/g, "-"), defs.rpud("", 25, "-"), defs.lpud("", 8, "-"), defs.lpud("", 10, "-"));
 }
 
-function print_test_gen_row(alg: string, t1, t2) {
+function print_test_gen_row(alg: string, t1: string, t2: number) {
     let TEMPLATE = "| %s | %s | %s |";
     console.log(TEMPLATE, defs.rpud(alg.toUpperCase(), 25), defs.lpud(t1, 8), defs.lpud(t2, 10));
 }
@@ -504,7 +504,7 @@ export let cmdTestGen = cmdTest.createCommand("gen", {
 })
     .option("it", {
         description: "Sets number of iterations. Default 1",
-        set: function(v) {
+        set: function(v: string) {
             let res = +v;
             if (!defs.isNumber(res))
                 throw new TypeError("Parameter --it must be number");
@@ -518,7 +518,7 @@ export let cmdTestGen = cmdTest.createCommand("gen", {
         description: "Algorithm name",
         isRequired: true
     })
-    .on("call", function(cmd) {
+    .on("call", function(cmd: any) {
         defs.check_session();
         if (!check_gen_algs(cmd.alg)) {
             let error = new Error("No such algorithm");
@@ -545,4 +545,4 @@ export let cmdTestGen = cmdTest.createCommand("gen", {
         test_gen(consoleApp.session, cmd, "aes", "192");
         test_gen(consoleApp.session, cmd, "aes", "256");
         console.log();
-    });
+    }) as defs.Command;

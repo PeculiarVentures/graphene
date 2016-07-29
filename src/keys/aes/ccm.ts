@@ -1,5 +1,5 @@
 import * as core from "../../core";
-import * as pkcs11 from "../../pkcs11";
+import * as pkcs11 from "pkcs11js";
 import {MechanismEnum} from "../../mech";
 import {IParams} from "../params";
 

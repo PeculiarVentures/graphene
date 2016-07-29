@@ -1,85 +1,59 @@
+import * as pkcs11 from "pkcs11js";
 import * as core from "../core";
-import * as pkcs11 from "../pkcs11";
 import {Session} from "../session";
 import * as objects from "../object";
 import * as mech from "../mech";
 
-export class Digest {
+export class Digest extends core.BaseObject {
 
     session: Session;
-    lib: pkcs11.Pkcs11;
 
-    constructor(session: Session, alg: mech.MechanismType, lib: pkcs11.Pkcs11) {
+    constructor(session: Session, alg: mech.MechanismType, lib: pkcs11.PKCS11) {
+        super(lib);
         this.session = session;
-        this.lib = lib;
         this.init(alg);
     }
 
     protected init(alg: mech.MechanismType) {
         let pMech = mech.Mechanism.create(alg);
-        let rv = this.lib.C_DigestInit(this.session.handle, pMech);
-        if (rv) throw new core.Pkcs11Error(rv, "C_DigestInit");
+        this.lib.C_DigestInit(this.session.handle, pMech);
     }
 
-    update(data: string | Buffer): void;
-    update(data: string | Buffer, callback: (error: Error) => void): void;
-    update(data, callback?: (error: Error) => void): void {
+    update(data: core.CryptoData): void {
         try {
-            data = new Buffer(data);
+            let _data = new Buffer(data as string);
 
-            if (callback) {
-                this.lib.C_DigestUpdate(this.session.handle, data, data.length, (err, rv) => {
-                    if (err)
-                        callback(err);
-                    else if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_DigestUpdate"));
-                    else
-                        callback(null);
-                });
-            }
-            else {
-                let rv = this.lib.C_DigestUpdate(this.session.handle, data, data.length);
-                if (rv) throw new core.Pkcs11Error(rv, "C_DigestUpdate");
-            }
+            this.lib.C_DigestUpdate(this.session.handle, _data);
         }
         catch (e) {
-            if (callback)
-                callback(e);
-            else
-                throw e;
+            try {
+                // Finalize digest operation
+                this.final();
+            }
+            catch (e) { }
+
+            throw e;
         }
     }
 
-    final(): Buffer;
-    final(callback: (error: Error, digest: Buffer) => void): void;
-    final(callback?: (error: Error, digest: Buffer) => void): Buffer {
-        try {
-            let $digest = new Buffer(1024);
-            let $digestlen = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
+    final(): Buffer {
+        let digest = new Buffer(1024);
 
-            if (callback) {
-                this.lib.C_DigestFinal(this.session.handle, $digest, $digestlen, (err, rv) => {
-                    if (err)
-                        callback(err, null);
-                    else if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_DigestFinal"), null);
-                    else
-                        callback(null, $digest.slice(0, $digestlen.deref()));
-                });
-            }
-            else {
-                let rv = this.lib.C_DigestFinal(this.session.handle, $digest, $digestlen);
-                if (rv) throw new core.Pkcs11Error(rv, "C_DigestFinal");
+        let res = this.lib.C_DigestFinal(this.session.handle, digest);
 
-                return $digest.slice(0, $digestlen.deref());
-            }
+        return res;
+    }
+
+    once(data: core.CryptoData): Buffer;
+    once(data: core.CryptoData, cb: (error: Error, data: Buffer) => void): void;
+    once(data: core.CryptoData, cb?: (error: Error, data: Buffer) => void): any {
+        let digest = new Buffer(1024);
+        let _data = new Buffer(data as string);
+        if (cb) {
+            this.lib.C_Digest(this.session.handle, _data, digest, cb);
         }
-        catch (e) {
-            if (callback)
-                callback(e, null);
-            else
-                throw e;
-        }
+        else
+            return this.lib.C_Digest(this.session.handle, _data, digest);
     }
 
 }

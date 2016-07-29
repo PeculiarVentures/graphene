@@ -1,4 +1,4 @@
-import * as pkcs11 from "../../pkcs11";
+import * as pkcs11 from "pkcs11js";
 import {Storage} from "../storage";
 
 export enum CertificateType {

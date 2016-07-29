@@ -5,7 +5,7 @@ const {consoleApp} = defs;
    ?
    ==========*/
 defs.commander.createCommand("?", "output usage information")
-    .on("call", function(v) {
+    .on("call", function(v: string) {
         console.log();
         console.log("  Commands:");
         for (let i in defs.commander.commands) {
@@ -25,9 +25,9 @@ export let cmdModule = defs.commander.createCommand("module", {
     note: defs.MODULE_NOTE,
     example: defs.MODULE_EXAMPLE
 })
-    .on("call", function(cmd) {
+    .on("call", function(cmd: any) {
         this.help();
-    });
+    }) as defs.Command;
 
 function print_module_note() {
     let msg = "  Note:" + "\n";
@@ -39,7 +39,7 @@ function print_module_note() {
 /**
  * vendor
  */
-export let cmdModuleVendor: defs.Command = cmdModule.createCommand("vendor", {
+export let cmdModuleVendor = cmdModule.createCommand("vendor", {
     description: "get additional algorithms from JSON file",
     example: defs.MODULE_EXAMPLE
 })
@@ -48,18 +48,18 @@ export let cmdModuleVendor: defs.Command = cmdModule.createCommand("vendor", {
         set: defs.check_file,
         isRequired: true
     })
-    .on("call", function(cmd) {
+    .on("call", function(cmd: any) {
         console.log();
         defs.Mechanism.vendor(cmd.file);
         console.log("Algorithms was added");
         console.log(defs.MechanismEnum);
         console.log();
-    });
+    }) as defs.Command;
 
 /**
  * load
  */
-export let cmdModuleLoad: defs.Command = cmdModule.createCommand("load", {
+export let cmdModuleLoad = cmdModule.createCommand("load", {
     description: "loads a specified PKCS#11 module",
     example: defs.MODULE_EXAMPLE
 })
@@ -72,16 +72,16 @@ export let cmdModuleLoad: defs.Command = cmdModule.createCommand("load", {
         set: defs.check_file,
         isRequired: true
     })
-    .on("call", function(cmd) {
+    .on("call", function(cmd: any) {
         consoleApp.module = defs.Module.load(cmd.lib, cmd.name);
         consoleApp.module.initialize();
         defs.print_module_info(consoleApp.module);
-    });
+    }) as defs.Command;
 
 /**
  * init
  */
-export let cmdModuleInit: defs.Command = cmdModule.createCommand("init", {
+export let cmdModuleInit = cmdModule.createCommand("init", {
     description: "initialize pkcs11 module by config file (graphene.json)",
     example: ""
 })
@@ -113,7 +113,7 @@ export let cmdModuleInit: defs.Command = cmdModule.createCommand("init", {
                 let slot = consoleApp.module.getSlots(config.slot);
                 consoleApp.session = slot.open();
                 consoleApp.session.login(config.pin);
-                for (let i in config.vendor){
+                for (let i in config.vendor) {
                     defs.Mechanism.vendor(config.vendor[i]);
                 }
                 console.log("Ok");
@@ -124,16 +124,16 @@ export let cmdModuleInit: defs.Command = cmdModule.createCommand("init", {
             console.log(e);
         }
         console.log();
-    });
+    }) as defs.Command;
 
 /**
  * info
  */
-export let cmdModuleInfo: defs.Command = cmdModule.createCommand("info", {
+export let cmdModuleInfo = cmdModule.createCommand("info", {
     description: "returns info about Module",
     note: defs.NOTE
 })
-    .on("call", function(cmd) {
+    .on("call", function(cmd: any) {
         defs.check_module();
         defs.print_module_info(consoleApp.module);
-    });
+    }) as defs.Command;

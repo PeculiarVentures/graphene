@@ -2,8 +2,8 @@
  * Class Timer.
  */
 export class Timer {
-    beginAt = null;
-    endAt = null;
+    beginAt: Date = null;
+    endAt: Date = null;
     time = 0;
 
     /**

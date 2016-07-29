@@ -1,20 +1,19 @@
+import * as pkcs11 from "pkcs11js";
 import * as core from "../core";
-import * as pkcs11 from "../pkcs11";
 import {Session} from "../session";
 import {Key} from "../object";
 import {Mechanism, MechanismType} from "../mech";
 
 const DEFAULT_BLOCK_SIZE = 256 >> 3;
 
-export class Decipher {
+export class Decipher extends core.BaseObject {
 
     protected session: Session;
-    protected lib: pkcs11.Pkcs11;
-    protected blockSize = DEFAULT_BLOCK_SIZE; 
+    protected blockSize = DEFAULT_BLOCK_SIZE;
 
-    constructor(session: Session, alg: MechanismType, key: Key, blockSize: number, lib: pkcs11.Pkcs11) {
+    constructor(session: Session, alg: MechanismType, key: Key, blockSize: number, lib: pkcs11.PKCS11) {
+        super(lib);
         this.session = session;
-        this.lib = lib;
         this.blockSize = blockSize || DEFAULT_BLOCK_SIZE;
 
         this.init(alg, key);
@@ -22,81 +21,45 @@ export class Decipher {
 
     protected init(alg: MechanismType, key: Key) {
         let pMech = Mechanism.create(alg);
-        let rv = this.lib.C_DecryptInit(this.session.handle, pMech, key.handle);
-        if (rv) throw new core.Pkcs11Error(rv, "C_DecryptInit");
+        this.lib.C_DecryptInit(this.session.handle, pMech, key.handle);
     }
 
-    update(data: string | Buffer): Buffer;
-    update(data: string | Buffer, callback: (error: Error, enc: Buffer) => void): void;
-    update(data, callback?: (error: Error, enc: Buffer) => void): Buffer {
+    update(data: Buffer): Buffer {
         try {
-            data = new Buffer(data);
-
             let len = Math.ceil(data.length / this.blockSize) * this.blockSize;
-            let $enc = new Buffer(len);
-            let $encLen = core.Ref.alloc(pkcs11.CK_ULONG, $enc.length);
+            let dec = new Buffer(len);
 
-            if (callback) {
-                // async
-                this.lib.C_DecryptUpdate(this.session.handle, data, data.length, $enc, $encLen, (err, rv) => {
-                    // check result
-                    if (rv) throw new core.Pkcs11Error(rv, "C_DecryptUpdate");
+            let res = this.lib.C_DecryptUpdate(this.session.handle, data, dec);
 
-                    // return
-                    callback(null, $enc.slice(0, $encLen.deref()));
-                });
-            }
-            else {
-                // sync
-                let rv = this.lib.C_DecryptUpdate(this.session.handle, data, data.length, $enc, $encLen);
-                if (rv) throw new core.Pkcs11Error(rv, "C_DecryptUpdate");
-
-                return $enc.slice(0, $encLen.deref());
-            }
+            return res;
         }
         catch (e) {
-            if (callback)
-                callback(e, null);
-            else
-                throw e;
+            try {
+                // Finalize decrypt operation
+                this.final();
+            }
+            catch (e) { }
+
+            throw e;
         }
     }
 
-    final(): Buffer;
-    final(callback: (error: Error, enc: Buffer) => void): void;
-    final(callback?: (error: Error, enc: Buffer) => void): Buffer {
-        try {
-            let $dec = new Buffer(this.blockSize);
-            let $decLen = core.Ref.alloc(pkcs11.CK_ULONG, this.blockSize);
+    final(): Buffer {
+        let dec = new Buffer(this.blockSize);
 
-            if (callback) {
-                // async
-                this.lib.C_DecryptFinal(this.session.handle, $dec, $decLen, (err, rv) => {
-                    if (err)
-                        callback(err, null)
-                    else {
-                        // check result
-                        if (rv) callback(new core.Pkcs11Error(rv, "C_DecryptFinal"), null);
+        let res = this.lib.C_DecryptFinal(this.session.handle, dec);
 
-                        // return
-                        callback(null, $dec.slice(0, $decLen.deref()));
-                    }
-                });
-            }
-            else {
-                // sync
-                let rv = this.lib.C_DecryptFinal(this.session.handle, $dec, $decLen);
-                if (rv) throw new core.Pkcs11Error(rv, "C_DecryptFinal");
+        return res;
+    }
 
-                return $dec.slice(0, $decLen.deref());
-            }
+    once(data: Buffer, dec: Buffer): Buffer;
+    once(data: Buffer, dec: Buffer, cb: (error: Error, data: Buffer) => void): void;
+    once(data: Buffer, dec: Buffer, cb?: (error: Error, data: Buffer) => void): any {
+        if (cb) {
+            this.lib.C_Decrypt(this.session.handle, data, dec, cb);
         }
-        catch (e) {
-            if (callback)
-                callback(e, null);
-            else
-                throw e;
-        }
+        else
+            return this.lib.C_Decrypt(this.session.handle, data, dec);
     }
 
 }

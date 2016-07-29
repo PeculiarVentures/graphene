@@ -4,10 +4,4 @@ export * from "./core/collection";
 export * from "./core/type";
 export * from "./core/utc";
 
-import * as ref from "ref";
-import * as refStruct from "ref-struct";
-import * as refArray from "ref-array";
-
-export const Ref = ref;
-export const RefStruct = refStruct;
-export const RefArray = refArray;
+export declare type CryptoData = string | Buffer;

@@ -22,7 +22,7 @@ export function print_caption(name: string) {
  * @param {string} begin=false Padding direction. Boolean value which set left o right direction. False - right padding, true - left padding. Optional. Default false
  */
 export function pud(text: string, size: number, padChar = " ", begin: boolean = false) {
-    let res, pad = "";
+    let res: string, pad = "";
     if (typeof text !== "string")
         text = <any> new String(text);
     if (text.length < size) {
@@ -62,6 +62,6 @@ export function rpud(text: any, size: number, padChar?: string) {
  * Prints Boolean. X - true, ' ' - false
  * @param {bolean} v
  */
-export function print_bool(v) {
+export function print_bool(v: number) {
     return v ? "x" : " ";
 }

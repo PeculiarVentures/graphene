@@ -1,4 +1,4 @@
-import * as pkcs11 from "./pkcs11";
+import * as pkcs11 from "pkcs11js";
 
 export enum MechanismEnum {
     RSA_PKCS_KEY_PAIR_GEN = pkcs11.CKM_RSA_PKCS_KEY_PAIR_GEN,
@@ -189,10 +189,10 @@ export enum MechanismEnum {
     WTLS_CLIENT_KEY_AND_MAC_DERIVE = pkcs11.CKM_WTLS_CLIENT_KEY_AND_MAC_DERIVE,
     KEY_WRAP_LYNKS = pkcs11.CKM_KEY_WRAP_LYNKS,
     KEY_WRAP_SET_OAEP = pkcs11.CKM_KEY_WRAP_SET_OAEP,
-    CMS_SIG = pkcs11.CKM_CMS_SIG,
-    KIP_DERIVE = pkcs11.CKM_KIP_DERIVE,
-    KIP_WRAP = pkcs11.CKM_KIP_WRAP,
-    KIP_MAC = pkcs11.CKM_KIP_MAC,
+    // CMS_SIG = pkcs11.CKM_CMS_SIG,
+    // KIP_DERIVE = pkcs11.CKM_KIP_DERIVE,
+    // KIP_WRAP = pkcs11.CKM_KIP_WRAP,
+    // KIP_MAC = pkcs11.CKM_KIP_MAC,
     CAMELLIA_KEY_GEN = pkcs11.CKM_CAMELLIA_KEY_GEN,
     CAMELLIA_ECB = pkcs11.CKM_CAMELLIA_ECB,
     CAMELLIA_CBC = pkcs11.CKM_CAMELLIA_CBC,

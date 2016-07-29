@@ -61,7 +61,7 @@ export function check_file(v: string): string {
 export const options = {
     slot: {
         description: "Slot index in Module",
-        set: (v) => {
+        set: (v: any) => {
             check_module();
             if (!consoleApp.slots)
                 get_slot_list();
