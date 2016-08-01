@@ -5,8 +5,10 @@
         "rootDir": "src",
         "outDir": "build",
         "removeComments": true,
+        "noImplicitAny": true,
         "sourceMap": false,
-        "declaration": false
+        "declaration": false,
+        "experimentalDecorators": true
     },
     "exclude": [
         "node_modules", "build"
