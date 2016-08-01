@@ -136,8 +136,7 @@ export class Mechanism extends core.HandleObject {
         if (core.isEmpty(hAlg)) throw new TypeError(`Unknown mechanism name '${_alg.name}'`);
 
         let params: any = null;
-        if ("params" in (alg as IAlgorithm)) {
-            let _alg: IAlgorithm = alg as IAlgorithm;
+        if ("params" in (_alg as IAlgorithm)) {
             if ((_alg.params as IParams).toCKI)
                 // Convert object with toCKI to Buffer
                 params = (_alg.params as IParams).toCKI();
