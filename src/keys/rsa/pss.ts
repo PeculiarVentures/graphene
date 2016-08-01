@@ -1,7 +1,7 @@
 import * as pkcs11 from "pkcs11js";
 import * as core from "../../core";
 import {MechanismEnum} from "../../mech";
-import {IParams} from "../params";
+import {IParams, MechParams} from "../params";
 import {RsaMgf} from "./mgf";
 
 
@@ -27,17 +27,20 @@ export class RsaPssParams implements IParams {
      */
     saltLength: number;
 
+    type = MechParams.RsaPSS;
+
     constructor(hashAlg: MechanismEnum = MechanismEnum.SHA1, mgf: RsaMgf = RsaMgf.MGF1_SHA1, saltLen: number = 0) {
         this.hashAlgorithm = hashAlg;
         this.mgf = mgf;
         this.saltLength = saltLen;
     }
 
-    toCKI(): Buffer {
-        return new pkcs11.CK_RSA_PKCS_PSS_PARAMS({
+    toCKI(): pkcs11.RsaPSS {
+        return {
             hashAlg: this.hashAlgorithm,
             mgf: this.mgf,
-            sLen: this.saltLength,
-        })["ref.buffer"];
+            saltLen: this.saltLength,
+            type: this.type
+        };
     }
 }
