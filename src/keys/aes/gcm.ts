@@ -29,14 +29,12 @@ export class AesGcmParams implements IParams {
         this.tagBits = tagBits;
     }
 
-    toCKI(): Buffer {
-        return new pkcs11.CK_GCM_PARAMS({
-            pIv: this.iv,
-            ulIvLen: this.iv.length,
-            ulIvBits: this.iv.length * 8,
-            pAAD: this.aad,
-            ulADDLen: (this.aad) ? this.aad.length : 0,
-            ulTagBits: this.tagBits
-        })["ref.buffer"];
+    toCKI(): pkcs11.AesGCM {
+        return {
+            iv: this.iv,
+            ivBits: this.iv.length * 8,
+            aad: this.aad,
+            tagBits: this.tagBits
+        };
     }
 }

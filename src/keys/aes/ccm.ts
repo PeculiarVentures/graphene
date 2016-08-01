@@ -31,14 +31,12 @@ export class AesCcmParams implements IParams {
         this.macLength = macLength;
     }
 
-    toCKI(): Buffer {
-        return new pkcs11.CK_GCM_PARAMS({
-            ulDataLen: this.dataLength,
-            pNonce: this.nonce,
-            ulNonceLen: this.nonce.length,
-            pAAD: this.aad,
-            ulADDLen: (this.aad) ? this.aad.length : 0,
-            ulMACLen: this.macLength
-        })["ref.buffer"];
+    toCKI(): pkcs11.AesCCM {
+        return {
+            aad: this.aad,
+            dataLen: this.dataLength,
+            macLen: this.macLength,
+            nonce: this.nonce
+        };
     }
 }

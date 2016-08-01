@@ -3,7 +3,7 @@ import * as core from "../../core";
 import {MechanismEnum} from "../../mech";
 import {IParams} from "../params";
 
-export class AesCbcParams implements IParams {
+export class AesCbcParams implements IParams, pkcs11.AesCBC {
 
     /**
      * initialization vector
@@ -15,20 +15,12 @@ export class AesCbcParams implements IParams {
      */
     data: Buffer;
 
-    constructor(iv: Buffer, data: Buffer) {
+    constructor(iv: Buffer, data?: Buffer = null) {
         this.iv = iv;
         this.data = data;
     }
 
-    toCKI(): Buffer {
-        // convert iv to array
-        let arIv = [];
-        for (let i = 0; i < this.iv.length; i++)
-            arIv.push(this.iv[i]);
-        return new pkcs11.CK_AES_CBC_ENCRYPT_DATA_PARAMS({
-            iv: arIv,
-            pData: this.data,
-            length: (this.data) ? this.data.length : 0
-        })["ref.buffer"];
+    toCKI(): pkcs11.AesCBC {
+        return this;
     }
 }

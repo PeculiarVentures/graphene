@@ -590,7 +590,7 @@ function i2n(cka: number) {
 function b2v(type: string, value: Buffer): any {
     switch (type) {
         case TYPE_NUMBER:
-            return (value as any)[`readUInt${value.length * 8}LE`](0);
+            return value.readUInt32LE(0);
         case TYPE_BOOL:
             return value[0] === 1;
         case TYPE_STRING:
