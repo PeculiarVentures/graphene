@@ -24,6 +24,8 @@ export class AesCcmParams implements IParams {
      */
     macLength: number;
 
+    type = pkcs11.MechParams.AesCCM;
+
     constructor(dataLength: number, nonce: Buffer, aad: Buffer = null, macLength: number = 0) {
         this.dataLength = dataLength;
         this.nonce = nonce;
@@ -36,7 +38,8 @@ export class AesCcmParams implements IParams {
             aad: this.aad,
             dataLen: this.dataLength,
             macLen: this.macLength,
-            nonce: this.nonce
+            nonce: this.nonce,
+            type: this.type
         };
     }
 }

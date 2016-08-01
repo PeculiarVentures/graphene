@@ -20,6 +20,8 @@ export class EcdhParams implements IParams, pkcs11.ECDH1 {
      */
     publicData: Buffer;
 
+    type = pkcs11.MechParams.EcDH;
+
     /**
      * Creates an instance of EcdhParams.
      * 

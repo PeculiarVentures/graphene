@@ -23,6 +23,8 @@ export class AesGcmParams implements IParams {
      */
     tagBits: number;
 
+    type = pkcs11.MechParams.AesGCM;
+
     constructor(iv: Buffer, aad: Buffer = null, tagBits: number = 128) {
         this.iv = iv;
         this.aad = aad;
@@ -34,7 +36,8 @@ export class AesGcmParams implements IParams {
             iv: this.iv,
             ivBits: this.iv.length * 8,
             aad: this.aad,
-            tagBits: this.tagBits
+            tagBits: this.tagBits,
+            type: this.type
         };
     }
 }

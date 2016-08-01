@@ -15,12 +15,14 @@ export class AesCbcParams implements IParams, pkcs11.AesCBC {
      */
     data: Buffer;
 
-    constructor(iv: Buffer, data?: Buffer = null) {
+    type = pkcs11.MechParams.AesCBC;
+
+    constructor(iv: Buffer, data: Buffer = null) {
         this.iv = iv;
         this.data = data;
     }
 
-    toCKI(): pkcs11.AesCBC {
-        return this;
+    toCKI(): Buffer {
+        return this.iv;
     }
 }
