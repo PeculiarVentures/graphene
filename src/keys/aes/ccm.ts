@@ -1,7 +1,7 @@
 import * as core from "../../core";
 import * as pkcs11 from "pkcs11js";
 import {MechanismEnum} from "../../mech";
-import {IParams} from "../params";
+import {IParams, MechParams} from "../params";
 
 export class AesCcmParams implements IParams {
 
@@ -24,7 +24,7 @@ export class AesCcmParams implements IParams {
      */
     macLength: number;
 
-    type = pkcs11.MechParams.AesCCM;
+    type = MechParams.AesCCM;
 
     constructor(dataLength: number, nonce: Buffer, aad: Buffer = null, macLength: number = 0) {
         this.dataLength = dataLength;

@@ -1,7 +1,7 @@
 import * as core from "../../core";
 import * as pkcs11 from "pkcs11js";
 import {MechanismEnum} from "../../mech";
-import {IParams} from "../params";
+import {IParams, MechParams} from "../params";
 
 export class AesGcmParams implements IParams {
 
@@ -23,7 +23,7 @@ export class AesGcmParams implements IParams {
      */
     tagBits: number;
 
-    type = pkcs11.MechParams.AesGCM;
+    type = MechParams.AesGCM;
 
     constructor(iv: Buffer, aad: Buffer = null, tagBits: number = 128) {
         this.iv = iv;

@@ -1,7 +1,7 @@
 import * as pkcs11 from "pkcs11js";
 import * as core from "../../core";
 import {MechanismEnum} from "../../mech";
-import {IParams} from "../params";
+import {IParams, MechParams} from "../params";
 
 import {EcKdf} from "./kdf";
 
@@ -20,7 +20,7 @@ export class EcdhParams implements IParams, pkcs11.ECDH1 {
      */
     publicData: Buffer;
 
-    type = pkcs11.MechParams.EcDH;
+    type = MechParams.EcDH;
 
     /**
      * Creates an instance of EcdhParams.
