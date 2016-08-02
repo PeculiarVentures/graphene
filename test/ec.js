@@ -42,14 +42,14 @@ describe("ECDSA", function () {
             verify: true,
             encrypt: true,
             wrap: true,
-	    derive: true
+	        derive: true
         }, {
                 keyType: graphene.KeyType.EC,
                 token: false,
                 sign: true,
                 decrypt: true,
                 unwrap: true,
-		derive: true
+		        derive: true
             });
     }
 
@@ -74,7 +74,9 @@ describe("ECDSA", function () {
         assert.equal(verify.final(sig), true, "Correct");
         verify = session.createVerify(alg, _key.publicKey);
         verify.update(MSG_WRONG);
-        assert.equal(verify.final(sig), false, "Wrong data");
+        assert.throws( function() { 
+            verify.final(sig) 
+        });
     }
 
     function test_encrypt_decrypt(_key, alg) {
