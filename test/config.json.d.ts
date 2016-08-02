@@ -11,11 +11,11 @@ interface IControlValues {
         libraryDescription: string;
     };
     token: {
-        flags;
-        label;
-        manufacturerID;
-        serialNumber;
-        minPinLen;
+        flags: number;
+        label: string;
+        manufacturerID: string;
+        serialNumber: string;
+        minPinLen: number;
     }
     slotsCount: number;
 }
