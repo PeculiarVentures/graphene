@@ -141,7 +141,7 @@ if (slots.length > 0) {
         function b(v) {
             return v ? "+" : "-";
         }
-        ;
+
         function s(v) {
             v = v.toString();
             for (var i_1 = v.length; i_1 < 27; i_1++) {
@@ -149,7 +149,7 @@ if (slots.length > 0) {
             }
             return v;
         }
-        ;
+
         var mechs = slot.getMechanisms();
         for (var j = 0; j < mechs.length; j++) {
             var mech = mechs.items(j);
@@ -467,6 +467,66 @@ if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
     var dec = decipher.update(enc);
     var msg = Buffer.concat([dec, decipher.final()]).toString();
     console.log("Message:", msg.toString());            // Message: Encrypted message
+    
+    session.logout();
+    session.close();
+}
+else {
+    console.error("Slot is not initialized");
+}
+
+mod.finalize();
+```
+
+### Derive key
+```javascript
+var graphene = require("graphene-pk11");
+var Module = graphene.Module;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+
+var slot = mod.getSlots(0);
+if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
+    var session = slot.open();
+    session.login("12345");
+
+    // generate EC key
+    var keys = session.generateKeyPair(graphene.KeyGenMechanism.ECDSA, {
+        keyType: graphene.KeyType.ECDSA,
+        token: false,
+        derive: true,
+        paramsECDSA: graphene.NamedCurve.getByName("secp192r1").value
+    }, {
+        keyType: graphene.KeyType.ECDSA,
+        token: false,
+        derive: true
+    });
+    
+    // derive algorithm
+    var alg = {
+        name: "ECDH1_DERIVE",
+        params: new graphene.EcdhParams(
+            graphene.EcKdf.SHA1,
+            null,
+            keys.publicKey.getAttribute({pointEC: null}).pointEC)
+        };
+    
+    // Template for derived key
+    var template = {
+        "class": graphene.ObjectClass.SECRET_KEY,
+        "token": false,
+        "keyType": graphene.KeyType.AES,
+        "valueLen": 256 / 8,
+        "encrypt": true,
+        "decrypt": true
+    }
+    
+    // Key derivation
+    var dKey = session.deriveKey(alg, keys.privateKey, template)
+    console.log("Derived key handle:", dKey.handle);
     
     session.logout();
     session.close();
