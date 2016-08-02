@@ -117,7 +117,7 @@ var graphene = require("graphene-pk11");
   
 ## Examples
 ### Listing capabilities
-```
+```javascript
 var graphene = require("graphene-pk11");
 var Module = graphene.Module;
 var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
@@ -200,7 +200,7 @@ RSA_PKCS_OAEP              -/-/-/+/+/+/+
 ```
 
 ### Hashing
-```
+```javascript
 var graphene = require("graphene-pk11");
 var Module = graphene.Module;
 
@@ -227,7 +227,7 @@ mod.finalize();
 ```
 ### Generating keys
 #### AES
-```
+```javascript
 var graphene = require("graphene-pk11");
 var Module = graphene.Module;
 
@@ -264,7 +264,7 @@ mod.finalize();
 ```
 
 #### ECC
-```
+```javascript
 var graphene = require("graphene-pk11");
 var Module = graphene.Module;
 
@@ -303,7 +303,7 @@ mod.finalize();
 ```
 
 ### Exporting public key
-```
+```javascript
 var graphene = require("graphene-pk11");
 var Module = graphene.Module;
 
@@ -369,7 +369,7 @@ mod.finalize();
 ``` 
 
 ### Signing / Verifying
-```
+```javascript
 var graphene = require("graphene-pk11");
 var Module = graphene.Module;
 
@@ -424,7 +424,7 @@ else {
 mod.finalize();
 ```
 ### Encrypting / Decrypting
-```
+```javascript
 var graphene = require("graphene-pk11");
 var Module = graphene.Module;
 
