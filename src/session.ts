@@ -43,6 +43,10 @@ export interface IKeyPair {
 
 /**
  * provides information about a session
+ * 
+ * @export
+ * @class Session
+ * @extends {core.HandleObject}
  */
 export class Session extends core.HandleObject {
 
@@ -258,7 +262,7 @@ export class Session extends core.HandleObject {
      * @param  {number} handle handle of object
      * @returns T
      */
-    getObject<T extends SessionObject>(handle: number): T { 
+    getObject<T extends SessionObject>(handle: number): T {
         let res: SessionObject = null;
         this.find(null, (obj) => {
             if (obj.handle === handle) {

@@ -2,8 +2,12 @@ import * as core from "../core";
 import {Storage} from "./storage";
 
 /**
- * Data objects (object class `CKO_DATA`) hold information defined by an application. 
+ * Data objects (object class `CKO_DATA`) hold information defined by an application.
  * Other than providing access to it, Cryptoki does not attach any special meaning to a data object
+ * 
+ * @export
+ * @class Data
+ * @extends {Storage}
  */
 export class Data extends Storage {
 
