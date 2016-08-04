@@ -428,7 +428,7 @@ export class Session extends core.HandleObject {
             if (callback) {
                 // async
                 this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, pTemplate, (err, hKey) => {
-                    if (hKey)
+                    if (err)
                         callback(err, null);
                     else
                         callback(null, new Key(hKey, this, this.lib));
@@ -464,7 +464,7 @@ export class Session extends core.HandleObject {
 
             if (callback) {
                 this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate, (err, hKey) => {
-                    if (hKey)
+                    if (err)
                         callback(err, null);
                     else
                         callback(null, new SecretKey(hKey, this, this.lib));

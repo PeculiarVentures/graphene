@@ -10,17 +10,17 @@ describe("RSA", function () {
     var MSG = "1234567890123456";
     var MSG_WRONG = MSG + "!";
 
-    function test_manufacturer(manufacturerID){
-		if (mod.manufacturerID == manufacturerID) {
-			console.warn("    \x1b[33mWARN:\x1b[0m Test is not supported for %s", manufacturerID);
-			return true;
-		}	
-		return false;
-	}
+    function test_manufacturer(manufacturerID) {
+        if (mod.manufacturerID == manufacturerID) {
+            console.warn("    \x1b[33mWARN:\x1b[0m Test is not supported for %s", manufacturerID);
+            return true;
+        }
+        return false;
+    }
 
-	function isSoftHSM(){
-		return test_manufacturer("SoftHSM");
-	}
+    function isSoftHSM() {
+        return test_manufacturer("SoftHSM");
+    }
 
     before(function () {
         mod = Module.load(config.init.lib, config.init.libName);
@@ -104,6 +104,21 @@ describe("RSA", function () {
         test_sign_verify(keys, "SHA1_RSA_PKCS");
     });
 
+    it("sign/verify SHA-1 once", function () {
+        var sig = session.createSign("SHA1_RSA_PKCS", keys.privateKey).once(MSG);
+        session.createVerify("SHA1_RSA_PKCS", keys.publicKey).once(MSG, sig);
+    });
+
+    it("sign/verify SHA-1 once async", function (done) {
+        session.createSign("SHA1_RSA_PKCS", keys.privateKey).once(MSG, function (err, sig) {
+            assert.equal(!!err, false, err ? err.message : "Error");
+            session.createVerify("SHA1_RSA_PKCS", keys.publicKey).once(MSG, sig, function (err, verify) {
+                assert.equal(!!err, false, err ? err.message : "Error");
+                done();
+            });
+        });
+    });
+
     it("sign/verify SHA-224", function () {
         test_sign_verify(keys, "SHA224_RSA_PKCS");
     });
@@ -137,6 +152,26 @@ describe("RSA", function () {
 
     it("OAEP wrap/unwrap SHA-1", function () {
         test_wrap_unwrap(keys, { name: "RSA_PKCS_OAEP", params: new graphene.RsaOaepParams() }, skey);
+    });
+
+    it("OAEP wrap/unwrap SHA-1 async", function (done) {
+        var alg = { name: "RSA_PKCS_OAEP", params: new graphene.RsaOaepParams() };
+        session.wrapKey(alg, keys.publicKey, skey, function (err, wkey) {
+            assert.equal(!!err, false, err ? err.message : "Error");
+            session.unwrapKey(alg, keys.privateKey, wkey, {
+                "class": graphene.ObjectClass.SECRET_KEY,
+                "keyType": graphene.KeyType.AES,
+                "extractable": true,
+                "token": false,
+                "encrypt": true,
+                "decrypt": true
+            }, function (err, ukey) {
+                assert.equal(!!err, false, err ? err.message : "Error");
+                assert.equal(!!ukey.handle, true);
+                done();
+            });
+
+        });
     });
 
     it("RSA 1.5 sign/verify", function () {
