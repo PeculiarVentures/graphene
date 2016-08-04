@@ -10,6 +10,18 @@ describe("ECDSA", function () {
     var MSG = "1234567890123456";
     var MSG_WRONG = MSG + "!";
 
+    function test_manufacturer(manufacturerID){
+		if (mod.manufacturerID == manufacturerID) {
+			console.warn("    \x1b[33mWARN:\x1b[0m Test is not supported for %s", manufacturerID);
+			return true;
+		}	
+		return false;
+	}
+
+	function isSoftHSM(){
+		return test_manufacturer("SoftHSM");
+	}
+
     before(function () {
         mod = Module.load(config.init.lib, config.init.libName);
         mod.initialize();
@@ -94,26 +106,32 @@ describe("ECDSA", function () {
 	}
 
 	it("sign/verify SHA-1", function () {
+        if (isSoftHSM()) return;
 		test_sign_verify(keys, "ECDSA_SHA1");
 	});
 
 	it("sign/verify SHA-224", function () {
+        if (isSoftHSM()) return;
 		test_sign_verify(keys, "ECDSA_SHA224");
 	});
 
 	it("sign/verify SHA-256", function () {
+        if (isSoftHSM()) return;
 		test_sign_verify(keys, "ECDSA_SHA256");
 	});
 
 	it("sign/verify SHA-384", function () {
+        if (isSoftHSM()) return;
 		test_sign_verify(keys, "ECDSA_SHA384");
 	});
 
 	it("sign/verify SHA-512", function () {
+        if (isSoftHSM()) return;
 		test_sign_verify(keys, "ECDSA_SHA512");
 	});
 
 	it("derive AES", function(){
+        if (isSoftHSM()) return;
 		test_derive(
 			keys,
 			{

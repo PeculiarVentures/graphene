@@ -10,13 +10,25 @@ describe("AES", function () {
 	var MSG = "1234567890123456";
 	var MSG_WRONG = MSG + "!";
 
+	function test_manufacturer(manufacturerID){
+		if (mod.manufacturerID == manufacturerID) {
+			console.warn("    \x1b[33mWARN:\x1b[0m Test is not supported for %s", manufacturerID);
+			return true;
+		}	
+		return false;
+	}
+
+	function isSoftHSM(){
+		return test_manufacturer("SoftHSM");
+	}
+
 	before(function () {
 		mod = Module.load(config.init.lib, config.init.libName);
         mod.initialize();
         slot = mod.getSlots(0);
         session = slot.open();
         session.login(config.init.pin);
-        if (config.init.vendor){
+        if (config.init.vendor) {
             graphene.Mechanism.vendor(config.init.vendor);
         }
 	})
@@ -26,9 +38,9 @@ describe("AES", function () {
             session.logout();
         mod.finalize();
 	})
-    
-    function test_generate(size){
-       return session.generateKey(graphene.KeyGenMechanism.AES, {
+
+    function test_generate(size) {
+		return session.generateKey(graphene.KeyGenMechanism.AES, {
             keyType: graphene.KeyType.AES,
             valueLen: size / 8,
             encrypt: true,
@@ -38,19 +50,19 @@ describe("AES", function () {
             wrap: true,
             unwrap: true,
             token: false
-        }); 
+        });
     }
 
 	it("generate AES 128", function () {
-	   test_generate(128);
+		test_generate(128);
 	})
-    
+
 	it("generate AES 192", function () {
-	   skey = test_generate(192);
+		skey = test_generate(192);
 	})
-    
+
 	it("generate AES 256", function () {
-	   test_generate(256);
+		test_generate(256);
 	})
 
 	function test_sign_verify(_key, alg) {
@@ -94,6 +106,7 @@ describe("AES", function () {
 	});
 
 	it("AesCBC wrap/unwrap", function () {
+		if (isSoftHSM()) return;
 		test_wrap_unwrap(
 			skey,
 			{ name: "AES_CBC", params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) },
@@ -107,15 +120,19 @@ describe("AES", function () {
 	});
 
 	it("AesGCM encrypt/decrypt default", function () {
+		if (isSoftHSM()) return;
+
 		test_encrypt_decrypt(
 			skey,
 			{ name: "AES_GCM", params: new graphene.AesGcmParams(new Buffer("123456789012")) });
 	});
 
 	it("AesGCM encrypt/decrypt with additionalData", function () {
+		if (isSoftHSM()) return;
+
 		test_encrypt_decrypt(
 			skey,
 			{ name: "AES_GCM", params: new graphene.AesGcmParams(new Buffer("123456789012"), new Buffer("additional data")) });
 	});
-    
+
 })

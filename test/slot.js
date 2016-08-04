@@ -36,7 +36,7 @@ describe("Slot", function () {
         assert.equal(slot.slotDescription, "SoftHSM slot 0");
     });
 
-    it("slot props", function () {
+    it("token props", function () {
         var slot = slots.items(0);
 		
         // token
@@ -46,7 +46,6 @@ describe("Slot", function () {
         assert.equal(token.label, config.controlValues.token.label);
         assert.equal(token.manufacturerID, config.controlValues.token.manufacturerID);
         assert.equal(token.minPinLen, config.controlValues.token.minPinLen);
-        assert.equal(token.serialNumber, config.controlValues.token.serialNumber);
     });
 
 });
