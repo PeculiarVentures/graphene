@@ -13,9 +13,8 @@
     "bin": {
         "graphene": "./build/console/console.js"
     },
-    "typings": "./build/graphene.d.ts",
     "dependencies": {
-        "pkcs11js": "https://github.com/PeculiarVentures/pkcs11js.git"
+        "pkcs11js": "^1.0.0"
     },
     "devDependencies": {
         "mocha": "^2.5.3",
