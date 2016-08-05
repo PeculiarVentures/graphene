@@ -1,0 +1,44 @@
+language: node_js
+node_js:
+  - "6"
+  - "5"
+  - "4"
+  
+env:
+  - CXX=clang
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.6
+    packages:
+      - g++-4.8
+      - llvm-3.6
+      - libstdc++-4.9-dev
+      - llvm-3.6-dev
+      - clang-3.6
+
+compiler: clang
+
+sudo: false
+
+os:
+  - linux
+  - os: osx
+
+osx_image: xcode7.2
+
+before_install:
+  - node --version
+  - npm --version
+  - gcc --version
+
+script:
+  - npm install
+
+cache:
+  directories:
+    - $HOME/.node-gyp
+    - $HOME/.npm
+    - node_modules
