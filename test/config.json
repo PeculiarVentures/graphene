@@ -1,8 +1,8 @@
 {
     "init": {
-        "lib": "/usr/local/lib/softhsm/libsofthsm2.so",
-        "libName": "SoftHSMv2.0",
-        "pin": "12345"
+        "lib": "/usr/lib/libsofthsm.so",
+        "libName": "SoftHSM",
+        "pin": "6789"
     },
     "controlValues": {
         "module": {
