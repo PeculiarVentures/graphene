@@ -17,6 +17,10 @@
 	},
 	"dependencies": {
 		"pkcs11js": "^1.0.0",
+		"ffi": "latest",
+		"ref": "latest",
+		"ref-array": "latest",
+		"ref-struct": "latest",
 		"typescript": "latest",
 		"tsd": "latest",
 		"node-gyp": "latest"
