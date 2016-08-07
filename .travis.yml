@@ -21,7 +21,7 @@ addons:
 
 compiler: clang
 
-sudo: false
+sudo: required
 
 os:
   - linux
