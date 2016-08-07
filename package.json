@@ -16,7 +16,8 @@
     "dependencies": {
         "pkcs11js": "^1.0.0",
         "typescript": "latest",
-        "tsd": "latest"
+        "tsd": "latest",
+		"node-gyp": "latest"
     },
     "devDependencies": {
         "mocha": "latest"
