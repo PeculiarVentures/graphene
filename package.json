@@ -1,38 +1,41 @@
 {
-    "name": "graphene-pk11",
-    "version": "2.0.1",
-    "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript",
-    "main": "./build/graphene.js",
-    "scripts": {
-        "test": "mocha"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/PeculiarVentures/graphene.git"
-    },
-    "bin": {
-        "graphene": "./build/console/console.js"
-    },
-    "dependencies": {
-        "pkcs11js": "^1.0.0",
-        "typescript": "latest",
-        "tsd": "latest",
+	"name": "graphene-pk11",
+	"version": "2.0.1",
+	"description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript",
+	"main": "./build/graphene.js",
+	"scripts": {
+		"test": "mocha",
+		"install": "tsd install && tsc",
+		"pub": "npm version patch && npm publish && git push",
+		"sync": "git ac && git pull --rebase && git push"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/PeculiarVentures/graphene.git"
+	},
+	"bin": {
+		"graphene": "./build/console/console.js"
+	},
+	"dependencies": {
+		"pkcs11js": "^1.0.0",
+		"typescript": "latest",
+		"tsd": "latest",
 		"node-gyp": "latest"
-    },
-    "devDependencies": {
-        "mocha": "latest"
-    },
-    "keywords": [
-        "pkcs11",
-        "cryptography",
-        "cryptoki",
-        "token",
-        "smartcard",
-        "hsm",
-        "bitcoin",
-        "RSA",
-        "ECC"
-    ],
-    "author": "PeculiarVentures",
-    "license": "MIT"
+	},
+	"devDependencies": {
+		"mocha": "latest"
+	},
+	"keywords": [
+		"pkcs11",
+		"cryptography",
+		"cryptoki",
+		"token",
+		"smartcard",
+		"hsm",
+		"bitcoin",
+		"RSA",
+		"ECC"
+	],
+	"author": "PeculiarVentures",
+	"license": "MIT"
 }
