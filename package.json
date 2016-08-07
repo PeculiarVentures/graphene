@@ -5,7 +5,6 @@
 	"main": "./build/graphene.js",
 	"scripts": {
 		"test": "mocha",
-		"install": "tsd install && tsc",
 		"pub": "npm version patch && npm publish && git push",
 		"sync": "git ac && git pull --rebase && git push"
 	},
