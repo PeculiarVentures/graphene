@@ -14,12 +14,12 @@
         "graphene": "./build/console/console.js"
     },
     "dependencies": {
-        "pkcs11js": "^1.0.0"
+        "pkcs11js": "^1.0.0",
+        "typescript": "latest",
+        "tsd": "latest"
     },
     "devDependencies": {
-        "mocha": "^2.5.3",
-        "typescript": "^1.8.10",
-        "tds": "^0.1.0"
+        "mocha": "latest"
     },
     "keywords": [
         "pkcs11",
