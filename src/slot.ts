@@ -30,7 +30,7 @@ export class Slot extends core.HandleObject {
     firmwareVersion: pkcs11.Version;
     module: Module;
 
-    constructor(handle: number, module: Module, lib: pkcs11.PKCS11) {
+    constructor(handle: core.Handle, module: Module, lib: pkcs11.PKCS11) {
         super(handle, lib);
 
         this.module = module;
@@ -115,7 +115,7 @@ export class SlotCollection extends core.Collection<Slot> {
         return new Slot(this.items_[index], this.module, this.lib);
     }
 
-    constructor(items: Array<number>, module: Module, lib: pkcs11.PKCS11, classType: any = Slot) {
+    constructor(items: Array<Buffer>, module: Module, lib: pkcs11.PKCS11, classType: any = Slot) {
         super(items, lib, classType);
 
         this.module = module;

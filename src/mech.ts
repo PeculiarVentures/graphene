@@ -75,9 +75,10 @@ export enum MechanismFlag {
     DERIVE = pkcs11.CKF_DERIVE,
 }
 
-export class Mechanism extends core.HandleObject {
+export class Mechanism extends core.BaseObject {
 
-    protected slotHandle: number;
+    protected handle: number;
+    protected slotHandle: core.Handle;
 
     /**
      * the minimum size of the key for the mechanism
@@ -103,8 +104,8 @@ export class Mechanism extends core.HandleObject {
         return MechanismEnum[this.handle] || "unknown";
     }
 
-    constructor(handle: number, slotHandle: number, lib: pkcs11.PKCS11) {
-        super(handle, lib);
+    constructor(handle: number, slotHandle: core.Handle, lib: pkcs11.PKCS11) {
+        super(lib);
         this.slotHandle = slotHandle;
 
         this.getInfo();
@@ -178,9 +179,9 @@ export class Mechanism extends core.HandleObject {
 }
 
 export class MechanismCollection extends core.Collection<Mechanism> {
-    protected slotHandle: number;
+    protected slotHandle: core.Handle;
 
-    constructor(items: Array<number>, slotHandle: number, lib: pkcs11.PKCS11, classType = Mechanism) {
+    constructor(items: Array<number>, slotHandle: core.Handle, lib: pkcs11.PKCS11, classType = Mechanism) {
         super(items, lib, classType);
 
         this.slotHandle = slotHandle;

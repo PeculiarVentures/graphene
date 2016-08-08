@@ -50,7 +50,7 @@ export interface IKeyPair {
  */
 export class Session extends core.HandleObject {
 
-    constructor(handle: number, slot: Slot, lib: pkcs11.PKCS11) {
+    constructor(handle: core.Handle, slot: Slot, lib: pkcs11.PKCS11) {
         super(handle, lib);
 
         this.slot = slot;
@@ -241,7 +241,7 @@ export class Session extends core.HandleObject {
 
         this.lib.C_FindObjectsInit(this.handle, tmpl);
 
-        let objects: number[] = [];
+        let objects: core.Handle[] = [];
         while (true) {
             let hObject = this.lib.C_FindObjects(this.handle);
             if (!hObject)
@@ -262,14 +262,15 @@ export class Session extends core.HandleObject {
      * @param  {number} handle handle of object
      * @returns T
      */
-    getObject<T extends SessionObject>(handle: number): T {
+    getObject<T extends SessionObject>(handle: core.Handle): T {
         let res: SessionObject = null;
         this.find(null, (obj) => {
-            if (obj.handle === handle) {
+            const compare = obj.handle.compare(handle);
+            if (compare === 0) {
                 res = obj;
                 return false;
             }
-            if (obj.handle > handle) return false;
+            if (compare === 1) return false;
         });
         if (res)
             return res.toType<T>();

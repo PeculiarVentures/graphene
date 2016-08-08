@@ -108,7 +108,7 @@ export class Token extends core.HandleObject {
      */
     utcTime: Date;
 
-    constructor(handle: number, lib: pkcs11.PKCS11) {
+    constructor(handle: core.Handle, lib: pkcs11.PKCS11) {
         super(handle, lib);
 
         this.getInfo();

@@ -5,7 +5,7 @@ import * as pkcs11 from "pkcs11js";
  * applied to derive keying data from a shared secret. 
  * The key derivation function will be used by the EC key agreement schemes.
  */
-export enum EcKdf{
+export enum EcKdf {
     NULL = pkcs11.CKD_NULL,
     SHA1 = pkcs11.CKD_SHA1_KDF,
     SHA224 = pkcs11.CKD_SHA224_KDF,

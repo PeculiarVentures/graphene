@@ -45,7 +45,8 @@ export class SessionObject extends core.HandleObject {
      * @param {Session} session
      * @param {pkcs11.PKCS11} lib
      */
-    constructor(handle: number, session: Session, lib: pkcs11.PKCS11);
+    constructor(handle: core.Handle, session: Session, lib: pkcs11.PKCS11);
+    constructor(handle: SessionObject);
     constructor(handle: any, session?: Session, lib?: pkcs11.PKCS11) {
         if (handle instanceof SessionObject) {
             // constructor(object: SessionObjects)
@@ -176,7 +177,7 @@ export class SessionObjectCollection extends core.Collection<SessionObject> {
         return new SessionObject(this.items_[index], this.session, this.lib);
     }
 
-    constructor(items: Array<number>, session: Session, lib: pkcs11.PKCS11, classType: any = SessionObject) {
+    constructor(items: Array<core.Handle>, session: Session, lib: pkcs11.PKCS11, classType: any = SessionObject) {
         super(items, lib, classType);
 
         this.session = session;

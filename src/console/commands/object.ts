@@ -21,7 +21,7 @@ function print_object_info(obj: defs.Storage) {
     let COL_2 = 25;
     console.log(TEMPLATE, defs.rpud("Name", COL_1), defs.rpud("Value", COL_2));
     console.log(TEMPLATE.replace(/\s/g, "-"), defs.rpud("", COL_1, "-"), defs.rpud("", COL_2, "-"));
-    console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(obj.handle.toString(), COL_2));
+    console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(obj.handle.toString("hex"), COL_2));
     console.log(TEMPLATE, defs.rpud("Class", COL_1), defs.rpud(defs.ObjectClass[obj.class], COL_2));
     console.log(TEMPLATE, defs.rpud("Label", COL_1), defs.rpud(obj.label, COL_2));
     console.log(TEMPLATE, defs.rpud("Token", COL_1), defs.rpud(obj.token, COL_2));
@@ -71,7 +71,7 @@ function print_object_header() {
 function print_object_row(obj: defs.Storage) {
     console.log(
         "| %s | %s | %s |",
-        defs.rpud(obj.handle, 4),
+        defs.rpud(obj.handle.toString("hex"), 4),
         defs.rpud(defs.ObjectClass[obj.class], 15),
         defs.rpud(obj.label, 30));
 }
@@ -147,7 +147,7 @@ export let cmdObjectDelete = cmdObject.createCommand("delete", {
             });
         }
         else {
-            let obj = consoleApp.session.getObject<defs.Storage>(+cmd.obj);
+            let obj = consoleApp.session.getObject<defs.Storage>(new Buffer(cmd.obj, "hex"));
             if (!obj)
                 throw new Error(`Object by ID '${cmd.obj}' is not found`);
             defs.print_caption(`Object info`);
@@ -178,7 +178,7 @@ export let cmdObjectInfo = cmdObject.createCommand("info", {
         obj: string;
     }) {
         defs.check_session();
-        let obj = consoleApp.session.getObject<defs.Storage>(+cmd.obj);
+        let obj = consoleApp.session.getObject<defs.Storage>(new Buffer(cmd.obj, "hex"));
         if (!obj)
             throw new Error("Object by ID '" + cmd.obj + "' is not found");
         console.log();

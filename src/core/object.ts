@@ -1,5 +1,7 @@
 import * as pkcs11 from "pkcs11js";
 
+export declare type Handle = Buffer;
+
 export class BaseObject {
 
     protected lib: pkcs11.PKCS11;
@@ -17,9 +19,9 @@ export class HandleObject extends BaseObject {
     /**
      * handle to pkcs11 object
      */
-    handle: number;
+    handle: Handle;
 
-    constructor(handle: number, lib: pkcs11.PKCS11) {
+    constructor(handle: Handle, lib: pkcs11.PKCS11) {
         super(lib);
         this.handle = handle;
     }
