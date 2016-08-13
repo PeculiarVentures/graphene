@@ -1,4 +1,5 @@
 import * as defs from "./defs";
+import {Command} from "./defs";
 const {consoleApp} = defs;
 
 function print_slot(slot: defs.Slot) {
