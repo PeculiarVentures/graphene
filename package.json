@@ -12,21 +12,14 @@
 		"type": "git",
 		"url": "https://github.com/PeculiarVentures/graphene.git"
 	},
+	"engines": {
+		"node": "^4.0.0"
+	},
 	"bin": {
 		"graphene": "./build/console/console.js"
 	},
 	"dependencies": {
-		"pkcs11js": "^1.0.0",
-		"ffi": "latest",
-		"ref": "latest",
-		"ref-array": "latest",
-		"ref-struct": "latest",
-		"typescript": "latest",
-		"tsd": "latest",
-		"node-gyp": "latest"
-	},
-	"devDependencies": {
-		"mocha": "latest"
+		"pkcs11js": "^1.0.0"
 	},
 	"keywords": [
 		"pkcs11",
