@@ -7,10 +7,9 @@
         "removeComments": true,
         "noImplicitAny": true,
         "sourceMap": false,
-        "declaration": false,
-        "experimentalDecorators": true
+        "declaration": false
     },
     "exclude": [
-        "node_modules", "build"
+        "node_modules"
     ]
 }
