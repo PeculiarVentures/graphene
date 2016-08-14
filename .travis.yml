@@ -29,7 +29,7 @@ before_install:
   - node --version
   - npm --version
   - gcc --version
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh .travis.linux.sh; fi
+  - bash .travis.sh
   - npm install typescript -g
   - npm install tsd -g
   - npm install mocha -g
