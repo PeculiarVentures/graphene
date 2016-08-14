@@ -36,9 +36,8 @@ before_install:
   - gcc --version
   - export SOFTHSM_CONF=$PWD/softhsm.conf
   - echo 0:${PWD}/softhsm.db > ${SOFTHSM_CONF}
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install softhsm; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install softhsm; fi
-  - softhsm --init-token --slot 0 --label token_label --pin 6789 --so-pin 12345 
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh .travis.linux.sh; fi
+  - softhsm2-util --init-token --so-pin "12345" --pin "12345" --slot 0 --label "My slot 0" 
 
 script:
   - npm install
