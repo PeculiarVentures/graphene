@@ -540,6 +540,12 @@ else {
 mod.finalize();
 ```
 
+## Developing
+Use npm command to publish graphene-pk11 module
+```
+> npm run-script pub
+```
+
 ## Suitability
 At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 

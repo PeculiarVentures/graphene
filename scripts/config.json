@@ -1,0 +1,15 @@
+{
+    "prefix": "__",
+    "npmignore": [
+        "/.vscode",
+        "/node_modules",
+        "/typings",
+        "/scripts",
+        "/src",
+        ".travis.yml",
+        "tscoonfig.json",
+        "tsd.json",
+        "tslint.json",
+        "npm-debug.log"
+    ]
+}
