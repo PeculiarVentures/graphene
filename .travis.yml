@@ -39,6 +39,9 @@ before_install:
   - npm install tsd -g
   - npm install mocha -g
   - bash ./.travis.sh
+  
+after_failure:
+  - ls -R /home/travis/build/PeculiarVentures/node-webcrypto-p11/node_modules/graphene-pk11/build/
 
 script:
   - npm install
