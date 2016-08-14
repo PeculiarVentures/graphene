@@ -30,7 +30,6 @@ elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
     # seems to be needed
     export OPENSSL_INCLUDE_DIR=`brew --prefix openssl`/include
     export OPENSSL_LIB_DIR=`brew --prefix openssl`/lib
-    brew link openssl --force
     
     brew install sqlite
     brew install cppunit
