@@ -30,8 +30,8 @@ os:
 osx_image: xcode7.2
 
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX=gcc-4.8; fi
   - export TSD_GITHUB_TOKEN=8591f447276e1caa1b9636b9c8053d768130464f
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90; fi
   - node --version
   - npm --version
   - gcc --version
