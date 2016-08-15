@@ -4,10 +4,9 @@
     "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript",
     "main": "./build/graphene.js",
     "scripts": {
-        "test": "mocha",
-        "install": "tsd install && tsc",
-        "pub": "node scripts/publish",
-        "sync": "git ac && git pull --rebase && git push"
+		"test": "mocha",
+		"pub": "npm version patch && npm publish && git push",
+		"sync": "git ac && git pull --rebase && git push"
     },
     "repository": {
         "type": "git",
