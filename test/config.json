@@ -11,11 +11,11 @@
         },
         "token": {
             "flags": 1069,
-            "label": "My token 1",
+            "label": "My slot 1",
             "manufacturerID": "SoftHSM project",
             "serialNumber": "1a918b5db0a83cb1",
             "minPinLen": 4
         },
-        "slotsCount": 2
+        "slotsCount": 1
     }
 }

@@ -216,10 +216,6 @@ describe("Session", function() {
         assert.equal(keys.privateKey.class, graphene.ObjectClass.PRIVATE_KEY);
     });
 
-    it("getObject wrong handle", function() {
-        assert.equal(!session.getObject(-1), true);
-    });
-
     it("getObject", function() {
         var obj;
         session.find(function(o) {

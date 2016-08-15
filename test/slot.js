@@ -32,8 +32,8 @@ describe("Slot", function () {
 		
         // slot
         assert.equal(slot.flags, 1);
-        assert.equal(slot.manufacturerID, "SoftHSM project");
-        assert.equal(slot.slotDescription, "SoftHSM slot 0");
+        assert.equal(slot.manufacturerID, config.controlValues.token.manufacturerID);
+        assert.equal(!!slot.slotDescription, true);
     });
 
     it("token props", function () {
