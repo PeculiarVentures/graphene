@@ -92,31 +92,9 @@ var graphene = require("graphene-pk11");
 
 ### Install SoftHSM2
 
-**NOTE**: SoftHSM2 is optional, the bellow steps assume Ubuntu
+For OSX see the [instructions here](https://github.com/opendnssec/SoftHSMv2/blob/develop/OSX-NOTES.md)
+For linux [instructions here](https://github.com/opendnssec/SoftHSMv2/blob/develop/README.md)
 
-* Install SoftHSM2
-
-    `apt-get install softhsm`
-
-* Initialize the first slot
-
-    `softhsm2-util --init-token --slot 0 --label "My token 1"`
-
-* The PKCS1 #11 module you can now use can be found here:
-
-  `/usr/local/lib/softhsm/libsofthsm.so`
-  
-* Adjust permissions so the user your code will be able to access the PKCS #11 module:
-
-  ```
-  sudo chmod –R 755 /var/lib/softhsm
-  sudo chmod –R 755 /usr/local/lib/softhsm
-  chown root:softhsmusers /var/lib/softhsm
-  chown root:softhsmusers /usr/local/lib/softhsm
-  ```
- 
-  **NOTE**: This may be more generous than needed. It works out to : 0755 = User:rwx Group:r-x World:r-x. 
-  
 ## Examples
 ### Listing capabilities
 ```javascript
