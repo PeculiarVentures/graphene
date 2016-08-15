@@ -11,7 +11,7 @@
         },
         "token": {
             "flags": 1069,
-            "label": "My slot 1",
+            "label": "My slot 0",
             "manufacturerID": "SoftHSM project",
             "serialNumber": "1a918b5db0a83cb1",
             "minPinLen": 4
