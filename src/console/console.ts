@@ -1,4 +1,4 @@
-// #!/usr/bin/env node
+#!/usr/bin/env node
 
 // module init -p ../../../safenet-config.json
 
@@ -42,8 +42,10 @@ global["readline"] = readline.createInterface({
 // Init commander
 defs.commander.on("error", (e: CommandError) => {
     console.log();
-    console.log(e.message);
-    console.log("Stack:", e.stack);
+    console.log(`Error: ${e.message}`);
+    console.log();
+
+    // console.log("Stack:", e.stack);
     if (e.command && e.command.print) {
         console.log();
         e.command.print("usage");
@@ -61,7 +63,7 @@ defs.commander.on("error", (e: CommandError) => {
 defs.commander.createCommand("version", "version of graphene")
     .on("call", function() {
         console.log();
-        console.log(`Version: 2.0.0`);
+        console.log(`Version: 2.0.10`);
         console.log();
     });
 

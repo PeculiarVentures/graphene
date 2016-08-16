@@ -3,7 +3,7 @@ import {Command} from "./defs";
 const {consoleApp} = defs;
 
 function print_slot(slot: defs.Slot) {
-    defs.print_module_info(consoleApp.module);
+    defs.print_slot_info(slot);
 }
 
 /* ==========

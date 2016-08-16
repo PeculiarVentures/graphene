@@ -68,7 +68,7 @@ export const options = {
             let slot = consoleApp.slots.items(v);
             if (!slot)
                 throw new Error("Can not find Slot by index '" + v + "'");
-            return <any> slot;
+            return <any>slot;
         },
         isRequired: true
     },
@@ -84,11 +84,11 @@ export function get_slot_list() {
 }
 
 export function check_session() {
-  if (!(consoleApp.session)) {
-    let error = new Error("Session is not opened" + "\n\n" +
-      "  " + NOTE_SESSION);
-    throw error;
-  }
+    if (!(consoleApp.session)) {
+        let error = new Error("Session is not opened" + "\n\n" +
+            "  " + NOTE_SESSION);
+        throw error;
+    }
 }
 
 export function print_module_info(mod: graphene.Module) {
@@ -96,5 +96,41 @@ export function print_module_info(mod: graphene.Module) {
     console.log(`  Library: ${mod.libFile}`);
     console.log(`  Name: ${mod.libName}`);
     console.log(`  Cryptoki version: ${mod.cryptokiVersion.major}.${mod.cryptokiVersion.minor}`);
+    console.log();
+}
+
+export function print_slot_info(slot: graphene.Slot) {
+    print.print_caption("Slot info");
+    console.log(`  Description: ${slot.slotDescription}`);
+    console.log(`  Manufacturer ID: ${slot.manufacturerID}`);
+    console.log(`  Firm version: ${slot.firmwareVersion.major}.${slot.firmwareVersion.minor}`);
+    console.log(`  Hardware version: ${slot.hardwareVersion.major}.${slot.hardwareVersion.minor}`);
+    console.log(`  Flags:`);
+    console.log(`      HW: ${!!(slot.flags & graphene.SlotFlag.HW_SLOT)}`);
+    console.log(`      Removable device: ${!!(slot.flags & graphene.SlotFlag.REMOVABLE_DEVICE)}`);
+    console.log(`      Token present: ${!!(slot.flags & graphene.SlotFlag.TOKEN_PRESENT)}`);
+    if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
+        console.log(`  Token:`);
+        const token = slot.getToken();
+        console.log(`      Label: ${token.label}`);
+        console.log(`      Manufacturer ID: ${token.manufacturerID}`);
+        console.log(`      Model: ${token.model}`);
+        console.log(`      Serial number: ${token.serialNumber}`);
+        console.log(`      Max PIN length: ${token.maxPinLen}`);
+        console.log(`      Min PIN length: ${token.minPinLen}`);
+        console.log(`      Max session count: ${token.maxSessionCount}`);
+        console.log(`      Session count: ${token.sessionCount}`);
+        console.log(`      Max RW session count: ${token.maxRwSessionCount}`);
+        console.log(`      RW session count: ${token.rwSessionCount}`);
+        console.log(`      Total private memory: ${token.totalPrivateMemory}`);
+        console.log(`      Free private memory: ${token.freePrivateMemory}`);
+        console.log(`      Total public memory: ${token.totalPublicMemory}`);
+        console.log(`      Free public memory: ${token.freePublicMemory}`);
+        console.log(`      Firm version: ${slot.firmwareVersion.major}.${slot.firmwareVersion.minor}`);
+        console.log(`      Hardware version: ${slot.hardwareVersion.major}.${slot.hardwareVersion.minor}`);
+        console.log(`      Flags:`);
+        console.log(`          Initialized: ${!!(token.flags & graphene.TokenFlag.TOKEN_INITIALIZED)}`);
+        console.log(`          Logged in: ${!!(token.flags & graphene.TokenFlag.USER_PIN_INITIALIZED)}`);
+    }
     console.log();
 }
