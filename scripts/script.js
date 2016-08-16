@@ -67,5 +67,4 @@ module.exports = {
     remove_package: remove_package,
     save_npmignore: save_npmignore,
     remove_npmignore: remove_npmignore,
-    add_bin: add_bin
 }

@@ -1,13 +1,13 @@
 {
     "name": "graphene-pk11",
-    "version": "2.0.9",
+    "version": "2.0.10",
     "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript",
     "main": "./build/graphene.js",
     "scripts": {
         "install": "npm run build",
         "build": "typings install && tsc",
         "test": "mocha",
-        "pub": "npm run build && node scritps/publish",
+        "pub": "npm run build && node scripts/publish",
         "sync": "git ac && git pull --rebase && git push"
     },
     "repository": {
