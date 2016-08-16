@@ -12,13 +12,10 @@ copy_package.scripts = Object.assign({}, package.scripts);
 
 // remove less scripts
 delete copy_package.scripts["prepublish"];
-delete copy_package.scripts["publish"];
+delete copy_package.scripts["prepublish"];
+delete copy_package.scripts["build"];
 delete copy_package.scripts["sync"];
 delete copy_package.scripts["install"];
-
-script.run("tsd install");
-script.run("tsc");
-script.add_bin(package);
 
 script.update_version(copy_package);
 script.save_package(package, config.prefix);

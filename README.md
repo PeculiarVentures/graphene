@@ -522,7 +522,7 @@ mod.finalize();
 ## Developing
 Use npm command to publish graphene-pk11 module
 ```
-> npm run-script pub
+> npm run pub
 ```
 
 ## Suitability

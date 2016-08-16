@@ -7,6 +7,8 @@ export * from "./print";
 import * as print from "./print";
 export * from "../lib/timer";
 export * from "../../core";
+export {Handle} from "../lib/handle";
+import {Handle} from "../lib/handle";
 
 // Constants
 export const CAPTION_UNDERLINE = "==============================";
@@ -101,6 +103,7 @@ export function print_module_info(mod: graphene.Module) {
 
 export function print_slot_info(slot: graphene.Slot) {
     print.print_caption("Slot info");
+    console.log(`  Handle: ${Handle.toString(slot.handle)}`);
     console.log(`  Description: ${slot.slotDescription}`);
     console.log(`  Manufacturer ID: ${slot.manufacturerID}`);
     console.log(`  Firm version: ${slot.firmwareVersion.major}.${slot.firmwareVersion.minor}`);

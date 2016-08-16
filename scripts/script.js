@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 
 var fs = require("fs");
 var config = require("./config");
@@ -57,20 +57,6 @@ function save_npmignore() {
 
 function remove_npmignore() {
     remove_file(npmignore);
-}
-
-function add_bin(package) {
-    console.log("Add bin comment");
-    if (package.bin) {
-        for (var i in package.bin) {
-            var js = package.bin[i];
-            var buf = fs.readFileSync(js, "utf8")
-            if (buf.indexOf("// #!/usr/bin/env node") === -1) {
-                fs.writeFileSync(js, "// #!/usr/bin/env node\n", { flag: "w" });
-                fs.writeFileSync(js, buf, { flag: "a" });
-            }
-        }
-    }
 }
 
 module.exports = {
