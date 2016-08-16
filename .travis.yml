@@ -36,7 +36,7 @@ before_install:
   - npm --version
   - gcc --version
   - npm install typescript -g
-  - npm install tsd -g
+  - npm install typings -g
   - npm install mocha -g
   - bash ./.travis.sh
 
