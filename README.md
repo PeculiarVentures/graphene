@@ -2,7 +2,7 @@
 
 [![license](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/PeculiarVentures/graphene/master/LICENSE)
 [![Build Status](https://travis-ci.org/PeculiarVentures/graphene.svg?branch=master)](https://travis-ci.org/PeculiarVentures/graphene)
-[![NPM version](https://badge.fury.io/js/graphene.png)](http://badge.fury.io/graphene)
+[![npm version](https://badge.fury.io/js/graphene-pk11.svg)](https://badge.fury.io/js/graphene-pk11)
 
 A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript
 
