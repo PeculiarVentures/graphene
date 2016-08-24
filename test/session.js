@@ -42,8 +42,8 @@ describe("Session", function() {
             class: graphene.ObjectClass.PUBLIC_KEY,
             keyType: graphene.KeyType.RSA,
             wrap: true,
-            modulus: new Buffer([1, 0, 1]),
-            publicExponent: new Buffer(1024)
+            modulus: new Buffer(1024/8),
+            publicExponent: new Buffer([1, 0, 1])
         });
 
         var obj = session.create({
@@ -245,13 +245,13 @@ describe("Session", function() {
     it("sign/verify RSA", function() {
         var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
             keyType: graphene.KeyType.RSA,
-            encrypt: true,
+            verify: true,
             modulusBits: 1024,
             publicExponent: new Buffer([3])
         },
             {
                 keyType: graphene.KeyType.RSA,
-                decrypt: true
+                sign: true,
             });
 
         test_sign(graphene.MechanismEnum.SHA1_RSA_PKCS, keys.privateKey, keys.publicKey);

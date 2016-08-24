@@ -1,62 +1,47 @@
 "use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var core = require("../core");
-var pkcs11 = require("../pkcs11");
 var mech_1 = require("../mech");
-var Verify = (function () {
+var Verify = (function (_super) {
+    __extends(Verify, _super);
     function Verify(session, alg, key, lib) {
+        _super.call(this, lib);
         this.session = session;
-        this.lib = lib;
         this.init(alg, key);
     }
     Verify.prototype.init = function (alg, key) {
         var pMech = mech_1.Mechanism.create(alg);
-        var rv = this.lib.C_VerifyInit(this.session.handle, pMech, key.handle);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_VerifyInit");
+        this.lib.C_VerifyInit(this.session.handle, pMech, key.handle);
     };
-    Verify.prototype.update = function (data, callback) {
+    Verify.prototype.update = function (data) {
         try {
-            data = new Buffer(data);
-            if (callback) {
-                this.lib.C_VerifyUpdate(this.session.handle, data, data.length, function (err, rv) {
-                    if (err)
-                        callback(err);
-                    else if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_VerifyUpdate"));
-                    else
-                        callback(null);
-                });
-            }
-            else {
-                var rv = this.lib.C_VerifyUpdate(this.session.handle, data, data.length);
-                if (rv)
-                    throw new core.Pkcs11Error(rv, "C_VerifyUpdate");
-            }
+            var _data = new Buffer(data);
+            this.lib.C_VerifyUpdate(this.session.handle, _data);
         }
         catch (e) {
-            if (callback)
-                callback(e);
+            try {
+                this.final(new Buffer(0));
+            }
+            catch (e) { }
+            throw e;
         }
     };
-    Verify.prototype.final = function (signature, callback) {
-        try {
-            if (callback) {
-                this.lib.C_VerifyFinal(this.session.handle, signature, signature.length, function (err, rv) {
-                    if (err)
-                        callback(err, null);
-                    callback(null, rv === pkcs11.CKR_OK);
-                });
-            }
-            else {
-                var rv = this.lib.C_VerifyFinal(this.session.handle, signature, signature.length);
-                return rv === pkcs11.CKR_OK;
-            }
+    Verify.prototype.final = function (signature) {
+        var res = this.lib.C_VerifyFinal(this.session.handle, signature);
+        return res;
+    };
+    Verify.prototype.once = function (data, signature, cb) {
+        var _data = new Buffer(data);
+        if (cb) {
+            this.lib.C_Verify(this.session.handle, _data, signature, cb);
         }
-        catch (e) {
-            if (callback)
-                callback(e, null);
-        }
+        else
+            return this.lib.C_Verify(this.session.handle, _data, signature);
     };
     return Verify;
-}());
+}(core.BaseObject));
 exports.Verify = Verify;

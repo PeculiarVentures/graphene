@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var pkcs11 = require("../../pkcs11");
+var pkcs11 = require("pkcs11js");
 var storage_1 = require("../storage");
 (function (CertificateType) {
     CertificateType[CertificateType["X_509"] = pkcs11.CKC_X_509] = "X_509";

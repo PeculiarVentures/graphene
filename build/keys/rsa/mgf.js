@@ -1,5 +1,5 @@
 "use strict";
-var pkcs11 = require("../../pkcs11");
+var pkcs11 = require("pkcs11js");
 (function (RsaMgf) {
     RsaMgf[RsaMgf["MGF1_SHA1"] = pkcs11.CKG_MGF1_SHA1] = "MGF1_SHA1";
     RsaMgf[RsaMgf["MGF1_SHA224"] = pkcs11.CKG_MGF1_SHA224] = "MGF1_SHA224";

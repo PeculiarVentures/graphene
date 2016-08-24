@@ -1,5 +1,5 @@
 "use strict";
-var pkcs11 = require("./pkcs11");
+var pkcs11 = require("pkcs11js");
 (function (MechanismEnum) {
     MechanismEnum[MechanismEnum["RSA_PKCS_KEY_PAIR_GEN"] = pkcs11.CKM_RSA_PKCS_KEY_PAIR_GEN] = "RSA_PKCS_KEY_PAIR_GEN";
     MechanismEnum[MechanismEnum["RSA_PKCS"] = pkcs11.CKM_RSA_PKCS] = "RSA_PKCS";
@@ -187,10 +187,6 @@ var pkcs11 = require("./pkcs11");
     MechanismEnum[MechanismEnum["WTLS_CLIENT_KEY_AND_MAC_DERIVE"] = pkcs11.CKM_WTLS_CLIENT_KEY_AND_MAC_DERIVE] = "WTLS_CLIENT_KEY_AND_MAC_DERIVE";
     MechanismEnum[MechanismEnum["KEY_WRAP_LYNKS"] = pkcs11.CKM_KEY_WRAP_LYNKS] = "KEY_WRAP_LYNKS";
     MechanismEnum[MechanismEnum["KEY_WRAP_SET_OAEP"] = pkcs11.CKM_KEY_WRAP_SET_OAEP] = "KEY_WRAP_SET_OAEP";
-    MechanismEnum[MechanismEnum["CMS_SIG"] = pkcs11.CKM_CMS_SIG] = "CMS_SIG";
-    MechanismEnum[MechanismEnum["KIP_DERIVE"] = pkcs11.CKM_KIP_DERIVE] = "KIP_DERIVE";
-    MechanismEnum[MechanismEnum["KIP_WRAP"] = pkcs11.CKM_KIP_WRAP] = "KIP_WRAP";
-    MechanismEnum[MechanismEnum["KIP_MAC"] = pkcs11.CKM_KIP_MAC] = "KIP_MAC";
     MechanismEnum[MechanismEnum["CAMELLIA_KEY_GEN"] = pkcs11.CKM_CAMELLIA_KEY_GEN] = "CAMELLIA_KEY_GEN";
     MechanismEnum[MechanismEnum["CAMELLIA_ECB"] = pkcs11.CKM_CAMELLIA_ECB] = "CAMELLIA_ECB";
     MechanismEnum[MechanismEnum["CAMELLIA_CBC"] = pkcs11.CKM_CAMELLIA_CBC] = "CAMELLIA_CBC";

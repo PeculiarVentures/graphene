@@ -22,6 +22,10 @@ describe("AES", function () {
 		return test_manufacturer("SoftHSM");
 	}
 
+  function isThalesNShield() {
+    return test_manufacturer("nCipher Corp. Ltd");
+  }
+
 	before(function () {
 		mod = Module.load(config.init.lib, config.init.libName);
         mod.initialize();
@@ -120,7 +124,7 @@ describe("AES", function () {
 	});
 
 	it("AesGCM encrypt/decrypt default", function () {
-		if (isSoftHSM()) return;
+		if (isSoftHSM() || isThalesNShield()) return;
 
 		test_encrypt_decrypt(
 			skey,
@@ -128,7 +132,7 @@ describe("AES", function () {
 	});
 
 	it("AesGCM encrypt/decrypt with additionalData", function () {
-		if (isSoftHSM()) return;
+		if (isSoftHSM() || isThalesNShield()) return;
 
 		test_encrypt_decrypt(
 			skey,

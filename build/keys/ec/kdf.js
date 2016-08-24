@@ -1,5 +1,5 @@
 "use strict";
-var pkcs11 = require("../../pkcs11");
+var pkcs11 = require("pkcs11js");
 (function (EcKdf) {
     EcKdf[EcKdf["NULL"] = pkcs11.CKD_NULL] = "NULL";
     EcKdf[EcKdf["SHA1"] = pkcs11.CKD_SHA1_KDF] = "SHA1";

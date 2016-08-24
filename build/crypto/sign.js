@@ -1,71 +1,49 @@
 "use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var core = require("../core");
-var pkcs11 = require("../pkcs11");
 var mech = require("../mech");
-var Sign = (function () {
+var Sign = (function (_super) {
+    __extends(Sign, _super);
     function Sign(session, alg, key, lib) {
+        _super.call(this, lib);
         this.session = session;
-        this.lib = lib;
         this.init(alg, key);
     }
     Sign.prototype.init = function (alg, key) {
         var pMech = mech.Mechanism.create(alg);
-        var rv = this.lib.C_SignInit(this.session.handle, pMech, key.handle);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_SignInit");
+        this.lib.C_SignInit(this.session.handle, pMech, key.handle);
     };
-    Sign.prototype.update = function (data, callback) {
+    Sign.prototype.update = function (data) {
         try {
-            data = new Buffer(data);
-            if (callback) {
-                this.lib.C_SignUpdate(this.session.handle, data, data.length, function (err, rv) {
-                    if (err)
-                        callback(err);
-                    else if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_SignUpdate"));
-                    else
-                        callback(null);
-                });
-            }
-            else {
-                var rv = this.lib.C_SignUpdate(this.session.handle, data, data.length);
-                if (rv)
-                    throw new core.Pkcs11Error(rv, "C_SignUpdate");
-            }
+            var _data = new Buffer(data);
+            this.lib.C_SignUpdate(this.session.handle, _data);
         }
         catch (e) {
-            if (callback)
-                callback(e);
-            else
-                throw e;
+            try {
+                this.final();
+            }
+            catch (e) { }
+            throw e;
         }
     };
-    Sign.prototype.final = function (callback) {
-        try {
-            var $sig_1 = new Buffer(1024);
-            var $siglen_1 = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
-            if (callback) {
-                this.lib.C_SignFinal(this.session.handle, $sig_1, $siglen_1, function (err, rv) {
-                    if (err)
-                        callback(err, null);
-                    else if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_SignFinal"), null);
-                    else
-                        callback(null, $sig_1.slice(0, $siglen_1.deref()));
-                });
-            }
-            else {
-                var rv = this.lib.C_SignFinal(this.session.handle, $sig_1, $siglen_1);
-                if (rv)
-                    throw new core.Pkcs11Error(rv, "C_SignFinal");
-                return $sig_1.slice(0, $siglen_1.deref());
-            }
+    Sign.prototype.final = function () {
+        var sig = new Buffer(1024);
+        var res = this.lib.C_SignFinal(this.session.handle, sig);
+        return res;
+    };
+    Sign.prototype.once = function (data, cb) {
+        var signature = new Buffer(1024);
+        var _data = new Buffer(data);
+        if (cb) {
+            this.lib.C_Sign(this.session.handle, _data, signature, cb);
         }
-        catch (e) {
-            if (callback)
-                callback(e, null);
-        }
+        else
+            return this.lib.C_Sign(this.session.handle, _data, signature);
     };
     return Sign;
-}());
+}(core.BaseObject));
 exports.Sign = Sign;

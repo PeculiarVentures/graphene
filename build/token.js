@@ -4,27 +4,27 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var pkcs11 = require("./pkcs11");
+var pkcs11 = require("pkcs11js");
 var core = require("./core");
 (function (TokenFlag) {
-    TokenFlag[TokenFlag["RNG"] = pkcs11.CKF_RNG] = "RNG";
-    TokenFlag[TokenFlag["WRITE_PROTECTED"] = pkcs11.CKF_WRITE_PROTECTED] = "WRITE_PROTECTED";
-    TokenFlag[TokenFlag["LOGIN_REQUIRED"] = pkcs11.CKF_LOGIN_REQUIRED] = "LOGIN_REQUIRED";
-    TokenFlag[TokenFlag["USER_PIN_INITIALIZED"] = pkcs11.CKF_USER_PIN_INITIALIZED] = "USER_PIN_INITIALIZED";
-    TokenFlag[TokenFlag["RESTORE_KEY_NOT_NEEDED"] = pkcs11.CKF_RESTORE_KEY_NOT_NEEDED] = "RESTORE_KEY_NOT_NEEDED";
-    TokenFlag[TokenFlag["CLOCK_ON_TOKEN"] = pkcs11.CKF_CLOCK_ON_TOKEN] = "CLOCK_ON_TOKEN";
-    TokenFlag[TokenFlag["PROTECTED_AUTHENTICATION_PATH"] = pkcs11.CKF_PROTECTED_AUTHENTICATION_PATH] = "PROTECTED_AUTHENTICATION_PATH";
-    TokenFlag[TokenFlag["DUAL_CRYPTO_OPERATIONS"] = pkcs11.CKF_DUAL_CRYPTO_OPERATIONS] = "DUAL_CRYPTO_OPERATIONS";
-    TokenFlag[TokenFlag["TOKEN_INITIALIZED"] = pkcs11.CKF_TOKEN_INITIALIZED] = "TOKEN_INITIALIZED";
-    TokenFlag[TokenFlag["SECONDARY_AUTHENTICATION"] = pkcs11.CKF_SECONDARY_AUTHENTICATION] = "SECONDARY_AUTHENTICATION";
-    TokenFlag[TokenFlag["USER_PIN_COUNT_LOW"] = pkcs11.CKF_USER_PIN_COUNT_LOW] = "USER_PIN_COUNT_LOW";
-    TokenFlag[TokenFlag["USER_PIN_FINAL_TRY"] = pkcs11.CKF_USER_PIN_FINAL_TRY] = "USER_PIN_FINAL_TRY";
-    TokenFlag[TokenFlag["USER_PIN_LOCKED"] = pkcs11.CKF_USER_PIN_LOCKED] = "USER_PIN_LOCKED";
-    TokenFlag[TokenFlag["USER_PIN_TO_BE_CHANGED"] = pkcs11.CKF_USER_PIN_TO_BE_CHANGED] = "USER_PIN_TO_BE_CHANGED";
-    TokenFlag[TokenFlag["SO_PIN_COUNT_LOW"] = pkcs11.CKF_SO_PIN_COUNT_LOW] = "SO_PIN_COUNT_LOW";
-    TokenFlag[TokenFlag["SO_PIN_FINAL_TRY"] = pkcs11.CKF_SO_PIN_FINAL_TRY] = "SO_PIN_FINAL_TRY";
-    TokenFlag[TokenFlag["SO_PIN_LOCKED"] = pkcs11.CKF_SO_PIN_LOCKED] = "SO_PIN_LOCKED";
-    TokenFlag[TokenFlag["SO_PIN_TO_BE_CHANGED"] = pkcs11.CKF_SO_PIN_TO_BE_CHANGED] = "SO_PIN_TO_BE_CHANGED";
+    TokenFlag[TokenFlag["RNG"] = 1] = "RNG";
+    TokenFlag[TokenFlag["WRITE_PROTECTED"] = 2] = "WRITE_PROTECTED";
+    TokenFlag[TokenFlag["LOGIN_REQUIRED"] = 4] = "LOGIN_REQUIRED";
+    TokenFlag[TokenFlag["USER_PIN_INITIALIZED"] = 8] = "USER_PIN_INITIALIZED";
+    TokenFlag[TokenFlag["RESTORE_KEY_NOT_NEEDED"] = 32] = "RESTORE_KEY_NOT_NEEDED";
+    TokenFlag[TokenFlag["CLOCK_ON_TOKEN"] = 64] = "CLOCK_ON_TOKEN";
+    TokenFlag[TokenFlag["PROTECTED_AUTHENTICATION_PATH"] = 256] = "PROTECTED_AUTHENTICATION_PATH";
+    TokenFlag[TokenFlag["DUAL_CRYPTO_OPERATIONS"] = 512] = "DUAL_CRYPTO_OPERATIONS";
+    TokenFlag[TokenFlag["TOKEN_INITIALIZED"] = 1024] = "TOKEN_INITIALIZED";
+    TokenFlag[TokenFlag["SECONDARY_AUTHENTICATION"] = 2048] = "SECONDARY_AUTHENTICATION";
+    TokenFlag[TokenFlag["USER_PIN_COUNT_LOW"] = 65536] = "USER_PIN_COUNT_LOW";
+    TokenFlag[TokenFlag["USER_PIN_FINAL_TRY"] = 131072] = "USER_PIN_FINAL_TRY";
+    TokenFlag[TokenFlag["USER_PIN_LOCKED"] = 262144] = "USER_PIN_LOCKED";
+    TokenFlag[TokenFlag["USER_PIN_TO_BE_CHANGED"] = 524288] = "USER_PIN_TO_BE_CHANGED";
+    TokenFlag[TokenFlag["SO_PIN_COUNT_LOW"] = 1048576] = "SO_PIN_COUNT_LOW";
+    TokenFlag[TokenFlag["SO_PIN_FINAL_TRY"] = 2097152] = "SO_PIN_FINAL_TRY";
+    TokenFlag[TokenFlag["SO_PIN_LOCKED"] = 4194304] = "SO_PIN_LOCKED";
+    TokenFlag[TokenFlag["SO_PIN_TO_BE_CHANGED"] = 8388608] = "SO_PIN_TO_BE_CHANGED";
 })(exports.TokenFlag || (exports.TokenFlag = {}));
 var TokenFlag = exports.TokenFlag;
 var Token = (function (_super) {
@@ -34,35 +34,27 @@ var Token = (function (_super) {
         this.getInfo();
     }
     Token.prototype.getInfo = function () {
-        var $info = core.Ref.alloc(pkcs11.CK_TOKEN_INFO);
-        var rv = this.lib.C_GetTokenInfo(this.handle, $info);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_GetTokenInfo");
-        var info = $info.deref();
-        this.label = new Buffer(info.label).toString().trim();
-        this.manufacturerID = new Buffer(info.manufacturerID).toString().trim();
-        this.model = new Buffer(info.model).toString().trim();
+        var info = this.lib.C_GetTokenInfo(this.handle);
+        this.label = info.label.trim();
+        this.manufacturerID = info.manufacturerID.toString().trim();
+        this.model = info.model.trim();
         this.serialNumber = new Buffer(info.serialNumber).toString().trim();
         this.flags = info.flags;
-        this.maxSessionCount = info.ulMaxSessionCount;
-        this.sessionCount = info.ulSessionCount;
-        this.maxRwSessionCount = info.ulMaxRwSessionCount;
-        this.rwSessionCount = info.ulRwSessionCount;
-        this.maxPinLen = info.ulMaxPinLen;
-        this.minPinLen = info.ulMinPinLen;
-        this.totalPublicMemory = info.ulTotalPublicMemory;
-        this.freePublicMemory = info.ulFreePublicMemory;
-        this.totalPrivateMemory = info.ulTotalPrivateMemory;
-        this.freePrivateMemory = info.ulFreePrivateMemory;
-        this.hardwareVersion = {
-            major: info.hardwareVersion.major,
-            minor: info.hardwareVersion.minor
-        };
-        this.firmwareVersion = {
-            major: info.firmwareVersion.major,
-            minor: info.firmwareVersion.minor
-        };
-        this.utcTime = core.dateFromString(new Buffer(info.utcTime).toString("ascii"));
+        this.maxSessionCount = info.maxSessionCount;
+        this.sessionCount = info.sessionCount;
+        this.maxRwSessionCount = info.maxRwSessionCount;
+        this.rwSessionCount = info.rwSessionCount;
+        this.maxPinLen = info.maxPinLen;
+        this.minPinLen = info.minPinLen;
+        this.totalPublicMemory = info.totalPublicMemory;
+        this.freePublicMemory = info.freePublicMemory;
+        this.totalPrivateMemory = info.totalPrivateMemory;
+        this.freePrivateMemory = info.freePrivateMemory;
+        this.hardwareVersion = info.hardwareVersion;
+        this.firmwareVersion = info.firmwareVersion;
+        if (info.flags & pkcs11.CKF_CLOCK_ON_TOKEN) {
+            core.dateFromString(info.utcTime);
+        }
     };
     return Token;
 }(core.HandleObject));

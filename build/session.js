@@ -4,28 +4,21 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var pkcs11 = require("./pkcs11");
 var core = require("./core");
 var object_1 = require("./object");
 var template_1 = require("./template");
 var mech_1 = require("./mech");
 var objects = require("./objects/common");
 var common_1 = require("./crypto/common");
-var ObjectArray = core.RefArray(pkcs11.CK_OBJECT_HANDLE);
-(function (SessionOpenFlag) {
-    SessionOpenFlag[SessionOpenFlag["RW_SESSION"] = pkcs11.CKF_RW_SESSION] = "RW_SESSION";
-    SessionOpenFlag[SessionOpenFlag["SERIAL_SESSION"] = pkcs11.CKF_SERIAL_SESSION] = "SERIAL_SESSION";
-})(exports.SessionOpenFlag || (exports.SessionOpenFlag = {}));
-var SessionOpenFlag = exports.SessionOpenFlag;
 (function (SessionFlag) {
-    SessionFlag[SessionFlag["RW_SESSION"] = pkcs11.CKF_RW_SESSION] = "RW_SESSION";
-    SessionFlag[SessionFlag["SERIAL_SESSION"] = pkcs11.CKF_SERIAL_SESSION] = "SERIAL_SESSION";
+    SessionFlag[SessionFlag["RW_SESSION"] = 2] = "RW_SESSION";
+    SessionFlag[SessionFlag["SERIAL_SESSION"] = 4] = "SERIAL_SESSION";
 })(exports.SessionFlag || (exports.SessionFlag = {}));
 var SessionFlag = exports.SessionFlag;
 (function (UserType) {
-    UserType[UserType["SO"] = pkcs11.CKU_SO] = "SO";
-    UserType[UserType["USER"] = pkcs11.CKU_USER] = "USER";
-    UserType[UserType["CONTEXT_SPECIFIC"] = pkcs11.CKU_CONTEXT_SPECIFIC] = "CONTEXT_SPECIFIC";
+    UserType[UserType["SO"] = 0] = "SO";
+    UserType[UserType["USER"] = 1] = "USER";
+    UserType[UserType["CONTEXT_SPECIFIC"] = 2] = "CONTEXT_SPECIFIC";
 })(exports.UserType || (exports.UserType = {}));
 var UserType = exports.UserType;
 var Session = (function (_super) {
@@ -35,84 +28,48 @@ var Session = (function (_super) {
         this.slot = slot;
     }
     Session.prototype.getInfo = function () {
-        var $info = core.Ref.alloc(pkcs11.CK_SESSION_INFO);
-        var rv = this.lib.C_GetSessionInfo(this.handle, $info);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_GetSessionInfo");
-        var info = $info.deref();
+        var info = this.lib.C_GetSessionInfo(this.slot.handle);
         this.state = info.state;
         this.flags = info.flags;
-        this.deviceError = info.ulDeviceError;
+        this.deviceError = info.deviceError;
     };
     Session.prototype.close = function () {
-        var rv = this.lib.C_CloseSession(this.handle);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_CloseSession");
+        this.lib.C_CloseSession(this.handle);
     };
     Session.prototype.initPin = function (pin) {
-        var bufPin = new Buffer(pin, "utf8");
-        var rv = this.lib.C_InitPIN(this.handle, bufPin, bufPin.length);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_InitPIN");
+        this.lib.C_InitPIN(this.handle, pin);
     };
     Session.prototype.setPin = function (oldPin, newPin) {
-        var bufOldPin = new Buffer(oldPin, "utf8");
-        var bufNewPin = new Buffer(newPin, "utf8");
-        var rv = this.lib.C_SetPIN(this.handle, bufOldPin, bufOldPin.length, bufNewPin, bufNewPin.length);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_SetPIN");
+        this.lib.C_SetPIN(this.handle, oldPin, newPin);
     };
     Session.prototype.getOperationState = function () {
-        var $len = core.Ref.alloc(pkcs11.CK_ULONG);
-        var rv = this.lib.C_GetOperationState(this.handle, null, $len);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_GetOperationState");
-        var buf = new Buffer($len.deref());
-        rv = this.lib.C_GetOperationState(this.handle, buf, $len);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_GetOperationState");
-        return buf;
+        throw new Error("Not implemented");
     };
     Session.prototype.setOperationState = function (state, encryptionKey, authenticationKey) {
         if (encryptionKey === void 0) { encryptionKey = 0; }
         if (authenticationKey === void 0) { authenticationKey = 0; }
-        var rv = this.lib.C_SetOperationState(this.handle, state, state.length, encryptionKey, authenticationKey);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_GetOperationState");
+        throw new Error("Not implemented");
     };
     Session.prototype.login = function (pin, userType) {
         if (userType === void 0) { userType = UserType.USER; }
-        var bufPin = new Buffer(pin, "utf8");
-        var rv = this.lib.C_Login(this.handle, userType, bufPin, bufPin.length);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_Login");
+        this.lib.C_Login(this.handle, userType, pin);
     };
     Session.prototype.logout = function () {
-        var rv = this.lib.C_Logout(this.handle);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_Logout");
+        this.lib.C_Logout(this.handle);
     };
     Session.prototype.create = function (template) {
-        var tmpl = new template_1.Template(template);
-        var $obj = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
-        var rv = this.lib.C_CreateObject(this.handle, tmpl.ref(), tmpl.length, $obj);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_CreateObject");
-        return new object_1.SessionObject($obj.deref(), this, this.lib);
+        var tmpl = template_1.Template.toPkcs11(template);
+        var hObject = this.lib.C_CreateObject(this.handle, tmpl);
+        return new object_1.SessionObject(hObject, this, this.lib);
     };
     Session.prototype.copy = function (object, template) {
-        var tmpl = new template_1.Template(template);
-        var $obj = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
-        var rv = this.lib.C_CopyObject(this.handle, object.handle, tmpl.ref(), tmpl.length, $obj);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_CopyObject");
-        return new object_1.SessionObject($obj.deref(), this, this.lib);
+        var tmpl = template_1.Template.toPkcs11(template);
+        var hObject = this.lib.C_CopyObject(this.handle, object.handle, tmpl);
+        return new object_1.SessionObject(hObject, this, this.lib);
     };
     Session.prototype.destroy = function (param) {
         if (param instanceof object_1.SessionObject) {
-            var rv = this.lib.C_DestroyObject(this.handle, param.handle);
-            if (rv)
-                throw new core.Pkcs11Error(rv, "C_DestroyObject");
+            this.lib.C_DestroyObject(this.handle, param.handle);
             return 1;
         }
         else {
@@ -132,36 +89,36 @@ var Session = (function (_super) {
             callback = template;
             template = null;
         }
-        var tmpl = new template_1.Template(template);
-        var rv = this.lib.C_FindObjectsInit(this.handle, tmpl.ref(), tmpl.length);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_FindObjectsInit");
-        var $objects = new ObjectArray(1);
-        var $objlen = core.Ref.alloc(pkcs11.CK_ULONG);
+        var tmpl = template_1.Template.toPkcs11(template);
+        this.lib.C_FindObjectsInit(this.handle, tmpl);
         var objects = [];
-        while (true) {
-            rv = this.lib.C_FindObjects(this.handle, $objects.buffer, 1, $objlen);
-            if (rv !== pkcs11.CKR_OK || $objlen.deref() === 0)
-                break;
-            var hObject = $objects[0];
-            if (callback && callback(new object_1.SessionObject(hObject, this, this.lib)) === false) {
-                break;
+        try {
+            while (true) {
+                var hObject = this.lib.C_FindObjects(this.handle);
+                if (!hObject)
+                    break;
+                if (callback && callback(new object_1.SessionObject(hObject, this, this.lib), objects.length) === false) {
+                    break;
+                }
+                objects.push(hObject);
             }
-            objects.push(hObject);
         }
-        rv = this.lib.C_FindObjectsFinal(this.handle);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_FindObjectsFinal");
+        catch (error) {
+            this.lib.C_FindObjectsFinal(this.handle);
+            throw (error);
+        }
+        this.lib.C_FindObjectsFinal(this.handle);
         return new object_1.SessionObjectCollection(objects, this, this.lib);
     };
     Session.prototype.getObject = function (handle) {
         var res = null;
         this.find(null, function (obj) {
-            if (obj.handle === handle) {
+            var compare = obj.handle.compare(handle);
+            if (compare === 0) {
                 res = obj;
                 return false;
             }
-            if (obj.handle > handle)
+            if (compare === 1)
                 return false;
         });
         if (res)
@@ -177,28 +134,21 @@ var Session = (function (_super) {
             if (template) {
                 template.class = object_1.ObjectClass.SECRET_KEY;
             }
-            var pTemplate = new template_1.Template(template);
-            var hKey_1 = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+            var pTemplate = template_1.Template.toPkcs11(template);
             if (callback) {
-                this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey_1, function (err, rv) {
+                this.lib.C_GenerateKey(this.handle, pMech, pTemplate, function (err, hKey) {
                     if (err) {
                         callback(err, null);
                     }
                     else {
-                        if (rv)
-                            callback(new core.Pkcs11Error(rv, "C_GenerateKey"), null);
-                        else {
-                            var obj = new object_1.SessionObject(hKey_1.deref(), _this, _this.lib);
-                            callback(null, obj.toType());
-                        }
+                        var obj = new object_1.SessionObject(hKey, _this, _this.lib);
+                        callback(null, obj.toType());
                     }
                 });
             }
             else {
-                var rv = this.lib.C_GenerateKey(this.handle, pMech, pTemplate.ref(), pTemplate.length, hKey_1);
-                if (rv)
-                    throw new core.Pkcs11Error(rv, "C_GenerateKey");
-                var obj = new object_1.SessionObject(hKey_1.deref(), this, this.lib);
+                var hKey = this.lib.C_GenerateKey(this.handle, pMech, pTemplate);
+                var obj = new object_1.SessionObject(hKey, this, this.lib);
                 return obj.toType();
             }
         }
@@ -216,36 +166,30 @@ var Session = (function (_super) {
             if (publicTemplate) {
                 publicTemplate.class = object_1.ObjectClass.PUBLIC_KEY;
             }
-            var pubTmpl = new template_1.Template(publicTemplate);
-            var hPubKey_1 = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+            var pubTmpl = template_1.Template.toPkcs11(publicTemplate);
             if (privateTemplate) {
                 privateTemplate.class = object_1.ObjectClass.PRIVATE_KEY;
                 privateTemplate.private = true;
             }
-            var prvTmpl = new template_1.Template(privateTemplate);
-            var hPrvKey_1 = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
+            var prvTmpl = template_1.Template.toPkcs11(privateTemplate);
             if (callback) {
-                this.lib.C_GenerateKeyPair(this.handle, pMech, pubTmpl.ref(), pubTmpl.length, prvTmpl.ref(), prvTmpl.length, hPubKey_1, hPrvKey_1, function (err, rv) {
+                this.lib.C_GenerateKeyPair(this.handle, pMech, pubTmpl, prvTmpl, function (err, keys) {
                     if (err)
                         callback(err, null);
                     else {
-                        if (rv)
-                            callback(new core.Pkcs11Error(rv, "C_GenerateKeyPair"), null);
-                        else
+                        if (keys)
                             callback(null, {
-                                publicKey: new objects.PublicKey(hPubKey_1.deref(), _this, _this.lib),
-                                privateKey: new objects.PrivateKey(hPrvKey_1.deref(), _this, _this.lib)
+                                publicKey: new objects.PublicKey(keys.publicKey, _this, _this.lib),
+                                privateKey: new objects.PrivateKey(keys.privateKey, _this, _this.lib)
                             });
                     }
                 });
             }
             else {
-                var rv = this.lib.C_GenerateKeyPair(this.handle, pMech, pubTmpl.ref(), pubTmpl.length, prvTmpl.ref(), prvTmpl.length, hPubKey_1, hPrvKey_1);
-                if (rv)
-                    throw new core.Pkcs11Error(rv, "C_GenerateKeyPair");
+                var keys = this.lib.C_GenerateKeyPair(this.handle, pMech, pubTmpl, prvTmpl);
                 return {
-                    publicKey: new objects.PublicKey(hPubKey_1.deref(), this, this.lib),
-                    privateKey: new objects.PrivateKey(hPrvKey_1.deref(), this, this.lib)
+                    publicKey: new objects.PublicKey(keys.publicKey, this, this.lib),
+                    privateKey: new objects.PrivateKey(keys.privateKey, this, this.lib)
                 };
             }
         }
@@ -274,21 +218,13 @@ var Session = (function (_super) {
     Session.prototype.wrapKey = function (alg, wrappingKey, key, callback) {
         try {
             var pMech = mech_1.Mechanism.create(alg);
-            var pWrappedKey_1 = new Buffer(4048);
-            var pWrappedKeyLen_1 = core.Ref.alloc(pkcs11.CK_ULONG, pWrappedKey_1.length);
+            var wrappedKey = new Buffer(8096);
             if (callback) {
-                this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, pWrappedKey_1, pWrappedKeyLen_1, function (err, rv) {
-                    if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_WrapKey"), null);
-                    else
-                        callback(null, pWrappedKey_1.slice(0, pWrappedKeyLen_1.deref()));
-                });
+                this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, wrappedKey, callback);
             }
             else {
-                var rv = this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, pWrappedKey_1, pWrappedKeyLen_1);
-                if (rv)
-                    throw new core.Pkcs11Error(rv, "C_WrapKey");
-                return pWrappedKey_1.slice(0, pWrappedKeyLen_1.deref());
+                wrappedKey = this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, wrappedKey);
+                return wrappedKey;
             }
         }
         catch (e) {
@@ -302,22 +238,19 @@ var Session = (function (_super) {
         var _this = this;
         try {
             var pMech = mech_1.Mechanism.create(alg);
-            var pTemplate = new template_1.Template(template);
-            var phKey_1 = core.Ref.alloc(pkcs11.CK_ULONG);
+            var pTemplate = template_1.Template.toPkcs11(template);
             if (callback) {
-                this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, wrappedKey.length, pTemplate.ref(), pTemplate.length, phKey_1, function (err, rv) {
-                    if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_UnwrapKey"), null);
+                this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, pTemplate, function (err, hKey) {
+                    if (err)
+                        callback(err, null);
                     else
-                        callback(null, new object_1.Key(phKey_1.deref(), _this, _this.lib));
+                        callback(null, new object_1.Key(hKey, _this, _this.lib));
                 });
             }
             else {
-                var rv = this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, wrappedKey.length, pTemplate.ref(), pTemplate.length, phKey_1);
-                if (rv)
-                    throw new core.Pkcs11Error(rv, "C_UnwrapKey");
+                var hKey = this.lib.C_UnwrapKey(this.handle, pMech, unwrappingKey.handle, wrappedKey, pTemplate);
+                return new object_1.Key(hKey, this, this.lib);
             }
-            return new object_1.Key(phKey_1.deref(), this, this.lib);
         }
         catch (e) {
             if (callback)
@@ -330,21 +263,18 @@ var Session = (function (_super) {
         var _this = this;
         try {
             var pMech = mech_1.Mechanism.create(alg);
-            var pTemplate = new template_1.Template(template);
-            var phKey_2 = core.Ref.alloc(pkcs11.CK_ULONG);
+            var pTemplate = template_1.Template.toPkcs11(template);
             if (callback) {
-                this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate.ref(), pTemplate.length, phKey_2, function (err, rv) {
-                    if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_DeriveKey"), null);
+                this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate, function (err, hKey) {
+                    if (err)
+                        callback(err, null);
                     else
-                        callback(null, new object_1.SecretKey(phKey_2.deref(), _this, _this.lib));
+                        callback(null, new object_1.SecretKey(hKey, _this, _this.lib));
                 });
             }
             else {
-                var rv = this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate.ref(), pTemplate.length, phKey_2);
-                if (rv)
-                    throw new core.Pkcs11Error(rv, "C_DeriveKey");
-                return new object_1.SecretKey(phKey_2.deref(), this, this.lib);
+                var hKey = this.lib.C_DeriveKey(this.handle, pMech, baseKey.handle, pTemplate);
+                return new object_1.SecretKey(hKey, this, this.lib);
             }
         }
         catch (e) {
@@ -357,9 +287,7 @@ var Session = (function (_super) {
     };
     Session.prototype.generateRandom = function (size) {
         var buf = new Buffer(size);
-        var rv = this.lib.C_GenerateRandom(this.handle, buf, buf.length);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_GenerateRandom");
+        this.lib.C_GenerateRandom(this.handle, buf);
         return buf;
     };
     return Session;

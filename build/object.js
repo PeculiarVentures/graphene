@@ -7,7 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-var pkcs11 = require("./pkcs11");
+var pkcs11 = require("pkcs11js");
 var core = require("./core");
 var template_1 = require("./template");
 (function (ObjectClass) {
@@ -37,40 +37,30 @@ var SessionObject = (function (_super) {
     }
     Object.defineProperty(SessionObject.prototype, "size", {
         get: function () {
-            var $size = core.Ref.alloc(pkcs11.CK_ULONG);
-            var rv = this.lib.C_GetObjectSize(this.session.handle, this.handle, $size);
-            if (rv)
-                throw new core.Pkcs11Error(rv, "C_CopyObject");
-            return $size.deref();
+            return this.lib.C_GetObjectSize(this.session.handle, this.handle);
         },
         enumerable: true,
         configurable: true
     });
     SessionObject.prototype.copy = function (template) {
-        var tmpl = new template_1.Template(template);
-        var $newObject = core.Ref.alloc(pkcs11.CK_OBJECT_HANDLE);
-        var rv = this.lib.C_CopyObject(this.session.handle, this.handle, tmpl.ref(), tmpl.length, $newObject);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_CopyObject");
-        return new SessionObject($newObject.deref(), this.session, this.lib);
+        var tmpl = template_1.Template.toPkcs11(template);
+        var hObject = this.lib.C_CopyObject(this.session.handle, this.handle, tmpl);
+        return new SessionObject(hObject, this.session, this.lib);
     };
     SessionObject.prototype.destroy = function () {
-        var rv = this.lib.C_DestroyObject(this.session.handle, this.handle);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_DestroyObject");
+        this.lib.C_DestroyObject(this.session.handle, this.handle);
     };
     SessionObject.prototype.getAttribute = function (attrs) {
-        var tmpl = new template_1.Template(attrs);
-        var $tmpl = tmpl.ref();
-        var rv = this.lib.C_GetAttributeValue(this.session.handle, this.handle, $tmpl, tmpl.length);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_GetAttributeValue");
-        $tmpl = tmpl.set($tmpl).ref();
-        rv = this.lib.C_GetAttributeValue(this.session.handle, this.handle, $tmpl, tmpl.length);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_GetAttributeValue");
-        var o = tmpl.set($tmpl).serialize();
-        return o;
+        var _attrs;
+        if (typeof attrs === "string") {
+            _attrs = {};
+            _attrs[attrs] = null;
+        }
+        else
+            _attrs = attrs;
+        var tmpl = template_1.Template.toPkcs11(_attrs);
+        tmpl = this.lib.C_GetAttributeValue(this.session.handle, this.handle, tmpl);
+        return template_1.Template.fromPkcs11(tmpl);
     };
     SessionObject.prototype.setAttribute = function (attrs, value) {
         if (core.isString(attrs)) {
@@ -78,12 +68,8 @@ var SessionObject = (function (_super) {
             tmp[attrs] = value;
             attrs = tmp;
         }
-        var tmpl = new template_1.Template(attrs);
-        var $tmpl = tmpl.ref();
-        var rv = this.lib.C_SetAttributeValue(this.session.handle, this.handle, $tmpl, tmpl.length);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_SetAttributeValue");
-        return this;
+        var tmpl = template_1.Template.toPkcs11(attrs);
+        this.lib.C_SetAttributeValue(this.session.handle, this.handle, tmpl);
     };
     SessionObject.prototype.get = function (name) {
         var tmpl = {};
@@ -93,7 +79,7 @@ var SessionObject = (function (_super) {
     SessionObject.prototype.set = function (name, value) {
         var tmpl = {};
         tmpl[name] = value;
-        this.setAttribute(tmpl)[name];
+        this.setAttribute(tmpl[name]);
     };
     Object.defineProperty(SessionObject.prototype, "class", {
         get: function () {

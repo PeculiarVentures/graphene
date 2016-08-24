@@ -14,7 +14,7 @@ function print_object_info(obj) {
     var COL_2 = 25;
     console.log(TEMPLATE, defs.rpud("Name", COL_1), defs.rpud("Value", COL_2));
     console.log(TEMPLATE.replace(/\s/g, "-"), defs.rpud("", COL_1, "-"), defs.rpud("", COL_2, "-"));
-    console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(obj.handle.toString(), COL_2));
+    console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(obj.handle.toString("hex"), COL_2));
     console.log(TEMPLATE, defs.rpud("Class", COL_1), defs.rpud(defs.ObjectClass[obj.class], COL_2));
     console.log(TEMPLATE, defs.rpud("Label", COL_1), defs.rpud(obj.label, COL_2));
     console.log(TEMPLATE, defs.rpud("Token", COL_1), defs.rpud(obj.token, COL_2));
@@ -61,7 +61,7 @@ function print_object_header() {
     console.log("|%s|%s|%s|", defs.rpud("", 6, "-"), defs.rpud("", 17, "-"), defs.rpud("", 32, "-"));
 }
 function print_object_row(obj) {
-    console.log("| %s | %s | %s |", defs.rpud(obj.handle, 4), defs.rpud(defs.ObjectClass[obj.class], 15), defs.rpud(obj.label, 30));
+    console.log("| %s | %s | %s |", defs.rpud(obj.handle.toString("hex"), 4), defs.rpud(defs.ObjectClass[obj.class], 15), defs.rpud(obj.label, 30));
 }
 exports.cmdObjectList = exports.cmdObject.createCommand("list", {
     description: "enumerates the objects in a given slot",
@@ -127,7 +127,7 @@ exports.cmdObjectDelete = exports.cmdObject.createCommand("delete", {
         });
     }
     else {
-        var obj_1 = consoleApp.session.getObject(+cmd.obj);
+        var obj_1 = consoleApp.session.getObject(new Buffer(cmd.obj, "hex"));
         if (!obj_1)
             throw new Error("Object by ID '" + cmd.obj + "' is not found");
         defs.print_caption("Object info");
@@ -155,7 +155,7 @@ exports.cmdObjectInfo = exports.cmdObject.createCommand("info", {
 })
     .on("call", function (cmd) {
     defs.check_session();
-    var obj = consoleApp.session.getObject(+cmd.obj);
+    var obj = consoleApp.session.getObject(new Buffer(cmd.obj, "hex"));
     if (!obj)
         throw new Error("Object by ID '" + cmd.obj + "' is not found");
     console.log();

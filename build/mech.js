@@ -7,7 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-var pkcs11 = require("./pkcs11");
+var pkcs11 = require("pkcs11js");
 var core = require("./core");
 var fs = require("fs");
 var mech_enum_1 = require("./mech_enum");
@@ -31,7 +31,7 @@ var MechanismFlag = exports.MechanismFlag;
 var Mechanism = (function (_super) {
     __extends(Mechanism, _super);
     function Mechanism(handle, slotHandle, lib) {
-        _super.call(this, handle, lib);
+        _super.call(this, lib);
         this.slotHandle = slotHandle;
         this.getInfo();
     }
@@ -43,13 +43,9 @@ var Mechanism = (function (_super) {
         configurable: true
     });
     Mechanism.prototype.getInfo = function () {
-        var $info = core.Ref.alloc(pkcs11.CK_MECHANISM_INFO);
-        var rv = this.lib.C_GetMechanismInfo(this.slotHandle, this.handle, $info);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_GetMechanismInfo");
-        var info = $info.deref();
-        this.minKeySize = info.ulMinKeySize;
-        this.maxKeySize = info.ulMaxKeySize;
+        var info = this.lib.C_GetMechanismInfo(this.slotHandle, this.handle);
+        this.minKeySize = info.minKeySize;
+        this.maxKeySize = info.maxKeySize;
         this.flags = info.flags;
     };
     Mechanism.create = function (alg) {
@@ -67,19 +63,18 @@ var Mechanism = (function (_super) {
         var hAlg = mech_enum_1.MechanismEnum[_alg.name.toUpperCase()];
         if (core.isEmpty(hAlg))
             throw new TypeError("Unknown mechanism name '" + _alg.name + "'");
-        var pParams = null;
-        if (alg.params) {
-            if (alg.params.toCKI)
-                pParams = alg.params.toCKI();
+        var params = null;
+        if (_alg.params) {
+            if (_alg.params.toCKI)
+                params = _alg.params.toCKI();
             else
-                pParams = alg.params;
+                params = _alg.params;
         }
-        res = new pkcs11.CK_MECHANISM({
+        res = {
             mechanism: hAlg,
-            pParameter: pParams,
-            ulParameterLen: pParams ? pParams.length : 0
-        });
-        return res["ref.buffer"];
+            parameter: params
+        };
+        return res;
     };
     Mechanism.vendor = function (name, value) {
         var mechs = mech_enum_1.MechanismEnum;
@@ -100,7 +95,7 @@ var Mechanism = (function (_super) {
         }
     };
     return Mechanism;
-}(core.HandleObject));
+}(core.BaseObject));
 exports.Mechanism = Mechanism;
 var MechanismCollection = (function (_super) {
     __extends(MechanismCollection, _super);

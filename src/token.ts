@@ -104,7 +104,8 @@ export class Token extends core.HandleObject {
     firmwareVersion: pkcs11.Version;
     /**
      * current time as a character-string of length 16, 
-     * represented in the format YYYYMMDDhhmmssxx
+     * represented in the format YYYYMMDDhhmmssxx.
+     * Null when a token does not have a clock.
      */
     utcTime: Date;
 
@@ -133,7 +134,9 @@ export class Token extends core.HandleObject {
         this.freePrivateMemory = info.freePrivateMemory;
         this.hardwareVersion = info.hardwareVersion;
         this.firmwareVersion = info.firmwareVersion;
-        this.utcTime = core.dateFromString(info.utcTime);
+        if(info.flags & pkcs11.CKF_CLOCK_ON_TOKEN) {
+          core.dateFromString(info.utcTime);
+        }
     }
 
 }
