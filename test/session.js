@@ -34,7 +34,8 @@ describe("Session", function() {
         // create new session for current test
         session = slot.open();
         session.login(config.init.pin);
-
+        var modulus = new Buffer(128);
+        modulus[127] = 1;
         var objs = session.find();
         assert.equal(objs.length, 0, "Wrong init objs length");
 
@@ -42,20 +43,20 @@ describe("Session", function() {
             class: graphene.ObjectClass.PUBLIC_KEY,
             keyType: graphene.KeyType.RSA,
             wrap: true,
-            modulus: new Buffer(1024/8),
+            modulus: modulus,
             publicExponent: new Buffer([1, 0, 1])
         });
 
         var obj = session.create({
             class: graphene.ObjectClass.DATA,
             application: "application",
-            objectId: new Buffer("objectId"),
+            label: new Buffer("My label"),
             value: new Buffer("value")
         });
 
         var data = obj.toType();
         assert.equal(data.application, "application");
-        assert.equal(data.objectId.toString(), "objectId");
+        assert.equal(data.label.toString(), "My label");
         assert.equal(data.value.toString(), "value");
         assert.equal(data.class, 0);
 
@@ -100,19 +101,19 @@ describe("Session", function() {
         session.create({
             class: graphene.ObjectClass.DATA,
             application: "testFind",
-            objectId: new Buffer("objectId"),
+            label: new Buffer("first"),
             value: new Buffer("1")
         });
         session.create({
             class: graphene.ObjectClass.DATA,
             application: "testFind",
-            objectId: new Buffer("objectId"),
+            label: new Buffer("second"),
             value: new Buffer("2")
         });
         session.create({
             class: graphene.ObjectClass.DATA,
             application: "testFind",
-            objectId: new Buffer("objectId"),
+            label: new Buffer("third"),
             value: new Buffer("3")
         });
         assert.equal(session.find().length, count + 3);
@@ -132,14 +133,12 @@ describe("Session", function() {
             class: graphene.ObjectClass.DATA,
             label: "destroy",
             application: "application",
-            objectId: new Buffer("objectId"),
             value: new Buffer("1")
         });
         session.create({
             class: graphene.ObjectClass.DATA,
             label: "destroy",
             application: "application",
-            objectId: new Buffer("objectId"),
             value: new Buffer("2")
         });
 
@@ -158,15 +157,15 @@ describe("Session", function() {
             class: graphene.ObjectClass.DATA,
             label: "destroy",
             application: "application",
-            objectId: new Buffer("objectId"),
-            value: new Buffer("1")
+            label: new Buffer("label"),
+            value: new Buffer("first")
         });
         session.create({
             class: graphene.ObjectClass.DATA,
             label: "destroy",
             application: "application",
-            objectId: new Buffer("objectId"),
-            value: new Buffer("2")
+            label: new Buffer("label"),
+            value: new Buffer("second")
         });
 
         assert.equal(session.find().length, count + 2);
@@ -195,7 +194,8 @@ describe("Session", function() {
             extractable: true,
             encrypt: true
         });
-        assert.equal(!key.checkValue, false);
+        // TODO: skip on nShield
+        // assert.equal(!key.checkValue, false);
         assert.equal(key.encrypt, true);
         assert.equal(key.getAttribute("value").value.length, keylen);
     });
@@ -217,7 +217,7 @@ describe("Session", function() {
     });
 
     it("getObject wrong handle", function() {
-        assert.equal(!session.getObject(-1), true);
+        assert.equal(!session.getObject(new Buffer([0xff, 0xff])), true);
     });
 
     it("getObject", function() {
