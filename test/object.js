@@ -5,13 +5,16 @@ var graphene = require("../build/graphene");
 var Module = graphene.Module;
 
 describe("Object", function () {
-    var mod, session;
+    var mod, session, modulus, exponent;
 
     before(function () {
         mod = Module.load(config.init.lib, config.init.libName);
         mod.initialize();
         session = mod.getSlots(0).open();
         session.login(config.init.pin);
+        modulus = new Buffer(1024/8);
+        modulus[127] = 1;
+        exponent = new Buffer([1, 0, 1]);
     });
 
     after(function () {
@@ -26,16 +29,16 @@ describe("Object", function () {
             class: graphene.ObjectClass.PUBLIC_KEY,
             keyType: graphene.KeyType.RSA,
             wrap: true,
-            modulus: new Buffer([1, 0, 1]),
-            publicExponent: new Buffer(1024)
+            modulus: modulus,
+            publicExponent: exponent
         });
 
         var copy = obj.copy({
-            wrap: false
+            label: "new label"
         });
         assert.equal(!copy, false);
         var key = copy.toType();
-        assert.equal(key.wrap, false);
+        assert.equal(key.label, "new label");
         assert.equal(session.find().length, count + 2);
     });
 
@@ -45,8 +48,8 @@ describe("Object", function () {
             label: "label",
             keyType: graphene.KeyType.RSA,
             wrap: true,
-            modulus: new Buffer([1, 0, 1]),
-            publicExponent: new Buffer(1024)
+            modulus: modulus,
+            publicExponent: exponent
         });
 
         var attrs = obj.getAttribute("wrap");
@@ -59,8 +62,8 @@ describe("Object", function () {
             label: "label",
             keyType: graphene.KeyType.RSA,
             wrap: true,
-            modulus: new Buffer([1, 0, 1]),
-            publicExponent: new Buffer(1024)
+            modulus: modulus,
+            publicExponent: exponent
         });
 
         var attrs = obj.getAttribute({
@@ -77,12 +80,12 @@ describe("Object", function () {
             label: "label",
             keyType: graphene.KeyType.RSA,
             wrap: true,
-            modulus: new Buffer([1, 0, 1]),
-            publicExponent: new Buffer(1024)
+            modulus: modulus,
+            publicExponent: exponent
         });
 
-        obj.setAttribute("wrap", false);
-        assert.equal(obj.getAttribute("wrap").wrap, false);
+        obj.setAttribute("label", "new label");
+        assert.equal(obj.getAttribute("label").label,"new label");
     });
 
     it("set attribute by template", function () {
@@ -91,18 +94,16 @@ describe("Object", function () {
             label: "label",
             keyType: graphene.KeyType.RSA,
             wrap: true,
-            modulus: new Buffer([1, 0, 1]),
-            publicExponent: new Buffer(1024)
+            modulus: modulus,
+            publicExponent: exponent
         });
 
         obj.setAttribute({
-            wrap: false,
             label: "new label"
         });
-        assert.equal(obj.getAttribute("wrap").wrap, false);
         assert.equal(obj.getAttribute("label").label, "new label");
     });
-
+    
     it("destroy", function () {
         var count = session.find().length;
         var obj = session.create({
@@ -110,8 +111,8 @@ describe("Object", function () {
             label: "label",
             keyType: graphene.KeyType.RSA,
             wrap: true,
-            modulus: new Buffer([1, 0, 1]),
-            publicExponent: new Buffer(1024)
+            modulus: modulus,
+            publicExponent: exponent
         });
         assert.equal(session.find().length, count + 1);
         
