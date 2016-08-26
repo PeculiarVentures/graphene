@@ -41,7 +41,6 @@ before_install:
   - bash ./.travis.sh
 
 script:
-  - npm install
   - npm test
 
 cache:
