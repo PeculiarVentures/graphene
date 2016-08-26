@@ -173,14 +173,12 @@ describe("Session", function() {
             class: graphene.ObjectClass.DATA,
             label: "destroy",
             application: "application",
-            label: new Buffer("label"),
             value: new Buffer("first")
         });
         session.create({
             class: graphene.ObjectClass.DATA,
             label: "destroy",
             application: "application",
-            label: new Buffer("label"),
             value: new Buffer("second")
         });
 
