@@ -518,6 +518,32 @@ else {
 
 mod.finalize();
 ```
+### Change User's PIN
+```javascript
+var graphene = require("graphene-pk11");
+var Module = graphene.Module;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+
+try {
+    var slot = mod.getSlots(0);
+    if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
+        var session = slot.open();
+        session.login("12345", graphene.UserType.USER);
+        session.setPin("12345", "new pin");
+        session.logout();
+        session.close();
+        console.log("User's PIN was changed successfully");
+    }
+}
+catch(e) {
+    console.error(e);
+}
+mod.finalize();
+```
 
 ## Developing
 Use npm command to publish graphene-pk11 module

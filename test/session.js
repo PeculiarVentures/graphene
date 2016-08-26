@@ -28,6 +28,45 @@ describe("Session", function() {
         }, Error);
         session.login(config.init.pin);
         session.logout();
+        session.close();
+    });
+
+    function changePIN(session, userType, oldPIN, newPIN) {
+        session.login(oldPIN, userType);
+        session.setPin(oldPIN, newPIN);
+        session.logout();
+    }
+
+    it("changing PIN for User", function() {
+        var session = slot.open(2|4);
+        try {
+            var oldPIN = config.init.pin;
+            var newPIN = "54321";
+            assert.equal(graphene.UserType.USER, 1);
+            changePIN(session, graphene.UserType.USER, oldPIN, newPIN);
+            changePIN(session, graphene.UserType.USER, newPIN, oldPIN);
+        }
+        catch(e){
+            session.close();
+            throw e;
+        }
+        session.close();
+    });
+    
+    it("changing PIN for SO", function() {
+        var session = slot.open(2|4);
+        try {
+            var oldPIN = config.init.pin;
+            var newPIN = "54321";
+            assert.equal(graphene.UserType.SO, 0);
+            changePIN(session, graphene.UserType.USER, oldPIN, newPIN);
+            changePIN(session, graphene.UserType.USER, newPIN, oldPIN);
+        }
+        catch(e){
+            session.close();
+            throw e;
+        }
+        session.close();
     });
 
     it("create", function() {
