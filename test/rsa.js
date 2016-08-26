@@ -43,7 +43,7 @@ describe("RSA", function () {
     it("generate RSA", function () {
         keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
             keyType: graphene.KeyType.RSA,
-            modulusBits: 1024,
+            modulusBits: 2048,
             publicExponent: new Buffer([3]),
             token: false,
             verify: true,

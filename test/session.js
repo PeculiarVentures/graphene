@@ -21,6 +21,18 @@ describe("Session", function() {
         mod.finalize();
     });
 
+    function test_manufacturer(manufacturerID){
+		if (mod.manufacturerID == manufacturerID) {
+			console.warn("    \x1b[33mWARN:\x1b[0m Test is not supported for %s", manufacturerID);
+			return true;
+		}	
+		return false;
+	}
+
+  	function isThalesNShield() {
+    	return test_manufacturer("nCipher Corp. Ltd");
+  	}
+
     it("login/logout", function() {
         var session = slot.open();
         assert.throws(function() {
@@ -94,28 +106,32 @@ describe("Session", function() {
         objs = session.find();
         assert.equal(objs.length, 2, "Wrong objs length");
     });
-
+    
     it("find", function() {
+        var template_generator = function(label, value) {
+            if (isThalesNShield()) {
+                return {
+                    class: graphene.ObjectClass.DATA,
+                    application: "testFind",
+                    label: new Buffer(label),
+                    value: new Buffer(value)
+                };
+            } else{
+                return {
+                    class: graphene.ObjectClass.DATA,
+                    application: "testFind",
+                    objectid: new Buffer(label),
+                    value: new Buffer(value)
+                };
+            }
+        }
+        
         var count = session.find().length;
 
-        session.create({
-            class: graphene.ObjectClass.DATA,
-            application: "testFind",
-            label: new Buffer("first"),
-            value: new Buffer("1")
-        });
-        session.create({
-            class: graphene.ObjectClass.DATA,
-            application: "testFind",
-            label: new Buffer("second"),
-            value: new Buffer("2")
-        });
-        session.create({
-            class: graphene.ObjectClass.DATA,
-            application: "testFind",
-            label: new Buffer("third"),
-            value: new Buffer("3")
-        });
+        session.create(template_generator("first", "1"));
+        session.create(template_generator("second", "2"));
+        session.create(template_generator("third", "3"));
+        
         assert.equal(session.find().length, count + 3);
         var objs = session.find({
             application: "testFind"
@@ -194,8 +210,9 @@ describe("Session", function() {
             extractable: true,
             encrypt: true
         });
-        // TODO: skip on nShield
-        // assert.equal(!key.checkValue, false);
+        if(!isThalesNShield()) {
+            assert.equal(!key.checkValue, false);
+        }
         assert.equal(key.encrypt, true);
         assert.equal(key.getAttribute("value").value.length, keylen);
     });
