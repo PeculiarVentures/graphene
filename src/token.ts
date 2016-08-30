@@ -19,7 +19,8 @@ export enum TokenFlag {
     SO_PIN_COUNT_LOW = 0x00100000,
     SO_PIN_FINAL_TRY = 0x00200000,
     SO_PIN_LOCKED = 0x00400000,
-    SO_PIN_TO_BE_CHANGED = 0x00800000
+    SO_PIN_TO_BE_CHANGED = 0x00800000,
+    ERROR_STATE = 0x01000000,
 }
 
 export class Token extends core.HandleObject {
