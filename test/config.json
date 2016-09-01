@@ -2,7 +2,7 @@
     "init": {
         "lib": "/opt/nfast/toolkits/pkcs11/libcknfast.so",
         "libName": "nCipher PKCS#11+",
-        "pin": "6789"
+        "pin": "password"
     },
     "controlValues": {
         "module": {
@@ -10,10 +10,10 @@
             "libraryDescription": "nCipher PKCS#11 1.60.1+"
         },
         "token": {
-            "flags": 521,
-            "label": "accelerator",
+            "flags": 525,
+            "label": "ocs",
             "manufacturerID": "nCipher Corp. Ltd",
-            "serialNumber": "1a918b5db0a83cb1",
+            "serialNumber": "2c7688209e16ce3f",
             "minPinLen": 0
         },
         "slotsCount": 2

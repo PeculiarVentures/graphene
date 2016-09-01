@@ -10,7 +10,7 @@ describe("Object", function () {
     before(function () {
         mod = Module.load(config.init.lib, config.init.libName);
         mod.initialize();
-        session = mod.getSlots(0).open();
+        session = mod.getSlots(1).open();
         session.login(config.init.pin);
         modulus = new Buffer(1024/8);
         modulus[127] = 1;

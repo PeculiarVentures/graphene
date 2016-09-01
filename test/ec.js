@@ -29,7 +29,7 @@ describe("ECDSA", function () {
     before(function () {
         mod = Module.load(config.init.lib, config.init.libName);
         mod.initialize();
-        slot = mod.getSlots(0);
+        slot = mod.getSlots(1);
         session = slot.open();
         session.login(config.init.pin);
         if (config.init.vendor) {
