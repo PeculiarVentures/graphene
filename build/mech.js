@@ -32,6 +32,7 @@ var Mechanism = (function (_super) {
     __extends(Mechanism, _super);
     function Mechanism(handle, slotHandle, lib) {
         _super.call(this, lib);
+        this.handle = handle;
         this.slotHandle = slotHandle;
         this.getInfo();
     }

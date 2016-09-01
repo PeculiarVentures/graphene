@@ -9,12 +9,15 @@
             "manufacturerID": "nCipher Corp. Ltd",
             "libraryDescription": "nCipher PKCS#11 1.60.1+"
         },
-        "token": {
-            "flags": 521,
-            "label": "accelerator",
-            "manufacturerID": "nCipher Corp. Ltd",
-            "serialNumber": "1a918b5db0a83cb1",
-            "minPinLen": 0
+        "slot": {
+            "slotIndex": 0,
+            "token": {
+                "flags": 521,
+                "label": "accelerator",
+                "manufacturerID": "nCipher Corp. Ltd",
+                "serialNumber": "1a918b5db0a83cb1",
+                "minPinLen": 0
+            }
         },
         "slotsCount": 2
     }

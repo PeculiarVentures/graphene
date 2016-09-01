@@ -106,6 +106,7 @@ export class Mechanism extends core.BaseObject {
 
     constructor(handle: number, slotHandle: core.Handle, lib: pkcs11.PKCS11) {
         super(lib);
+        this.handle = handle;
         this.slotHandle = slotHandle;
 
         this.getInfo();

@@ -10,13 +10,16 @@ interface IControlValues {
         manufactureID: string;
         libraryDescription: string;
     };
-    token: {
-        flags: number;
-        label: string;
-        manufacturerID: string;
-        serialNumber: string;
-        minPinLen: number;
-    }
+    slot: {
+        slotIndex: number;
+        token: {
+            flags: number;
+            label: string;
+            manufacturerID: string;
+            serialNumber: string;
+            minPinLen: number;
+        };
+    };
     slotsCount: number;
 }
 
