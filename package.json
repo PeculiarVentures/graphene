@@ -18,7 +18,7 @@
   "dependencies": {
     "ffi": "latest",
     "node-gyp": "latest",
-    "pkcs11js": "1.0.3",
+    "pkcs11js": "latest",
     "ref": "latest",
     "ref-array": "latest",
     "ref-struct": "latest",
