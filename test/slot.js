@@ -38,15 +38,15 @@ describe("Slot", function () {
     });
 
     it("token props", function () {
-        var slot = slots.items(1);
+        var slot = slots.items(config.controlValues.slot.slotIndex);
 		
         // token
         var token = slot.getToken();
 
-        assert.equal(token.flags, config.controlValues.token.flags);
-        assert.equal(token.label, config.controlValues.token.label);
-        assert.equal(token.manufacturerID, config.controlValues.token.manufacturerID);
-        assert.equal(token.minPinLen, config.controlValues.token.minPinLen);
+        assert.equal(token.flags, config.controlValues.slot.token.flags);
+        assert.equal(token.label, config.controlValues.slot.token.label);
+        assert.equal(token.manufacturerID, config.controlValues.slot.token.manufacturerID);
+        assert.equal(token.minPinLen, config.controlValues.slot.token.minPinLen);
         if(token.flags & pkcs11.CKF_CLOCK_ON_TOKEN) {
           assert.notEqual(token.timeUtc, undefined);
         } else {

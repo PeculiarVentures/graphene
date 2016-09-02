@@ -9,12 +9,15 @@
             "manufacturerID": "nCipher Corp. Ltd",
             "libraryDescription": "nCipher PKCS#11 1.60.1+"
         },
-        "token": {
-            "flags": 525,
-            "label": "ocs",
-            "manufacturerID": "nCipher Corp. Ltd",
-            "serialNumber": "2c7688209e16ce3f",
-            "minPinLen": 0
+        "slot": {
+            "slotIndex": 0,
+            "token": {
+                "flags": 525,
+                "label": "ocs",
+                "manufacturerID": "nCipher Corp. Ltd",
+                "serialNumber": "2c7688209e16ce3f",
+                "minPinLen": 0
+            }
         },
         "slotsCount": 2
     }
