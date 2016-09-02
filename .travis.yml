@@ -35,13 +35,14 @@ before_install:
   - node --version
   - npm --version
   - gcc --version
-  - npm install typescript -g
-  - npm install typings -g
-  - npm install mocha -g
+  - npm install coveralls
   - bash ./.travis.sh
 
 script:
-  - npm test
+  - npm run coverage
+
+after_success:
+  - npm run coveralls
 
 cache:
   directories:
