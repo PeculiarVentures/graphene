@@ -35,16 +35,16 @@ fi
 
 mkdir -p capabilities
 cat > capabilities/$P11_LIBRARY_NAME.capabilities <<EOF
-**$P11_LIBRARY_NAME PKCS #11 DEVICE CAPABILITIES**
+**$P11_LIBRARY_NAME PKCS#11 DEVICE CAPABILITIES**
 ---
 EOF
 
-node build/console/console.js &>> capabilities/$P11_LIBRARY_NAME.capabilities <<EOF
+node build/console/console.js >> capabilities/$P11_LIBRARY_NAME.capabilities <<EOF
 module load -l $P11_LIBRARY_PATH -n $P11_LIBRARY_NAME
 slot open --slot $SLOT --pin $PIN
 slot algs -s 0 -fa
 test gen -it 5 -a all
-test sign -it200 -a all
+test sign -it 200 -a all
 test enc -it 200 -a all
 exit
 EOF

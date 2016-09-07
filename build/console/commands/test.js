@@ -352,7 +352,7 @@ exports.cmdTestSign = exports.cmdTest.createCommand("sign", {
     description: "Sets number of iterations. Default 1",
     set: function (v) {
         var res = +v;
-        if (!defs.isNull(res))
+        if (!defs.isNumber(res))
             throw new TypeError("Parameter --it must be number");
         if (res <= 0)
             throw new TypeError("Parameter --it must be more then 0");
