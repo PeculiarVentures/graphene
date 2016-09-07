@@ -10,25 +10,25 @@ usage() {
   echo "$THIS p11-lib-path p11-lib-name slot-id pin" >&2
 }
 
-if [ ! -f $P11_LIBRARY_PATH ];
+if [ ! -f $P11_LIBRARY_PATH ]
 then
   echo "P11 library does not exist ($P11_LIBRARY_PATH)" >&2
   exit 1
 fi
 
-if [ "x$P11_LIBRARY_NAME" = "x" ];
+if [ "x$P11_LIBRARY_NAME" = "x" ]
 then
   usage
   exit 1
 fi
 
-if [ "x$SLOT" = "x" ];
+if [ "x$SLOT" = "x" ]
 then
   usage
   exit 1
 fi
 
-if [ "x$PIN" = "x" ];
+if [ "x$PIN" = "x" ]
 then
   usage
   exit 1
