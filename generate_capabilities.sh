@@ -1,12 +1,13 @@
-#!/bin/bash -e
+#!/bin/sh -e
 # Run standard capability tests.
+THIS=$0
 P11_LIBRARY_PATH=$1
 P11_LIBRARY_NAME=$2
 SLOT=$3
 PIN=$4
 
 usage() {
-  echo "generate_capabilities.sh p11-lib-path p11-lib-name slot-id pin" >&2
+  echo "$THIS p11-lib-path p11-lib-name slot-id pin" >&2
 }
 
 if [ ! -f $P11_LIBRARY_PATH ];
