@@ -120,7 +120,7 @@ describe("Session", function() {
                 return {
                     class: graphene.ObjectClass.DATA,
                     application: "testFind",
-                    objectid: new Buffer(label),
+                    objectId: new Buffer(label),
                     value: new Buffer(value)
                 };
             }

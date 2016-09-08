@@ -180,7 +180,7 @@ describe("ECDSA", function () {
     });
 
     it("derive AES async", function (done) {
-        if (isSoftHSM()) return;
+        if (isSoftHSM()) done();
 
         session.deriveKey(
             {

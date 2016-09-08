@@ -33,7 +33,7 @@ describe("Slot", function () {
         // slot
         assert.equal(slot.flags, 1);
         assert.equal(slot.manufacturerID,
-          config.controlValues.module.manufacturerID);
+          config.controlValues.slot.token.manufacturerID);
         assert.notEqual(slot.slotDescription, "");
     });
 
