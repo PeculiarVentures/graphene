@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 # Run standard capability tests.
 THIS=$0
 P11_LIBRARY_PATH=$1
@@ -34,18 +34,51 @@ then
   exit 1
 fi
 
+OUTPUT=capabilities/$P11_LIBRARY_NAME.md
 mkdir -p capabilities
-cat > capabilities/$P11_LIBRARY_NAME.capabilities <<EOF
+cat > $OUTPUT <<EOF
 **$P11_LIBRARY_NAME PKCS#11 DEVICE CAPABILITIES**
 ---
+
 EOF
 
-node build/console/console.js >> capabilities/$P11_LIBRARY_NAME.capabilities <<EOF
+cat >> $OUTPUT <<EOF
+#### Capabilities
+
+    a - all mechanisms in PKCS11
+    h - mechanism can be used with C_DigestInit
+    s - mechanism can be used with C_SignInit
+    v - mechanism can be used with C_VerifyInit
+    e - mechanism can be used with C_EncryptInit
+    d - mechanism can be used with C_DecryptInit
+    w - mechanism can be used with C_WrapKey
+    u - mechanism can be used with C_UnwrapKey
+    g - mechanism can be used with C_GenerateKey or C_GenerateKeyPair
+    D - mechanism can be used with C_DeriveKey
+
+EOF
+
+node build/console/console.js >> $OUTPUT <<EOF
 module load -l $P11_LIBRARY_PATH -n $P11_LIBRARY_NAME
 slot open --slot $SLOT --pin $PIN
 slot algs -s 0 -fa
-test gen -it 5 -a all
-test sign -it 200 -a all
-test enc -it 200 -a all
 exit
 EOF
+
+declare -A CMDS=(["Key generation"]="test gen -it 5 -a all"
+                 ["Signing"]="test sign -it 200 -a all"
+                 ["Encryption"]="test enc -it 200 -a all")
+
+echo "#### Performance" >> $OUTPUT 
+for CMD in "${!CMDS[@]}"
+do
+  echo "##### $CMD" >> $OUTPUT
+  node build/console/console.js >> $OUTPUT <<EOF
+module load -l $P11_LIBRARY_PATH -n $P11_LIBRARY_NAME
+slot open --slot $SLOT --pin $PIN
+${CMDS[$CMD]}
+exit
+EOF
+done
+sed -i 's/^>\s*$//' $OUTPUT
+sed -i '/Thanks for using/d' $OUTPUT
