@@ -2,23 +2,23 @@
     "init": {
         "lib": "/opt/nfast/toolkits/pkcs11/libcknfast.so",
         "libName": "nCipher PKCS#11+",
-        "pin": "password"
+        "pin": "6789"
     },
     "controlValues": {
         "module": {
-            "manufacturerID": "SoftHSM",
-            "libraryDescription": "Implementation of PKCS11"
+            "manufacturerID": "nCipher Corp. Ltd",
+            "libraryDescription": "nCipher PKCS#11 1.60.1+"
         },
         "slot": {
             "slotIndex": 0,
             "token": {
-                "flags": 525,
-                "label": "ocs",
+                "flags": 521,
+                "label": "accelerator",
                 "manufacturerID": "nCipher Corp. Ltd",
-                "serialNumber": "2c7688209e16ce3f",
+                "serialNumber": "1a918b5db0a83cb1",
                 "minPinLen": 0
             }
         },
-        "slotsCount": 3
+        "slotsCount": 2
     }
 }
