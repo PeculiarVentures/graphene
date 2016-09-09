@@ -5,7 +5,7 @@ var graphene = require("../build/graphene");
 var Module = graphene.Module;
 
 describe("ECDSA", function () {
-    var mod, slot, session, keys, skey;
+    var mod, slot, session, signingKeys, derivationKeys, skey;
 
     var MSG = "1234567890123456";
     var MSG_WRONG = MSG + "!";
@@ -21,11 +21,15 @@ describe("ECDSA", function () {
     function isSoftHSM() {
         return test_manufacturer("SoftHSM");
     }
+    
+    function isThalesNShield() {
+        return test_manufacturer("nCipher Corp. Ltd");
+    }
 
     before(function () {
         mod = Module.load(config.init.lib, config.init.libName);
         mod.initialize();
-        slot = mod.getSlots(0);
+        slot = mod.getSlots(config.controlValues.slot.slotIndex);
         session = slot.open();
         session.login(config.init.pin);
         if (config.init.vendor) {
@@ -46,7 +50,7 @@ describe("ECDSA", function () {
         });
     })
 
-    function test_generate(paramsEc) {
+    function test_generate_signing_keys(paramsEc) {
         return session.generateKeyPair(graphene.KeyGenMechanism.EC, {
             keyType: graphene.KeyType.EC,
             paramsEC: paramsEc,
@@ -54,11 +58,30 @@ describe("ECDSA", function () {
             verify: true,
             encrypt: true,
             wrap: true,
-            derive: true
+            derive: false
         }, {
                 keyType: graphene.KeyType.EC,
                 token: false,
                 sign: true,
+                decrypt: true,
+                unwrap: true,
+                derive: false
+            });
+    }
+    
+    function test_generate_derivation_keys(paramsEc) {
+        return session.generateKeyPair(graphene.KeyGenMechanism.EC, {
+            keyType: graphene.KeyType.EC,
+            paramsEC: paramsEc,
+            token: false,
+            verify: false,
+            encrypt: true,
+            wrap: false,
+            derive: true
+        }, {
+                keyType: graphene.KeyType.EC,
+                token: false,
+                sign: false,
                 decrypt: true,
                 unwrap: true,
                 derive: true
@@ -66,15 +89,19 @@ describe("ECDSA", function () {
     }
 
     it("generate ECDSA secp192r1 by OID", function () {
-        test_generate(graphene.NamedCurve.getByOid("1.2.840.10045.3.1.1").value);
+        test_generate_signing_keys(graphene.NamedCurve.getByOid("1.2.840.10045.3.1.1").value);
     })
 
-    it("generate ECDSA secp256r1 by name", function () {
-        keys = test_generate(graphene.NamedCurve.getByName("secp256r1").value);
+    it("generate ECDSA secp256r1 signing keys by name", function () {
+        signingKeys = test_generate_signing_keys(graphene.NamedCurve.getByName("secp256r1").value);
     })
 
     it("generate ECDSA secp192r1 by Buffer", function () {
-        test_generate(new Buffer("06082A8648CE3D030101", "hex"));
+        test_generate_signing_keys(new Buffer("06082A8648CE3D030101", "hex"));
+    })
+    
+    it("generate ECDSA secp256r1 derivation keys by name", function () {
+        derivationKeys = test_generate_derivation_keys(graphene.NamedCurve.getByName("secp256r1").value);
     })
 
     function test_sign_verify(_key, alg) {
@@ -87,7 +114,7 @@ describe("ECDSA", function () {
         verify = session.createVerify(alg, _key.publicKey);
         verify.update(MSG_WRONG);
         assert.throws(function () {
-            verify.final(sig)
+          verify.final(sig)
         });
     }
 
@@ -107,39 +134,39 @@ describe("ECDSA", function () {
 
     it("sign/verify SHA-1", function () {
         if (isSoftHSM()) return;
-        test_sign_verify(keys, "ECDSA_SHA1");
+        test_sign_verify(signingKeys, "ECDSA_SHA1");
     });
 
     it("sign/verify SHA-224", function () {
-        if (isSoftHSM()) return;
-        test_sign_verify(keys, "ECDSA_SHA224");
+        if (isSoftHSM() || isThalesNShield()) return;
+        test_sign_verify(signingKeys, "ECDSA_SHA224");
     });
 
     it("sign/verify SHA-256", function () {
-        if (isSoftHSM()) return;
-        test_sign_verify(keys, "ECDSA_SHA256");
+        if (isSoftHSM() || isThalesNShield()) return;
+        test_sign_verify(signingKeys, "ECDSA_SHA256");
     });
 
     it("sign/verify SHA-384", function () {
-        if (isSoftHSM()) return;
-        test_sign_verify(keys, "ECDSA_SHA384");
+        if (isSoftHSM() || isThalesNShield()) return;
+        test_sign_verify(signingKeys, "ECDSA_SHA384");
     });
 
     it("sign/verify SHA-512", function () {
-        if (isSoftHSM()) return;
-        test_sign_verify(keys, "ECDSA_SHA512");
+        if (isSoftHSM() || isThalesNShield()) return;
+        test_sign_verify(signingKeys, "ECDSA_SHA512");
     });
 
     it("derive AES", function () {
         if (isSoftHSM()) return;
         test_derive(
-            keys,
+            derivationKeys,
             {
                 name: "ECDH1_DERIVE",
                 params: new graphene.EcdhParams(
                     graphene.EcKdf.SHA1,
                     null,
-                    keys.publicKey.getAttribute({ pointEC: null }).pointEC
+                    derivationKeys.publicKey.getAttribute({ pointEC: null }).pointEC
                 )
             },
             {
@@ -148,12 +175,12 @@ describe("ECDSA", function () {
                 "keyType": graphene.KeyType.AES,
                 "valueLen": 256 / 8,
                 "encrypt": true,
-                "decrypt": true
+                "decrypt": true,
             });
     });
 
     it("derive AES async", function (done) {
-        if (isSoftHSM()) return;
+        if (isSoftHSM()) done();
 
         session.deriveKey(
             {
@@ -161,17 +188,17 @@ describe("ECDSA", function () {
                 params: new graphene.EcdhParams(
                     graphene.EcKdf.SHA1,
                     null,
-                    keys.publicKey.getAttribute({ pointEC: null }).pointEC
+                    derivationKeys.publicKey.getAttribute({ pointEC: null }).pointEC
                 )
             },
-            keys.privateKey,
+            derivationKeys.privateKey,
             {
                 "class": graphene.ObjectClass.SECRET_KEY,
                 "token": false,
                 "keyType": graphene.KeyType.AES,
                 "valueLen": 256 / 8,
                 "encrypt": true,
-                "decrypt": true
+                "decrypt": true,
             },
             function (err, dKey) {
                 assert.equal(!!dKey, true, "Empty derived key");

@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var storage_1 = require("../storage");
-var pkcs11 = require("../../pkcs11");
+var pkcs11 = require("pkcs11js");
 (function (KeyType) {
     KeyType[KeyType["RSA"] = pkcs11.CKK_RSA] = "RSA";
     KeyType[KeyType["DSA"] = pkcs11.CKK_DSA] = "DSA";

@@ -5,18 +5,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var core = require("../../core");
+var error_1 = require("./error");
 var events_1 = require("events");
-var CommandError = (function (_super) {
-    __extends(CommandError, _super);
-    function CommandError(command, message) {
-        _super.call(this);
-        this.message = "CommandError: " + message;
-        this.command = command;
-        this.stack = (new Error(this.message)).stack;
-    }
-    return CommandError;
-}(Error));
-exports.CommandError = CommandError;
 var Command = (function (_super) {
     __extends(Command, _super);
     function Command(name, desc) {
@@ -25,9 +15,10 @@ var Command = (function (_super) {
         this.commands = {};
         this.name = name;
         if (core.isObject(desc)) {
-            this.description = desc.description;
-            this.note = desc.note;
-            this.example = desc.example;
+            var _desc = desc;
+            this.description = _desc.description;
+            this.note = _desc.note;
+            this.example = _desc.example;
         }
         else
             this.description = desc || "";
@@ -162,9 +153,9 @@ function get_short_name(name) {
 function get_name(name, reg) {
     var res = null;
     if (res = reg.exec(name)) {
-        res = res[1];
+        return res[1];
     }
-    return res;
+    return null;
 }
 function prepare_command(cmd) {
     var res = trim_str(cmd);
@@ -226,6 +217,8 @@ var Commander = (function (_super) {
         this.commands[name] = cmd;
         return cmd;
     };
+    Commander.prototype.print = function (s) {
+    };
     Commander.prototype.parse = function (cmd) {
         try {
             var command = Command.parse(cmd);
@@ -241,7 +234,7 @@ var Commander = (function (_super) {
                         }
                     }
                     else {
-                        throw new CommandError(that, "Unknown command in use '" + item + "'");
+                        throw new error_1.CommandError(that, "Unknown command in use '" + item + "'");
                     }
                 }
                 var opt = {};
@@ -256,7 +249,7 @@ var Commander = (function (_super) {
                     }
                     else {
                         if (_prop.isRequired) {
-                            throw new CommandError(that, "Parameter --" + _prop.longName + " is required");
+                            throw new error_1.CommandError(that, "Parameter --" + _prop.longName + " is required");
                         }
                         opt[_prop.longName] = _prop.value;
                     }

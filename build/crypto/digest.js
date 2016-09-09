@@ -1,73 +1,49 @@
 "use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var core = require("../core");
-var pkcs11 = require("../pkcs11");
 var mech = require("../mech");
-var Digest = (function () {
+var Digest = (function (_super) {
+    __extends(Digest, _super);
     function Digest(session, alg, lib) {
+        _super.call(this, lib);
         this.session = session;
-        this.lib = lib;
         this.init(alg);
     }
     Digest.prototype.init = function (alg) {
         var pMech = mech.Mechanism.create(alg);
-        var rv = this.lib.C_DigestInit(this.session.handle, pMech);
-        if (rv)
-            throw new core.Pkcs11Error(rv, "C_DigestInit");
+        this.lib.C_DigestInit(this.session.handle, pMech);
     };
-    Digest.prototype.update = function (data, callback) {
+    Digest.prototype.update = function (data) {
         try {
-            data = new Buffer(data);
-            if (callback) {
-                this.lib.C_DigestUpdate(this.session.handle, data, data.length, function (err, rv) {
-                    if (err)
-                        callback(err);
-                    else if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_DigestUpdate"));
-                    else
-                        callback(null);
-                });
-            }
-            else {
-                var rv = this.lib.C_DigestUpdate(this.session.handle, data, data.length);
-                if (rv)
-                    throw new core.Pkcs11Error(rv, "C_DigestUpdate");
-            }
+            var _data = new Buffer(data);
+            this.lib.C_DigestUpdate(this.session.handle, _data);
         }
         catch (e) {
-            if (callback)
-                callback(e);
-            else
-                throw e;
+            try {
+                this.final();
+            }
+            catch (e) { }
+            throw e;
         }
     };
-    Digest.prototype.final = function (callback) {
-        try {
-            var $digest_1 = new Buffer(1024);
-            var $digestlen_1 = core.Ref.alloc(pkcs11.CK_ULONG, 1024);
-            if (callback) {
-                this.lib.C_DigestFinal(this.session.handle, $digest_1, $digestlen_1, function (err, rv) {
-                    if (err)
-                        callback(err, null);
-                    else if (rv)
-                        callback(new core.Pkcs11Error(rv, "C_DigestFinal"), null);
-                    else
-                        callback(null, $digest_1.slice(0, $digestlen_1.deref()));
-                });
-            }
-            else {
-                var rv = this.lib.C_DigestFinal(this.session.handle, $digest_1, $digestlen_1);
-                if (rv)
-                    throw new core.Pkcs11Error(rv, "C_DigestFinal");
-                return $digest_1.slice(0, $digestlen_1.deref());
-            }
+    Digest.prototype.final = function () {
+        var digest = new Buffer(1024);
+        var res = this.lib.C_DigestFinal(this.session.handle, digest);
+        return res;
+    };
+    Digest.prototype.once = function (data, cb) {
+        var digest = new Buffer(1024);
+        var _data = new Buffer(data);
+        if (cb) {
+            this.lib.C_Digest(this.session.handle, _data, digest, cb);
         }
-        catch (e) {
-            if (callback)
-                callback(e, null);
-            else
-                throw e;
-        }
+        else
+            return this.lib.C_Digest(this.session.handle, _data, digest);
     };
     return Digest;
-}());
+}(core.BaseObject));
 exports.Digest = Digest;

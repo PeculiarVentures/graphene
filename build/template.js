@@ -1,71 +1,73 @@
 "use strict";
-var pkcs11 = require("./pkcs11");
-var core = require("./core");
-var AttributeArray = core.RefArray(pkcs11.CK_ATTRIBUTE);
+var pkcs11 = require("pkcs11js");
+var TYPE_NUMBER = "number";
+var TYPE_BOOL = "boolen";
+var TYPE_STRING = "string";
+var TYPE_BUFFER = "buffer";
+var TYPE_DATE = "date";
 var attribute = {
-    class: { v: pkcs11.CKA_CLASS, t: "ulong" },
-    token: { v: pkcs11.CKA_TOKEN, t: "bool" },
-    private: { v: pkcs11.CKA_PRIVATE, t: "bool" },
-    label: { v: pkcs11.CKA_LABEL, t: "utf8" },
-    application: { v: pkcs11.CKA_APPLICATION, t: "utf8" },
-    value: { v: pkcs11.CKA_VALUE, t: "buffer" },
-    objectId: { v: pkcs11.CKA_OBJECT_ID, t: "buffer" },
-    certType: { v: pkcs11.CKA_CERTIFICATE_TYPE, t: "ulong" },
-    issuer: { v: pkcs11.CKA_ISSUER, t: "buffer" },
-    serial: { v: pkcs11.CKA_SERIAL_NUMBER, t: "buffer" },
-    issuerAC: { v: pkcs11.CKA_AC_ISSUER, t: "buffer" },
-    owner: { v: pkcs11.CKA_OWNER, t: "buffer" },
-    attrTypes: { v: pkcs11.CKA_ATTR_TYPES, t: "buffer" },
-    trusted: { v: pkcs11.CKA_TRUSTED, t: "bool" },
-    certCategory: { v: pkcs11.CKA_CERTIFICATE_CATEGORY, t: "ulong" },
-    javaDomain: { v: pkcs11.CKA_JAVA_MIDP_SECURITY_DOMAIN, t: "ulong" },
-    url: { v: pkcs11.CKA_URL, t: "string" },
-    ski: { v: pkcs11.CKA_HASH_OF_SUBJECT_PUBLIC_KEY, t: "buffer" },
-    aki: { v: pkcs11.CKA_HASH_OF_ISSUER_PUBLIC_KEY, t: "buffer" },
-    digestName: { v: pkcs11.CKA_NAME_HASH_ALGORITHM, t: "ulong" },
-    checkValue: { v: pkcs11.CKA_CHECK_VALUE, t: "buffer" },
-    keyType: { v: pkcs11.CKA_KEY_TYPE, t: "ulong" },
-    subject: { v: pkcs11.CKA_SUBJECT, t: "buffer" },
-    id: { v: pkcs11.CKA_ID, t: "buffer" },
-    sensitive: { v: pkcs11.CKA_SENSITIVE, t: "bool" },
-    encrypt: { v: pkcs11.CKA_ENCRYPT, t: "bool" },
-    decrypt: { v: pkcs11.CKA_DECRYPT, t: "bool" },
-    wrap: { v: pkcs11.CKA_WRAP, t: "bool" },
-    unwrap: { v: pkcs11.CKA_UNWRAP, t: "bool" },
-    sign: { v: pkcs11.CKA_SIGN, t: "bool" },
-    signRecover: { v: pkcs11.CKA_SIGN_RECOVER, t: "bool" },
-    verify: { v: pkcs11.CKA_VERIFY, t: "bool" },
-    verifyRecover: { v: pkcs11.CKA_VERIFY_RECOVER, t: "bool" },
-    derive: { v: pkcs11.CKA_DERIVE, t: "bool" },
-    startDate: { v: pkcs11.CKA_START_DATE, t: "date" },
-    endDate: { v: pkcs11.CKA_END_DATE, t: "date" },
-    modulus: { v: pkcs11.CKA_MODULUS, t: "buffer" },
-    modulusBits: { v: pkcs11.CKA_MODULUS_BITS, t: "ulong" },
-    publicExponent: { v: pkcs11.CKA_PUBLIC_EXPONENT, t: "buffer" },
-    privateExponent: { v: pkcs11.CKA_PRIVATE_EXPONENT, t: "buffer" },
-    prime1: { v: pkcs11.CKA_PRIME_1, t: "buffer" },
-    prime2: { v: pkcs11.CKA_PRIME_2, t: "buffer" },
-    exp1: { v: pkcs11.CKA_EXPONENT_1, t: "buffer" },
-    exp2: { v: pkcs11.CKA_EXPONENT_2, t: "buffer" },
-    coefficient: { v: pkcs11.CKA_COEFFICIENT, t: "buffer" },
-    prime: { v: pkcs11.CKA_PRIME, t: "buffer" },
-    subprime: { v: pkcs11.CKA_SUBPRIME, t: "buffer" },
-    base: { v: pkcs11.CKA_BASE, t: "buffer" },
-    primeBits: { v: pkcs11.CKA_PRIME_BITS, t: "ulong" },
-    subprimeBits: { v: pkcs11.CKA_SUBPRIME_BITS, t: "ulong" },
-    valueBits: { v: pkcs11.CKA_VALUE_BITS, t: "ulong" },
-    valueLen: { v: pkcs11.CKA_VALUE_LEN, t: "ulong" },
-    extractable: { v: pkcs11.CKA_EXTRACTABLE, t: "bool" },
-    local: { v: pkcs11.CKA_LOCAL, t: "bool" },
-    neverExtractable: { v: pkcs11.CKA_NEVER_EXTRACTABLE, t: "bool" },
-    alwaysSensitive: { v: pkcs11.CKA_ALWAYS_SENSITIVE, t: "bool" },
-    keyGenMechanism: { v: pkcs11.CKA_KEY_GEN_MECHANISM, t: "ulong" },
-    modifiable: { v: pkcs11.CKA_MODIFIABLE, t: "bool" },
-    paramsECDSA: { v: pkcs11.CKA_ECDSA_PARAMS, t: "buffer" },
-    paramsEC: { v: pkcs11.CKA_EC_PARAMS, t: "buffer" },
-    pointEC: { v: pkcs11.CKA_EC_POINT, t: "buffer" },
-    secondaryAuth: { v: pkcs11.CKA_SECONDARY_AUTH, t: "bool" },
-    authPinFlags: { v: pkcs11.CKA_AUTH_PIN_FLAGS, t: "buffer" },
+    class: { v: pkcs11.CKA_CLASS, t: TYPE_NUMBER },
+    token: { v: pkcs11.CKA_TOKEN, t: TYPE_BOOL },
+    private: { v: pkcs11.CKA_PRIVATE, t: TYPE_BOOL },
+    label: { v: pkcs11.CKA_LABEL, t: TYPE_STRING },
+    application: { v: pkcs11.CKA_APPLICATION, t: TYPE_STRING },
+    value: { v: pkcs11.CKA_VALUE, t: TYPE_BUFFER },
+    objectId: { v: pkcs11.CKA_OBJECT_ID, t: TYPE_BUFFER },
+    certType: { v: pkcs11.CKA_CERTIFICATE_TYPE, t: TYPE_NUMBER },
+    issuer: { v: pkcs11.CKA_ISSUER, t: TYPE_BUFFER },
+    serial: { v: pkcs11.CKA_SERIAL_NUMBER, t: TYPE_BUFFER },
+    issuerAC: { v: pkcs11.CKA_AC_ISSUER, t: TYPE_BUFFER },
+    owner: { v: pkcs11.CKA_OWNER, t: TYPE_BUFFER },
+    attrTypes: { v: pkcs11.CKA_ATTR_TYPES, t: TYPE_BUFFER },
+    trusted: { v: pkcs11.CKA_TRUSTED, t: TYPE_BOOL },
+    certCategory: { v: pkcs11.CKA_CERTIFICATE_CATEGORY, t: TYPE_NUMBER },
+    javaDomain: { v: pkcs11.CKA_JAVA_MIDP_SECURITY_DOMAIN, t: TYPE_NUMBER },
+    url: { v: pkcs11.CKA_URL, t: TYPE_STRING },
+    ski: { v: pkcs11.CKA_HASH_OF_SUBJECT_PUBLIC_KEY, t: TYPE_BUFFER },
+    aki: { v: pkcs11.CKA_HASH_OF_ISSUER_PUBLIC_KEY, t: TYPE_BUFFER },
+    checkValue: { v: pkcs11.CKA_CHECK_VALUE, t: TYPE_BUFFER },
+    keyType: { v: pkcs11.CKA_KEY_TYPE, t: TYPE_NUMBER },
+    subject: { v: pkcs11.CKA_SUBJECT, t: TYPE_BUFFER },
+    id: { v: pkcs11.CKA_ID, t: TYPE_BUFFER },
+    sensitive: { v: pkcs11.CKA_SENSITIVE, t: TYPE_BOOL },
+    encrypt: { v: pkcs11.CKA_ENCRYPT, t: TYPE_BOOL },
+    decrypt: { v: pkcs11.CKA_DECRYPT, t: TYPE_BOOL },
+    wrap: { v: pkcs11.CKA_WRAP, t: TYPE_BOOL },
+    unwrap: { v: pkcs11.CKA_UNWRAP, t: TYPE_BOOL },
+    sign: { v: pkcs11.CKA_SIGN, t: TYPE_BOOL },
+    signRecover: { v: pkcs11.CKA_SIGN_RECOVER, t: TYPE_BOOL },
+    verify: { v: pkcs11.CKA_VERIFY, t: TYPE_BOOL },
+    verifyRecover: { v: pkcs11.CKA_VERIFY_RECOVER, t: TYPE_BOOL },
+    derive: { v: pkcs11.CKA_DERIVE, t: TYPE_BOOL },
+    startDate: { v: pkcs11.CKA_START_DATE, t: TYPE_DATE },
+    endDate: { v: pkcs11.CKA_END_DATE, t: TYPE_DATE },
+    modulus: { v: pkcs11.CKA_MODULUS, t: TYPE_BUFFER },
+    modulusBits: { v: pkcs11.CKA_MODULUS_BITS, t: TYPE_NUMBER },
+    publicExponent: { v: pkcs11.CKA_PUBLIC_EXPONENT, t: TYPE_BUFFER },
+    privateExponent: { v: pkcs11.CKA_PRIVATE_EXPONENT, t: TYPE_BUFFER },
+    prime1: { v: pkcs11.CKA_PRIME_1, t: TYPE_BUFFER },
+    prime2: { v: pkcs11.CKA_PRIME_2, t: TYPE_BUFFER },
+    exp1: { v: pkcs11.CKA_EXPONENT_1, t: TYPE_BUFFER },
+    exp2: { v: pkcs11.CKA_EXPONENT_2, t: TYPE_BUFFER },
+    coefficient: { v: pkcs11.CKA_COEFFICIENT, t: TYPE_BUFFER },
+    prime: { v: pkcs11.CKA_PRIME, t: TYPE_BUFFER },
+    subprime: { v: pkcs11.CKA_SUBPRIME, t: TYPE_BUFFER },
+    base: { v: pkcs11.CKA_BASE, t: TYPE_BUFFER },
+    primeBits: { v: pkcs11.CKA_PRIME_BITS, t: TYPE_NUMBER },
+    subprimeBits: { v: pkcs11.CKA_SUBPRIME_BITS, t: TYPE_NUMBER },
+    valueBits: { v: pkcs11.CKA_VALUE_BITS, t: TYPE_NUMBER },
+    valueLen: { v: pkcs11.CKA_VALUE_LEN, t: TYPE_NUMBER },
+    extractable: { v: pkcs11.CKA_EXTRACTABLE, t: TYPE_BOOL },
+    local: { v: pkcs11.CKA_LOCAL, t: TYPE_BOOL },
+    neverExtractable: { v: pkcs11.CKA_NEVER_EXTRACTABLE, t: TYPE_BOOL },
+    alwaysSensitive: { v: pkcs11.CKA_ALWAYS_SENSITIVE, t: TYPE_BOOL },
+    keyGenMechanism: { v: pkcs11.CKA_KEY_GEN_MECHANISM, t: TYPE_NUMBER },
+    modifiable: { v: pkcs11.CKA_MODIFIABLE, t: TYPE_BOOL },
+    paramsECDSA: { v: pkcs11.CKA_ECDSA_PARAMS, t: TYPE_BUFFER },
+    paramsEC: { v: pkcs11.CKA_EC_PARAMS, t: TYPE_BUFFER },
+    pointEC: { v: pkcs11.CKA_EC_POINT, t: TYPE_BUFFER },
+    secondaryAuth: { v: pkcs11.CKA_SECONDARY_AUTH, t: TYPE_BOOL },
+    authPinFlags: { v: pkcs11.CKA_AUTH_PIN_FLAGS, t: TYPE_BUFFER },
     alwaysAuth: pkcs11.CKA_ALWAYS_AUTHENTICATE,
     wrapWithTrusted: pkcs11.CKA_WRAP_WITH_TRUSTED,
     wrapTemplate: pkcs11.CKA_WRAP_TEMPLATE,
@@ -110,7 +112,6 @@ function n2i(name) {
     throw new Error("Unsupported attribute name '" + name + "'");
 }
 function i2n(cka) {
-    console.log("cka", cka);
     for (var i in attribute) {
         var attr = attribute[i];
         if (attr && "v" in attr && attr.v === cka)
@@ -118,128 +119,42 @@ function i2n(cka) {
     }
     throw new Error("Unsupported attribute ID '" + cka + "'");
 }
-var Attribute = (function () {
-    function Attribute(type, value) {
-        if (value === void 0) { value = null; }
-        if (core.isString(type)) {
-            this.name = type;
-            this.type = n2i(type);
-        }
-        else {
-            this.type = type;
-            this.name = i2n(type);
-        }
-        this.convertType = attribute[this.name].t;
-        this.value = value;
+function b2v(type, value) {
+    switch (type) {
+        case TYPE_NUMBER:
+            return value.readUInt32LE(0);
+        case TYPE_BOOL:
+            return value[0] === 1;
+        case TYPE_STRING:
+            return value.toString();
+        case TYPE_BUFFER:
+            return value;
+        default:
+            throw new Error("Uknown type in use '" + type + "'");
     }
-    Object.defineProperty(Attribute.prototype, "length", {
-        get: function () {
-            return (this.$value === null) ? 0 : this.$value.length;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Attribute.prototype, "value", {
-        get: function () {
-            switch (this.convertType) {
-                case "ulong":
-                    return this.$value[("readUInt" + this.$value.length * 8 + "LE")](0);
-                case "bool":
-                    return this.$value[0] === 1;
-                case "utf8":
-                    return new Buffer(this.$value || 0).toString("utf8");
-                case "buffer":
-                    return new Buffer(this.$value || 0);
-                default:
-                    throw new Error("Uknown convertType in use '" + this.convertType + "'");
-            }
-        },
-        set: function (v) {
-            if (v === null)
-                this.$value = null;
-            else {
-                switch (this.convertType) {
-                    case "ulong":
-                        this.$value = core.Ref.alloc(pkcs11.CK_ULONG, v);
-                        break;
-                    case "bool":
-                        this.$value = core.Ref.alloc(pkcs11.CK_BBOOL, v);
-                        break;
-                    case "utf8":
-                        this.$value = new Buffer(v, "utf8");
-                        break;
-                    case "buffer":
-                        this.$value = v;
-                        break;
-                    default:
-                        throw new Error("Uknown convertType in use '" + this.convertType + "'");
-                }
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Attribute.prototype.get = function () {
-        return pkcs11.CK_ATTRIBUTE({
-            type: this.type,
-            pValue: this.$value,
-            ulValueLen: !this.$value ? 0 : this.$value.length
-        });
-    };
-    Attribute.prototype.set = function (template) {
-        if ("type" in template && "pValue" in template && "ulValueLen" in template) {
-            if (this.type !== template.type)
-                throw new Error("Wrong type value '" + template.type + "', must be '" + this.type + "'");
-            if (template.ulValueLen !== 0 && !this.$value) {
-                this.$value = new Buffer(template.ulValueLen);
-            }
-        }
-        else {
-            throw new TypeError("Parameter 1 is not template");
-        }
-    };
-    return Attribute;
-}());
-exports.Attribute = Attribute;
+}
 var Template = (function () {
-    function Template(template) {
-        this.attrs = [];
-        var _template = {};
-        if (core.isString(template))
-            _template[template] = null;
-        else
-            _template = template;
-        for (var key in _template) {
-            this.attrs.push(new Attribute(key, _template[key]));
-        }
+    function Template() {
     }
-    Object.defineProperty(Template.prototype, "length", {
-        get: function () {
-            return this.attrs.length;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Template.prototype.set = function (v) {
-        var array = AttributeArray(v);
-        for (var i in this.attrs) {
-            var attr = this.attrs[i];
-            this.attrs[i].set(array[i]);
+    Template.toPkcs11 = function (tmpl) {
+        var res = [];
+        for (var key in tmpl) {
+            res.push({
+                type: n2i(key),
+                value: tmpl[key]
+            });
         }
-        return this;
+        return res;
     };
-    Template.prototype.ref = function () {
-        var attrs = [];
-        for (var i in this.attrs) {
-            attrs.push(this.attrs[i].get());
-        }
-        return this.attrs.length ? AttributeArray(attrs).buffer : null;
-    };
-    Template.prototype.serialize = function () {
+    Template.fromPkcs11 = function (tmpl) {
         var res = {};
-        for (var i in this.attrs) {
-            var attr = this.attrs[i];
-            res[attr.name] = attr.value;
+        for (var i in tmpl) {
+            var attr = tmpl[i];
+            var name_1 = i2n(attr.type);
+            var type = attribute[name_1].t;
+            if (type === void 0)
+                throw new Error("Can not get type for attribute '" + name_1 + "'");
+            res[i2n(attr.type)] = b2v(type, attr.value);
         }
         return res;
     };

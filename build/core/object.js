@@ -6,6 +6,10 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var BaseObject = (function () {
     function BaseObject(lib) {
+        Object.defineProperty(this, "lib", {
+            writable: true,
+            enumerable: false
+        });
         this.lib = lib || null;
     }
     return BaseObject;

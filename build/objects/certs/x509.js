@@ -49,10 +49,10 @@ var X509Certificate = (function (_super) {
     });
     Object.defineProperty(X509Certificate.prototype, "serialNumber", {
         get: function () {
-            return this.get("serial");
+            return this.get("serial").toString("hex");
         },
         set: function (v) {
-            this.set("serial", v);
+            this.set("serial", new Buffer(v, "hex"));
         },
         enumerable: true,
         configurable: true

@@ -29,7 +29,7 @@ export class RsaPssParams implements IParams {
 
     type = MechParams.RsaPSS;
 
-    constructor(hashAlg: MechanismEnum = MechanismEnum.SHA1, mgf: RsaMgf = RsaMgf.MGF1_SHA1, saltLen: number = 0) {
+    constructor(hashAlg: MechanismEnum = MechanismEnum.SHA1, mgf: RsaMgf = RsaMgf.MGF1_SHA1, saltLen: number = 20) {
         this.hashAlgorithm = hashAlg;
         this.mgf = mgf;
         this.saltLength = saltLen;
