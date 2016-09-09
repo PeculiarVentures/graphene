@@ -1,7 +1,7 @@
 {
     "init": {
-        "lib": "/usr/local/lib/softhsm/libsofthsm2.so",
-        "libName": "SoftHSM",
+        "lib": "/opt/nfast/toolkits/pkcs11/libcknfast.so",
+        "libName": "nCipher PKCS#11+",
         "pin": "password"
     },
     "controlValues": {
@@ -12,11 +12,11 @@
         "slot": {
             "slotIndex": 0,
             "token": {
-                "flags": 1069,
-                "label": "first",
-                "manufacturerID": "SoftHSM project",
-                "serialNumber": "1a918b5db0a83cb1",
-                "minPinLen": 4
+                "flags": 525,
+                "label": "ocs",
+                "manufacturerID": "nCipher Corp. Ltd",
+                "serialNumber": "2c7688209e16ce3f",
+                "minPinLen": 0
             }
         },
         "slotsCount": 3

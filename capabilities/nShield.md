@@ -1,6 +1,7 @@
 **Thales nShield PKCS#11 DEVICE CAPABILITIES**
 ---
 ### [Thales nShield Solo+](https://www.thales-esecurity.com/products-and-services/products-and-services/hardware-security-modules/general-purpose-hsms/nshield-solo)
+
 #### Capabilities
 
     a - all mechanisms in PKCS11
@@ -206,6 +207,3 @@ Session is started
 | AES-128                   |    2.2ms |    454.545 |
 | AES-192                   |    2.4ms |    416.667 |
 | AES-256                   |    2.2ms |    454.545 |
-
-
-
