@@ -1,7 +1,6 @@
 **SoftHSM2 PKCS#11 DEVICE CAPABILITIES**
 ---
 
-### [SoftHSM2](https://www.opendnssec.org/softhsm/)
 #### Capabilities
 
     a - all mechanisms in PKCS11
@@ -15,17 +14,13 @@
     g - mechanism can be used with C_GenerateKey or C_GenerateKeyPair
     D - mechanism can be used with C_DeriveKey
 
-
 Module info
-==============================
 
   Library: /usr/local/lib/softhsm/libsofthsm2.so
   Name: SoftHSM2
   Cryptoki version: 2.30
 
-
 Session is started
-
 
 | Algorithm name            | h | s | v | e | d | w | u | g | D |
 |---------------------------|---|---|---|---|---|---|---|---|---|
@@ -99,79 +94,63 @@ Session is started
 66 algorithm(s) in list
 
 
-
 #### Performance
 ##### Encryption
-
 Module info
-==============================
 
   Library: /usr/local/lib/softhsm/libsofthsm2.so
   Name: SoftHSM2
   Cryptoki version: 2.30
 
-
 Session is started
-
 
 | Algorithm                 |  Encrypt |  Decrypt | Encrypt/s | Decrypt/s |
 |---------------------------|---------:|---------:|----------:|----------:|
-| AES-CBC128                |   0.09ms |   0.08ms | 11111.111 |     12500 |
-| AES-CBC192                |   0.03ms |   0.03ms | 33333.333 | 33333.333 |
-| AES-CBC256                |   0.04ms |   0.02ms |     25000 |     50000 |
-
+| AES-CBC128                |  0.095ms |   0.08ms | 10526.316 |     12500 |
+| AES-CBC192                |   0.04ms |  0.035ms |     25000 | 28571.429 |
+| AES-CBC256                |  0.045ms |  0.025ms | 22222.222 |     40000 |
 
 
 ##### Signing
-
 Module info
-==============================
 
   Library: /usr/local/lib/softhsm/libsofthsm2.so
   Name: SoftHSM2
   Cryptoki version: 2.30
 
-
 Session is started
-
 
 | Algorithm                 |     Sign |   Verify |    Sign/s |  Verify/s |
 |---------------------------|---------:|---------:|----------:|----------:|
-| RSA-1024                  |   0.48ms |   0.05ms |  2083.333 |     20000 |
-| RSA-2048                  |  1.635ms |  0.055ms |   611.621 | 18181.818 |
-| RSA-4096                  |   8.93ms |  0.085ms |   111.982 | 11764.706 |
-
+| RSA-1024                  |  0.615ms |   0.05ms |  1626.016 |     20000 |
+| RSA-2048                  |   1.96ms |   0.06ms |   510.204 | 16666.667 |
+| RSA-4096                  |   10.4ms |   0.12ms |    96.154 |  8333.333 |
 
 
 ##### Key generation
-
 Module info
-==============================
 
   Library: /usr/local/lib/softhsm/libsofthsm2.so
   Name: SoftHSM2
   Cryptoki version: 2.30
 
-
 Session is started
-
 
 | Algorithm                 | Generate | Generate/s |
 |---------------------------|---------:|-----------:|
-| RSA-1024                  |   29.2ms |     34.247 |
-| RSA-2048                  |   87.8ms |      11.39 |
-| RSA-4096                  |  498.8ms |      2.005 |
-| ECDSA-SECP192R1           |    0.4ms |       2500 |
+| RSA-1024                  |     35ms |     28.571 |
+| RSA-2048                  |  141.8ms |      7.052 |
+| RSA-4096                  | 1358.8ms |      0.736 |
+| ECDSA-SECP192R1           |    0.6ms |   1666.667 |
 | ECDSA-SECP256R1           |    0.8ms |       1250 |
-| ECDSA-SECP384R1           |      1ms |       1000 |
-| ECDSA-SECP256K1           |    0.4ms |       2500 |
-| ECDSA-BRAINPOOLP192R1     |    0.6ms |   1666.667 |
-| ECDSA-BRAINPOOLP224R1     |    0.6ms |   1666.667 |
+| ECDSA-SECP384R1           |    1.2ms |    833.333 |
+| ECDSA-SECP256K1           |    0.6ms |   1666.667 |
+| ECDSA-BRAINPOOLP192R1     |    0.8ms |       1250 |
+| ECDSA-BRAINPOOLP224R1     |    0.8ms |       1250 |
 | ECDSA-BRAINPOOLP256R1     |      1ms |       1000 |
-| ECDSA-BRAINPOOLP320R1     |    0.8ms |       1250 |
+| ECDSA-BRAINPOOLP320R1     |      1ms |       1000 |
 | AES-128                   |    0.4ms |       2500 |
-| AES-192                   |      0ms |   Infinity |
+| AES-192                   |    0.2ms |       5000 |
 | AES-256                   |    0.4ms |       2500 |
-
 
 

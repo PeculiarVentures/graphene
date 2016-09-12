@@ -80,5 +80,6 @@ ${CMDS[$CMD]}
 exit
 EOF
 done
-sed -i 's/^>\s*$//' $OUTPUT
+sed -i '/^=\(=\)*=$/d' $OUTPUT
+sed -i '/^>\s*$/d' $OUTPUT
 sed -i '/Thanks for using/d' $OUTPUT
