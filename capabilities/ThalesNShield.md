@@ -18,15 +18,8 @@
 
 Module info
 ==============================
-
-  Library: /opt/nfast/toolkits/pkcs11/libcknfast.so
-  Name: nShield
-  Cryptoki version: 2.1
-
-
-Session is started
-
-
+ 
+ 
 | Algorithm name            | h | s | v | e | d | w | u | g | D |
 |---------------------------|---|---|---|---|---|---|---|---|---|
 | RSA_PKCS_KEY_PAIR_GEN     |   |   |   |   |   |   |   | x |   |
@@ -50,14 +43,14 @@ Session is started
 | DSA                       |   | x | x |   |   |   |   |   |   |
 | DSA_SHA1                  |   | x | x |   |   |   |   |   |   |
 | DSA_PARAMETER_GEN         |   |   |   |   |   |   |   | x |   |
-| unknown                   |   |   |   |   |   |   |   | x |   |
-| unknown                   |   | x | x |   |   |   |   |   |   |
-| unknown                   |   | x | x |   |   |   |   |   |   |
-| unknown                   |   | x | x |   |   |   |   |   |   |
-| unknown                   |   | x | x |   |   |   |   |   |   |
-| unknown                   |   | x | x |   |   |   |   |   |   |
-| unknown                   |   | x | x |   |   |   |   |   |   |
-| unknown                   |   |   |   |   |   |   |   | x |   |
+| KCDSA_KEY_PAIR_GEN        |   |   |   |   |   |   |   | x |   |
+| KCDSA                     |   | x | x |   |   |   |   |   |   |
+| KCDSA_SHA1                |   | x | x |   |   |   |   |   |   |
+| KCDSA_SHA224              |   | x | x |   |   |   |   |   |   |
+| KCDSA_SHA256              |   | x | x |   |   |   |   |   |   |
+| KCDSA_HAS160              |   | x | x |   |   |   |   |   |   |
+| KCDSA_RIPEMD160           |   | x | x |   |   |   |   |   |   |
+| KCDSA_PARAMETER_GEN       |   |   |   |   |   |   |   | x |   |
 | DH_PKCS_KEY_PAIR_GEN      |   |   |   |   |   |   |   | x |   |
 | DH_PKCS_DERIVE            |   |   |   |   |   |   |   |   | x |
 | EC_KEY_PAIR_GEN           |   |   |   |   |   |   |   | x |   |
@@ -89,19 +82,18 @@ Session is started
 | AES_MAC_GENERAL           |   | x | x |   |   |   |   |   |   |
 | AES_ECB_ENCRYPT_DATA      |   |   |   |   |   |   |   |   | x |
 | AES_CBC_ENCRYPT_DATA      |   |   |   |   |   |   |   |   | x |
-| unknown                   |   | x | x |   |   |   |   |   |   |
 | AES_CMAC                  |   | x | x |   |   |   |   |   |   |
-| unknown                   |   | x | x |   |   |   |   |   |   |
-| unknown                   |   |   |   |   |   |   |   | x |   |
-| unknown                   |   |   |   | x | x | x | x |   | x |
-| unknown                   |   |   |   | x | x | x | x |   |   |
-| unknown                   |   |   |   | x | x | x | x |   |   |
-| unknown                   |   |   |   |   |   |   |   |   | x |
-| unknown                   |   |   |   |   |   |   |   |   | x |
-| unknown                   |   | x | x |   |   |   |   |   |   |
-| unknown                   |   | x | x |   |   |   |   |   |   |
+| NC_AES_CMAC               |   | x | x |   |   |   |   |   |   |
+| SEED_KEY_GEN              |   |   |   |   |   |   |   | x |   |
+| SEED_ECB                  |   |   |   | x | x | x | x |   | x |
+| SEED_CBC                  |   |   |   | x | x | x | x |   |   |
+| SEED_CBC_PAD              |   |   |   | x | x | x | x |   |   |
+| SEED_ECB_ENCRYPT_DATA     |   |   |   |   |   |   |   |   | x |
+| SEED_CBC_ENCRYPT_DATA     |   |   |   |   |   |   |   |   | x |
+| SEED_MAC                  |   | x | x |   |   |   |   |   |   |
+| SEED_MAC_GENERAL          |   | x | x |   |   |   |   |   |   |
 | MD5                       | x |   |   |   |   |   |   |   |   |
-| unknown                   |   |   |   |   |   |   |   | x |   |
+| NC_MD5_HMAC_KEY_GEN       |   |   |   |   |   |   |   | x |   |
 | MD5_HMAC                  |   | x | x |   |   |   |   |   |   |
 | MD5_HMAC_GENERAL          |   | x | x |   |   |   |   |   |   |
 | SHA_1                     | x |   |   |   |   |   |   |   |   |
@@ -110,100 +102,63 @@ Session is started
 | SHA384                    | x |   |   |   |   |   |   |   |   |
 | SHA512                    | x |   |   |   |   |   |   |   |   |
 | RIPEMD160                 | x |   |   |   |   |   |   |   |   |
-| unknown                   |   |   |   |   |   |   |   | x |   |
+| NC_SHA_1_HMAC_KEY_GEN     |   |   |   |   |   |   |   | x |   |
 | SHA_1_HMAC                |   | x | x |   |   |   |   |   |   |
 | SHA_1_HMAC_GENERAL        |   | x | x |   |   |   |   |   |   |
-| unknown                   |   |   |   |   |   |   |   | x |   |
+| NC_SHA224_HMAC_KEY_GEN    |   |   |   |   |   |   |   | x |   |
 | SHA224_HMAC               |   | x | x |   |   |   |   |   |   |
 | SHA224_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |
-| unknown                   |   |   |   |   |   |   |   | x |   |
+| NC_SHA256_HMAC_KEY_GEN    |   |   |   |   |   |   |   | x |   |
 | SHA256_HMAC               |   | x | x |   |   |   |   |   |   |
 | SHA256_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |
-| unknown                   |   |   |   |   |   |   |   | x |   |
+| NC_SHA384_HMAC_KEY_GEN    |   |   |   |   |   |   |   | x |   |
 | SHA384_HMAC               |   | x | x |   |   |   |   |   |   |
 | SHA384_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |
-| unknown                   |   |   |   |   |   |   |   | x |   |
+| NC_SHA512_HMAC_KEY_GEN    |   |   |   |   |   |   |   | x |   |
 | SHA512_HMAC               |   | x | x |   |   |   |   |   |   |
 | SHA512_HMAC_GENERAL       |   | x | x |   |   |   |   |   |   |
-| unknown                   | x |   |   |   |   |   |   |   |   |
+| HAS160                    | x |   |   |   |   |   |   |   |   |
 | GENERIC_SECRET_KEY_GEN    |   |   |   |   |   |   |   | x |   |
 | XOR_BASE_AND_DATA         |   |   |   |   |   |   |   |   | x |
 | CONCATENATE_BASE_AND_KEY  |   |   |   |   |   |   |   |   | x |
-| unknown                   |   |   |   |   |   |   |   |   | x |
+| PUBLIC_FROM_PRIVATE       |   |   |   |   |   |   |   |   | x |
 | PBE_MD5_DES_CBC           |   |   |   |   |   |   |   | x |   |
-| unknown                   |   |   |   |   |   | x |   |   |   |
-| unknown                   |   |   |   |   |   |   |   | x |   |
-| unknown                   |   |   |   |   |   |   |   |   | x |
-| unknown                   |   |   |   |   |   |   |   |   | x |
+| WRAP_RSA_CRT_COMPONENTS   |   |   |   |   |   | x |   |   |   |
+| CAC_TK_DERIVATION         |   |   |   |   |   |   |   | x |   |
+| NC_AES_CMAC_KEY_DERIVATION |   |   |   |   |   |   |   |   | x |
+| NC_AES_CMAC_KEY_DERIVATION_SCP03 |   |   |   |   |   |   |   |   | x |
 
-106 algorithm(s) in list
+105 algorithm(s) in list
 
-
-
+ 
 #### Performance
-##### Encryption
-
-Module info
-==============================
-
-  Library: /opt/nfast/toolkits/pkcs11/libcknfast.so
-  Name: nShield
-  Cryptoki version: 2.1
-
-
-Session is started
-
-
-| Algorithm                 |  Encrypt |  Decrypt | Encrypt/s | Decrypt/s |
-|---------------------------|---------:|---------:|----------:|----------:|
-| AES-CBC128                |   1.24ms |   1.03ms |   806.452 |   970.874 |
-| AES-CBC192                |   1.12ms |   1.11ms |   892.857 |   900.901 |
-| AES-CBC256                |  1.135ms |  1.025ms |   881.057 |    975.61 |
-
-
-
-##### Signing
-
-Module info
-==============================
-
-  Library: /opt/nfast/toolkits/pkcs11/libcknfast.so
-  Name: nShield
-  Cryptoki version: 2.1
-
-
-Session is started
-
-
-| Algorithm                 |     Sign |   Verify |    Sign/s |  Verify/s |
-|---------------------------|---------:|---------:|----------:|----------:|
-| RSA-1024                  |  0.645ms |  0.595ms |  1550.388 |  1680.672 |
-| RSA-2048                  |  1.175ms |   0.56ms |   851.064 |  1785.714 |
-| RSA-4096                  |   6.34ms |   0.89ms |   157.729 |  1123.596 |
-
-
-
 ##### Key generation
-
-Module info
-==============================
-
-  Library: /opt/nfast/toolkits/pkcs11/libcknfast.so
-  Name: nShield
-  Cryptoki version: 2.1
-
-
-Session is started
-
 
 | Algorithm                 | Generate | Generate/s |
 |---------------------------|---------:|-----------:|
-| RSA-1024                  |  119.2ms |      8.389 |
-| RSA-2048                  | 1156.2ms |      0.865 |
-| RSA-4096                  |   5621ms |      0.178 |
-| ECDSA-SECP192R1           |    5.4ms |    185.185 |
-| ECDSA-SECP256R1           |      5ms |        200 |
-| ECDSA-SECP384R1           |    6.4ms |     156.25 |
-| AES-128                   |    2.2ms |    454.545 |
-| AES-192                   |    2.4ms |    416.667 |
-| AES-256                   |    2.2ms |    454.545 |
+| RSA-1024                  |    202ms |       4.95 |
+| RSA-2048                  |  950.4ms |      1.052 |
+| RSA-4096                  | 4827.4ms |      0.207 |
+| ECDSA-SECP192R1           |      7ms |    142.857 |
+| ECDSA-SECP256R1           |    6.4ms |     156.25 |
+| ECDSA-SECP384R1           |      8ms |        125 |
+| AES-128                   |    3.2ms |      312.5 |
+| AES-192                   |    2.6ms |    384.615 |
+| AES-256                   |      3ms |    333.333 |
+
+##### Signing
+ 
+| Algorithm                 |     Sign |   Verify |    Sign/s |  Verify/s |
+|---------------------------|---------:|---------:|----------:|----------:|
+| RSA-1024                  |   0.78ms |  0.545ms |  1282.051 |  1834.862 |
+| RSA-2048                  |  1.605ms |    0.7ms |   623.053 |  1428.571 |
+| RSA-4096                  |   6.59ms |  1.135ms |   151.745 |   881.057 |
+
+##### Encryption
+ 
+| Algorithm                 |  Encrypt |  Decrypt | Encrypt/s | Decrypt/s |
+|---------------------------|---------:|---------:|----------:|----------:|
+| AES-CBC128                |   1.23ms |  1.175ms |   813.008 |   851.064 |
+| AES-CBC192                |  1.175ms |  1.215ms |   851.064 |   823.045 |
+| AES-CBC256                |  1.255ms |   1.24ms |   796.813 |   806.452 |
+
