@@ -28,7 +28,7 @@ describe("Slot", function () {
     });
 
     it("slot props", function () {
-        var slot = slots.items(0);
+        var slot = slots.items(1);
 		
         // slot
         assert.equal(slot.flags, 1);
