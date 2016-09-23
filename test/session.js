@@ -88,7 +88,8 @@ describe("Session", function() {
             valueLen: 256/8,
             extractable: false,
             sensitive: false,
-            encrypt: true
+            encrypt: true,
+            private: true
         });
 
         // test objs length

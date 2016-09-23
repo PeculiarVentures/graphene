@@ -28,10 +28,10 @@ describe("Slot", function () {
     });
 
     it("slot props", function () {
-        var slot = slots.items(1);
+        var slot = slots.items(config.controlValues.slot.slotIndex);
 		
         // slot
-        assert.equal(slot.flags, 1);
+        assert.notEqual(slot.flags, 0);
         assert.equal(slot.manufacturerID,
           config.controlValues.slot.token.manufacturerID);
         assert.notEqual(slot.slotDescription, "");
