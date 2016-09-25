@@ -13,10 +13,10 @@ export class RsaOaepParams implements IParams {
     type = MechParams.RsaOAEP;
 
 
-    constructor(hashAlg: MechanismEnum = MechanismEnum.SHA1, mgf: RsaMgf = RsaMgf.MGF1_SHA1, sourceData: Buffer = new Buffer(0)) {
+    constructor(hashAlg: MechanismEnum = MechanismEnum.SHA1, mgf: RsaMgf = RsaMgf.MGF1_SHA1, sourceData: Buffer | null = null) {
         this.hashAlgorithm = hashAlg;
         this.mgf = mgf;
-        this.sourceData = sourceData;
+        this.sourceData = sourceData!;
     }
 
     toCKI(): pkcs11.RsaOAEP {
