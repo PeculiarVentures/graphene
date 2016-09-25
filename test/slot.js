@@ -1,7 +1,7 @@
 var assert = require("assert");
 var config = require("./config.json");
 var graphene = require("../build/graphene");
-
+var pkcs11 = require("pkcs11js");
 var Module = graphene.Module;
 
 describe("Slot", function () {
@@ -28,24 +28,30 @@ describe("Slot", function () {
     });
 
     it("slot props", function () {
-        var slot = slots.items(0);
+        var slot = slots.items(config.controlValues.slot.slotIndex);
 		
         // slot
-        assert.equal(slot.flags, 1);
-        assert.equal(slot.manufacturerID, config.controlValues.token.manufacturerID);
-        assert.equal(!!slot.slotDescription, true);
+        assert.notEqual(slot.flags, 0);
+        assert.equal(slot.manufacturerID,
+          config.controlValues.slot.token.manufacturerID);
+        assert.notEqual(slot.slotDescription, "");
     });
 
     it("token props", function () {
-        var slot = slots.items(0);
+        var slot = slots.items(config.controlValues.slot.slotIndex);
 		
         // token
         var token = slot.getToken();
 
-        assert.equal(token.flags, config.controlValues.token.flags);
-        assert.equal(token.label, config.controlValues.token.label);
-        assert.equal(token.manufacturerID, config.controlValues.token.manufacturerID);
-        assert.equal(token.minPinLen, config.controlValues.token.minPinLen);
+        assert.equal(token.flags, config.controlValues.slot.token.flags);
+        assert.equal(token.label, config.controlValues.slot.token.label);
+        assert.equal(token.manufacturerID, config.controlValues.slot.token.manufacturerID);
+        assert.equal(token.minPinLen, config.controlValues.slot.token.minPinLen);
+        if(token.flags & pkcs11.CKF_CLOCK_ON_TOKEN) {
+          assert.notEqual(token.timeUtc, undefined);
+        } else {
+          assert.equal(token.timeUtc, undefined);
+        }
     });
 
 });

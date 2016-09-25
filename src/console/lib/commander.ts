@@ -44,9 +44,9 @@ export class Command extends EventEmitter implements IDescription, ICommand {
 
         if (core.isObject(desc)) {
             let _desc = desc as IDescription;
-            this.description = _desc.description;
-            this.note = _desc.note;
-            this.example = _desc.example;
+            this.description = _desc.description!;
+            this.note = _desc.note!;
+            this.example = _desc.example!;
         }
         else
             this.description = desc as string || "";
@@ -57,7 +57,7 @@ export class Command extends EventEmitter implements IDescription, ICommand {
             longName: longName,
             shortName: param.shortName || longName.charAt(0),
             description: param.description || "",
-            type: param.type || null,
+            type: param.type,
             value: param.value,
             isRequired: (core.isEmpty(param.value) && param.isRequired === true),
             set: param.set || ((v) => { return v; })
@@ -158,7 +158,7 @@ export class Command extends EventEmitter implements IDescription, ICommand {
         let o: any = {
             commands: []
         };
-        let _param: string = null;
+        let _param: string | null = null;
         let fCommand = true;
         for (let i = 0; i < arCmd.length; i++) {
             let word = arCmd[i];
@@ -195,7 +195,7 @@ function get_short_name(name: string) {
 }
 
 function get_name(name: string, reg: RegExp) {
-    let res: string[] = null;
+    let res: RegExpExecArray | null;
     if (res = reg.exec(name)) {
         return res[1];
     }
@@ -295,9 +295,9 @@ export class Commander extends EventEmitter implements ICommand {
                 let opt: {[longName: string]: string} = {};
                 for (let i in that.options) {
                     let _prop = that.options[i];
-                    if (_prop.shortName in command || _prop.longName in command) {
-                        let prop = _prop.shortName in command ? command[_prop.shortName] : command[_prop.longName];
-                        prop = _prop.set(prop);
+                    if (_prop.shortName! in command || _prop.longName in command) {
+                        let prop = _prop.shortName! in command ? command[_prop.shortName!] : command[_prop.longName];
+                        prop = _prop.set!(prop);
                         if (core.isEmpty(prop))
                             prop = _prop.value;
                         opt[_prop.longName] = prop;

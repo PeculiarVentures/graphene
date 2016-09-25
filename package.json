@@ -39,7 +39,7 @@
         "mocha": "^3",
         "npm-run-all": "^3",
         "nyc": "^8",
-        "typescript": "^1.8.10",
+        "typescript": "^2",
         "typings": "^1.3.3",
         "watch": "^0"
         },

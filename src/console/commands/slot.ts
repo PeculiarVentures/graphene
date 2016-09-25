@@ -1,5 +1,4 @@
 import * as defs from "./defs";
-import {Command} from "./defs";
 const {consoleApp} = defs;
 
 function print_slot(slot: defs.Slot) {
@@ -215,7 +214,7 @@ export let cmdSlotStop = cmdSlot.createCommand("stop", {
       consoleApp.session.logout();
       consoleApp.session.close();
     }
-    consoleApp.session = null;
+    consoleApp.session = null!;
     console.log();
     console.log("Session is stopped");
     console.log();

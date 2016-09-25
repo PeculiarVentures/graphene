@@ -6,12 +6,12 @@ export class BaseObject {
 
     protected lib: pkcs11.PKCS11;
 
-    constructor(lib?: pkcs11.PKCS11) {
+    constructor(lib: pkcs11.PKCS11) {
         Object.defineProperty(this, "lib", {
             writable: true,
             enumerable: false
         });
-        this.lib = lib || null;
+        this.lib = lib;
     }
 }
 
