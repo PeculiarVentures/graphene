@@ -63,7 +63,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
             throw e;
         }
         session.close();
-    });
+    }).timeout(60000);
     
     it("changing PIN for SO", function() {
         var session = slot.open(2|4);
@@ -79,7 +79,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
             throw e;
         }
         session.close();
-    });
+    }).timeout(60000);
 
     it("create", function() {
         // create new session for current test
@@ -127,7 +127,8 @@ function changePIN(session, userType, oldPIN, newPIN) {
             valueLen: 256/8,
             extractable: false,
             sensitive: false,
-            encrypt: true
+            encrypt: true,
+            private: true,
         });
 
         // test objs length
