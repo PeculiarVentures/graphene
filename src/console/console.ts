@@ -2,7 +2,6 @@
 
 // module init -p ../../../safenet-config.json
 
-import * as fs from "fs";
 import * as readline from "readline";
 import {CommandError} from "./lib/error";
 import * as defs from "./commands/defs";
@@ -45,7 +44,8 @@ defs.commander.on("error", (e: CommandError) => {
     console.log(`Error: ${e.message}`);
     console.log();
 
-    // console.log("Stack:", e.stack);
+    console.log(`Error: ${e.message}`);
+    console.log();
     if (e.command && e.command.print) {
         console.log();
         e.command.print("usage");

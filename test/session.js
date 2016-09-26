@@ -12,7 +12,7 @@ describe("Session", function() {
     before(function() {
         mod = Module.load(config.init.lib, config.init.libName);
         mod.initialize();
-        slot = mod.getSlots(0);
+        slot = mod.getSlots(config.controlValues.slot.slotIndex);
     });
 
     after(function() {
@@ -20,6 +20,18 @@ describe("Session", function() {
             session.logout();
         mod.finalize();
     });
+
+    function test_manufacturer(manufacturerID){
+		if (mod.manufacturerID == manufacturerID) {
+			console.warn("    \x1b[33mWARN:\x1b[0m Test is not supported for %s", manufacturerID);
+			return true;
+		}	
+		return false;
+	}
+
+  	function isThalesNShield() {
+    	return test_manufacturer("nCipher Corp. Ltd");
+  	}
 
     it("login/logout", function() {
         var session = slot.open();
@@ -31,7 +43,7 @@ describe("Session", function() {
         session.close();
     });
 
-    function changePIN(session, userType, oldPIN, newPIN) {
+function changePIN(session, userType, oldPIN, newPIN) {
         session.login(oldPIN, userType);
         session.setPin(oldPIN, newPIN);
         session.logout();
@@ -51,7 +63,7 @@ describe("Session", function() {
             throw e;
         }
         session.close();
-    });
+    }).timeout(60000);
     
     it("changing PIN for SO", function() {
         var session = slot.open(2|4);
@@ -67,13 +79,14 @@ describe("Session", function() {
             throw e;
         }
         session.close();
-    });
+    }).timeout(60000);
 
     it("create", function() {
         // create new session for current test
         session = slot.open();
         session.login(config.init.pin);
-
+        var modulus = new Buffer(128);
+        modulus[127] = 1;
         var objs = session.find();
         assert.equal(objs.length, 0, "Wrong init objs length");
 
@@ -81,20 +94,20 @@ describe("Session", function() {
             class: graphene.ObjectClass.PUBLIC_KEY,
             keyType: graphene.KeyType.RSA,
             wrap: true,
-            modulus: new Buffer([1, 0, 1]),
-            publicExponent: new Buffer(1024)
+            modulus: modulus,
+            publicExponent: new Buffer([1, 0, 1])
         });
 
         var obj = session.create({
             class: graphene.ObjectClass.DATA,
             application: "application",
-            objectId: new Buffer("objectId"),
+            label: new Buffer("My label"),
             value: new Buffer("value")
         });
 
         var data = obj.toType();
         assert.equal(data.application, "application");
-        assert.equal(data.objectId.toString(), "objectId");
+        assert.equal(data.label.toString(), "My label");
         assert.equal(data.value.toString(), "value");
         assert.equal(data.class, 0);
 
@@ -114,7 +127,8 @@ describe("Session", function() {
             valueLen: 256/8,
             extractable: false,
             sensitive: false,
-            encrypt: true
+            encrypt: true,
+            private: true,
         });
 
         // test objs length
@@ -132,28 +146,32 @@ describe("Session", function() {
         objs = session.find();
         assert.equal(objs.length, 2, "Wrong objs length");
     });
-
+    
     it("find", function() {
+        var template_generator = function(label, value) {
+            if (isThalesNShield()) {
+                return {
+                    class: graphene.ObjectClass.DATA,
+                    application: "testFind",
+                    label: new Buffer(label),
+                    value: new Buffer(value)
+                };
+            } else{
+                return {
+                    class: graphene.ObjectClass.DATA,
+                    application: "testFind",
+                    objectId: new Buffer(label),
+                    value: new Buffer(value)
+                };
+            }
+        }
+        
         var count = session.find().length;
 
-        session.create({
-            class: graphene.ObjectClass.DATA,
-            application: "testFind",
-            objectId: new Buffer("objectId"),
-            value: new Buffer("1")
-        });
-        session.create({
-            class: graphene.ObjectClass.DATA,
-            application: "testFind",
-            objectId: new Buffer("objectId"),
-            value: new Buffer("2")
-        });
-        session.create({
-            class: graphene.ObjectClass.DATA,
-            application: "testFind",
-            objectId: new Buffer("objectId"),
-            value: new Buffer("3")
-        });
+        session.create(template_generator("first", "1"));
+        session.create(template_generator("second", "2"));
+        session.create(template_generator("third", "3"));
+        
         assert.equal(session.find().length, count + 3);
         var objs = session.find({
             application: "testFind"
@@ -171,14 +189,12 @@ describe("Session", function() {
             class: graphene.ObjectClass.DATA,
             label: "destroy",
             application: "application",
-            objectId: new Buffer("objectId"),
             value: new Buffer("1")
         });
         session.create({
             class: graphene.ObjectClass.DATA,
             label: "destroy",
             application: "application",
-            objectId: new Buffer("objectId"),
             value: new Buffer("2")
         });
 
@@ -197,15 +213,13 @@ describe("Session", function() {
             class: graphene.ObjectClass.DATA,
             label: "destroy",
             application: "application",
-            objectId: new Buffer("objectId"),
-            value: new Buffer("1")
+            value: new Buffer("first")
         });
         session.create({
             class: graphene.ObjectClass.DATA,
             label: "destroy",
             application: "application",
-            objectId: new Buffer("objectId"),
-            value: new Buffer("2")
+            value: new Buffer("second")
         });
 
         assert.equal(session.find().length, count + 2);
@@ -234,7 +248,9 @@ describe("Session", function() {
             extractable: true,
             encrypt: true
         });
-        assert.equal(!key.checkValue, false);
+        if(!isThalesNShield()) {
+            assert.equal(!key.checkValue, false);
+        }
         assert.equal(key.encrypt, true);
         assert.equal(key.getAttribute("value").value.length, keylen);
     });
@@ -253,6 +269,10 @@ describe("Session", function() {
         assert.equal(!keys, false);
         assert.equal(keys.publicKey.class, graphene.ObjectClass.PUBLIC_KEY);
         assert.equal(keys.privateKey.class, graphene.ObjectClass.PRIVATE_KEY);
+    });
+
+    it("getObject wrong handle", function() {
+        assert.equal(!session.getObject(new Buffer([0xff, 0xff])), true);
     });
 
     it("getObject", function() {
@@ -280,13 +300,13 @@ describe("Session", function() {
     it("sign/verify RSA", function() {
         var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
             keyType: graphene.KeyType.RSA,
-            encrypt: true,
+            verify: true,
             modulusBits: 1024,
             publicExponent: new Buffer([3])
         },
             {
                 keyType: graphene.KeyType.RSA,
-                decrypt: true
+                sign: true,
             });
 
         test_sign(graphene.MechanismEnum.SHA1_RSA_PKCS, keys.privateKey, keys.publicKey);

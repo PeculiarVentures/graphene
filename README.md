@@ -11,6 +11,7 @@ PKCS #11 (also known as CryptoKI or PKCS11) is the standard interface for intera
 
 It has been tested with :
 - [SoftHSM2](https://www.opendnssec.org/softhsm/)
+- [Thales nShield Solo+](https://www.thales-esecurity.com/products-and-services/products-and-services/hardware-security-modules/general-purpose-hsms/nshield-solo)
 - [Safenet Luna HSMs](http://www.safenet-inc.com/)
 - [RuToken](http://www.rutoken.ru/)
 

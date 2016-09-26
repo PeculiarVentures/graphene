@@ -35,9 +35,9 @@ export interface IConsoleApplication {
 }
 
 export const consoleApp: IConsoleApplication = {
-    module: null,
-    session: null,
-    slots: null
+    module: null!,
+    session: null!,
+    slots: null!
 };
 
 /**
@@ -70,7 +70,7 @@ export const options = {
             let slot = consoleApp.slots.items(v);
             if (!slot)
                 throw new Error("Can not find Slot by index '" + v + "'");
-            return <any>slot;
+            return <any> slot;
         },
         isRequired: true
     },
@@ -86,11 +86,11 @@ export function get_slot_list() {
 }
 
 export function check_session() {
-    if (!(consoleApp.session)) {
-        let error = new Error("Session is not opened" + "\n\n" +
-            "  " + NOTE_SESSION);
-        throw error;
-    }
+  if (!(consoleApp.session)) {
+    let error = new Error("Session is not opened" + "\n\n" +
+      "  " + NOTE_SESSION);
+    throw error;
+  }
 }
 
 export function print_module_info(mod: graphene.Module) {
@@ -98,7 +98,7 @@ export function print_module_info(mod: graphene.Module) {
     console.log(`  Library: ${mod.libFile}`);
     console.log(`  Name: ${mod.libName}`);
     console.log(`  Cryptoki version: ${mod.cryptokiVersion.major}.${mod.cryptokiVersion.minor}`);
-    console.log();
+        console.log();
 }
 
 export function print_slot_info(slot: graphene.Slot) {

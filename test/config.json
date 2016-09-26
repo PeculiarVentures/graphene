@@ -9,12 +9,15 @@
             "manufacturerID": "SoftHSM",
             "libraryDescription": "Implementation of PKCS11"
         },
-        "token": {
-            "flags": 1069,
-            "label": "My slot 0",
-            "manufacturerID": "SoftHSM project",
-            "serialNumber": "1a918b5db0a83cb1",
-            "minPinLen": 4
+        "slot": {
+            "slotIndex": 0,
+            "token": {
+                "flags": 1069,
+                "label": "My slot 0",
+                "manufacturerID": "SoftHSM project",
+                "serialNumber": "1a918b5db0a83cb1",
+                "minPinLen": 4
+            }
         },
         "slotsCount": 2
     }

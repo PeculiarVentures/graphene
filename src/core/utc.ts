@@ -1,4 +1,4 @@
-export function dateFromString(text: string){
+export function dateFromString(text: string) {
     let reg = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
     let vals = reg.exec(text);
     if (!vals) return null;

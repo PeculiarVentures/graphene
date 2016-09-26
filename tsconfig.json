@@ -6,10 +6,13 @@
         "outDir": "build",
         "removeComments": true,
         "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "strictNullChecks": true,
         "sourceMap": false,
-        "declaration": false
+        "declaration": false,
+        "experimentalDecorators": true
     },
     "exclude": [
-        "node_modules"
+        "node_modules", "build"
     ]
 }

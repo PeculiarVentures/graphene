@@ -1,6 +1,4 @@
 import * as defs from "./defs";
-import {Command} from "./defs";
-import * as fs from "fs";
 const {consoleApp, Handle} = defs;
 
 declare let global: any;
@@ -111,7 +109,7 @@ export let cmdObjectTest = cmdObject.createCommand("test", {
 })
     .on("call", function(cmd: any) {
         defs.check_session();
-        let keys = consoleApp.session.generateKeyPair(defs.KeyGenMechanism.RSA, {
+        consoleApp.session.generateKeyPair(defs.KeyGenMechanism.RSA, {
             keyType: defs.KeyType.RSA,
             encrypt: true,
             modulusBits: 1024,
@@ -138,7 +136,6 @@ export let cmdObjectDelete = cmdObject.createCommand("delete", {
         obj: string;
     }) {
         defs.check_session();
-        let objList = consoleApp.session.find();
         if (cmd.obj === "all") {
             global["readline"].question("Do you really want to remove ALL objects (Y/N)?", (answer: string) => {
                 if (answer && answer.toLowerCase() === "y") {
@@ -159,7 +156,7 @@ export let cmdObjectDelete = cmdObject.createCommand("delete", {
             console.log();
             global["readline"].question("Do you really want to remove this object (Y/N)?", (answer: string) => {
                 if (answer && answer.toLowerCase() === "y") {
-                    consoleApp.session.destroy(obj);
+                    consoleApp.session.destroy(obj!);
                     console.log();
                     console.log("Object was successfully removed");
                     console.log();

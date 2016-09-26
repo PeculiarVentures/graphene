@@ -1,7 +1,6 @@
 import * as pkcs11 from "pkcs11js";
 import * as core from "../core";
 import {Session} from "../session";
-import * as objects from "../object";
 import * as mech from "../mech";
 
 export class Digest extends core.BaseObject {

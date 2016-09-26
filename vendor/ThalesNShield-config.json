@@ -1,0 +1,7 @@
+{
+    "lib": "/opt/nfast/toolkits/pkcs11/libcknfast.so",
+    "libName": "Thales NShield",
+    "slot": 1,
+    "pin": "password",
+    "vendor": ["vendor/ThalesNShield.json"]
+}
