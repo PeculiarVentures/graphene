@@ -1,4 +1,4 @@
-**Thales nShield PKCS#11 DEVICE CAPABILITIES**
+**Thales nShield Solo+ PKCS#11 DEVICE CAPABILITIES**
 ---
 ### [Thales nShield Solo+](https://www.thales-esecurity.com/products-and-services/products-and-services/hardware-security-modules/general-purpose-hsms/nshield-solo)
 
