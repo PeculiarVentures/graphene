@@ -127,18 +127,12 @@ var BUF_STEP = BUF_SIZE;
 var BUF = new Buffer(BUF_STEP);
 function test_sign_operation(session, buf, key, algName) {
     var sig = session.createSign(algName, key.privateKey || key);
-    for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
-        sig.update(buf);
-    }
-    var res = sig.final();
+    var res = sig.once(buf);
     return res;
 }
 function test_verify_operation(session, buf, key, algName, sig) {
     var verify = session.createVerify(algName, key.publicKey || key);
-    for (var i = 1; i <= BUF_SIZE; i = i + BUF_STEP) {
-        verify.update(buf);
-    }
-    var res = verify.final(sig);
+    var res = verify.once(buf, sig);
     return res;
 }
 function test_encrypt_operation(session, buf, key, alg) {
@@ -157,7 +151,7 @@ function test_decrypt_operation(session, key, alg, message) {
     decMsg = Buffer.concat([decMsg, dec.final()]);
     return decMsg;
 }
-function test_sign(session, cmd, prefix, postfix, signAlg) {
+function test_sign(session, cmd, prefix, postfix, signAlg, digestAlg) {
     try {
         var alg = prefix + "-" + postfix;
         if (cmd.alg === "all" || cmd.alg === prefix || cmd.alg === alg) {
@@ -168,15 +162,20 @@ function test_sign(session, cmd, prefix, postfix, signAlg) {
             var buf = new Buffer(BUF_SIZE);
             var t1 = new defs.Timer();
             var sig = null;
-            test_sign_operation(session, buf, key, signAlg);
+            var digested = buf;
+            if (digestAlg) {
+                var digest = session.createDigest(digestAlg);
+                digested = digest.once(buf);
+            }
+            test_sign_operation(session, digested, key, signAlg);
             t1.start();
             for (var i = 0; i < cmd.it; i++)
-                sig = test_sign_operation(session, buf, key, signAlg);
+                sig = test_sign_operation(session, digested, key, signAlg);
             t1.stop();
             var t2 = new defs.Timer();
             t2.start();
             for (var i = 0; i < cmd.it; i++) {
-                test_verify_operation(session, buf, key, signAlg, sig);
+                test_verify_operation(session, digested, key, signAlg, sig);
             }
             t2.stop();
             var r1 = Math.round((t1.time / cmd.it) * 1000) / 1000 + "ms";
@@ -372,18 +371,18 @@ exports.cmdTestSign = exports.cmdTest.createCommand("sign", {
     }
     console.log();
     print_test_sign_header();
-    test_sign(consoleApp.session, cmd, "rsa", "1024", "SHA1_RSA_PKCS");
-    test_sign(consoleApp.session, cmd, "rsa", "2048", "SHA1_RSA_PKCS");
-    test_sign(consoleApp.session, cmd, "rsa", "4096", "SHA1_RSA_PKCS");
-    test_sign(consoleApp.session, cmd, "ecdsa", "secp160r1", "ECDSA_SHA1");
-    test_sign(consoleApp.session, cmd, "ecdsa", "secp192r1", "ECDSA_SHA256");
-    test_sign(consoleApp.session, cmd, "ecdsa", "secp256r1", "ECDSA_SHA256");
-    test_sign(consoleApp.session, cmd, "ecdsa", "secp384r1", "ECDSA_SHA256");
-    test_sign(consoleApp.session, cmd, "ecdsa", "secp256k1", "ECDSA_SHA256");
-    test_sign(consoleApp.session, cmd, "ecdsa", "brainpoolP192r1", "ECDSA_SHA256");
-    test_sign(consoleApp.session, cmd, "ecdsa", "brainpoolP224r1", "ECDSA_SHA256");
-    test_sign(consoleApp.session, cmd, "ecdsa", "brainpoolP256r1", "ECDSA_SHA256");
-    test_sign(consoleApp.session, cmd, "ecdsa", "brainpoolP320r1", "ECDSA_SHA256");
+    test_sign(consoleApp.session, cmd, "rsa", "1024", "SHA1_RSA_PKCS", null);
+    test_sign(consoleApp.session, cmd, "rsa", "2048", "SHA1_RSA_PKCS", null);
+    test_sign(consoleApp.session, cmd, "rsa", "4096", "SHA1_RSA_PKCS", null);
+    test_sign(consoleApp.session, cmd, "ecdsa", "secp160r1", "ECDSA_SHA1", null);
+    test_sign(consoleApp.session, cmd, "ecdsa", "secp192r1", "ECDSA", "SHA256");
+    test_sign(consoleApp.session, cmd, "ecdsa", "secp256r1", "ECDSA", "SHA256");
+    test_sign(consoleApp.session, cmd, "ecdsa", "secp384r1", "ECDSA", "SHA256");
+    test_sign(consoleApp.session, cmd, "ecdsa", "secp256k1", "ECDSA", "SHA256");
+    test_sign(consoleApp.session, cmd, "ecdsa", "brainpoolP192r1", "ECDSA", "SHA256");
+    test_sign(consoleApp.session, cmd, "ecdsa", "brainpoolP224r1", "ECDSA", "SHA256");
+    test_sign(consoleApp.session, cmd, "ecdsa", "brainpoolP256r1", "ECDSA", "SHA256");
+    test_sign(consoleApp.session, cmd, "ecdsa", "brainpoolP320r1", "ECDSA", "SHA256");
     console.log();
 });
 function test_gen(session, cmd, prefix, postfix) {
