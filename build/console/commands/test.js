@@ -38,16 +38,12 @@ function gen_ECDSA(session, name, hexOid) {
     var keys = session.generateKeyPair(defs.KeyGenMechanism.ECDSA, {
         keyType: defs.KeyType.ECDSA,
         token: false,
-        wrap: true,
-        encrypt: true,
         verify: true,
         paramsEC: new Buffer(hexOid, "hex")
     }, {
         token: false,
         private: true,
         sign: true,
-        decrypt: true,
-        unwrap: true
     });
     return keys;
 }
@@ -58,6 +54,7 @@ var gen = {
         "4096": gen_RSA_4096,
     },
     ecdsa: {
+        "secp160r1": gen_ECDSA_secp160r1,
         "secp192r1": gen_ECDSA_secp192r1,
         "secp256r1": gen_ECDSA_secp256r1,
         "secp384r1": gen_ECDSA_secp384r1,
@@ -87,6 +84,9 @@ function gen_RSA_2048(session) {
 }
 function gen_RSA_4096(session) {
     return gen_RSA(session, 4096);
+}
+function gen_ECDSA_secp160r1(session) {
+    return gen_ECDSA(session, "test ECDSA-secp160r1", "06052b81040008");
 }
 function gen_ECDSA_secp192r1(session) {
     return gen_ECDSA(session, "test ECDSA-secp192r1", "06082A8648CE3D030101");
@@ -250,7 +250,7 @@ exports.cmdTest = defs.commander.createCommand("test", {
     this.help();
 });
 function check_sign_algs(alg) {
-    var list = ["all", "rsa", "rsa-1024", "rsa-2048", "rsa-4096", "ecdsa", "ecdsa-secp192r1", "ecdsa-secp256r1", "ecdsa-secp384r1", "ecdsa-secp256k1",
+    var list = ["all", "rsa", "rsa-1024", "rsa-2048", "rsa-4096", "ecdsa", "ecdsa-secp160r1", "ecdsa-secp192r1", "ecdsa-secp256r1", "ecdsa-secp384r1", "ecdsa-secp256k1",
         "ecdsa-brainpoolP192r1", "ecdsa-brainpoolP224r1", "ecdsa-brainpoolP256r1", "ecdsa-brainpoolP320r1"];
     return list.indexOf(alg) !== -1;
 }
@@ -332,7 +332,7 @@ exports.cmdTestSign = exports.cmdTest.createCommand("sign", {
     description: "test sign and verification performance" + "\n\n" +
         defs.pud("", 10) + "    Supported algorithms:\n" +
         defs.pud("", 10) + "      rsa, rsa-1024, rsa-2048, rsa-4096" + "\n" +
-        defs.pud("", 10) + "      ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1," + "\n" +
+        defs.pud("", 10) + "      ecdsa, ecdsa-secp160r1, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1," + "\n" +
         defs.pud("", 10) + "      ecdsa-secp256k1, ecdsa-brainpoolP192r1, ecdsa-brainpoolP224r1," + "\n" +
         defs.pud("", 10) + "      ecdsa-brainpoolP256r1, ecdsa-brainpoolP320r1" + "\n",
     note: defs.NOTE_SESSION,
@@ -375,6 +375,7 @@ exports.cmdTestSign = exports.cmdTest.createCommand("sign", {
     test_sign(consoleApp.session, cmd, "rsa", "1024", "SHA1_RSA_PKCS");
     test_sign(consoleApp.session, cmd, "rsa", "2048", "SHA1_RSA_PKCS");
     test_sign(consoleApp.session, cmd, "rsa", "4096", "SHA1_RSA_PKCS");
+    test_sign(consoleApp.session, cmd, "ecdsa", "secp160r1", "ECDSA_SHA1");
     test_sign(consoleApp.session, cmd, "ecdsa", "secp192r1", "ECDSA_SHA256");
     test_sign(consoleApp.session, cmd, "ecdsa", "secp256r1", "ECDSA_SHA256");
     test_sign(consoleApp.session, cmd, "ecdsa", "secp384r1", "ECDSA_SHA256");
@@ -421,7 +422,7 @@ exports.cmdTestGen = exports.cmdTest.createCommand("gen", {
     description: "test key generation performance" + "\n\n" +
         defs.pud("", 10) + "    Supported algorithms:\n" +
         defs.pud("", 10) + "      rsa, rsa-1024, rsa-2048, rsa-4096" + "\n" +
-        defs.pud("", 10) + "      ecdsa, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1," + "\n" +
+        defs.pud("", 10) + "      ecdsa, ecdsa-secp160r1, ecdsa-secp192r1, ecdsa-secp256r1, ecdsa-secp384r1," + "\n" +
         defs.pud("", 10) + "      ecdsa-secp256k1, ecdsa-brainpoolP192r1, ecdsa-brainpoolP224r1," + "\n" +
         defs.pud("", 10) + "      ecdsa-brainpoolP256r1, ecdsa-brainpoolP320r1" + "\n" +
         defs.pud("", 10) + "      aes, aes-cbc128, aes-cbc192, aes-cbc256",
@@ -455,6 +456,7 @@ exports.cmdTestGen = exports.cmdTest.createCommand("gen", {
     test_gen(consoleApp.session, cmd, "rsa", "1024");
     test_gen(consoleApp.session, cmd, "rsa", "2048");
     test_gen(consoleApp.session, cmd, "rsa", "4096");
+    test_gen(consoleApp.session, cmd, "ecdsa", "secp160r1");
     test_gen(consoleApp.session, cmd, "ecdsa", "secp192r1");
     test_gen(consoleApp.session, cmd, "ecdsa", "secp256r1");
     test_gen(consoleApp.session, cmd, "ecdsa", "secp384r1");
