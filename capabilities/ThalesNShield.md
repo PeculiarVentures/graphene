@@ -139,9 +139,10 @@ Module info
 | RSA-1024                  |    202ms |       4.95 |
 | RSA-2048                  |  950.4ms |      1.052 |
 | RSA-4096                  | 4827.4ms |      0.207 |
-| ECDSA-SECP192R1           |      7ms |    142.857 |
-| ECDSA-SECP256R1           |    6.4ms |     156.25 |
-| ECDSA-SECP384R1           |      8ms |        125 |
+| ECDSA-SECP160R1           |     20ms |         50 |
+| ECDSA-SECP192R1           |    5.4ms |    185.185 |
+| ECDSA-SECP256R1           |    5.6ms |    178.571 |
+| ECDSA-SECP384R1           |      7ms |    142.857 |
 | AES-128                   |    3.2ms |      312.5 |
 | AES-192                   |    2.6ms |    384.615 |
 | AES-256                   |      3ms |    333.333 |
@@ -153,6 +154,10 @@ Module info
 | RSA-1024                  |   0.78ms |  0.545ms |  1282.051 |  1834.862 |
 | RSA-2048                  |  1.605ms |    0.7ms |   623.053 |  1428.571 |
 | RSA-4096                  |   6.59ms |  1.135ms |   151.745 |   881.057 |
+| ECDSA-SECP160R1           |    1.9ms |   2.95ms |   526.316 |   338.983 |
+| ECDSA-SECP192R1           |    1.6ms |      2ms |       625 |       500 |
+| ECDSA-SECP256R1           |    1.4ms |   1.65ms |   714.286 |   606.061 |
+| ECDSA-SECP384R1           |    2.1ms |   2.35ms |    476.19 |   425.532 |
 
 ##### Encryption
  
