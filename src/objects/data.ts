@@ -1,4 +1,3 @@
-import * as core from "../core";
 import {Storage} from "./storage";
 
 /**

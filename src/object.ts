@@ -56,8 +56,8 @@ export class SessionObject extends core.HandleObject {
         }
         else {
             // constructor(handle: number, session: Session, lib: pkcs11.Pkcs11)
-            super(handle, lib);
-            this.session = session;
+            super(handle, lib!);
+            this.session = session!;
         }
 
     }

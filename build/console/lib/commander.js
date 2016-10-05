@@ -28,7 +28,7 @@ var Command = (function (_super) {
             longName: longName,
             shortName: param.shortName || longName.charAt(0),
             description: param.description || "",
-            type: param.type || null,
+            type: param.type,
             value: param.value,
             isRequired: (core.isEmpty(param.value) && param.isRequired === true),
             set: param.set || (function (v) { return v; })
@@ -151,7 +151,7 @@ function get_short_name(name) {
     return get_name(name, /^-(\w[\w-]*|\?)$/i);
 }
 function get_name(name, reg) {
-    var res = null;
+    var res;
     if (res = reg.exec(name)) {
         return res[1];
     }

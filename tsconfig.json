@@ -6,6 +6,8 @@
         "outDir": "build",
         "removeComments": true,
         "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "strictNullChecks": true,
         "sourceMap": false,
         "declaration": false,
         "experimentalDecorators": true

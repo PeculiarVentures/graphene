@@ -1,21 +1,14 @@
 import * as pkcs11 from "pkcs11js";
 import * as core from "./core";
 import * as fs from "fs";
-import {Slot} from "./slot";
 import * as obj from "./object";
 import {MechanismEnum} from "./mech_enum";
 import {IParams} from "./keys/params";
 export * from "./mech_enum";
 
-interface IMechanismInfo {
-    ulMinKeySize: number;
-    ulMaxKeySize: number;
-    flags: number;
-}
-
 export interface IAlgorithm {
     name: string;
-    params: Buffer | IParams;
+    params: Buffer | IParams | null;
 }
 
 export type MechanismType = MechanismEnum | obj.KeyGenMechanism | IAlgorithm | string;
@@ -121,7 +114,7 @@ export class Mechanism extends core.BaseObject {
     }
 
     static create(alg: MechanismType): pkcs11.Mechanism {
-        let res: pkcs11.Mechanism = null;
+        let res: pkcs11.Mechanism;
 
         let _alg: IAlgorithm;
         if (core.isString(alg)) {
@@ -173,7 +166,7 @@ export class Mechanism extends core.BaseObject {
             // vendor(name: string, value: number)
             let new_name = name;
             mechs[new_name] = value;
-            mechs[value] = new_name;
+            mechs[value as any] = new_name;
         }
     }
 

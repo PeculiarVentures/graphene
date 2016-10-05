@@ -1,6 +1,4 @@
 import * as pkcs11 from "pkcs11js";
-import * as core from "../../core";
-import {MechanismEnum} from "../../mech";
 import {IParams, MechParams} from "../params";
 
 export class AesCbcParams implements IParams, pkcs11.AesCBC {
@@ -17,7 +15,7 @@ export class AesCbcParams implements IParams, pkcs11.AesCBC {
 
     type = MechParams.AesCBC;
 
-    constructor(iv: Buffer, data: Buffer = null) {
+    constructor(iv: Buffer, data: Buffer = new Buffer(0)) {
         this.iv = iv;
         this.data = data;
     }

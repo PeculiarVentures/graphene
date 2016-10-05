@@ -50,7 +50,7 @@ var Mechanism = (function (_super) {
         this.flags = info.flags;
     };
     Mechanism.create = function (alg) {
-        var res = null;
+        var res;
         var _alg;
         if (core.isString(alg)) {
             _alg = { name: alg, params: null };

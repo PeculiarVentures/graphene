@@ -2,7 +2,7 @@ import * as defs from "./defs";
 const {consoleApp} = defs;
 
 function print_slot(slot: defs.Slot) {
-    defs.print_module_info(consoleApp.module);
+    defs.print_slot_info(slot);
 }
 
 /* ==========
@@ -214,7 +214,7 @@ export let cmdSlotStop = cmdSlot.createCommand("stop", {
       consoleApp.session.logout();
       consoleApp.session.close();
     }
-    consoleApp.session = null;
+    consoleApp.session = null!;
     console.log();
     console.log("Session is stopped");
     console.log();

@@ -1,5 +1,4 @@
 import * as pkcs11 from "pkcs11js";
-import * as core from "./core";
 
 export interface ITemplate {
     /**
@@ -401,11 +400,6 @@ export interface ITemplate {
     allowedMechanisms?: any;
 }
 
-interface IAttributeTemplate {
-    v: any;
-    t: string;
-}
-
 const TYPE_NUMBER = "number";
 const TYPE_BOOL = "boolen";
 const TYPE_STRING = "string";
@@ -604,14 +598,15 @@ function b2v(type: string, value: Buffer): any {
 
 export class Template {
 
-    static toPkcs11(tmpl: ITemplate) {
+    static toPkcs11(tmpl: ITemplate | null) {
         let res: pkcs11.Template = [];
-        for (let key in tmpl) {
-            res.push({
-                type: n2i(key),
-                value: (tmpl as any)[key]
-            });
-        }
+        if (tmpl)
+            for (let key in tmpl) {
+                res.push({
+                    type: n2i(key),
+                    value: (tmpl as any)[key]
+                });
+            }
         return res;
     }
 

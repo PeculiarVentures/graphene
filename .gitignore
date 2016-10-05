@@ -4,4 +4,5 @@
 /node_modules
 /typings
 /test/config.js
+/build
 npm-debug.log

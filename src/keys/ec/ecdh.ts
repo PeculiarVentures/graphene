@@ -1,6 +1,4 @@
 import * as pkcs11 from "pkcs11js";
-import * as core from "../../core";
-import {MechanismEnum} from "../../mech";
 import {IParams, MechParams} from "../params";
 
 import {EcKdf} from "./kdf";
@@ -29,7 +27,7 @@ export class EcdhParams implements IParams, pkcs11.ECDH1 {
      * @param {Buffer} [sharedData=null] some data shared between the two parties
      * @param {Buffer} [publicData=null] other party's EC public key value
      */
-    constructor(kdf: EcKdf, sharedData: Buffer = null, publicData: Buffer = null) {
+    constructor(kdf: EcKdf, sharedData: Buffer = new Buffer(0), publicData: Buffer = new Buffer(0)) {
         this.kdf = kdf;
         this.sharedData = sharedData;
         this.publicData = publicData;

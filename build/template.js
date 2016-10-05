@@ -138,12 +138,13 @@ var Template = (function () {
     }
     Template.toPkcs11 = function (tmpl) {
         var res = [];
-        for (var key in tmpl) {
-            res.push({
-                type: n2i(key),
-                value: tmpl[key]
-            });
-        }
+        if (tmpl)
+            for (var key in tmpl) {
+                res.push({
+                    type: n2i(key),
+                    value: tmpl[key]
+                });
+            }
         return res;
     };
     Template.fromPkcs11 = function (tmpl) {

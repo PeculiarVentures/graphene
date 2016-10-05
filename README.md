@@ -2,7 +2,8 @@
 
 [![license](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/PeculiarVentures/graphene/master/LICENSE)
 [![Build Status](https://travis-ci.org/PeculiarVentures/graphene.svg?branch=master)](https://travis-ci.org/PeculiarVentures/graphene)
-[![NPM version](https://badge.fury.io/js/graphene.png)](http://badge.fury.io/graphene)
+[![Coverage Status](https://coveralls.io/repos/github/PeculiarVentures/graphene/badge.svg?branch=master)](https://coveralls.io/github/PeculiarVentures/graphene?branch=master)
+[![npm version](https://badge.fury.io/js/graphene-pk11.svg)](https://badge.fury.io/js/graphene-pk11)
 
 A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript
 
@@ -93,31 +94,10 @@ var graphene = require("graphene-pk11");
 
 ### Install SoftHSM2
 
-**NOTE**: SoftHSM2 is optional, the bellow steps assume Ubuntu
+- For OSX see the [instructions here](https://github.com/opendnssec/SoftHSMv2/blob/develop/OSX-NOTES.md)
+- For linux [instructions here](https://github.com/opendnssec/SoftHSMv2/blob/develop/README.md)
 
-* Install SoftHSM2
 
-    `apt-get install softhsm`
-
-* Initialize the first slot
-
-    `softhsm2-util --init-token --slot 0 --label "My token 1"`
-
-* The PKCS1 #11 module you can now use can be found here:
-
-  `/usr/local/lib/softhsm/libsofthsm.so`
-  
-* Adjust permissions so the user your code will be able to access the PKCS #11 module:
-
-  ```
-  sudo chmod –R 755 /var/lib/softhsm
-  sudo chmod –R 755 /usr/local/lib/softhsm
-  chown root:softhsmusers /var/lib/softhsm
-  chown root:softhsmusers /usr/local/lib/softhsm
-  ```
- 
-  **NOTE**: This may be more generous than needed. It works out to : 0755 = User:rwx Group:r-x World:r-x. 
-  
 ## Examples
 ### Listing capabilities
 ```javascript
@@ -539,6 +519,38 @@ else {
 }
 
 mod.finalize();
+```
+### Change User's PIN
+```javascript
+var graphene = require("graphene-pk11");
+var Module = graphene.Module;
+
+var lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+
+var mod = Module.load(lib, "SoftHSM");
+mod.initialize();
+
+try {
+    var slot = mod.getSlots(0);
+    if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
+        var session = slot.open();
+        session.login("12345", graphene.UserType.USER);
+        session.setPin("12345", "new pin");
+        session.logout();
+        session.close();
+        console.log("User's PIN was changed successfully");
+    }
+}
+catch(e) {
+    console.error(e);
+}
+mod.finalize();
+```
+
+## Developing
+Use npm command to publish graphene-pk11 module
+```
+> npm run pub
 ```
 
 ## Suitability

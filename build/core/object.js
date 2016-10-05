@@ -10,7 +10,7 @@ var BaseObject = (function () {
             writable: true,
             enumerable: false
         });
-        this.lib = lib || null;
+        this.lib = lib;
     }
     return BaseObject;
 }());

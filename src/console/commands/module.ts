@@ -104,7 +104,7 @@ export let cmdModuleInit = cmdModule.createCommand("init", {
             slot: number;
             pin: string;
             vendor?: string[];
-        } = null;
+        };
         try {
             config = require(cmd.path);
             if (config) {
@@ -113,8 +113,8 @@ export let cmdModuleInit = cmdModule.createCommand("init", {
                 let slot = consoleApp.module.getSlots(config.slot);
                 consoleApp.session = slot.open();
                 consoleApp.session.login(config.pin);
-                for (let i in config.vendor) {
-                    defs.Mechanism.vendor(config.vendor[i]);
+                for (let i in config.vendor!) {
+                    defs.Mechanism.vendor(config.vendor![i]);
                 }
                 console.log("Ok");
             }

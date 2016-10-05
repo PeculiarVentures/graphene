@@ -2,7 +2,7 @@
 var params_1 = require("../params");
 var AesCcmParams = (function () {
     function AesCcmParams(dataLength, nonce, aad, macLength) {
-        if (aad === void 0) { aad = null; }
+        if (aad === void 0) { aad = new Buffer(0); }
         if (macLength === void 0) { macLength = 0; }
         this.type = params_1.MechParams.AesCCM;
         this.dataLength = dataLength;

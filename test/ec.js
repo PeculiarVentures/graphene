@@ -180,13 +180,16 @@ describe("ECDSA", function () {
     });
 
     it("derive AES async", function (done) {
+<<<<<<< HEAD
         if (isSoftHSM()) done();
 
+=======
+>>>>>>> upstream/master
         session.deriveKey(
             {
                 name: "ECDH1_DERIVE",
                 params: new graphene.EcdhParams(
-                    graphene.EcKdf.SHA1,
+                    graphene.EcKdf.NULL,
                     null,
                     derivationKeys.publicKey.getAttribute({ pointEC: null }).pointEC
                 )
@@ -201,7 +204,7 @@ describe("ECDSA", function () {
                 "decrypt": true,
             },
             function (err, dKey) {
-                assert.equal(!!dKey, true, "Empty derived key");
+                assert.equal(!!dKey, true, err ? err.message : "Empty dKey");
                 done();
             });
     });

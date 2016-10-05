@@ -4,7 +4,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var pkcs11 = require("pkcs11js");
 var core = require("./core");
 (function (TokenFlag) {
     TokenFlag[TokenFlag["RNG"] = 1] = "RNG";
@@ -25,6 +24,7 @@ var core = require("./core");
     TokenFlag[TokenFlag["SO_PIN_FINAL_TRY"] = 2097152] = "SO_PIN_FINAL_TRY";
     TokenFlag[TokenFlag["SO_PIN_LOCKED"] = 4194304] = "SO_PIN_LOCKED";
     TokenFlag[TokenFlag["SO_PIN_TO_BE_CHANGED"] = 8388608] = "SO_PIN_TO_BE_CHANGED";
+    TokenFlag[TokenFlag["ERROR_STATE"] = 16777216] = "ERROR_STATE";
 })(exports.TokenFlag || (exports.TokenFlag = {}));
 var TokenFlag = exports.TokenFlag;
 var Token = (function (_super) {
@@ -52,7 +52,7 @@ var Token = (function (_super) {
         this.freePrivateMemory = info.freePrivateMemory;
         this.hardwareVersion = info.hardwareVersion;
         this.firmwareVersion = info.firmwareVersion;
-        if (info.flags & pkcs11.CKF_CLOCK_ON_TOKEN) {
+        if (info.flags & TokenFlag.CLOCK_ON_TOKEN) {
             core.dateFromString(info.utcTime);
         }
     };

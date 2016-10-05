@@ -1,5 +1,4 @@
 import * as pkcs11 from "pkcs11js";
-import * as core from "../../core";
 import {MechanismEnum} from "../../mech";
 import {RsaMgf} from "./mgf";
 import {IParams, MechParams} from "../params";
@@ -14,10 +13,10 @@ export class RsaOaepParams implements IParams {
     type = MechParams.RsaOAEP;
 
 
-    constructor(hashAlg: MechanismEnum = MechanismEnum.SHA1, mgf: RsaMgf = RsaMgf.MGF1_SHA1, sourceData: Buffer = null) {
+    constructor(hashAlg: MechanismEnum = MechanismEnum.SHA1, mgf: RsaMgf = RsaMgf.MGF1_SHA1, sourceData: Buffer | null = null) {
         this.hashAlgorithm = hashAlg;
         this.mgf = mgf;
-        this.sourceData = sourceData || null;
+        this.sourceData = sourceData!;
     }
 
     toCKI(): pkcs11.RsaOAEP {

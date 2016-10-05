@@ -1,6 +1,5 @@
 import * as defs from "./defs";
-import * as fs from "fs";
-const {consoleApp} = defs;
+const {consoleApp, Handle} = defs;
 
 declare let global: any;
 
@@ -21,7 +20,7 @@ function print_object_info(obj: defs.Storage) {
     let COL_2 = 25;
     console.log(TEMPLATE, defs.rpud("Name", COL_1), defs.rpud("Value", COL_2));
     console.log(TEMPLATE.replace(/\s/g, "-"), defs.rpud("", COL_1, "-"), defs.rpud("", COL_2, "-"));
-    console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(obj.handle.toString("hex"), COL_2));
+    console.log(TEMPLATE, defs.rpud("Handle", COL_1), defs.rpud(Handle.toString(obj.handle), COL_2));
     console.log(TEMPLATE, defs.rpud("Class", COL_1), defs.rpud(defs.ObjectClass[obj.class], COL_2));
     console.log(TEMPLATE, defs.rpud("Label", COL_1), defs.rpud(obj.label, COL_2));
     console.log(TEMPLATE, defs.rpud("Token", COL_1), defs.rpud(obj.token, COL_2));
@@ -30,6 +29,7 @@ function print_object_info(obj: defs.Storage) {
 
     if (obj.class === defs.ObjectClass.PRIVATE_KEY) {
         let o: defs.PrivateKey = obj.toType<defs.PrivateKey>();
+        console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(o.id.toString("hex"), COL_2));
         console.log(TEMPLATE, defs.rpud("Mechanism", COL_1), defs.rpud(defs.KeyGenMechanism[o.mechanism], COL_2));
         console.log(TEMPLATE, defs.rpud("Local", COL_1), defs.rpud(o.local, COL_2));
         console.log(TEMPLATE, defs.rpud("Sensitive", COL_1), defs.rpud(o.sensitive, COL_2));
@@ -41,6 +41,7 @@ function print_object_info(obj: defs.Storage) {
         console.log(TEMPLATE, defs.rpud("Unwrap", COL_1), defs.rpud(o.unwrap, COL_2));
     } else if (obj.class === defs.ObjectClass.PUBLIC_KEY) {
         let o: defs.PublicKey = obj.toType<defs.PublicKey>();
+        console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(o.id.toString("hex"), COL_2));
         console.log(TEMPLATE, defs.rpud("Mechanism", COL_1), defs.rpud(defs.KeyGenMechanism[o.mechanism], COL_2));
         console.log(TEMPLATE, defs.rpud("Local", COL_1), defs.rpud(o.local, COL_2));
         console.log(TEMPLATE, defs.rpud("Derive", COL_1), defs.rpud(o.derive, COL_2));
@@ -49,6 +50,7 @@ function print_object_info(obj: defs.Storage) {
         console.log(TEMPLATE, defs.rpud("Wrap", COL_1), defs.rpud(o.wrap, COL_2));
     } else if (obj.class === defs.ObjectClass.SECRET_KEY) {
         let o: defs.SecretKey = obj.toType<defs.SecretKey>();
+        console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(o.id.toString("hex"), COL_2));
         console.log(TEMPLATE, defs.rpud("Mechanism", COL_1), defs.rpud(defs.KeyGenMechanism[o.mechanism], COL_2));
         console.log(TEMPLATE, defs.rpud("Local", COL_1), defs.rpud(o.local, COL_2));
         console.log(TEMPLATE, defs.rpud("Sensitive", COL_1), defs.rpud(o.sensitive, COL_2));
@@ -71,7 +73,7 @@ function print_object_header() {
 function print_object_row(obj: defs.Storage) {
     console.log(
         "| %s | %s | %s |",
-        defs.rpud(obj.handle.toString("hex"), 4),
+        defs.rpud(Handle.toString(obj.handle), 4),
         defs.rpud(defs.ObjectClass[obj.class], 15),
         defs.rpud(obj.label, 30));
 }
@@ -107,7 +109,7 @@ export let cmdObjectTest = cmdObject.createCommand("test", {
 })
     .on("call", function(cmd: any) {
         defs.check_session();
-        let keys = consoleApp.session.generateKeyPair(defs.KeyGenMechanism.RSA, {
+        consoleApp.session.generateKeyPair(defs.KeyGenMechanism.RSA, {
             keyType: defs.KeyType.RSA,
             encrypt: true,
             modulusBits: 1024,
@@ -134,7 +136,6 @@ export let cmdObjectDelete = cmdObject.createCommand("delete", {
         obj: string;
     }) {
         defs.check_session();
-        let objList = consoleApp.session.find();
         if (cmd.obj === "all") {
             global["readline"].question("Do you really want to remove ALL objects (Y/N)?", (answer: string) => {
                 if (answer && answer.toLowerCase() === "y") {
@@ -147,7 +148,7 @@ export let cmdObjectDelete = cmdObject.createCommand("delete", {
             });
         }
         else {
-            let obj = consoleApp.session.getObject<defs.Storage>(new Buffer(cmd.obj, "hex"));
+            let obj = consoleApp.session.getObject<defs.Storage>(Handle.toBuffer(cmd.obj));
             if (!obj)
                 throw new Error(`Object by ID '${cmd.obj}' is not found`);
             defs.print_caption(`Object info`);
@@ -155,7 +156,7 @@ export let cmdObjectDelete = cmdObject.createCommand("delete", {
             console.log();
             global["readline"].question("Do you really want to remove this object (Y/N)?", (answer: string) => {
                 if (answer && answer.toLowerCase() === "y") {
-                    consoleApp.session.destroy(obj);
+                    consoleApp.session.destroy(obj!);
                     console.log();
                     console.log("Object was successfully removed");
                     console.log();
@@ -178,9 +179,9 @@ export let cmdObjectInfo = cmdObject.createCommand("info", {
         obj: string;
     }) {
         defs.check_session();
-        let obj = consoleApp.session.getObject<defs.Storage>(new Buffer(cmd.obj, "hex"));
+        let obj = consoleApp.session.getObject<defs.Storage>(Handle.toBuffer(cmd.obj));
         if (!obj)
-            throw new Error("Object by ID '" + cmd.obj + "' is not found");
+            throw new Error(`Object by ID '${cmd.obj}' is not found`);
         console.log();
         print_object_info(obj);
         console.log();

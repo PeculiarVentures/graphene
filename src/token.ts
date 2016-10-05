@@ -19,7 +19,8 @@ export enum TokenFlag {
     SO_PIN_COUNT_LOW = 0x00100000,
     SO_PIN_FINAL_TRY = 0x00200000,
     SO_PIN_LOCKED = 0x00400000,
-    SO_PIN_TO_BE_CHANGED = 0x00800000
+    SO_PIN_TO_BE_CHANGED = 0x00800000,
+    ERROR_STATE = 0x01000000,
 }
 
 export class Token extends core.HandleObject {
@@ -134,7 +135,7 @@ export class Token extends core.HandleObject {
         this.freePrivateMemory = info.freePrivateMemory;
         this.hardwareVersion = info.hardwareVersion;
         this.firmwareVersion = info.firmwareVersion;
-        if(info.flags & pkcs11.CKF_CLOCK_ON_TOKEN) {
+        if (info.flags & TokenFlag.CLOCK_ON_TOKEN) {
           core.dateFromString(info.utcTime);
         }
     }

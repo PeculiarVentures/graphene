@@ -124,7 +124,6 @@ function gen_AES_256(session) {
 var BUF_SIZE_DEFAULT = 1024;
 var BUF_SIZE = 1024;
 var BUF_STEP = BUF_SIZE;
-var BUF = new Buffer(BUF_STEP);
 function test_sign_operation(session, buf, key, algName) {
     var sig = session.createSign(algName, key.privateKey || key);
     var res = sig.once(buf);
@@ -201,7 +200,7 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
             try {
                 var t1 = new defs.Timer();
                 var buf = new Buffer(BUF_SIZE);
-                var enc = null;
+                var enc = new Buffer(0);
                 test_encrypt_operation(session, buf, key, encAlg);
                 t1.start();
                 for (var i = 0; i < cmd.it; i++)
@@ -209,7 +208,7 @@ function test_enc(session, cmd, prefix, postfix, encAlg) {
                 t1.stop();
                 var t2 = new defs.Timer();
                 t2.start();
-                var msg = null;
+                var msg = new Buffer(0);
                 for (var i = 0; i < cmd.it; i++) {
                     msg = test_decrypt_operation(session, key, encAlg, enc);
                 }
@@ -393,7 +392,7 @@ function test_gen(session, cmd, prefix, postfix) {
             for (var i = 0; i < cmd.it; i++) {
                 var tGen = new defs.Timer();
                 tGen.start();
-                var key = gen[prefix][postfix](session);
+                gen[prefix][postfix](session);
                 tGen.stop();
                 time += tGen.time;
             }

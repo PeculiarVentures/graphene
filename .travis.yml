@@ -5,7 +5,7 @@ node_js:
   - "4"
   
 env:
-  - CXX=clang
+  - CXX=g++
 
 addons:
   apt:
@@ -19,30 +19,30 @@ addons:
       - llvm-3.6-dev
       - clang-3.6
 
-compiler: clang
+compiler: g++
 
 sudo: required
 
 os:
   - linux
-  - os: osx
+  - osx
 
 osx_image: xcode7.2
 
 before_install:
   - export TSD_GITHUB_TOKEN=8591f447276e1caa1b9636b9c8053d768130464f
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90; fi
   - node --version
   - npm --version
   - gcc --version
-  - export SOFTHSM_CONF=$PWD/softhsm.conf
-  - echo 0:${PWD}/softhsm.db > ${SOFTHSM_CONF}
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install softhsm; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install softhsm; fi
-  - softhsm --init-token --slot 0 --label token_label --pin 6789 --so-pin 12345 
+  - npm install coveralls
+  - bash ./.travis.sh
 
 script:
-  - npm install
-  - npm test
+  - npm run coverage
+
+after_success:
+  - npm run coveralls
 
 cache:
   directories:

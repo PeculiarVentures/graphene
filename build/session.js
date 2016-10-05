@@ -73,7 +73,7 @@ var Session = (function (_super) {
             return 1;
         }
         else {
-            var objs = this.find(param);
+            var objs = this.find(param || null);
             var removed = objs.length;
             for (var i = 0; i < objs.length; i++) {
                 objs.items(i).destroy();
@@ -85,6 +85,7 @@ var Session = (function (_super) {
         return this.destroy();
     };
     Session.prototype.find = function (template, callback) {
+        if (template === void 0) { template = null; }
         if (core.isFunction(template)) {
             callback = template;
             template = null;
@@ -111,8 +112,8 @@ var Session = (function (_super) {
         return new object_1.SessionObjectCollection(objects, this, this.lib);
     };
     Session.prototype.getObject = function (handle) {
-        var res = null;
-        this.find(null, function (obj) {
+        var res;
+        this.find(function (obj) {
             var compare = obj.handle.compare(handle);
             if (compare === 0) {
                 res = obj;
@@ -210,7 +211,7 @@ var Session = (function (_super) {
         return new common_1.Cipher(this, alg, key, this.lib);
     };
     Session.prototype.createDecipher = function (alg, key, blockSize) {
-        return new common_1.Decipher(this, alg, key, blockSize, this.lib);
+        return new common_1.Decipher(this, alg, key, blockSize || 0, this.lib);
     };
     Session.prototype.createDigest = function (alg) {
         return new common_1.Digest(this, alg, this.lib);

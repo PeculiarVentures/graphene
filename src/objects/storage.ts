@@ -1,4 +1,3 @@
-import * as core from "../core";
 import {SessionObject} from "../object";
 
 export class Storage extends SessionObject {

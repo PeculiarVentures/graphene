@@ -11,7 +11,7 @@ var RsaOaepParams = (function () {
         this.type = params_1.MechParams.RsaOAEP;
         this.hashAlgorithm = hashAlg;
         this.mgf = mgf;
-        this.sourceData = sourceData || null;
+        this.sourceData = sourceData;
     }
     RsaOaepParams.prototype.toCKI = function () {
         return {

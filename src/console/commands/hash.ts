@@ -1,6 +1,4 @@
 import * as defs from "./defs";
-import * as fs from "fs";
-const {consoleApp} = defs;
 
 /* ==========
    Hash

@@ -1,5 +1,4 @@
 import * as defs from "./defs";
-import * as fs from "fs";
 const {consoleApp} = defs;
 
 /* ==========
@@ -152,7 +151,6 @@ function gen_AES_256(session: defs.Session) {
 let BUF_SIZE_DEFAULT = 1024;
 let BUF_SIZE = 1024;
 let BUF_STEP = BUF_SIZE;
-let BUF = new Buffer(BUF_STEP);
 
 function test_sign_operation(session: defs.Session, buf: Buffer, key: defs.IKeyPair | defs.Key, algName: string) {
     let sig = session.createSign(algName, (<any>key).privateKey || key);
@@ -245,7 +243,7 @@ function test_enc(session: defs.Session, cmd: any, prefix: string, postfix: stri
                 let t1 = new defs.Timer();
                 // create buffer
                 let buf = new Buffer(BUF_SIZE);
-                let enc: Buffer = null;
+                let enc = new Buffer(0);
                 /**
                  * TODO: We need to determine why the first call to the device is so much slower, 
                  * it may be the FFI initialization. For now we will exclude this one call from results.
@@ -258,7 +256,7 @@ function test_enc(session: defs.Session, cmd: any, prefix: string, postfix: stri
 
                 let t2 = new defs.Timer();
                 t2.start();
-                let msg: Buffer = null;
+                let msg = new Buffer(0);
                 for (let i = 0; i < cmd.it; i++) {
                     msg = test_decrypt_operation(session, key, encAlg, enc);
                 }
@@ -461,7 +459,7 @@ function test_gen(session: defs.Session, cmd: any, prefix: string, postfix: stri
             for (let i = 0; i < cmd.it; i++) {
                 let tGen = new defs.Timer();
                 tGen.start();
-                let key = gen[prefix][postfix](session);
+                gen[prefix][postfix](session); // key generation
                 tGen.stop();
                 time += tGen.time;
             }

@@ -1,6 +1,6 @@
 "use strict";
 var defs = require("./defs");
-var consoleApp = defs.consoleApp;
+var consoleApp = defs.consoleApp, Handle = defs.Handle;
 exports.cmdObject = defs.commander.createCommand("object", {
     description: "manage objects on the device",
     note: defs.NOTE_SESSION
@@ -14,7 +14,7 @@ function print_object_info(obj) {
     var COL_2 = 25;
     console.log(TEMPLATE, defs.rpud("Name", COL_1), defs.rpud("Value", COL_2));
     console.log(TEMPLATE.replace(/\s/g, "-"), defs.rpud("", COL_1, "-"), defs.rpud("", COL_2, "-"));
-    console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(obj.handle.toString("hex"), COL_2));
+    console.log(TEMPLATE, defs.rpud("Handle", COL_1), defs.rpud(Handle.toString(obj.handle), COL_2));
     console.log(TEMPLATE, defs.rpud("Class", COL_1), defs.rpud(defs.ObjectClass[obj.class], COL_2));
     console.log(TEMPLATE, defs.rpud("Label", COL_1), defs.rpud(obj.label, COL_2));
     console.log(TEMPLATE, defs.rpud("Token", COL_1), defs.rpud(obj.token, COL_2));
@@ -22,6 +22,7 @@ function print_object_info(obj) {
     console.log(TEMPLATE, defs.rpud("Modifiable", COL_1), defs.rpud(obj.modifiable, COL_2));
     if (obj.class === defs.ObjectClass.PRIVATE_KEY) {
         var o = obj.toType();
+        console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(o.id.toString("hex"), COL_2));
         console.log(TEMPLATE, defs.rpud("Mechanism", COL_1), defs.rpud(defs.KeyGenMechanism[o.mechanism], COL_2));
         console.log(TEMPLATE, defs.rpud("Local", COL_1), defs.rpud(o.local, COL_2));
         console.log(TEMPLATE, defs.rpud("Sensitive", COL_1), defs.rpud(o.sensitive, COL_2));
@@ -34,6 +35,7 @@ function print_object_info(obj) {
     }
     else if (obj.class === defs.ObjectClass.PUBLIC_KEY) {
         var o = obj.toType();
+        console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(o.id.toString("hex"), COL_2));
         console.log(TEMPLATE, defs.rpud("Mechanism", COL_1), defs.rpud(defs.KeyGenMechanism[o.mechanism], COL_2));
         console.log(TEMPLATE, defs.rpud("Local", COL_1), defs.rpud(o.local, COL_2));
         console.log(TEMPLATE, defs.rpud("Derive", COL_1), defs.rpud(o.derive, COL_2));
@@ -43,6 +45,7 @@ function print_object_info(obj) {
     }
     else if (obj.class === defs.ObjectClass.SECRET_KEY) {
         var o = obj.toType();
+        console.log(TEMPLATE, defs.rpud("ID", COL_1), defs.rpud(o.id.toString("hex"), COL_2));
         console.log(TEMPLATE, defs.rpud("Mechanism", COL_1), defs.rpud(defs.KeyGenMechanism[o.mechanism], COL_2));
         console.log(TEMPLATE, defs.rpud("Local", COL_1), defs.rpud(o.local, COL_2));
         console.log(TEMPLATE, defs.rpud("Sensitive", COL_1), defs.rpud(o.sensitive, COL_2));
@@ -61,7 +64,7 @@ function print_object_header() {
     console.log("|%s|%s|%s|", defs.rpud("", 6, "-"), defs.rpud("", 17, "-"), defs.rpud("", 32, "-"));
 }
 function print_object_row(obj) {
-    console.log("| %s | %s | %s |", defs.rpud(obj.handle.toString("hex"), 4), defs.rpud(defs.ObjectClass[obj.class], 15), defs.rpud(obj.label, 30));
+    console.log("| %s | %s | %s |", defs.rpud(Handle.toString(obj.handle), 4), defs.rpud(defs.ObjectClass[obj.class], 15), defs.rpud(obj.label, 30));
 }
 exports.cmdObjectList = exports.cmdObject.createCommand("list", {
     description: "enumerates the objects in a given slot",
@@ -91,7 +94,7 @@ exports.cmdObjectTest = exports.cmdObject.createCommand("test", {
 })
     .on("call", function (cmd) {
     defs.check_session();
-    var keys = consoleApp.session.generateKeyPair(defs.KeyGenMechanism.RSA, {
+    consoleApp.session.generateKeyPair(defs.KeyGenMechanism.RSA, {
         keyType: defs.KeyType.RSA,
         encrypt: true,
         modulusBits: 1024,
@@ -114,7 +117,6 @@ exports.cmdObjectDelete = exports.cmdObject.createCommand("delete", {
 })
     .on("call", function (cmd) {
     defs.check_session();
-    var objList = consoleApp.session.find();
     if (cmd.obj === "all") {
         global["readline"].question("Do you really want to remove ALL objects (Y/N)?", function (answer) {
             if (answer && answer.toLowerCase() === "y") {
@@ -127,7 +129,7 @@ exports.cmdObjectDelete = exports.cmdObject.createCommand("delete", {
         });
     }
     else {
-        var obj_1 = consoleApp.session.getObject(new Buffer(cmd.obj, "hex"));
+        var obj_1 = consoleApp.session.getObject(Handle.toBuffer(cmd.obj));
         if (!obj_1)
             throw new Error("Object by ID '" + cmd.obj + "' is not found");
         defs.print_caption("Object info");
@@ -155,7 +157,7 @@ exports.cmdObjectInfo = exports.cmdObject.createCommand("info", {
 })
     .on("call", function (cmd) {
     defs.check_session();
-    var obj = consoleApp.session.getObject(new Buffer(cmd.obj, "hex"));
+    var obj = consoleApp.session.getObject(Handle.toBuffer(cmd.obj));
     if (!obj)
         throw new Error("Object by ID '" + cmd.obj + "' is not found");
     console.log();
