@@ -182,7 +182,7 @@ function test_decrypt_operation(session: defs.Session, key: defs.IKeyPair | defs
     return decMsg;
 }
 
-function test_sign(session: defs.Session, cmd: any, prefix: string, postfix: string, signAlg: string, digestAlg: string) {
+function test_sign(session: defs.Session, cmd: any, prefix: string, postfix: string, signAlg: string, digestAlg?: string) {
     try {
         let alg = prefix + "-" + postfix;
         if (cmd.alg === "all" || cmd.alg === prefix || cmd.alg === alg) {
@@ -193,7 +193,7 @@ function test_sign(session: defs.Session, cmd: any, prefix: string, postfix: str
             // create buffer
             let buf = new Buffer(BUF_SIZE);
             let t1 = new defs.Timer();
-            let sig: Buffer = null;
+            let sig: Buffer;
             let digested = buf;
             if(digestAlg) {
               let digest = session.createDigest(digestAlg);
@@ -205,7 +205,8 @@ function test_sign(session: defs.Session, cmd: any, prefix: string, postfix: str
              */
             test_sign_operation(session, digested, key, signAlg);
             t1.start();
-            for (let i = 0; i < cmd.it; i++)
+            sig = test_sign_operation(session, digested, key, signAlg);
+            for (let i = 1; i < cmd.it; i++)
                 sig = test_sign_operation(session, digested, key, signAlg);
             t1.stop();
 
@@ -436,10 +437,10 @@ export let cmdTestSign = cmdTest.createCommand("sign", {
         }
         console.log();
         print_test_sign_header();
-        test_sign(consoleApp.session, cmd, "rsa", "1024", "SHA1_RSA_PKCS", null);
-        test_sign(consoleApp.session, cmd, "rsa", "2048", "SHA1_RSA_PKCS", null);
-        test_sign(consoleApp.session, cmd, "rsa", "4096", "SHA1_RSA_PKCS", null);
-        test_sign(consoleApp.session, cmd, "ecdsa", "secp160r1", "ECDSA_SHA1", null);
+        test_sign(consoleApp.session, cmd, "rsa", "1024", "SHA1_RSA_PKCS");
+        test_sign(consoleApp.session, cmd, "rsa", "2048", "SHA1_RSA_PKCS");
+        test_sign(consoleApp.session, cmd, "rsa", "4096", "SHA1_RSA_PKCS");
+        test_sign(consoleApp.session, cmd, "ecdsa", "secp160r1", "ECDSA_SHA1");
         test_sign(consoleApp.session, cmd, "ecdsa", "secp192r1", "ECDSA", "SHA256");
         test_sign(consoleApp.session, cmd, "ecdsa", "secp256r1", "ECDSA", "SHA256");
         test_sign(consoleApp.session, cmd, "ecdsa", "secp384r1", "ECDSA", "SHA256");

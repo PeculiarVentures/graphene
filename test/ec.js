@@ -180,11 +180,6 @@ describe("ECDSA", function () {
     });
 
     it("derive AES async", function (done) {
-<<<<<<< HEAD
-        if (isSoftHSM()) done();
-
-=======
->>>>>>> upstream/master
         session.deriveKey(
             {
                 name: "ECDH1_DERIVE",

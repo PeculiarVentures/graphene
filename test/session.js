@@ -128,11 +128,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
             extractable: false,
             sensitive: false,
             encrypt: true,
-<<<<<<< HEAD
             private: true
-=======
-            private: true,
->>>>>>> upstream/master
         });
 
         // test objs length
