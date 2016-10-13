@@ -1,6 +1,0 @@
-{
-  "globalDependencies": {
-    "node": "registry:env/node#6.0.0+20160918225031",
-    "pkcs11js": "registry:dt/pkcs11js#1.0.3+20160811214100"
-  }
-}

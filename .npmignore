@@ -1,0 +1,12 @@
+/.vscode
+/include
+/graphene
+/node_modules
+/typings
+/src
+.travis.yml
+.travis.sh
+.waiting.html
+npm-debug.log
+tsconfig.json
+tslint.json
