@@ -5,11 +5,10 @@
   "main": "./build/graphene.js",
   "scripts": {
     "clean": "rm -rf build/ coverage/ .nyc_output/ npm-debug.log npm-debug.log.*",
-    "prepublish": "npm run build",
     "pretest": "npm run build",
     "test": "mocha",
     "build": "tsc --sourceMap",
-    "pub": "npm version patch && npm publish && git push",
+    "pub": "npm test && npm version patch && npm publish && git push",
     "sync": "git ac && git pull --rebase && git push",
     "coverage": "nyc npm test",
     "precoveragehtml": "npm run coverage",
