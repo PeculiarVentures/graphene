@@ -35,10 +35,8 @@
   "devDependencies": {
     "@types/pkcs11js": "^1.0.7",
     "live-server": "^1",
-    "mocha": "^3",
     "npm-run-all": "^3",
     "nyc": "^8",
-    "typescript": "^2",
     "watch": "^0"
   },
   "bugs": {
