@@ -9,9 +9,12 @@
         "noUnusedLocals": true,
         "strictNullChecks": true,
         "sourceMap": false,
-        "declaration": false
+        "declaration": false,
+        "rootDirs": [
+            "src"
+        ]
     },
     "exclude": [
-        "build"
+        "build", "node_modules"
     ]
 }
