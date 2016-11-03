@@ -2,5 +2,5 @@
     "lib": "/usr/local/lib/softhsm/libsofthsm2.so",
     "libName": "SoftHSMv2.0",
     "slot": 0,
-    "pin": "12345"
+    "pin": "password"
 }

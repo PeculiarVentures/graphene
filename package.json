@@ -32,7 +32,7 @@
     "graphene": "./build/console/console.js"
   },
   "dependencies": {
-    "pkcs11js": "^1.0.0"
+    "pkcs11js": "latest"
   },
   "devDependencies": {
     "live-server": "^1",

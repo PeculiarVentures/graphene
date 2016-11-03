@@ -246,19 +246,18 @@ export class Session extends core.HandleObject {
 
         let objects: core.Handle[] = [];
         try {
-            while (true) {
-                let hObject = this.lib.C_FindObjects(this.handle);
-                if (!hObject)
-                    break;
-                if (callback && callback(new SessionObject(hObject, this, this.lib), objects.length) === false) {
-                    break;
-                }
-                objects.push(hObject);
-            }
-        }
-        catch (error) {
-            this.lib.C_FindObjectsFinal(this.handle);
-            throw (error);
+          while (true) {
+              let hObject = this.lib.C_FindObjects(this.handle);
+              if (!hObject)
+                  break;
+              if (callback && callback(new SessionObject(hObject, this, this.lib), objects.length) === false) {
+                  break;
+              }
+              objects.push(hObject);
+              }
+        } catch(error) {
+              this.lib.C_FindObjectsFinal(this.handle);
+              throw(error);
         }
         this.lib.C_FindObjectsFinal(this.handle);
         return new SessionObjectCollection(objects, this, this.lib);
