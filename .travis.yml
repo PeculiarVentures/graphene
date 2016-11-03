@@ -36,8 +36,6 @@ before_install:
   - npm --version
   - gcc --version
   - npm install coveralls
-  - npm i typescript -g
-  - npm i mocha -g
   - bash ./.travis.sh
 
 script:
