@@ -33,7 +33,7 @@
     "pkcs11js": "^1.0.0"
   },
   "devDependencies": {
-    "@types/pkcs11js": "^1.0.6",
+    "@types/pkcs11js": "^1.0.7",
     "live-server": "^1",
     "mocha": "^3",
     "npm-run-all": "^3",
