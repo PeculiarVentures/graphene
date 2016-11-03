@@ -10,9 +10,11 @@
         "strictNullChecks": true,
         "sourceMap": false,
         "declaration": false,
-        "experimentalDecorators": true
+        "rootDirs": [
+            "src"
+        ]
     },
     "exclude": [
-        "node_modules", "build"
+        "build", "node_modules"
     ]
 }

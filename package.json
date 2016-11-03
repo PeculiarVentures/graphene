@@ -1,16 +1,14 @@
 {
   "name": "graphene-pk11",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript",
   "main": "./build/graphene.js",
   "scripts": {
-    "clean": "rm -rf build/ buildjs/ coverage/ .nyc_output/ npm-debug.log npm-debug.log.*",
-    "prepublish": "npm run build",
-    "postinstall": "npm run build",
+    "clean": "rm -rf build/ coverage/ .nyc_output/ npm-debug.log npm-debug.log.*",
     "pretest": "npm run build",
     "test": "mocha",
-    "build": "typings install && tsc",
-    "pub": "npm version patch && npm publish && git push",
+    "build": "tsc --sourceMap",
+    "pub": "npm test && npm version patch && npm publish && git push",
     "sync": "git ac && git pull --rebase && git push",
     "coverage": "nyc npm test",
     "precoveragehtml": "npm run coverage",
@@ -35,13 +33,13 @@
     "pkcs11js": "latest"
   },
   "devDependencies": {
+    "@types/pkcs11js": "^1.0.7",
     "live-server": "^1",
-    "mocha": "^3",
     "npm-run-all": "^3",
     "nyc": "^8",
-    "typescript": "^2",
-    "typings": "^1.3.3",
-    "watch": "^0"
+    "watch": "^0",
+    "typescript": "^2.0.3",
+    "mocha": "^3.1.2"
   },
   "bugs": {
     "url": "https://github.com/PeculiarVentures/graphene/issues"
