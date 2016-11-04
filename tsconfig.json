@@ -4,6 +4,7 @@
         "target": "es5",
         "rootDir": "src",
         "outDir": "build",
+        "newLine": "LF",
         "removeComments": true,
         "noImplicitAny": true,
         "noUnusedLocals": true,

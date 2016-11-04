@@ -5,7 +5,6 @@
   "main": "./build/graphene.js",
   "scripts": {
     "clean": "rm -rf build/ coverage/ .nyc_output/ npm-debug.log npm-debug.log.*",
-    "pretest": "npm run build",
     "test": "mocha",
     "build": "tsc",
     "build:source": "tsc --sourceMap",
