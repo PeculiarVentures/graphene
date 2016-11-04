@@ -1,6 +1,4 @@
 /.vscode
-/include
-/graphene
 /node_modules
 /typings
 /src
