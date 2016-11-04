@@ -255,7 +255,7 @@ export class Session extends core.HandleObject {
               }
               objects.push(hObject);
               }
-        } catch(error) {
+        } catch (error) {
               this.lib.C_FindObjectsFinal(this.handle);
               throw(error);
         }
@@ -290,8 +290,8 @@ export class Session extends core.HandleObject {
      * @param template template for the new key or set of domain parameters
      */
     generateKey(mechanism: MechanismType, template?: ITemplate): objects.SecretKey;
-    generateKey(mechanism: MechanismType, template: ITemplate, callback: graphene_pk11.Callback<Error, objects.SecretKey>): void;
-    generateKey(mechanism: MechanismType, template: ITemplate | null = null, callback?: graphene_pk11.Callback<Error, objects.SecretKey>): objects.SecretKey | void {
+    generateKey(mechanism: MechanismType, template: ITemplate, callback: Callback<Error, objects.SecretKey>): void;
+    generateKey(mechanism: MechanismType, template: ITemplate | null = null, callback?: Callback<Error, objects.SecretKey>): objects.SecretKey | void {
         try {
             let pMech = Mechanism.create(mechanism);
             // init default template params
@@ -328,8 +328,8 @@ export class Session extends core.HandleObject {
     }
 
     generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate): IKeyPair;
-    generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate, callback: graphene_pk11.Callback<Error, IKeyPair>): void;
-    generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate, callback?: graphene_pk11.Callback<Error, IKeyPair>): IKeyPair | void {
+    generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate, callback: Callback<Error, IKeyPair>): void;
+    generateKeyPair(mechanism: MechanismType, publicTemplate: ITemplate, privateTemplate: ITemplate, callback?: Callback<Error, IKeyPair>): IKeyPair | void {
         try {
             let pMech = Mechanism.create(mechanism);
             // init default public key template
@@ -401,8 +401,8 @@ export class Session extends core.HandleObject {
     }
 
     wrapKey(alg: MechanismType, wrappingKey: Key, key: Key): Buffer;
-    wrapKey(alg: MechanismType, wrappingKey: Key, key: Key, callback: graphene_pk11.Callback<Error, Buffer>): void;
-    wrapKey(alg: MechanismType, wrappingKey: Key, key: Key, callback?: graphene_pk11.Callback<Error, Buffer>): Buffer | void {
+    wrapKey(alg: MechanismType, wrappingKey: Key, key: Key, callback: Callback<Error, Buffer>): void;
+    wrapKey(alg: MechanismType, wrappingKey: Key, key: Key, callback?: Callback<Error, Buffer>): Buffer | void {
         try {
             let pMech = Mechanism.create(alg);
             let wrappedKey = new Buffer(8096);
@@ -426,8 +426,8 @@ export class Session extends core.HandleObject {
     }
 
     unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate): Key;
-    unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate, callback: graphene_pk11.Callback<Error, Key>): void;
-    unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate, callback?: graphene_pk11.Callback<Error, Key>): Key | void {
+    unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate, callback: Callback<Error, Key>): void;
+    unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate, callback?: Callback<Error, Key>): Key | void {
         try {
             let pMech = Mechanism.create(alg);
             let pTemplate = Template.toPkcs11(template);
@@ -463,8 +463,8 @@ export class Session extends core.HandleObject {
      * @param {ITemplate} template new key template
      */
     deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate): SecretKey;
-    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate, callback: graphene_pk11.Callback<Error, Key>): void;
-    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate, callback?: graphene_pk11.Callback<Error, Key>): SecretKey | void {
+    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate, callback: Callback<Error, Key>): void;
+    deriveKey(alg: MechanismType, baseKey: Key, template: ITemplate, callback?: Callback<Error, Key>): SecretKey | void {
         try {
             let pMech = Mechanism.create(alg);
             let pTemplate = Template.toPkcs11(template);
