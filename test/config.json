@@ -2,7 +2,7 @@
     "init": {
         "lib": "/usr/local/lib/softhsm/libsofthsm2.so",
         "libName": "SoftHSM",
-        "pin": "password"
+        "pin": "12345"
     },
     "controlValues": {
         "module": {
@@ -13,12 +13,12 @@
             "slotIndex": 0,
             "token": {
                 "flags": 1069,
-                "label": "first",
+                "label": "My slot 0",
                 "manufacturerID": "SoftHSM project",
                 "serialNumber": "1a918b5db0a83cb1",
                 "minPinLen": 4
             }
         },
-        "slotsCount": 3
+        "slotsCount": 2
     }
 }
