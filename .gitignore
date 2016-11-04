@@ -1,8 +1,4 @@
 /.vscode
-/include
-/graphene
-/node_modules
-/typings
-/test/config.js
 /build
+/node_modules
 npm-debug.log
