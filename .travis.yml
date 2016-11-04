@@ -39,7 +39,6 @@ before_install:
   - bash ./.travis.sh
 
 script:
-  - tsc
   - npm run coverage
 
 after_success:
