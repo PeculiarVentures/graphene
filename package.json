@@ -33,6 +33,7 @@
     "graphene": "./build/console/console.js"
   },
   "dependencies": {
+    "@types/node": "^6.0.46",
     "pkcs11js": "latest"
   },
   "devDependencies": {
@@ -40,7 +41,7 @@
     "npm-run-all": "^3",
     "nyc": "^8",
     "watch": "^0",
-    "typescript": "^2.0.3",
+    "typescript": "^2",
     "mocha": "^3.1.2"
   },
   "bugs": {
