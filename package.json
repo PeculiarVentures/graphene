@@ -29,9 +29,6 @@
   "engines": {
     "node": "^4.0.0"
   },
-  "bin": {
-    "graphene": "./build/console/console.js"
-  },
   "dependencies": {
     "@types/node": "^6.0.46",
     "pkcs11js": "latest"
