@@ -3,10 +3,13 @@
   "version": "2.0.13",
   "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript",
   "main": "./build/graphene.js",
+  "types": "index.d.ts",
   "scripts": {
     "clean": "rm -rf build/ coverage/ .nyc_output/ npm-debug.log npm-debug.log.*",
     "test": "mocha",
-    "build": "tsc",
+    "build": "npm run build:es5",
+    "build:es5": "tsc",
+    "build:es2015": "tsc --module es2015 --target es2015",
     "build:source": "tsc --sourceMap",
     "pub": "npm run build && npm test && npm version patch && npm publish && git push",
     "sync": "git ac && git pull --rebase && git push",
@@ -33,7 +36,6 @@
     "pkcs11js": "latest"
   },
   "devDependencies": {
-    "@types/pkcs11js": "^1.0.7",
     "live-server": "^1",
     "npm-run-all": "^3",
     "nyc": "^8",
