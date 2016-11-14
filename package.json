@@ -7,6 +7,7 @@
   "scripts": {
     "clean": "rm -rf build/ coverage/ .nyc_output/ npm-debug.log npm-debug.log.*",
     "test": "mocha",
+    "install": "npm run build",
     "build": "npm run build:es5",
     "build:es5": "tsc",
     "build:es2015": "tsc --module es2015 --target es2015",
