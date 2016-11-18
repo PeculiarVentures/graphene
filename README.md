@@ -15,6 +15,9 @@ It has been tested with :
 - [Safenet Luna HSMs](http://www.safenet-inc.com/)
 - [RuToken](http://www.rutoken.ru/)
 
+
+We have also created a basic [CLI](https://github.com/PeculiarVentures/graphene-cli) for interacting with PKCS#11 devices based on this library we call [graphene-cli](https://github.com/PeculiarVentures/graphene-cli).
+
 **NOTE:** For testing purposes it may be easier to work with SoftHSM2 which is a software implementation of PKCS#11 based on OpenSSL or Botan.
 
 ```
