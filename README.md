@@ -5,6 +5,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/PeculiarVentures/graphene/badge.svg?branch=master)](https://coveralls.io/github/PeculiarVentures/graphene?branch=master)
 [![npm version](https://badge.fury.io/js/graphene-pk11.svg)](https://badge.fury.io/js/graphene-pk11)
 
+[![NPM](https://nodei.co/npm-dl/graphene-pk11.png?months=2&height=2)](https://nodei.co/npm/graphene/)
+
+
 A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript
 
 PKCS #11 (also known as CryptoKI or PKCS11) is the standard interface for interacting with hardware crypto devices such as Smart Cards and Hardware Security Modules (HSMs). It wraps the library closely, but uses attempts to look like 'node.crypto' where it makes sense. 
