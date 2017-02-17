@@ -32,14 +32,14 @@
   },
   "dependencies": {
     "@types/node": "^6.0.46",
-    "pkcs11js": "latest"
+    "pkcs11js": "latest",
+    "typescript": "^2"
   },
   "devDependencies": {
     "live-server": "^1",
     "npm-run-all": "^3",
     "nyc": "^8",
     "watch": "^0",
-    "typescript": "^2",
     "mocha": "^3.1.2"
   },
   "bugs": {
