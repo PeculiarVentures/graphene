@@ -123,7 +123,7 @@ export class SessionObject extends core.HandleObject {
     public set(name: string, value: any) {
         let tmpl: any = {};
         tmpl[name] = value;
-        this.setAttribute(tmpl[name]);
+        this.setAttribute(tmpl);
     }
 
     get class(): ObjectClass {
@@ -184,7 +184,7 @@ export class SessionObjectCollection extends core.Collection<SessionObject> {
     }
 }
 
-// import must be here, because other class from SessioObject must be initialized
+// import must be here, because other class from SessionObject must be initialized
 import * as objects from "./objects/common";
 export * from "./objects/common";
 export * from "./keys/common";

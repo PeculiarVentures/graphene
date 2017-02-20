@@ -557,7 +557,7 @@ let attribute = {
  */
 function n2i(name: string) {
     let attr = (attribute as any)[name];
-    if (attr && "v" in attr)
+    if (attr !== void 0 && "v" in attr)
         return attr.v;
     throw new Error(`Unsupported attribute name '${name}'`);
 }

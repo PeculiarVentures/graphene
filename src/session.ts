@@ -56,6 +56,7 @@ export class Session extends core.HandleObject {
         super(handle, lib);
 
         this.slot = slot;
+        this.getInfo();
     }
 
     /**
@@ -86,7 +87,7 @@ export class Session extends core.HandleObject {
     deviceError: number;
 
     protected getInfo() {
-        let info = this.lib.C_GetSessionInfo(this.slot.handle);
+        let info = this.lib.C_GetSessionInfo(this.handle);
 
         this.state = info.state;
         this.flags = info.flags;

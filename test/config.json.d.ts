@@ -19,6 +19,7 @@ interface IControlValues {
             serialNumber: string;
             minPinLen: number;
         };
+        mechanisms: number;
     };
     slotsCount: number;
 }
