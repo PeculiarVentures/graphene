@@ -158,7 +158,7 @@ export interface ITemplate {
      */
     publicExponent?: Buffer | null;
     /**
-     * CKA_PRIVATE_EXPONEN
+     * CKA_PRIVATE_EXPONENT
      */
     privateExponent?: Buffer | null;
     /**
@@ -178,7 +178,7 @@ export interface ITemplate {
      */
     exp2?: Buffer | null;
     /**
-     * CKA_COEFFICIEN
+     * CKA_COEFFICIENT
      */
     coefficient?: Buffer | null;
     /**
@@ -301,7 +301,7 @@ export interface ITemplate {
     /**
      * CKA_OTP_PIN_REQUIREMENT
      */
-    otppinReq?: any | null;
+    otpPinReq?: any | null;
     /**
      * CKA_OTP_COUNTER
      */
@@ -393,7 +393,7 @@ export interface ITemplate {
     /**
      * CKA_SUPPORTED_CMS_ATTRIBUTES
      */
-    suportedCmsAttrs?: any | null;
+    supportedCmsAttrs?: any | null;
     /**
      * CKA_ALLOWED_MECHANISMS
      */
@@ -401,7 +401,7 @@ export interface ITemplate {
 }
 
 const TYPE_NUMBER = "number";
-const TYPE_BOOL = "boolen";
+const TYPE_BOOL = "boolean";
 const TYPE_STRING = "string";
 const TYPE_BUFFER = "buffer";
 const TYPE_DATE = "date";
@@ -510,7 +510,7 @@ let attribute = {
     wrapTemplate: pkcs11.CKA_WRAP_TEMPLATE,
     unwrapTemplate: pkcs11.CKA_UNWRAP_TEMPLATE,
 
-    /* CKA_OTP... atttributes are new for PKCS #11 v2.20 amendment 3. */
+    /* CKA_OTP... attributes are new for PKCS #11 v2.20 amendment 3. */
     otpFormat: pkcs11.CKA_OTP_FORMAT,
     otpLength: pkcs11.CKA_OTP_LENGTH,
     otpTimeInterval: pkcs11.CKA_OTP_TIME_INTERVAL,
@@ -518,7 +518,7 @@ let attribute = {
     otpChallengeReq: pkcs11.CKA_OTP_CHALLENGE_REQUIREMENT,
     otpTimeReq: pkcs11.CKA_OTP_TIME_REQUIREMENT,
     otpCounterReq: pkcs11.CKA_OTP_COUNTER_REQUIREMENT,
-    otppinReq: pkcs11.CKA_OTP_PIN_REQUIREMENT,
+    otpPinReq: pkcs11.CKA_OTP_PIN_REQUIREMENT,
     otpCounter: pkcs11.CKA_OTP_COUNTER,
     otpTime: pkcs11.CKA_OTP_TIME,
     OtpUserId: pkcs11.CKA_OTP_USER_IDENTIFIER,
@@ -547,7 +547,7 @@ let attribute = {
     mechanismType: pkcs11.CKA_MECHANISM_TYPE,
     requiredCmsAttrs: pkcs11.CKA_REQUIRED_CMS_ATTRIBUTES,
     defaultCmsAttrs: pkcs11.CKA_DEFAULT_CMS_ATTRIBUTES,
-    suportedCmsAttrs: pkcs11.CKA_SUPPORTED_CMS_ATTRIBUTES,
+    supportedCmsAttrs: pkcs11.CKA_SUPPORTED_CMS_ATTRIBUTES,
     allowedMechanisms: pkcs11.CKA_ALLOWED_MECHANISMS
 };
 
@@ -592,7 +592,7 @@ function b2v(type: string, value: Buffer): any {
         case TYPE_BUFFER:
             return value;
         default:
-            throw new Error(`Uknown type in use '${type}'`);
+            throw new Error(`Unknown type in use '${type}'`);
     }
 }
 

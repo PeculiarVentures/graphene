@@ -180,6 +180,23 @@ describe("ECDSA", function () {
     });
 
     it("derive AES async", function (done) {
+        console.log({
+                name: "ECDH1_DERIVE",
+                params: new graphene.EcdhParams(
+                    graphene.EcKdf.NULL,
+                    null,
+                    derivationKeys.publicKey.getAttribute({ pointEC: null }).pointEC
+                )
+            },
+            derivationKeys.privateKey,
+            {
+                "class": graphene.ObjectClass.SECRET_KEY,
+                "token": false,
+                "keyType": graphene.KeyType.AES,
+                "valueLen": 256 / 8,
+                "encrypt": true,
+                "decrypt": true,
+            });
         session.deriveKey(
             {
                 name: "ECDH1_DERIVE",

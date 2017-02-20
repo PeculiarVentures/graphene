@@ -6,6 +6,7 @@
         "rootDir": "src",
         "outDir": "build",
         "newLine": "LF",
+        "importHelpers": true,
         "removeComments": true,
         "noImplicitAny": true,
         "noUnusedLocals": true,

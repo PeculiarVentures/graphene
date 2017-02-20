@@ -12,7 +12,7 @@
     "build:es5": "tsc",
     "build:es2015": "tsc --module es2015 --target es2015",
     "build:source": "tsc --sourceMap",
-    "pub": "npm run build && npm test && npm version patch && npm publish && git push",
+    "pub": "npm run build && npm version patch && npm publish && git push",
     "sync": "git ac && git pull --rebase && git push",
     "coverage": "npm run build:source && nyc npm test",
     "precoveragehtml": "npm run coverage",
@@ -32,7 +32,8 @@
   },
   "dependencies": {
     "@types/node": "^6.0.46",
-    "pkcs11js": "latest",
+    "pkcs11js": "^1.0.7",
+    "tslib": "^1.5.0",
     "typescript": "^2"
   },
   "devDependencies": {

@@ -88,11 +88,11 @@ export class X509Certificate extends Certificate {
      * SHA-1 hash of the subject public key (default empty)
      * - Can only be empty if `CKA_URL` is empty.
      */
-    get subjetcKeyIdentifier(): Buffer {
+    get subjectKeyIdentifier(): Buffer {
         return this.get("ski");
     }
 
-    set subjetcKeyIdentifier(v: Buffer) {
+    set subjectKeyIdentifier(v: Buffer) {
         this.set("ski", v);
     }
 

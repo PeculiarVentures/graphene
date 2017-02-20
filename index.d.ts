@@ -979,7 +979,7 @@ declare namespace GraphenePkcs11 {
          * SHA-1 hash of the subject public key (default empty)
          * - Can only be empty if `CKA_URL` is empty.
          */
-        subjetcKeyIdentifier: Buffer;
+        subjectKeyIdentifier: Buffer;
         /**
          * SHA-1 hash of the issuer public key (default empty)
          * - Can only be empty if `CKA_URL` is empty.
@@ -1032,7 +1032,7 @@ declare namespace GraphenePkcs11 {
          * SHA-1 hash of the subject public key (default empty)
          * - Can only be empty if `CKA_URL` is empty.
          */
-        subjetcKeyIdentifier: Buffer;
+        subjectKeyIdentifier: Buffer;
         /**
          * SHA-1 hash of the issuer public key (default empty)
          * - Can only be empty if `CKA_URL` is empty.
@@ -1567,7 +1567,7 @@ declare namespace GraphenePkcs11 {
         /**
          * removes all session objects matched to template
          * - if template is null, removes all session objects
-         * - returns a number of destroied session objects
+         * - returns a number of destroyed session objects
          * @param {ITemplate} template template
          */
         destroy(template: ITemplate): number;
@@ -1578,13 +1578,13 @@ declare namespace GraphenePkcs11 {
         destroy(): number;
         /**
          * removes all session objects
-         * - returns a number of destroied session objects
+         * - returns a number of destroyed session objects
          */
         clear(): number;
         /**
-         * returns a collection of session objects mached to template
+         * returns a collection of session objects matched to template
          * @param template template
-         * @param callback optional callback function wich is called for each founded object
+         * @param callback optional callback function which is called for each founded object
          * - if callback function returns false, it breaks find function.
          */
         find(callback?: (obj: SessionObject) => any): SessionObjectCollection;
@@ -1615,7 +1615,7 @@ declare namespace GraphenePkcs11 {
         unwrapKey(alg: MechanismType, unwrappingKey: Key, wrappedKey: Buffer, template: ITemplate, callback: (err: Error, key: Key) => void): void;
         /**
          * derives a key from a base key, creating a new key object
-         * @param {MechanismType} alg key deriv. mech
+         * @param {MechanismType} alg key derivation mech
          * @param {Key} baseKey base key
          * @param {ITemplate} template new key template
          */
@@ -1786,7 +1786,7 @@ declare namespace GraphenePkcs11 {
          */
         publicExponent?: Buffer | null;
         /**
-         * CKA_PRIVATE_EXPONEN
+         * CKA_PRIVATE_EXPONENT
          */
         privateExponent?: Buffer | null;
         /**
@@ -1806,7 +1806,7 @@ declare namespace GraphenePkcs11 {
          */
         exp2?: Buffer | null;
         /**
-         * CKA_COEFFICIEN
+         * CKA_COEFFICIENT
          */
         coefficient?: Buffer | null;
         /**
@@ -1929,7 +1929,7 @@ declare namespace GraphenePkcs11 {
         /**
          * CKA_OTP_PIN_REQUIREMENT
          */
-        otppinReq?: any | null;
+        otpPinReq?: any | null;
         /**
          * CKA_OTP_COUNTER
          */
@@ -2021,7 +2021,7 @@ declare namespace GraphenePkcs11 {
         /**
          * CKA_SUPPORTED_CMS_ATTRIBUTES
          */
-        suportedCmsAttrs?: any | null;
+        supportedCmsAttrs?: any | null;
         /**
          * CKA_ALLOWED_MECHANISMS
          */
@@ -2059,7 +2059,7 @@ declare namespace GraphenePkcs11 {
         constructor(handle: Handle, module: Module, lib: Pkcs11Js.PKCS11);
 
         /**
-         * Recieve information about Slot
+         * Receive information about Slot
          *
          * @protected
          */

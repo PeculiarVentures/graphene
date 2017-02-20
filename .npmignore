@@ -1,6 +1,7 @@
 /.vscode
 /node_modules
 /typings
+/build
 .travis.yml
 .travis.sh
 .waiting.html

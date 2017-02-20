@@ -38,7 +38,7 @@ export class Slot extends core.HandleObject {
     }
 
     /**
-     * Recieve information about Slot 
+     * Receive information about Slot 
      * 
      * @protected
      */
