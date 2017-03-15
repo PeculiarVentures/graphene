@@ -40,8 +40,8 @@ export class Module extends core.BaseObject {
         let info = this.lib.C_GetInfo();
 
         this.cryptokiVersion = info.cryptokiVersion;
-        this.manufacturerID = info.manufacturerID.trim();
-        this.libraryDescription = info.libraryDescription.trim();
+        this.manufacturerID = info.manufacturerID.trim().replace(/\u0000/g, "");
+        this.libraryDescription = info.libraryDescription.trim().replace(/\u0000/g, "");
         this.flags = info.flags;
         this.libraryVersion = info.libraryVersion;
     }
