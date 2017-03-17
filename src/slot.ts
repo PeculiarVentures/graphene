@@ -45,8 +45,8 @@ export class Slot extends core.HandleObject {
     protected getInfo(): void {
         let info = this.lib.C_GetSlotInfo(this.handle);
 
-        this.slotDescription = info.slotDescription.trim().replace(/\u0000/g, "");
-        this.manufacturerID = info.manufacturerID.trim().replace(/\u0000/g, "");
+        this.slotDescription = core.removePadding(info.slotDescription);
+        this.manufacturerID = core.removePadding(info.manufacturerID);
         this.flags = info.flags;
         this.hardwareVersion = info.hardwareVersion;
         this.firmwareVersion = info.firmwareVersion;

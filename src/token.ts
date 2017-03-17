@@ -118,10 +118,10 @@ export class Token extends core.HandleObject {
 
     protected getInfo() {
         let info = this.lib.C_GetTokenInfo(this.handle);
-        this.label = info.label.trim().replace(/\u0000/g, "");
-        this.manufacturerID = info.manufacturerID.toString().trim().replace(/\u0000/g, "");
-        this.model = info.model.trim();
-        this.serialNumber = new Buffer(info.serialNumber).toString().trim().replace(/\u0000/g, "");
+        this.label = core.removePadding(info.label);
+        this.manufacturerID = core.removePadding(info.manufacturerID);
+        this.model = core.removePadding(info.model);
+        this.serialNumber = core.removePadding(new Buffer(info.serialNumber).toString());
         this.flags = info.flags;
         this.maxSessionCount = info.maxSessionCount;
         this.sessionCount = info.sessionCount;

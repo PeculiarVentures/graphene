@@ -5,3 +5,7 @@ export * from "./core/type";
 export * from "./core/utc";
 
 export declare type CryptoData = string | Buffer;
+
+export function removePadding(text: string) {
+    return text.replace(/\0.*/g, "").trim();
+}
