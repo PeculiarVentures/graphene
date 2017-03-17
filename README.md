@@ -22,7 +22,7 @@ We have also created a basic [CLI](https://github.com/PeculiarVentures/graphene-
 
 **NOTE:** For testing purposes it may be easier to work with SoftHSM2 which is a software implementation of PKCS#11 based on OpenSSL or Botan.
 
-```
+```javascript
 var graphene = require("graphene-pk11");
 var Module = graphene.Module;
 
@@ -59,7 +59,7 @@ $ tsd install graphene-pk11 --save
 ```
 
 Load module
-```
+```javascript
 // file.js
 var graphene = require("graphene-pk11");
 ```
@@ -575,7 +575,7 @@ Please report bugs either as pull requests or as issues in the issue tracker. Gr
 
 ## TODO
 * Add tests to the library
-* Add additional capabilities to CLI (device initialization, file signing, file encrption, etc)
+* Add additional capabilities to CLI (device initialization, file signing, file encryption, etc)
 
 ## Related
 - [PKCS #11 2.40 Specification](http://docs.oasis-open.org/pkcs11/pkcs11-curr/v2.40/pkcs11-curr-v2.40.html)
