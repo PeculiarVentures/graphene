@@ -21,7 +21,7 @@ describe("RSA", function () {
     function isSoftHSM() {
         return test_manufacturer("SoftHSM");
     }
-    
+
     function isThalesNShield() {
         return test_manufacturer("nCipher Corp. Ltd");
     }
@@ -74,9 +74,7 @@ describe("RSA", function () {
         var verify = session.createVerify(alg, _key.publicKey);
         assert.equal(verify.once(MSG, sig), true, "Correct");
         verify = session.createVerify(alg, _key.publicKey);
-        assert.throws(function () {
-            verify.once(MSG_WRONG, sig)
-        });
+        assert.equal(verify.once(MSG_WRONG, sig), false);
     }
 
     function test_encrypt_decrypt(_key, alg) {
@@ -142,9 +140,9 @@ describe("RSA", function () {
     });
 
     it("OAEP encrypt/decrypt default SHA-1", function () {
-        if (isSoftHSM()) return;
-        test_encrypt_decrypt(keys, { name: "RSA_PKCS_OAEP", params: new graphene.RsaOaepParams() })
-    });
+            if (isSoftHSM()) return;
+            test_encrypt_decrypt(keys, { name: "RSA_PKCS_OAEP", params: new graphene.RsaOaepParams() })
+        });
 
     it("OAEP encrypt/decrypt SHA-1", function () {
         if (isSoftHSM()) return;
@@ -196,33 +194,45 @@ describe("RSA", function () {
     });
 
     it("RSA PSS sign/verify default", function () {
-        test_sign_verify(keys, { name: "SHA1_RSA_PKCS_PSS", 
-          params: new graphene.RsaPssParams() });
+        test_sign_verify(keys, {
+            name: "SHA1_RSA_PKCS_PSS",
+            params: new graphene.RsaPssParams()
+        });
     });
 
     it("RSA PSS sign/verify SHA1", function () {
-        test_sign_verify(keys, { name: "SHA1_RSA_PKCS_PSS",
-          params: new graphene.RsaPssParams(graphene.MechanismEnum.SHA1, graphene.RsaMgf.MGF1_SHA1, 20) });
+        test_sign_verify(keys, {
+            name: "SHA1_RSA_PKCS_PSS",
+            params: new graphene.RsaPssParams(graphene.MechanismEnum.SHA1, graphene.RsaMgf.MGF1_SHA1, 20)
+        });
     });
 
     it("RSA PSS sign/verify SHA224", function () {
-        test_sign_verify(keys, { name: "SHA224_RSA_PKCS_PSS",
-          params: new graphene.RsaPssParams(graphene.MechanismEnum.SHA224, graphene.RsaMgf.MGF1_SHA224, saltLen = 28) });
+        test_sign_verify(keys, {
+            name: "SHA224_RSA_PKCS_PSS",
+            params: new graphene.RsaPssParams(graphene.MechanismEnum.SHA224, graphene.RsaMgf.MGF1_SHA224, saltLen = 28)
+        });
     });
 
     it("RSA PSS sign/verify SHA256", function () {
-        test_sign_verify(keys, { name: "SHA256_RSA_PKCS_PSS",
-          params: new graphene.RsaPssParams(graphene.MechanismEnum.SHA256, graphene.RsaMgf.MGF1_SHA256, 32) });
+        test_sign_verify(keys, {
+            name: "SHA256_RSA_PKCS_PSS",
+            params: new graphene.RsaPssParams(graphene.MechanismEnum.SHA256, graphene.RsaMgf.MGF1_SHA256, 32)
+        });
     });
 
     it("RSA PSS sign/verify SHA384", function () {
-        test_sign_verify(keys, { name: "SHA384_RSA_PKCS_PSS",
-          params: new graphene.RsaPssParams(graphene.MechanismEnum.SHA384, graphene.RsaMgf.MGF1_SHA384, 48) });
+        test_sign_verify(keys, {
+            name: "SHA384_RSA_PKCS_PSS",
+            params: new graphene.RsaPssParams(graphene.MechanismEnum.SHA384, graphene.RsaMgf.MGF1_SHA384, 48)
+        });
     });
 
     it("RSA PSS sign/verify SHA512", function () {
-        test_sign_verify(keys, { name: "SHA512_RSA_PKCS_PSS",
-          params: new graphene.RsaPssParams(graphene.MechanismEnum.SHA512, graphene.RsaMgf.MGF1_SHA512, 64) });
+        test_sign_verify(keys, {
+            name: "SHA512_RSA_PKCS_PSS",
+            params: new graphene.RsaPssParams(graphene.MechanismEnum.SHA512, graphene.RsaMgf.MGF1_SHA512, 64)
+        });
     });
 
 })

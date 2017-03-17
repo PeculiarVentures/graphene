@@ -1,8 +1,10 @@
 import * as pkcs11 from "pkcs11js";
 import * as core from "../core";
-import {Session} from "../session";
-import {Key} from "../object";
-import {Mechanism, MechanismType} from "../mech";
+import { Session } from "../session";
+import { Key } from "../object";
+import { Mechanism, MechanismType } from "../mech";
+
+const INVALID = 192;
 
 export class Verify extends core.BaseObject {
 
@@ -36,19 +38,41 @@ export class Verify extends core.BaseObject {
     }
 
     final(signature: Buffer): boolean {
-        let res = this.lib.C_VerifyFinal(this.session.handle, signature);
+        let res = false;
+        try {
+            res = this.lib.C_VerifyFinal(this.session.handle, signature);
+        } catch (err) {
+            if (core.getPKCS11ErrorCode(err) !== INVALID) {
+                throw err;
+            }
+        }
         return res;
     }
 
     once(data: core.CryptoData, signature: Buffer): boolean;
-    once(data: core.CryptoData, signature: Buffer, cb: (error: Error, valid: boolean) => void): void;
-    once(data: core.CryptoData, signature: Buffer, cb?: (error: Error, valid: boolean) => void): any {
+    once(data: core.CryptoData, signature: Buffer, cb: (error: Error | null, valid: boolean) => void): void;
+    once(data: core.CryptoData, signature: Buffer, cb?: (error: Error | null, valid: boolean) => void): any {
         let _data = new Buffer(data as string);
         if (cb) {
-            this.lib.C_Verify(this.session.handle, _data, signature, cb);
+            this.lib.C_Verify(this.session.handle, _data, signature, (err, data) => {
+                if (err && core.getPKCS11ErrorCode(err) === INVALID) {
+                    cb(null, false);
+                } else {
+                    cb(err, data);
+                }
+            });
         }
-        else
-            return this.lib.C_Verify(this.session.handle, _data, signature);
+        else {
+            let res = false;
+            try {
+                res = this.lib.C_Verify(this.session.handle, _data, signature);
+            } catch (err) {
+                if (core.getPKCS11ErrorCode(err) !== INVALID) {
+                    throw err;
+                }
+            }
+            return res;
+        }
     }
 
 }
