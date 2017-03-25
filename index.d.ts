@@ -232,6 +232,7 @@ declare namespace GraphenePkcs11 {
     class NamedCurve {
         static getByName(name: string): INamedCurve;
         static getByOid(oid: string): INamedCurve;
+        static getByBuffer(buf: Buffer): INamedCurve;
     }
 
     enum EcKdf {

@@ -41,4 +41,13 @@ export class NamedCurve {
         }
         throw new Error(`Can not find named curve by oid '${oid}'`);
     }
+
+    static getByBuffer(buf: Buffer): INamedCurve {
+        for (let i in namedCurves) {
+            let nc = namedCurves[i];
+            if (nc.value.equals(buf))
+                return nc;
+        }
+        throw new Error(`Can not find named curve by buffer value '${buf.toString("hex")}'`);
+    }
 }
