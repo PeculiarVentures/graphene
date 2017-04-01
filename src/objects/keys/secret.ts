@@ -1,4 +1,4 @@
-import {Key} from "./key";
+import { Key } from "./key";
 
 /**
  * Secret key objects (object class `CKO_SECRET_KEY`) hold secret keys.
@@ -30,7 +30,11 @@ export class SecretKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get encrypt(): boolean {
-        return this.get("encrypt");
+        try {
+            return this.get("encrypt");
+        } catch (err) {
+            return false;
+        }
     }
 
     set encrypt(v: boolean) {
@@ -46,7 +50,11 @@ export class SecretKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get decrypt(): boolean {
-        return this.get("decrypt");
+        try {
+            return this.get("decrypt");
+        } catch (err) {
+            return false;
+        }
     }
 
     set decrypt(v: boolean) {
@@ -62,7 +70,11 @@ export class SecretKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get verify(): boolean {
-        return this.get("verify");
+        try {
+            return this.get("verify");
+        } catch (err) {
+            return false;
+        }
     }
 
     set verify(v: boolean) {
@@ -78,7 +90,11 @@ export class SecretKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get sign(): boolean {
-        return this.get("sign");
+        try {
+            return this.get("sign");
+        } catch (err) {
+            return false;
+        }
     }
 
     set sign(v: boolean) {
@@ -94,7 +110,11 @@ export class SecretKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get wrap(): boolean {
-        return this.get("wrap");
+        try {
+            return this.get("wrap");
+        } catch (err) {
+            return false;
+        }
     }
 
     set wrap(v: boolean) {
@@ -110,7 +130,11 @@ export class SecretKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get unwrap(): boolean {
-        return this.get("unwrap");
+        try {
+            return this.get("unwrap");
+        } catch (err) {
+            return false;
+        }
     }
 
     set unwrap(v: boolean) {

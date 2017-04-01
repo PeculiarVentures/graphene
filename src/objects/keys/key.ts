@@ -1,4 +1,4 @@
-import {Storage} from "../storage";
+import { Storage } from "../storage";
 import * as pkcs11 from "pkcs11js";
 
 export enum KeyType {
@@ -147,7 +147,11 @@ export class Key extends Storage {
      * @returns boolean
      */
     get derive(): boolean {
-        return this.get("derive");
+        try {
+            return this.get("derive");
+        } catch (err) {
+            return false;
+        }
     }
 
     set derive(v: boolean) {

@@ -1,4 +1,4 @@
-import {Key} from "./key";
+import { Key } from "./key";
 
 /**
  * Private key objects (object class `CKO_PRIVATE_KEY`) hold private keys
@@ -46,7 +46,12 @@ export class PrivateKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get decrypt(): boolean {
-        return this.get("decrypt");
+        try {
+            return this.get("decrypt");
+        }
+        catch (err) {
+            return false;
+        }
     }
 
     set decrypt(v: boolean) {
@@ -62,7 +67,11 @@ export class PrivateKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get sign(): boolean {
-        return this.get("sign");
+        try {
+            return this.get("sign");
+        } catch (err) {
+            return false;
+        }
     }
 
     set sign(v: boolean) {
@@ -78,7 +87,11 @@ export class PrivateKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get signRecover(): boolean {
-        return this.get("signRecover");
+        try {
+            return this.get("signRecover");
+        } catch (err) {
+            return false;
+        }
     }
 
     set signRecover(v: boolean) {
@@ -94,7 +107,11 @@ export class PrivateKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get unwrap(): boolean {
-        return this.get("unwrap");
+        try {
+            return this.get("unwrap");
+        } catch (err) {
+            return false;
+        }
     }
 
     set unwrap(v: boolean) {

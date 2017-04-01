@@ -1,4 +1,4 @@
-import {Key} from "./key";
+import { Key } from "./key";
 
 /**
  * Public key objects (object class CKO_PUBLIC_KEY) hold public keys
@@ -29,7 +29,11 @@ export class PublicKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get encrypt(): boolean {
-        return this.get("encrypt");
+        try {
+            return this.get("encrypt");
+        } catch (err) {
+            return false;
+        }
     }
 
     set encrypt(v: boolean) {
@@ -45,7 +49,11 @@ export class PublicKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get verify(): boolean {
-        return this.get("verify");
+        try {
+            return this.get("verify");
+        } catch (err) {
+            return false;
+        }
     }
 
     set verify(v: boolean) {
@@ -61,7 +69,11 @@ export class PublicKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get verifyRecover(): boolean {
-        return this.get("verifyRecover");
+        try {
+            return this.get("verifyRecover");
+        } catch (err) {
+            return false;
+        }
     }
 
     set verifyRecover(v: boolean) {
@@ -77,7 +89,11 @@ export class PublicKey extends Key {
      * - Default value is token-specific, and may depend on the values of other attributes.
      */
     get wrap(): boolean {
-        return this.get("wrap");
+        try {
+            return this.get("wrap");
+        } catch (err) {
+            return false;
+        }
     }
 
     set wrap(v: boolean) {
