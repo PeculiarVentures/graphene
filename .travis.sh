@@ -48,5 +48,5 @@ elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
 fi
 
 # initializing SoftHSM
-ls -la /usr/share/p11-kit/modules
+ls -la /usr/share/p11-kit/modules/softhsm2.module
 softhsm2-util --init-token --so-pin "12345" --pin "12345" --slot 0 --label "My slot 0"
