@@ -48,4 +48,4 @@ elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
 fi
 
 # initializing SoftHSM
-#softhsm2-util --init-token --so-pin "12345" --pin "12345" --slot 0 --label "My slot 0"
+softhsm2-util --init-token --so-pin "12345" --pin "12345" --slot 0 --label "My slot 0"
