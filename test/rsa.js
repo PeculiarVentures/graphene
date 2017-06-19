@@ -140,12 +140,10 @@ describe("RSA", function () {
     });
 
     it("OAEP encrypt/decrypt default SHA-1", function () {
-            if (isSoftHSM()) return;
             test_encrypt_decrypt(keys, { name: "RSA_PKCS_OAEP", params: new graphene.RsaOaepParams() })
         });
 
     it("OAEP encrypt/decrypt SHA-1", function () {
-        if (isSoftHSM()) return;
         test_encrypt_decrypt(keys, { name: "RSA_PKCS_OAEP", params: new graphene.RsaOaepParams(graphene.MechanismEnum.SHA1, graphene.RsaMgf.MGF1_SHA1) })
     });
 
@@ -179,17 +177,14 @@ describe("RSA", function () {
     });
 
     it("RSA 1.5 sign/verify", function () {
-        if (isSoftHSM()) return;
         test_sign_verify(keys, "RSA_PKCS");
     });
 
     it("RSA 1.5 encrypt/decrypt", function () {
-        if (isSoftHSM()) return;
         test_encrypt_decrypt(keys, "RSA_PKCS")
     });
 
     it("RSA 1.5 wrap/unwrap", function () {
-        if (isSoftHSM()) return;
         test_wrap_unwrap(keys, "RSA_PKCS", skey);
     });
 
