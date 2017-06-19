@@ -6,36 +6,36 @@ var TEST_MESSAGE = "Test message for crypto oprations";
 
 var Module = graphene.Module;
 
-describe("Session", function() {
+describe("Session", function () {
     var mod, slot, session;
 
-    before(function() {
+    before(function () {
         mod = Module.load(config.init.lib, config.init.libName);
         mod.initialize();
         slot = mod.getSlots(config.controlValues.slot.slotIndex);
     });
 
-    after(function() {
+    after(function () {
         if (session)
             session.logout();
         mod.finalize();
     });
 
-    function test_manufacturer(manufacturerID){
-		if (mod.manufacturerID == manufacturerID) {
-			console.warn("    \x1b[33mWARN:\x1b[0m Test is not supported for %s", manufacturerID);
-			return true;
-		}	
-		return false;
-	}
+    function test_manufacturer(manufacturerID) {
+        if (mod.manufacturerID == manufacturerID) {
+            console.warn("    \x1b[33mWARN:\x1b[0m Test is not supported for %s", manufacturerID);
+            return true;
+        }
+        return false;
+    }
 
-  	function isThalesNShield() {
-    	return test_manufacturer("nCipher Corp. Ltd");
-  	}
+    function isThalesNShield() {
+        return test_manufacturer("nCipher Corp. Ltd");
+    }
 
-    it("login/logout", function() {
+    it("login/logout", function () {
         var session = slot.open();
-        assert.throws(function() {
+        assert.throws(function () {
             session.login("WrongPin");
         }, Error);
         session.login(config.init.pin);
@@ -43,14 +43,14 @@ describe("Session", function() {
         session.close();
     });
 
-function changePIN(session, userType, oldPIN, newPIN) {
+    function changePIN(session, userType, oldPIN, newPIN) {
         session.login(oldPIN, userType);
         session.setPin(oldPIN, newPIN);
         session.logout();
     }
 
-    it("changing PIN for User", function() {
-        var session = slot.open(2|4);
+    it("changing PIN for User", function () {
+        var session = slot.open(2 | 4);
         try {
             var oldPIN = config.init.pin;
             var newPIN = "54321";
@@ -58,30 +58,30 @@ function changePIN(session, userType, oldPIN, newPIN) {
             changePIN(session, graphene.UserType.USER, oldPIN, newPIN);
             changePIN(session, graphene.UserType.USER, newPIN, oldPIN);
         }
-        catch(e){
-            session.close();
-            throw e;
-        }
-        session.close();
-    }).timeout(60000);
-    
-    it("changing PIN for SO", function() {
-        var session = slot.open(2|4);
-        try {
-            var oldPIN = config.init.pin;
-            var newPIN = "54321";
-            assert.equal(graphene.UserType.SO, 0);
-            changePIN(session, graphene.UserType.USER, oldPIN, newPIN);
-            changePIN(session, graphene.UserType.USER, newPIN, oldPIN);
-        }
-        catch(e){
+        catch (e) {
             session.close();
             throw e;
         }
         session.close();
     }).timeout(60000);
 
-    it("create", function() {
+    it("changing PIN for SO", function () {
+        var session = slot.open(2 | 4);
+        try {
+            var oldPIN = config.init.pin;
+            var newPIN = "54321";
+            assert.equal(graphene.UserType.SO, 0);
+            changePIN(session, graphene.UserType.SO, oldPIN, newPIN);
+            changePIN(session, graphene.UserType.SO, newPIN, oldPIN);
+        }
+        catch (e) {
+            session.close();
+            throw e;
+        }
+        session.close();
+    }).timeout(60000);
+
+    it("create", function () {
         // create new session for current test
         session = slot.open();
         session.login(config.init.pin);
@@ -115,7 +115,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
         assert.equal(objs.length, 2, "Wrong objs length");
     });
 
-    it("copy", function() {
+    it("copy", function () {
 
         session.clear();
         var objs = session.find();
@@ -124,7 +124,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
         var obj = session.generateKey("AES_KEY_GEN", {
             keyType: graphene.KeyType.AES,
             label: "label",
-            valueLen: 256/8,
+            valueLen: 256 / 8,
             extractable: false,
             sensitive: false,
             encrypt: true,
@@ -146,9 +146,9 @@ function changePIN(session, userType, oldPIN, newPIN) {
         objs = session.find();
         assert.equal(objs.length, 2, "Wrong objs length");
     });
-    
-    it("find", function() {
-        var template_generator = function(label, value) {
+
+    it("find", function () {
+        var template_generator = function (label, value) {
             if (isThalesNShield()) {
                 return {
                     class: graphene.ObjectClass.DATA,
@@ -156,7 +156,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
                     label: new Buffer(label),
                     value: new Buffer(value)
                 };
-            } else{
+            } else {
                 return {
                     class: graphene.ObjectClass.DATA,
                     application: "testFind",
@@ -165,13 +165,13 @@ function changePIN(session, userType, oldPIN, newPIN) {
                 };
             }
         }
-        
+
         var count = session.find().length;
 
         session.create(template_generator("first", "1"));
         session.create(template_generator("second", "2"));
         session.create(template_generator("third", "3"));
-        
+
         assert.equal(session.find().length, count + 3);
         var objs = session.find({
             application: "testFind"
@@ -182,7 +182,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
         assert.equal(objs.items(2).toType().value.toString(), "3");
     });
 
-    it("destroy by template", function() {
+    it("destroy by template", function () {
         var count = session.find().length;
 
         session.create({
@@ -206,7 +206,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
 
     });
 
-    it("destroy by object", function() {
+    it("destroy by object", function () {
         var count = session.find().length;
 
         var obj = session.create({
@@ -230,7 +230,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
 
     });
 
-    it("clear", function() {
+    it("clear", function () {
         assert.equal(session.find().length !== 0, true);
 
         session.clear();
@@ -239,7 +239,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
 
     });
 
-    it("generate key AES", function() {
+    it("generate key AES", function () {
         var keylen = 256 / 8;
         var key = session.generateKey("AES_KEY_GEN", {
             keyType: graphene.KeyType.AES,
@@ -248,14 +248,14 @@ function changePIN(session, userType, oldPIN, newPIN) {
             extractable: true,
             encrypt: true
         });
-        if(!isThalesNShield()) {
+        if (!isThalesNShield()) {
             assert.equal(!key.checkValue, false);
         }
         assert.equal(key.encrypt, true);
         assert.equal(key.getAttribute("value").value.length, keylen);
     });
 
-    it("generate key pair RSA", function() {
+    it("generate key pair RSA", function () {
         var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
             keyType: graphene.KeyType.RSA,
             encrypt: true,
@@ -271,13 +271,13 @@ function changePIN(session, userType, oldPIN, newPIN) {
         assert.equal(keys.privateKey.class, graphene.ObjectClass.PRIVATE_KEY);
     });
 
-    it("getObject wrong handle", function() {
+    it("getObject wrong handle", function () {
         assert.equal(!session.getObject(new Buffer([0xff, 0xff])), true);
     });
 
-    it("getObject", function() {
+    it("getObject", function () {
         var obj;
-        session.find(function(o) {
+        session.find(function (o) {
             obj = o;
             return false; // exit on first element
         });
@@ -297,7 +297,7 @@ function changePIN(session, userType, oldPIN, newPIN) {
         assert.equal(verify.final(signature), true);
     }
 
-    it("sign/verify RSA", function() {
+    it("sign/verify RSA", function () {
         var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
             keyType: graphene.KeyType.RSA,
             verify: true,
