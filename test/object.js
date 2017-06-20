@@ -1,3 +1,5 @@
+"use strict";
+
 var assert = require('assert');
 var config = require("./config.json");
 var pkcs11 = require("pkcs11js");
@@ -165,8 +167,8 @@ describe("Object", function () {
 
     context("custom attribute", () => {
 
-        let object = null;
-        const attrName = "label"
+        var object = null;
+        var attrName = "label"
 
         before(() => {
             object = session.create({
