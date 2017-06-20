@@ -1,7 +1,7 @@
 import * as pkcs11 from "pkcs11js";
 import * as core from "./core";
-import {Session} from "./session";
-import {ITemplate, Template} from "./template";
+import { Session } from "./session";
+import { ITemplate, Template } from "./template";
 
 export enum ObjectClass {
     DATA = pkcs11.CKO_DATA,
@@ -23,8 +23,8 @@ export class SessionObject extends core.HandleObject {
     session: Session;
 
     /**
-     * gets the size of an object in bytes 
-     * 
+     * gets the size of an object in bytes
+     *
      * @readonly
      * @type {number}
      */
@@ -34,13 +34,13 @@ export class SessionObject extends core.HandleObject {
 
     /**
      * Creates an instance of SessionObject.
-     * 
+     *
      * @param {SessionObject} object
      */
     constructor(object: SessionObject);
     /**
      * Creates an instance of SessionObject.
-     * 
+     *
      * @param {number} handle
      * @param {Session} session
      * @param {pkcs11.PKCS11} lib
@@ -64,7 +64,7 @@ export class SessionObject extends core.HandleObject {
 
     /**
      * copies an object, creating a new object for the copy
-     * 
+     *
      * @param {ITemplate} template template for the new object
      * @returns {SessionObject}
      */
@@ -83,21 +83,26 @@ export class SessionObject extends core.HandleObject {
         this.lib.C_DestroyObject(this.session.handle, this.handle);
     }
 
-    getAttribute(attr: string): ITemplate;
+    getAttribute(attr: string): any;
     getAttribute(attrs: ITemplate): ITemplate;
-    getAttribute(attrs: any): ITemplate {
+    getAttribute(attrs: any): any {
         let _attrs: ITemplate;
         if (typeof attrs === "string") {
+            // string
             _attrs = {};
             (_attrs as any)[attrs] = null;
-        }
-        else
+        } else {
+            // template
             _attrs = attrs;
+        }
         let tmpl = Template.toPkcs11(_attrs);
 
         // get size of values of attributes
         tmpl = this.lib.C_GetAttributeValue(this.session.handle, this.handle, tmpl);
 
+        if (typeof attrs === "string") {
+            return Template.fromPkcs11(tmpl)[attrs];
+        }
         return Template.fromPkcs11(tmpl);
     }
 
@@ -135,7 +140,7 @@ export class SessionObject extends core.HandleObject {
     }
 
     toType<T extends SessionObject>(): T {
-        // auto detect type of object 
+        // auto detect type of object
         let c = this.class;
         switch (c) {
             case ObjectClass.DATA:
