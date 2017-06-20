@@ -3,7 +3,7 @@ import {Storage} from "./storage";
 /**
  * Data objects (object class `CKO_DATA`) hold information defined by an application.
  * Other than providing access to it, Cryptoki does not attach any special meaning to a data object
- * 
+ *
  * @export
  * @class Data
  * @extends {Storage}
@@ -11,8 +11,8 @@ import {Storage} from "./storage";
 export class Data extends Storage {
 
     /**
-     * Description of the application that manages the object (default empty) 
-     * 
+     * Description of the application that manages the object (default empty)
+     *
      * @type {string}
      */
     get application(): string {
@@ -25,7 +25,7 @@ export class Data extends Storage {
 
     /**
      * DER-encoding of the object identifier indicating the data object type (default empty)
-     * 
+     *
      * @type {Buffer}
      */
     get objectId(): Buffer {
@@ -37,8 +37,8 @@ export class Data extends Storage {
     }
 
     /**
-     * Value of the object (default empty) 
-     * 
+     * Value of the object (default empty)
+     *
      * @type {Buffer}
      */
     get value(): Buffer {

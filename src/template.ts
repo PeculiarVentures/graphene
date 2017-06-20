@@ -1,6 +1,7 @@
 import * as pkcs11 from "pkcs11js";
 
 export interface ITemplate {
+    [key: string]: any;
     /**
      * CKA_CLASS
      */
@@ -406,7 +407,24 @@ const TYPE_STRING = "string";
 const TYPE_BUFFER = "buffer";
 const TYPE_DATE = "date";
 
-let attribute = {
+export type AttributeItemType = "number" | "boolean" | "string" | "buffer" | "date";
+
+interface AttributeItem {
+    /**
+     * Value of Attribute type (CKA_...)
+     */
+    v: number;
+    /**
+     * Type of Attribute
+     */
+    t: AttributeItemType;
+}
+
+interface AttributeItems {
+    [key: string]: AttributeItem;
+}
+
+const attribute: AttributeItems = {
     /* The following attribute types are defined: */
     class: { v: pkcs11.CKA_CLASS, t: TYPE_NUMBER },
     token: { v: pkcs11.CKA_TOKEN, t: TYPE_BOOL },
@@ -504,51 +522,51 @@ let attribute = {
 
 	/* CKA_ALWAYS_AUTHENTICATE ...
 	 * CKA_UNWRAP_TEMPLATE are new for v2.20 */
-    alwaysAuth: pkcs11.CKA_ALWAYS_AUTHENTICATE,
+    alwaysAuth: { v: pkcs11.CKA_ALWAYS_AUTHENTICATE, t: TYPE_BUFFER },
 
-    wrapWithTrusted: pkcs11.CKA_WRAP_WITH_TRUSTED,
-    wrapTemplate: pkcs11.CKA_WRAP_TEMPLATE,
-    unwrapTemplate: pkcs11.CKA_UNWRAP_TEMPLATE,
+    wrapWithTrusted: { v: pkcs11.CKA_WRAP_WITH_TRUSTED, t: TYPE_BUFFER },
+    wrapTemplate: { v: pkcs11.CKA_WRAP_TEMPLATE, t: TYPE_BUFFER },
+    unwrapTemplate: { v: pkcs11.CKA_UNWRAP_TEMPLATE, t: TYPE_BUFFER },
 
     /* CKA_OTP... attributes are new for PKCS #11 v2.20 amendment 3. */
-    otpFormat: pkcs11.CKA_OTP_FORMAT,
-    otpLength: pkcs11.CKA_OTP_LENGTH,
-    otpTimeInterval: pkcs11.CKA_OTP_TIME_INTERVAL,
-    otpUserFriendlyMode: pkcs11.CKA_OTP_USER_FRIENDLY_MODE,
-    otpChallengeReq: pkcs11.CKA_OTP_CHALLENGE_REQUIREMENT,
-    otpTimeReq: pkcs11.CKA_OTP_TIME_REQUIREMENT,
-    otpCounterReq: pkcs11.CKA_OTP_COUNTER_REQUIREMENT,
-    otpPinReq: pkcs11.CKA_OTP_PIN_REQUIREMENT,
-    otpCounter: pkcs11.CKA_OTP_COUNTER,
-    otpTime: pkcs11.CKA_OTP_TIME,
-    OtpUserId: pkcs11.CKA_OTP_USER_IDENTIFIER,
-    otpServiceId: pkcs11.CKA_OTP_SERVICE_IDENTIFIER,
-    otpServiceLogo: pkcs11.CKA_OTP_SERVICE_LOGO,
-    otpServiceLogoType: pkcs11.CKA_OTP_SERVICE_LOGO_TYPE,
+    otpFormat: { v: pkcs11.CKA_OTP_FORMAT, t: TYPE_BUFFER },
+    otpLength: { v: pkcs11.CKA_OTP_LENGTH, t: TYPE_BUFFER },
+    otpTimeInterval: { v: pkcs11.CKA_OTP_TIME_INTERVAL, t: TYPE_BUFFER },
+    otpUserFriendlyMode: { v: pkcs11.CKA_OTP_USER_FRIENDLY_MODE, t: TYPE_BUFFER },
+    otpChallengeReq: { v: pkcs11.CKA_OTP_CHALLENGE_REQUIREMENT, t: TYPE_BUFFER },
+    otpTimeReq: { v: pkcs11.CKA_OTP_TIME_REQUIREMENT, t: TYPE_BUFFER },
+    otpCounterReq: { v: pkcs11.CKA_OTP_COUNTER_REQUIREMENT, t: TYPE_BUFFER },
+    otpPinReq: { v: pkcs11.CKA_OTP_PIN_REQUIREMENT, t: TYPE_BUFFER },
+    otpCounter: { v: pkcs11.CKA_OTP_COUNTER, t: TYPE_BUFFER },
+    otpTime: { v: pkcs11.CKA_OTP_TIME, t: TYPE_BUFFER },
+    OtpUserId: { v: pkcs11.CKA_OTP_USER_IDENTIFIER, t: TYPE_BUFFER },
+    otpServiceId: { v: pkcs11.CKA_OTP_SERVICE_IDENTIFIER, t: TYPE_BUFFER },
+    otpServiceLogo: { v: pkcs11.CKA_OTP_SERVICE_LOGO, t: TYPE_BUFFER },
+    otpServiceLogoType: { v: pkcs11.CKA_OTP_SERVICE_LOGO_TYPE, t: TYPE_BUFFER },
 
 
 	/* CKA_HW_FEATURE_TYPE, CKA_RESET_ON_INIT, and CKA_HAS_RESET
 	 * are new for v2.10 */
-    hwFeatureType: pkcs11.CKA_HW_FEATURE_TYPE,
-    resetOnInit: pkcs11.CKA_RESET_ON_INIT,
-    hasReset: pkcs11.CKA_HAS_RESET,
+    hwFeatureType: { v: pkcs11.CKA_HW_FEATURE_TYPE, t: TYPE_BUFFER },
+    resetOnInit: { v: pkcs11.CKA_RESET_ON_INIT, t: TYPE_BUFFER },
+    hasReset: { v: pkcs11.CKA_HAS_RESET, t: TYPE_BUFFER },
 
     /* The following attributes are new for v2.20 */
-    pixelX: pkcs11.CKA_PIXEL_X,
-    pixelY: pkcs11.CKA_PIXEL_Y,
-    resolution: pkcs11.CKA_RESOLUTION,
-    charRows: pkcs11.CKA_CHAR_ROWS,
-    charCols: pkcs11.CKA_CHAR_COLUMNS,
-    color: pkcs11.CKA_COLOR,
-    bitsPerPixel: pkcs11.CKA_BITS_PER_PIXEL,
-    charSets: pkcs11.CKA_CHAR_SETS,
-    encMethod: pkcs11.CKA_ENCODING_METHODS,
-    mimeTypes: pkcs11.CKA_MIME_TYPES,
-    mechanismType: pkcs11.CKA_MECHANISM_TYPE,
-    requiredCmsAttrs: pkcs11.CKA_REQUIRED_CMS_ATTRIBUTES,
-    defaultCmsAttrs: pkcs11.CKA_DEFAULT_CMS_ATTRIBUTES,
-    supportedCmsAttrs: pkcs11.CKA_SUPPORTED_CMS_ATTRIBUTES,
-    allowedMechanisms: pkcs11.CKA_ALLOWED_MECHANISMS
+    pixelX: { v: pkcs11.CKA_PIXEL_X, t: TYPE_BUFFER },
+    pixelY: { v: pkcs11.CKA_PIXEL_Y, t: TYPE_BUFFER },
+    resolution: { v: pkcs11.CKA_RESOLUTION, t: TYPE_BUFFER },
+    charRows: { v: pkcs11.CKA_CHAR_ROWS, t: TYPE_BUFFER },
+    charCols: { v: pkcs11.CKA_CHAR_COLUMNS, t: TYPE_BUFFER },
+    color: { v: pkcs11.CKA_COLOR, t: TYPE_BUFFER },
+    bitsPerPixel: { v: pkcs11.CKA_BITS_PER_PIXEL, t: TYPE_BUFFER },
+    charSets: { v: pkcs11.CKA_CHAR_SETS, t: TYPE_BUFFER },
+    encMethod: { v: pkcs11.CKA_ENCODING_METHODS, t: TYPE_BUFFER },
+    mimeTypes: { v: pkcs11.CKA_MIME_TYPES, t: TYPE_BUFFER },
+    mechanismType: { v: pkcs11.CKA_MECHANISM_TYPE, t: TYPE_BUFFER },
+    requiredCmsAttrs: { v: pkcs11.CKA_REQUIRED_CMS_ATTRIBUTES, t: TYPE_BUFFER },
+    defaultCmsAttrs: { v: pkcs11.CKA_DEFAULT_CMS_ATTRIBUTES, t: TYPE_BUFFER },
+    supportedCmsAttrs: { v: pkcs11.CKA_SUPPORTED_CMS_ATTRIBUTES, t: TYPE_BUFFER },
+    allowedMechanisms: { v: pkcs11.CKA_ALLOWED_MECHANISMS, t: TYPE_BUFFER },
 };
 
 /**
@@ -559,7 +577,7 @@ function n2i(name: string) {
     let attr = (attribute as any)[name];
     if (attr !== void 0 && "v" in attr)
         return attr.v;
-    throw new Error(`Unsupported attribute name '${name}'`);
+    throw new Error(`Unsupported attribute name '${name}'. Use 'registerAttribute' to add custom attribute.`);
 }
 
 /**
@@ -572,12 +590,12 @@ function i2n(cka: number) {
         if (attr && "v" in attr && attr.v === cka)
             return i;
     }
-    throw new Error(`Unsupported attribute ID '${cka}'`);
+    throw new Error(`Unsupported attribute ID '${cka}'. Use 'registerAttribute' to add custom attribute.`);
 }
 
 /**
  * Convert buffer to value
- * 
+ *
  * @param {Buffer} value
  * @returns {*}
  */
@@ -617,9 +635,19 @@ export class Template {
             let name = i2n(attr.type);
             let type = (attribute as any)[name].t;
             if (type === void 0)
-                throw new Error(`Can not get type for attribute '${name}'`);
+                throw new Error(`Can not get type for attribute '${name}'.`);
             (res as any)[i2n(attr.type)] = b2v(type, attr.value as Buffer);
         }
         return res;
     }
+}
+
+/**
+ * Registers new attribute
+ * @param {string}              name        name of attribute
+ * @param {number}              value       PKCS#11 number value of attribute
+ * @param {AttributeItemType}   type        string name of type
+ */
+export function registerAttribute(name: string, value: number, type: AttributeItemType) {
+    attribute[name] = { v: value, t: type };
 }

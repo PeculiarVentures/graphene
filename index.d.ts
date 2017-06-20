@@ -369,7 +369,7 @@ declare namespace GraphenePkcs11 {
          * destroys an object
          */
         destroy(): void;
-        getAttribute(attr: string): ITemplate;
+        getAttribute(attr: string): any;
         getAttribute(attrs: ITemplate): ITemplate;
         setAttribute(attrs: string, value: any): void;
         setAttribute(attrs: ITemplate): void;
@@ -1629,7 +1629,18 @@ declare namespace GraphenePkcs11 {
         generateRandom(size: number): Buffer;
     }
 
+    export type AttributeItemType = "number" | "boolean" | "string" | "buffer" | "date";
+
+    /**
+     * Registers new attribute
+     * @param {string}              name        name of attribute
+     * @param {number}              value       PKCS#11 number value of attribute
+     * @param {AttributeItemType}   type        string name of type
+     */
+    function registerAttribute(name: string, value: number, type: AttributeItemType): void;
+
     interface ITemplate {
+        [key: string]: any;
         /**
          * CKA_CLASS
          */

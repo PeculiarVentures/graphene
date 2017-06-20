@@ -55,4 +55,6 @@ else {
     console.error("Slot is not initialized");
 }
 
+graphene.registerAttribute("x509Chain", 123456, "buffer");
+
 mod.finalize();

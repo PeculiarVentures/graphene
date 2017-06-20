@@ -252,7 +252,7 @@ describe("Session", function () {
             assert.equal(!key.checkValue, false);
         }
         assert.equal(key.encrypt, true);
-        assert.equal(key.getAttribute("value").value.length, keylen);
+        assert.equal(key.getAttribute("value").length, keylen);
     });
 
     it("generate key pair RSA", function () {

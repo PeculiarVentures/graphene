@@ -1,5 +1,8 @@
+"use strict";
+
 var assert = require('assert');
 var config = require("./config.json");
+var pkcs11 = require("pkcs11js");
 var graphene = require("../build/graphene");
 
 var Module = graphene.Module;
@@ -53,8 +56,8 @@ describe("Object", function () {
             publicExponent: exponent
         });
 
-        var attrs = obj.getAttribute("wrap");
-        assert.equal(attrs.wrap, true);
+        var wrap = obj.getAttribute("wrap");
+        assert.equal(wrap, true);
     });
 
     it("get attribute by template", function () {
@@ -86,7 +89,7 @@ describe("Object", function () {
         });
 
         obj.setAttribute("label", "new label");
-        assert.equal(obj.getAttribute("label").label, "new label");
+        assert.equal(obj.getAttribute("label"), "new label");
     });
 
     it("set attribute by template", function () {
@@ -102,7 +105,7 @@ describe("Object", function () {
         obj.setAttribute({
             label: "new label"
         });
-        assert.equal(obj.getAttribute("label").label, "new label");
+        assert.equal(obj.getAttribute("label"), "new label");
     });
 
     it("destroy", function () {
@@ -135,7 +138,7 @@ describe("Object", function () {
         assert.equal(obj.size > 0, true)
         obj.destroy();
     });
-    
+
     it("set function", function () {
         var obj = session.create({
             class: graphene.ObjectClass.DATA,
@@ -154,12 +157,48 @@ describe("Object", function () {
 
         data.label = "data.new.label";
 
-        var objs = session.find({label: "data.new.label"});
+        var objs = session.find({ label: "data.new.label" });
         assert.equal(objs.length, 1);
 
         data = objs.items(0).toType();
         assert.equal(data.label, "data.new.label");
         data.destroy();
+    });
+
+    context("custom attribute", () => {
+
+        var object = null;
+        var attrName = "label"
+
+        before(() => {
+            object = session.create({
+                class: graphene.ObjectClass.DATA,
+                label: "data.set",
+                objectId: new Buffer("my custom id"),
+                token: false,
+                value: new Buffer("Hello"),
+            });
+            // change default type of attribute
+            graphene.registerAttribute(attrName, pkcs11.CKA_LABEL, "buffer");
+        })
+
+        after(() => {
+            object.destroy();
+            // set default value for objectId
+            graphene.registerAttribute(attrName, pkcs11.CKA_LABEL, "string");
+        })
+
+        it("get value", () => {
+            const value = object.getAttribute(attrName);
+            assert.equal(Buffer.isBuffer(value), true);
+        })
+
+        it("set value", () => {
+            const newValue = "new value";
+            object.setAttribute(attrName, newValue);
+            assert.equal(object.getAttribute(attrName), newValue);
+        })
+
     });
 
 });
