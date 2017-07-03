@@ -1,10 +1,13 @@
 /.vscode
 /node_modules
 /typings
-/build
 /.nyc_output
 /coverage
 .travis.yml
 .travis.sh
 .waiting.html
 npm-debug.log
+
+# build
+/src
+ts*.json

@@ -24,15 +24,15 @@ elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
 
     # Installing SoftHSM dependencies
     brew update
-    brew install automake
+    command -v automake || brew install automake
     brew install openssl
     
     # seems to be needed
     export OPENSSL_INCLUDE_DIR=`brew --prefix openssl`/include
     export OPENSSL_LIB_DIR=`brew --prefix openssl`/lib
     
-    brew install sqlite
-    brew install cppunit
+    command -v sqlite || brew install sqlite
+    command -v cppunit || brew install cppunit
     
     # Installing SoftHSM
     git clone https://github.com/opendnssec/SoftHSMv2.git -b develop

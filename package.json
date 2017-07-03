@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rm -rf build/ coverage/ .nyc_output/ npm-debug.log npm-debug.log.*",
     "test": "mocha",
-    "install": "npm run build",
+    "prepare": "npm run build",
     "build": "npm run build:es5",
     "build:es5": "tsc",
     "build:es2015": "tsc --module es2015 --target es2015",
@@ -28,20 +28,20 @@
     "url": "https://github.com/PeculiarVentures/graphene.git"
   },
   "engines": {
-    "node": "^4.0.0"
+    "node": "^5.0.0"
   },
   "dependencies": {
-    "@types/node": "^6.0.46",
-    "pkcs11js": "^1.0.7",
-    "tslib": "^1.5.0",
-    "typescript": "^2"
+    "@types/node": "^6",
+    "pkcs11js": "^1.0.9",
+    "tslib": "^1.7.1"
   },
   "devDependencies": {
     "live-server": "^1",
-    "npm-run-all": "^3",
-    "nyc": "^8",
-    "watch": "^0",
-    "mocha": "^3.1.2"
+    "mocha": "^3",
+    "npm-run-all": "^4.0.2",
+    "nyc": "^11.0.3",
+    "typescript": "^2",
+    "watch": "^0"
   },
   "bugs": {
     "url": "https://github.com/PeculiarVentures/graphene/issues"
