@@ -11,3 +11,4 @@ npm-debug.log
 # build
 /src
 ts*.json
+**/*.js.map
