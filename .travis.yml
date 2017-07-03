@@ -40,6 +40,7 @@ before_install:
   - bash ./.travis.sh
 
 script:
+  - npm run build:source
   - npm run coverage
 
 after_success:
