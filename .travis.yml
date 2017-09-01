@@ -32,11 +32,8 @@ dist: trusty
 before_install:
   - export TSD_GITHUB_TOKEN=8591f447276e1caa1b9636b9c8053d768130464f
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90; fi
-  - node --version
-  - npm --version
   - gcc --version
   - openssl version
-  - npm install coveralls
   - bash ./.travis.sh
 
 script:
