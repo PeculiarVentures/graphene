@@ -38,8 +38,8 @@ export class Slot extends core.HandleObject {
     }
 
     /**
-     * Receive information about Slot 
-     * 
+     * Receive information about Slot
+     *
      * @protected
      */
     protected getInfo(): void {
@@ -54,7 +54,7 @@ export class Slot extends core.HandleObject {
 
     /**
      * Returns information about token
-     * 
+     *
      * @returns {Token}
      */
     getToken(): token.Token {
@@ -63,7 +63,7 @@ export class Slot extends core.HandleObject {
 
     /**
      * returns list of `MechanismInfo`
-     * 
+     *
      * @returns {MechanismCollection}
      */
     getMechanisms(): mech.MechanismCollection {
@@ -73,17 +73,17 @@ export class Slot extends core.HandleObject {
 
     /**
      * initializes a token
-     * 
+     *
      * @param {string} pin the SO's initial PIN
      * @returns {string}
      */
-    initToken(pin: string): string {
-        return this.lib.C_InitToken(this.handle, pin);
+    initToken(pin: string, label = ''): string {
+        return this.lib.C_InitToken(this.handle, pin, label);
     }
 
     /**
      * opens a session between an application and a token in a particular slot
-     * 
+     *
      * @param {SessionFlag} [flags=session.SessionFlag.SERIAL_SESSION] indicates the type of session
      * @returns {Session}
      */
@@ -102,7 +102,7 @@ export class Slot extends core.HandleObject {
 
 /**
  * Collection of slots
- * 
+ *
  * @export
  * @class SlotCollection
  * @extends {core.Collection<Slot>}
