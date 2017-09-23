@@ -18,7 +18,7 @@
 
 Module info
 ==============================
- 
+ > slot algs -s 0
  
 | Algorithm name            | h | s | v | e | d | w | u | g | D |
 |---------------------------|---|---|---|---|---|---|---|---|---|
@@ -134,6 +134,8 @@ Module info
 #### Performance
 ##### Key generation
 
+> test gen -it 5 -a all
+
 | Algorithm                 | Generate | Generate/s |
 |---------------------------|---------:|-----------:|
 | RSA-1024                  |    202ms |       4.95 |
@@ -148,6 +150,8 @@ Module info
 | AES-256                   |      3ms |    333.333 |
 
 ##### Signing
+
+> test sign -it 200 -a all
  
 | Algorithm                 |     Sign |   Verify |    Sign/s |  Verify/s |
 |---------------------------|---------:|---------:|----------:|----------:|
@@ -160,6 +164,8 @@ Module info
 | ECDSA-SECP384R1           |    2.1ms |   2.35ms |    476.19 |   425.532 |
 
 ##### Encryption
+
+> test enc -it 200 -a all
  
 | Algorithm                 |  Encrypt |  Decrypt | Encrypt/s | Decrypt/s |
 |---------------------------|---------:|---------:|----------:|----------:|
