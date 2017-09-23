@@ -22,6 +22,8 @@ Module info
 
 Session is started
 
+slot algs -s 0
+
 | Algorithm name            | h | s | v | e | d | w | u | g | D |
 |---------------------------|---|---|---|---|---|---|---|---|---|
 | MD5                       | x |   |   |   |   |   |   |   |   |
@@ -96,6 +98,9 @@ Session is started
 
 #### Performance
 ##### Encryption
+
+> test enc -it 200 -a all
+
 Module info
 
   Library: /usr/local/lib/softhsm/libsofthsm2.so
@@ -112,6 +117,9 @@ Session is started
 
 
 ##### Signing
+
+> test sign -it 200 -a all
+
 Module info
 
   Library: /usr/local/lib/softhsm/libsofthsm2.so
@@ -128,6 +136,9 @@ Session is started
 
 
 ##### Key generation
+
+> test gen -it 5 -a all
+
 Module info
 
   Library: /usr/local/lib/softhsm/libsofthsm2.so
