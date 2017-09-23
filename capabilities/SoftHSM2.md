@@ -101,13 +101,6 @@ Session is started
 
 > test enc -it 200 -a all
 
-Module info
-
-  Library: /usr/local/lib/softhsm/libsofthsm2.so
-  Name: SoftHSM2
-  Cryptoki version: 2.30
-
-Session is started
 
 | Algorithm                 |  Encrypt |  Decrypt | Encrypt/s | Decrypt/s |
 |---------------------------|---------:|---------:|----------:|----------:|
@@ -120,14 +113,6 @@ Session is started
 
 > test sign -it 200 -a all
 
-Module info
-
-  Library: /usr/local/lib/softhsm/libsofthsm2.so
-  Name: SoftHSM2
-  Cryptoki version: 2.30
-
-Session is started
-
 
 | Algorithm                 |     Sign |   Verify |    Sign/s |  Verify/s |
 |---------------------------|---------:|---------:|----------:|----------:|
@@ -139,14 +124,6 @@ Session is started
 ##### Key generation
 
 > test gen -it 5 -a all
-
-Module info
-
-  Library: /usr/local/lib/softhsm/libsofthsm2.so
-  Name: SoftHSM2
-  Cryptoki version: 2.30
-
-Session is started
 
 | Algorithm                 | Generate | Generate/s |
 |---------------------------|---------:|-----------:|
