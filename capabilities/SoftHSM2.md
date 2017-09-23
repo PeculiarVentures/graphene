@@ -22,7 +22,7 @@ Module info
 
 Session is started
 
-slot algs -s 0
+> slot algs -s 0
 
 | Algorithm name            | h | s | v | e | d | w | u | g | D |
 |---------------------------|---|---|---|---|---|---|---|---|---|
@@ -127,6 +127,7 @@ Module info
   Cryptoki version: 2.30
 
 Session is started
+
 
 | Algorithm                 |     Sign |   Verify |    Sign/s |  Verify/s |
 |---------------------------|---------:|---------:|----------:|----------:|
