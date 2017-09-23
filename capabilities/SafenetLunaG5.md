@@ -140,6 +140,7 @@
 | ECDSA-BRAINPOOLP320R1     |  48.58ms |  57.34ms |   20.585 |    17.44 |
 
 ##### Encryption
+
 > test enc -it 200 -a all
 
 | Algorithm                 |  Encrypt |  Decrypt | Encrypt/s | Decrypt/s |
