@@ -134,6 +134,8 @@ Module info
 #### Performance
 ##### Key generation
 
+> test gen -it 5 -a all
+
 | Algorithm                 | Generate | Generate/s |
 |---------------------------|---------:|-----------:|
 | RSA-1024                  |    202ms |       4.95 |
@@ -147,7 +149,9 @@ Module info
 | AES-256                   |      3ms |    333.333 |
 
 ##### Signing
- 
+
+> test sign -it 200 -a all
+
 | Algorithm                 |     Sign |   Verify |    Sign/s |  Verify/s |
 |---------------------------|---------:|---------:|----------:|----------:|
 | RSA-1024                  |   0.78ms |  0.545ms |  1282.051 |  1834.862 |
@@ -155,6 +159,8 @@ Module info
 | RSA-4096                  |   6.59ms |  1.135ms |   151.745 |   881.057 |
 
 ##### Encryption
+
+> test enc -it 200 -a all
  
 | Algorithm                 |  Encrypt |  Decrypt | Encrypt/s | Decrypt/s |
 |---------------------------|---------:|---------:|----------:|----------:|
