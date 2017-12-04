@@ -109,15 +109,16 @@ export class Slot extends core.HandleObject {
  */
 export class SlotCollection extends core.Collection<Slot> {
 
-    module: Module;
-
-    items(index: number): Slot {
-        return new Slot(this.items_[index], this.module, this.lib);
-    }
+    public module: Module;
 
     constructor(items: Array<Buffer>, module: Module, lib: pkcs11.PKCS11, classType: any = Slot) {
         super(items, lib, classType);
 
         this.module = module;
     }
+
+    public items(index: number): Slot {
+        return new Slot(this.items_[index], this.module, this.lib);
+    }
+
 }

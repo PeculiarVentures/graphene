@@ -4,7 +4,7 @@ export declare type Handle = Buffer;
 
 export class BaseObject {
 
-    protected lib: pkcs11.PKCS11;
+    public lib: pkcs11.PKCS11;
 
     constructor(lib: pkcs11.PKCS11) {
         Object.defineProperty(this, "lib", {

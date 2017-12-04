@@ -68,10 +68,11 @@ export enum MechanismFlag {
     DERIVE = pkcs11.CKF_DERIVE,
 }
 
-export class Mechanism extends core.BaseObject {
+export class Mechanism extends core.HandleObject {
 
-    protected handle: number;
     protected slotHandle: core.Handle;
+
+    public type: MechanismEnum;
 
     /**
      * the minimum size of the key for the mechanism
@@ -94,19 +95,19 @@ export class Mechanism extends core.BaseObject {
      * returns string name from MechanismEnum
      */
     get name(): string {
-        return MechanismEnum[this.handle] || "unknown";
+        return MechanismEnum[this.type] || "unknown";
     }
 
-    constructor(handle: number, slotHandle: core.Handle, lib: pkcs11.PKCS11) {
-        super(lib);
-        this.handle = handle;
+    constructor(type: number, handle: pkcs11.Handle, slotHandle: core.Handle, lib: pkcs11.PKCS11) {
+        super(handle, lib);
+        this.type = type;
         this.slotHandle = slotHandle;
 
         this.getInfo();
     }
 
     protected getInfo(): void {
-        let info =  this.lib.C_GetMechanismInfo(this.slotHandle, this.handle);
+        let info =  this.lib.C_GetMechanismInfo(this.slotHandle, this.type);
 
         this.minKeySize = info.minKeySize;
         this.maxKeySize = info.maxKeySize;
@@ -186,7 +187,11 @@ export class MechanismCollection extends core.Collection<Mechanism> {
      * @param {number} index of element in collection `[0..n]`
      */
     items(index: number): Mechanism {
-        let handle = this.items_[index];
-        return new Mechanism(handle, this.slotHandle, this.lib);
+        const type = this.items_[index];
+        // convert type to buffer
+        const handle = new Buffer(8);
+        handle.fill(0);
+        handle.writeInt32LE(type, 0);
+        return new Mechanism(type, handle, this.slotHandle, this.lib);
     }
 }

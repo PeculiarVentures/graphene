@@ -22,7 +22,7 @@ declare namespace GraphenePkcs11 {
     }
 
     class BaseObject {
-        protected lib: Pkcs11Js.PKCS11;
+        public lib: Pkcs11Js.PKCS11;
         constructor(lib?: Pkcs11Js.PKCS11);
     }
 
@@ -54,6 +54,13 @@ declare namespace GraphenePkcs11 {
          * @param {number} index of element in collection `[0..n]`
          */
         items(index: number): T;
+
+        /**
+         * Returns the index of the first occurrence of a value in an array.
+         * @param obj       The value to locate in the array.
+         * @param fromIndex The array index at which to begin the search. If fromIndex is omitted, the search starts at index 0.
+         */
+        public indexOf(obj: T, fromIndex?: number): number;
     }
 
     function isString(v: any): boolean;
@@ -1107,10 +1114,11 @@ declare namespace GraphenePkcs11 {
         DERIVE,
     }
 
-    class Mechanism extends BaseObject {
+    class Mechanism extends HandleObject {
 
-        protected handle: number;
         protected slotHandle: Handle;
+
+        public type: MechanismEnum;
 
         /**
          * the minimum size of the key for the mechanism
@@ -1131,7 +1139,7 @@ declare namespace GraphenePkcs11 {
          */
         name: string;
 
-        constructor(handle: number, slotHandle: Handle, lib: Pkcs11Js.PKCS11);
+        constructor(type: number, handle: number, slotHandle: Handle, lib: Pkcs11Js.PKCS11);
 
         protected getInfo(): void;
 
