@@ -1,9 +1,11 @@
 import * as pkcs11 from "pkcs11js";
+import { Int64LE } from "int64-buffer";
+
 import * as core from "./core";
 import * as fs from "fs";
 import * as obj from "./object";
-import {MechanismEnum} from "./mech_enum";
-import {IParams} from "./keys/params";
+import { MechanismEnum } from "./mech_enum";
+import { IParams } from "./keys/params";
 export * from "./mech_enum";
 
 export interface IAlgorithm {
@@ -107,7 +109,7 @@ export class Mechanism extends core.HandleObject {
     }
 
     protected getInfo(): void {
-        let info =  this.lib.C_GetMechanismInfo(this.slotHandle, this.type);
+        let info = this.lib.C_GetMechanismInfo(this.slotHandle, this.type);
 
         this.minKeySize = info.minKeySize;
         this.maxKeySize = info.maxKeySize;
@@ -189,9 +191,7 @@ export class MechanismCollection extends core.Collection<Mechanism> {
     items(index: number): Mechanism {
         const type = this.items_[index];
         // convert type to buffer
-        const handle = new Buffer(8);
-        handle.fill(0);
-        handle.writeInt32LE(type, 0);
+        const handle = new Int64LE(type).toBuffer();
         return new Mechanism(type, handle, this.slotHandle, this.lib);
     }
 }
