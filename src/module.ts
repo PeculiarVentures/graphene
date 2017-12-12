@@ -86,6 +86,13 @@ export class Module extends core.BaseObject {
     }
 
     /**
+     * closes PKCS#11 library
+     */
+    public close() {
+        this.lib.close();
+    }
+
+    /**
      * loads pkcs11 lib
      * @param libFile path to PKCS11 library
      * @param libName name of PKCS11 library

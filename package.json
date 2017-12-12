@@ -29,15 +29,15 @@
   },
   "dependencies": {
     "int64-buffer": "^0.1.10",
-    "pkcs11js": "^1.0.9",
-    "tslib": "^1.7.1"
+    "pkcs11js": "^1.0.12",
+    "tslib": "^1.8.1"
   },
   "devDependencies": {
-    "@types/node": "^8",
-    "mocha": "^3",
-    "coveralls": "^2.13.1",
-    "nyc": "^11.0.3",
-    "typescript": "^2"
+    "@types/node": "^8.0.58",
+    "coveralls": "^2.13.3",
+    "mocha": "^3.5.3",
+    "nyc": "^11.4.0",
+    "typescript": "^2.6.2"
   },
   "bugs": {
     "url": "https://github.com/PeculiarVentures/graphene/issues"

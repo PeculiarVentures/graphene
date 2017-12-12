@@ -19,6 +19,7 @@ describe("Session", function () {
         if (session)
             session.logout();
         mod.finalize();
+        mod.close();
     });
 
     function test_manufacturer(manufacturerID) {
