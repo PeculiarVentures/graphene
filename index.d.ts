@@ -2285,6 +2285,10 @@ declare namespace GraphenePkcs11 {
          */
         getSlots(tokenPresent?: boolean): SlotCollection;
         /**
+         * closes PKCS#11 library
+         */
+        close(): void;
+        /**
          * loads pkcs11 lib
          * @param libFile path to PKCS11 library
          * @param libName name of PKCS11 library
