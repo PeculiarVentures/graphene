@@ -1,6 +1,6 @@
 {
   "name": "graphene-pk11",
-  "version": "2.0.31",
+  "version": "2.0.32",
   "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript",
   "main": "./build/graphene.js",
   "types": "index.d.ts",
