@@ -34,13 +34,12 @@ export class Collection<T extends object.HandleObject> extends object.BaseObject
      * @param fromIndex The array index at which to begin the search. If fromIndex is omitted, the search starts at index 0.
      */
     public indexOf(obj: T, fromIndex: number = 0) {
-        if (obj.lib !== this.lib) {
-
-        }
-        for (let i = fromIndex; i < this.items_.length; i++) {
-            const item = this.items(i);
-            if (item.handle.equals(obj.handle)) {
-                return i;
+        if (obj.lib.libPath === obj.lib.libPath) {
+            for (let i = fromIndex; i < this.items_.length; i++) {
+                const item = this.items(i);
+                if (item.handle.equals(obj.handle)) {
+                    return i;
+                }
             }
         }
         return -1;
