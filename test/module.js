@@ -1,4 +1,5 @@
 var assert = require('assert');
+var os = require('os');
 var config = require('./config.json');
 var graphene = require('../build/graphene');
 
@@ -46,5 +47,26 @@ describe("Module", function () {
         assert.equal(mod.libraryDescription, config.controlValues.module.libraryDescription, "Wrong libraryDescription");                       
         
         mod.finalize();
+    });
+
+    context("NSS", () => {
+        const libPathNSS = os.platform() === "darwin" ?  "/usr/local/opt/nss/lib/libsoftokn3.dylib" : "/usr/lib/x86_64-linux-gnu/nss/libsoftokn3.so";
+
+        it("Initialize", () => {
+            const mod = Module.load(libPathNSS, "NSS");
+            mod.initialize({
+                libraryParameters: "configdir='' certPrefix='' keyPrefix='' secmod='' flags=readOnly,noCertDB,noModDB,forceOpen,optimizeSpace",
+            });
+
+            const slot = mod.getSlots(1, true);
+            const session = slot.open();
+
+            const rnd = session.generateRandom(20);
+            assert.equal(!!rnd, true);
+            assert.equal(rnd.length, 20);
+
+            mod.finalize();
+        });
+
     });
 });
