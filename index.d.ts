@@ -2269,7 +2269,7 @@ declare namespace GraphenePkcs11 {
         /**
          * initializes the Cryptoki library
          */
-        initialize(): void;
+        initialize(options?: Pkcs11Js.InitializationOptions): void;
         /**
          * indicates that an application is done with the Cryptoki library
          */

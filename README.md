@@ -561,6 +561,41 @@ try {
 mod.finalize();
 ```
 
+### Initializing NSS crypto library
+
+Use `options` parameter for `Module::initialize` method.
+
+__Type__
+```ts
+interface InitializationOptions {
+    /**
+     * NSS library parameters
+     */
+    libraryParameters?: string;
+    /**
+     * bit flags specifying options for `C_Initialize`
+     * - CKF_LIBRARY_CANT_CREATE_OS_THREADS. True if application threads which are executing calls to the library
+     *   may not use native operating system calls to spawn new threads; false if they may
+     * - CKF_OS_LOCKING_OK. True if the library can use the native operation system threading model for locking;
+     *   false otherwise
+     */
+    flags?: number;
+}
+```
+
+__Code__
+```js
+const mod = Module.load("/usr/local/opt/nss/lib/libsoftokn3.dylib", "NSS");
+
+mod.initialize({
+    libraryParameters: "configdir='' certPrefix='' keyPrefix='' secmod='' flags=readOnly,noCertDB,noModDB,forceOpen,optimizeSpace",
+});
+
+// Your code here
+
+mod.finalize();
+```
+
 ## Developing
 Use npm command to publish graphene-pk11 module
 ```
