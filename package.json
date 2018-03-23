@@ -51,7 +51,8 @@
     "hsm",
     "bitcoin",
     "RSA",
-    "ECC"
+    "ECC",
+    "nss"
   ],
   "author": "PeculiarVentures",
   "license": "MIT"
