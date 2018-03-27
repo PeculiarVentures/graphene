@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "int64-buffer": "^0.1.10",
-    "pkcs11js": "^1.0.14",
+    "pkcs11js": "^1.0.15",
     "tslib": "^1.9.0"
   },
   "devDependencies": {
