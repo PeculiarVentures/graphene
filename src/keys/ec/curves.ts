@@ -12,7 +12,8 @@ const namedCurves: INamedCurve[] = [
     { name: "ansiX9p384r1", oid: "1.3.132.0.34", value: new Buffer("06052B81040022", "hex"), size: 384 },
     { name: "brainpoolP192r1", oid: "1.3.36.3.3.2.8.1.1.3", value: new Buffer("06092B2403030208010103", "hex"), size: 192 },
     { name: "brainpoolP224r1", oid: "1.3.36.3.3.2.8.1.1.5", value: new Buffer("06092B2403030208010105", "hex"), size: 224 },
-    { name: "brainpoolP256r1", oid: "1.3.36.3.3.2.8.1.1.7", value: new Buffer("06092B2403030208010107", "hex"), size: 256 }
+    { name: "brainpoolP256r1", oid: "1.3.36.3.3.2.8.1.1.7", value: new Buffer("06092B2403030208010107", "hex"), size: 256 },
+    { name: "curve25519", oid: "1.3.6.1.4.1.11591.15.1", value: new Buffer("06092B06010401DA470F01", "hex"), size: 256 },
 ];
 
 export interface INamedCurve {
