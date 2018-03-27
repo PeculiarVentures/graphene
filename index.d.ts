@@ -161,6 +161,7 @@ declare namespace GraphenePkcs11 {
         RsaOAEP,
         RsaPSS,
         EcDH,
+        AesGCMv240,
     }
 
     // AES
@@ -226,6 +227,8 @@ declare namespace GraphenePkcs11 {
         constructor(iv: Buffer, aad?: Buffer, tagBits?: number);
         toCKI(): Pkcs11Js.AesGCM;
     }
+
+    class AesGcm240Params extends AesGcmParams { }
 
     // EC
 
