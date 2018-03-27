@@ -1,8 +1,8 @@
-export * from "./params"
+export * from "./params";
 // AES
-export * from "./aes/cbc"
-export * from "./aes/gcm"
-export * from "./aes/ccm"
+export * from "./aes/cbc";
+export * from "./aes/gcm";
+export * from "./aes/ccm";
 
 // RSA
 export * from "./rsa/mgf";
