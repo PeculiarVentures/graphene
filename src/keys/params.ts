@@ -8,5 +8,6 @@ export enum MechParams {
     AesGCM = 3,
     RsaOAEP = 4,
     RsaPSS = 5,
-    EcDH = 6
+    EcDH = 6,
+    AesGCMv240 = 7,
 }
