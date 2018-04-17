@@ -1,7 +1,7 @@
-**[SafeNet Luna G5](http://www.safenet-inc.com/data-encryption/hardware-security-modules-hsms/luna-hsms-key-management/luna-G5-usb-attached-hsm/) PKCS #11 DEVICE CAPABILITIES**
+**[SafeNet Luna 7](http://www.safenet-inc.com/data-encryption/hardware-security-modules-hsms/luna-hsms-key-management/luna-G5-usb-attached-hsm/) PKCS #11 DEVICE CAPABILITIES**
 
 ---
-[SafeNet Luna G5](http://www.safenet-inc.com/data-encryption/hardware-security-modules-hsms/luna-hsms-key-management/luna-G5-usb-attached-hsm/)
+[SafeNet Luna 7](http://www.safenet-inc.com/data-encryption/hardware-security-modules-hsms/luna-hsms-key-management/luna-G5-usb-attached-hsm/)
 
 #### Capabilities
 
@@ -101,53 +101,58 @@
 #### Performance
 ##### Key generation
 
-> test gen -it 5 -a all
+> test gen -s 0 --pin userpin -a all -t 20 -it 100
 
 | Algorithm                 | Generate | Generate/s |
 |---------------------------|---------:|-----------:|
-| RSA-1024                  |  868.6ms |      1.151 |
-| RSA-2048                  | 8769.6ms |      0.114 |
-| RSA-4096                  | 109307.8ms |      0.009 |
-| ECDSA-SECP192R1           |   67.8ms |     14.749 |
-| ECDSA-SECP256R1           |   95.6ms |      10.46 |
-| ECDSA-SECP384R1           |  209.6ms |      4.771 |
-| ECDSA-SECP256K1           |  102.6ms |      9.747 |
-| ECDSA-BRAINPOOLP192R1     |  102.2ms |      9.785 |
-| ECDSA-BRAINPOOLP224R1     |   89.8ms |     11.136 |
-| ECDSA-BRAINPOOLP256R1     |  103.8ms |      9.634 |
-| ECDSA-BRAINPOOLP320R1     |  165.8ms |      6.031 |
-| AES-128                   |    8.8ms |    113.636 |
-| AES-192                   |    8.4ms |    119.048 |
-| AES-256                   |      9ms |    111.111 |
+| RSA-1024                  |    0.156 |    109.763 |
+| RSA-2048                  |    0.531 |     34.789 |
+| RSA-4096                  |    2.881 |      6.537 |
+| ECDSA-SECP160R1           |    0.236 |     74.261 |
+| ECDSA-SECP192R1           |    0.019 |    496.894 |
+| ECDSA-SECP256R1           |    0.019 |    485.084 |
+| ECDSA-SECP384R1           |    0.020 |    484.144 |
+| ECDSA-SECP256K1           |    0.505 |     36.716 |
+| ECDSA-BRAINPOOLP192R1     |    0.505 |     36.993 |
+| ECDSA-BRAINPOOLP224R1     |    0.019 |    492.368 |
+| ECDSA-BRAINPOOLP256R1     |    0.019 |    486.855 |
+| ECDSA-BRAINPOOLP320R1     |    0.021 |    482.044 |
+| AES-128                   |    0.007 |    757.576 |
+| AES-192                   |    0.008 |    747.943 |
+| AES-256                   |    0.008 |    724.113 |
 
 
 ##### Signing
 
-> test sign -it 200 -a all
+> test sign -s 0 --pin userpin -a all -t 20 -it 10000
 
-| Algorithm                 |     Sign |   Verify |   Sign/s | Verify/s |
-|---------------------------|---------:|---------:|---------:|---------:|
-| RSA-1024                  |  5.745ms |  2.435ms |  174.064 |  410.678 |
-| RSA-2048                  |  16.58ms |   3.51ms |   60.314 |    284.9 |
-| RSA-4096                  |  84.71ms |    5.3ms |   11.805 |  188.679 |
-| ECDSA-SECP192R1           | 17.155ms |  20.02ms |   58.292 |    49.95 |
-| ECDSA-SECP256R1           |  25.93ms |   30.3ms |   38.565 |   33.003 |
-| ECDSA-SECP384R1           | 61.775ms | 72.845ms |   16.188 |   13.728 |
-| ECDSA-SECP256K1           |  29.72ms |  32.78ms |   33.647 |   30.506 |
-| ECDSA-BRAINPOOLP192R1     | 28.355ms | 32.855ms |   35.267 |   30.437 |
-| ECDSA-BRAINPOOLP224R1     |  24.87ms |  29.11ms |   40.209 |   34.352 |
-| ECDSA-BRAINPOOLP256R1     |  28.97ms | 33.435ms |   34.518 |   29.909 |
-| ECDSA-BRAINPOOLP320R1     |  48.58ms |  57.34ms |   20.585 |    17.44 |
+| Algorithm                 |       Sign |     Sign/s |
+|---------------------------|-----------:|-----------:|
+| RSA-1024                  |      0.001 |  19745.286 |
+| RSA-2048                  |      0.002 |   8888.099 |
+| RSA-4096                  |      0.015 |   1346.248 |
+| ECDSA-SECP160R1           |      0.073 |    273.503 |
+| ECDSA-SECP192R1           |      0.001 |  18501.388 |
+| ECDSA-SECP256R1           |      0.001 |  17051.752 |
+| ECDSA-SECP384R1           |      0.001 |  11576.754 |
+| ECDSA-SECP256K1           |      0.157 |    127.054 |
+| ECDSA-BRAINPOOLP192R1     |      0.157 |    127.358 |
+| ECDSA-BRAINPOOLP224R1     |      0.001 |  17094.017 |
+| ECDSA-BRAINPOOLP256R1     |      0.001 |  15059.107 |
+| ECDSA-BRAINPOOLP320R1     |      0.001 |  11660.448 |
 
 ##### Encryption
 
-> test enc -it 200 -a all
+> test enc -s 0 --pin userpin -a all -t 20 -it 10000
 
-| Algorithm                 |  Encrypt |  Decrypt | Encrypt/s | Decrypt/s |
-|---------------------------|---------:|---------:|---------:|---------:|
-| AES-CBC128                |   3.27ms |  5.435ms |   305.81 |  183.993 |
-| AES-CBC192                |   3.59ms |  5.645ms |  278.552 |  177.148 |
-| AES-CBC256                |  3.395ms |  5.505ms |  294.551 |  181.653 |
-| AES-GCM128                |    296ms |    296ms |    3.378 |    3.378 |
-| AES-GCM192                |    295ms |    296ms |     3.39 |    3.378 |
-| AES-GCM256                |    294ms |    295ms |    3.401 |     3.39 |
+| Algorithm                 |    Encrypt |  Encrypt/s |
+|---------------------------|-----------:|-----------:|
+| AES-CBC128                |      0.001 |  15765.411 |
+| AES-CBC192                |      0.001 |  15576.324 |
+| AES-CBC256                |      0.001 |  15584.820 |
+| AES-GCM128                |      0.001 |  17432.232 |
+| AES-GCM192                |      0.001 |  19011.407 |
+| AES-GCM256                |      0.001 |  18438.278 |
+| RSA-1024                  |      0.004 |   5092.039 |
+| RSA-2048                  |      0.005 |   3776.934 |
+| RSA-4096                  |      0.008 |   2389.686 |
