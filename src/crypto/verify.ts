@@ -24,7 +24,7 @@ export class Verify extends core.BaseObject {
     } catch (e) {
       try {
         // Finalize verify operation
-        this.final(new Buffer(0));
+        this.final(Buffer.alloc(0));
       } catch (e) {
         // nothing
       }

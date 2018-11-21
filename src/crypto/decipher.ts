@@ -22,7 +22,7 @@ export class Decipher extends core.BaseObject {
   public update(data: Buffer): Buffer {
     try {
       const len = Math.ceil(data.length / this.blockSize) * this.blockSize;
-      const dec = new Buffer(len);
+      const dec = Buffer.alloc(len);
 
       const res = this.lib.C_DecryptUpdate(this.session.handle, data, dec);
 
@@ -40,7 +40,7 @@ export class Decipher extends core.BaseObject {
   }
 
   public final(): Buffer {
-    const dec = new Buffer(this.blockSize);
+    const dec = Buffer.alloc(this.blockSize);
 
     const res = this.lib.C_DecryptFinal(this.session.handle, dec);
 

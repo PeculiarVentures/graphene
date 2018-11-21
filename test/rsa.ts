@@ -67,8 +67,8 @@ context("RSA", () => {
   }
 
   function testEncryptDecrypt(keys: graphene.IKeyPair, alg: MechanismType) {
-    const encrypted = new Buffer(4096);
-    const decrypted = new Buffer(4096);
+    const encrypted = Buffer.alloc(4096);
+    const decrypted = Buffer.alloc(4096);
     const cipher = session.createCipher(alg, keys.publicKey);
     const enc = cipher.once(MSG, encrypted);
     const decipher = session.createDecipher(alg, keys.privateKey);

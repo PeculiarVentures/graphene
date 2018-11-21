@@ -417,7 +417,7 @@ export class Session extends core.HandleObject {
   public wrapKey(alg: MechanismType, wrappingKey: Key, key: Key, callback?: Callback<Error, Buffer>): Buffer | void {
     try {
       const pMech = Mechanism.create(alg);
-      let wrappedKey = new Buffer(8096);
+      let wrappedKey = Buffer.alloc(8096);
       if (callback) {
         // async
         this.lib.C_WrapKey(this.handle, pMech, wrappingKey.handle, key.handle, wrappedKey, callback);
@@ -524,7 +524,7 @@ export class Session extends core.HandleObject {
    * @param {number} size \# of bytes to generate
    */
   public generateRandom(size: number): Buffer {
-    const buf = new Buffer(size);
+    const buf = Buffer.alloc(size);
     this.lib.C_GenerateRandom(this.handle, buf);
     return buf;
   }

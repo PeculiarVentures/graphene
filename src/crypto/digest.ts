@@ -31,7 +31,7 @@ export class Digest extends core.BaseObject {
   }
 
   public final(): Buffer {
-    const digest = new Buffer(1024);
+    const digest = Buffer.alloc(1024);
 
     const res = this.lib.C_DigestFinal(this.session.handle, digest);
 
@@ -41,7 +41,7 @@ export class Digest extends core.BaseObject {
   public once(data: core.CryptoData): Buffer;
   public once(data: core.CryptoData, cb: (error: Error, data: Buffer) => void): void;
   public once(data: core.CryptoData, cb?: (error: Error, data: Buffer) => void): any {
-    const digest = new Buffer(1024);
+    const digest = Buffer.alloc(1024);
     const bytes = Buffer.from(data as string);
     if (cb) {
       this.lib.C_Digest(this.session.handle, bytes, digest, cb);

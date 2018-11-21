@@ -24,7 +24,7 @@ export class AesCcmParams implements IParams {
 
   public type = MechParams.AesCCM;
 
-  constructor(dataLength: number, nonce: Buffer, aad: Buffer = new Buffer(0), macLength: number = 0) {
+  constructor(dataLength: number, nonce: Buffer, aad: Buffer = Buffer.alloc(0), macLength: number = 0) {
     this.dataLength = dataLength;
     this.nonce = nonce;
     this.aad = aad;

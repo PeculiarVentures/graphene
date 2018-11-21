@@ -75,7 +75,7 @@ context("Session", () => {
     // create new session for current test
     session = slot.open(2 | 4);
     session.login(config.init.pin);
-    const modulus = new Buffer(128);
+    const modulus = Buffer.alloc(128);
     modulus[127] = 1;
     let objects = session.find();
     assert.equal(objects.length, 0, "Wrong init objects length");

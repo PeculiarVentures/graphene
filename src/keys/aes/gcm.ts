@@ -23,7 +23,7 @@ export class AesGcmParams implements IParams {
 
   public type = MechParams.AesGCM;
 
-  constructor(iv: Buffer, aad: Buffer = new Buffer(0), tagBits: number = 128) {
+  constructor(iv: Buffer, aad: Buffer = Buffer.alloc(0), tagBits: number = 128) {
     this.iv = iv;
     this.aad = aad;
     this.tagBits = tagBits;

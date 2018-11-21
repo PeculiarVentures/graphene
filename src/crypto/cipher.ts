@@ -19,7 +19,7 @@ export class Cipher extends core.BaseObject {
     try {
       data = Buffer.from(data as string);
 
-      const enc = new Buffer(data.length + 1024); // RSA k + 2*mdlen + 2
+      const enc = Buffer.alloc(data.length + 1024); // RSA k + 2*mdlen + 2
 
       const res = this.lib.C_EncryptUpdate(this.session.handle, data as Buffer, enc);
       return res;
@@ -37,7 +37,7 @@ export class Cipher extends core.BaseObject {
 
   public final(): Buffer {
     const BUF_SIZE = 4048;
-    const enc = new Buffer(BUF_SIZE);
+    const enc = Buffer.alloc(BUF_SIZE);
 
     const res = this.lib.C_EncryptFinal(this.session.handle, enc);
 

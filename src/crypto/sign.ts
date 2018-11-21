@@ -32,7 +32,7 @@ export class Sign extends core.BaseObject {
   }
 
   public final(): Buffer {
-    const sig = new Buffer(1024);
+    const sig = Buffer.alloc(1024);
 
     const res = this.lib.C_SignFinal(this.session.handle, sig);
 
@@ -42,7 +42,7 @@ export class Sign extends core.BaseObject {
   public once(data: core.CryptoData): Buffer;
   public once(data: core.CryptoData, cb: (error: Error, data: Buffer) => void): void;
   public once(data: core.CryptoData, cb?: (error: Error, data: Buffer) => void): any {
-    const signature = new Buffer(1024);
+    const signature = Buffer.alloc(1024);
     const bytes = Buffer.from(data as string);
     if (cb) {
       this.lib.C_Sign(this.session.handle, bytes, signature, cb);

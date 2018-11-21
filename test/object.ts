@@ -15,7 +15,7 @@ context("Object", () => {
         const slot = mod.getSlots(config.controlValues.slot.slotIndex);
         session = slot.open(2 | 4);
         session.login(config.init.pin);
-        modulus = new Buffer(1024 / 8);
+        modulus = Buffer.alloc(1024 / 8);
         modulus[127] = 1;
         exponent = Buffer.from([1, 0, 1]);
     });

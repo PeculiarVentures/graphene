@@ -15,7 +15,7 @@ export class AesCbcParams implements IParams, pkcs11.AesCBC {
 
   public type = MechParams.AesCBC;
 
-  constructor(iv: Buffer, data: Buffer = new Buffer(0)) {
+  constructor(iv: Buffer, data: Buffer = Buffer.alloc(0)) {
     this.iv = iv;
     this.data = data;
   }
@@ -39,7 +39,7 @@ export class AesCbcEncryptDataParams implements IParams, pkcs11.AesCBC {
 
   public type = MechParams.AesCBC;
 
-  constructor(iv: Buffer, data: Buffer = new Buffer(0)) {
+  constructor(iv: Buffer, data: Buffer = Buffer.alloc(0)) {
     this.iv = iv;
     this.data = data;
   }
