@@ -1,5 +1,6 @@
 import assert from "assert";
 import * as graphene from "../src";
+import { MechanismType } from "../src/mech";
 import config from "./config";
 import { isThalesNShield } from "./helpers";
 
@@ -273,7 +274,7 @@ context("Session", () => {
     assert.equal(!session.getObject(obj!.handle), false);
   });
 
-  function testSign(alg: graphene.MechanismType, key1: graphene.Key, key2: graphene.Key) {
+  function testSign(alg: MechanismType, key1: graphene.Key, key2: graphene.Key) {
     const sign = session.createSign(alg, key1);
     sign.update(TEST_MESSAGE);
     sign.update(TEST_MESSAGE);

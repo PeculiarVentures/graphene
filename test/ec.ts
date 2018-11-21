@@ -1,5 +1,6 @@
 import * as assert from "assert";
 import * as graphene from "../src";
+import { MechanismType } from "../src/mech";
 import { ITemplate } from "../src/template";
 import config from "./config";
 import { isSoftHSM, isThalesNShield } from "./helpers";
@@ -86,7 +87,7 @@ context("ECDSA", () => {
     derivationKeys = testGenerateDerivationKeys(graphene.NamedCurve.getByName("secp256r1").value);
   });
 
-  function testSignVerify(key: graphene.IKeyPair, alg: graphene.MechanismType) {
+  function testSignVerify(key: graphene.IKeyPair, alg: MechanismType) {
     const sign = session.createSign(alg, key.privateKey);
     sign.update(MSG);
     const sig = sign.final();
@@ -100,7 +101,7 @@ context("ECDSA", () => {
     });
   }
 
-  function testDerive(keys: graphene.IKeyPair, alg: graphene.MechanismType, template: ITemplate) {
+  function testDerive(keys: graphene.IKeyPair, alg: MechanismType, template: ITemplate) {
     const dKey = session.deriveKey(alg, keys.privateKey, template);
     assert.equal(!!dKey, true, "Empty derived key");
   }

@@ -1,5 +1,6 @@
 import * as assert from "assert";
 import * as graphene from "../src";
+import { MechanismType } from "../src/mech";
 import config from "./config";
 import { isSoftHSM, isThalesNShield } from "./helpers";
 
@@ -56,7 +57,7 @@ context("AES", () => {
     testGenerate(256);
   });
 
-  function testEncryptDecrypt(key: graphene.Key, alg: graphene.MechanismType) {
+  function testEncryptDecrypt(key: graphene.Key, alg: MechanismType) {
     const cipher = session.createCipher(alg, key);
     let enc = cipher.update(MSG);
     enc = Buffer.concat([enc, cipher.final()]);
@@ -65,7 +66,7 @@ context("AES", () => {
     assert.equal(Buffer.concat([dec, decipher.final()]).toString(), MSG, "Correct");
   }
 
-  function testWrapUnwrap(key: graphene.Key, alg: graphene.MechanismType, sKey: graphene.Key) {
+  function testWrapUnwrap(key: graphene.Key, alg: MechanismType, sKey: graphene.Key) {
     const wKey = session.wrapKey(alg, key, sKey);
     const uKey = session.unwrapKey(alg, key, wKey, {
       class: graphene.ObjectClass.SECRET_KEY,

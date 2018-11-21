@@ -1,5 +1,6 @@
 import assert from "assert";
 import * as graphene from "../src";
+import { MechanismType } from "../src/mech";
 import config from "./config";
 import { isSoftHSM, isThalesNShield } from "./helpers";
 
@@ -56,7 +57,7 @@ context("RSA", () => {
     });
   });
 
-  function testSignVerify(keys: graphene.IKeyPair, alg: graphene.MechanismType) {
+  function testSignVerify(keys: graphene.IKeyPair, alg: MechanismType) {
     const sign = session.createSign(alg, keys.privateKey);
     const sig = sign.once(MSG);
     let verify = session.createVerify(alg, keys.publicKey);
@@ -65,7 +66,7 @@ context("RSA", () => {
     assert.equal(verify.once(MSG_WRONG, sig), false);
   }
 
-  function testEncryptDecrypt(keys: graphene.IKeyPair, alg: graphene.MechanismType) {
+  function testEncryptDecrypt(keys: graphene.IKeyPair, alg: MechanismType) {
     const encrypted = new Buffer(4096);
     const decrypted = new Buffer(4096);
     const cipher = session.createCipher(alg, keys.publicKey);
@@ -75,7 +76,7 @@ context("RSA", () => {
     assert.equal(dec.toString(), MSG, "Correct");
   }
 
-  function testWrapUnwrap(keys: graphene.IKeyPair, alg: graphene.MechanismType, sKey: graphene.Key) {
+  function testWrapUnwrap(keys: graphene.IKeyPair, alg: MechanismType, sKey: graphene.Key) {
     const wKey = session.wrapKey(alg, keys.publicKey, sKey);
     const uKey = session.unwrapKey(alg, keys.privateKey, wKey, {
       class: graphene.ObjectClass.SECRET_KEY,
