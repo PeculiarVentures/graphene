@@ -1,6 +1,8 @@
 language: node_js
 node_js:
-  - "10"
+  # v10 is disabled cause Linux Segmentation fault
+  # https://travis-ci.org/PeculiarVentures/graphene/builds/458161752
+  # - "10"
   - "8"
 
 env:
