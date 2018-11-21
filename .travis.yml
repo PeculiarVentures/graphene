@@ -1,8 +1,7 @@
 language: node_js
 node_js:
+  - "10"
   - "8"
-  - "6"
-  - "5"
 
 env:
   - CXX=g++
@@ -38,7 +37,6 @@ before_install:
   - bash ./.travis.sh
 
 script:
-  - npm run build:source
   - npm run coverage
 
 after_success:
