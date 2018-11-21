@@ -1,6 +1,6 @@
 {
   "name": "graphene-pk11",
-  "version": "2.0.34",
+  "version": "2.1.0",
   "description": "A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript",
   "main": "./build/graphene.js",
   "types": "index.d.ts",
@@ -28,16 +28,18 @@
     "node": "^5.0.0"
   },
   "dependencies": {
-    "int64-buffer": "^0.1.10",
-    "pkcs11js": "^1.0.15",
-    "tslib": "^1.9.0"
+    "@types/mocha": "^5.2.5",
+    "int64-buffer": "^0.99.1007",
+    "pkcs11js": "^1.0.17",
+    "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@types/node": "^8.5.9",
-    "coveralls": "^3.0.0",
-    "mocha": "^5.0.5",
-    "nyc": "^11.6.0",
-    "typescript": "^2.7.2"
+    "@types/node": "^10.12.9",
+    "coveralls": "^3.0.2",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.6"
   },
   "bugs": {
     "url": "https://github.com/PeculiarVentures/graphene/issues"
@@ -55,5 +57,21 @@
     "nss"
   ],
   "author": "PeculiarVentures",
-  "license": "MIT"
+  "license": "MIT",
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ]
+  }
 }
