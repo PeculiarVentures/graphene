@@ -276,7 +276,7 @@ if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
     var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
         keyType: graphene.KeyType.RSA,
         modulusBits: 1024,
-        publicExponent: new Buffer([3]),
+        publicExponent: Buffer.from([3]),
         token: false,
         verify: true,
         encrypt: true,
@@ -342,7 +342,7 @@ if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
     var keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
         keyType: graphene.KeyType.RSA,
         modulusBits: 1024,
-        publicExponent: new Buffer([3]),
+        publicExponent: Buffer.from([3]),
         token: false,
         verify: true,
         encrypt: true,
@@ -407,7 +407,7 @@ if (slot.flags & graphene.SlotFlag.TOKEN_PRESENT) {
     // enc algorithm
     var alg = {
         name: "AES_CBC_PAD",
-        params: new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6]) // IV
+        params: Buffer.from([1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6]) // IV
     };
     var MESSAGE = "Encrypted message";
     
@@ -538,10 +538,10 @@ try {
         certType: graphene.CertificateType.X_509,
         private: false,
         token: false,
-        id: new Buffer([1, 2, 3, 4, 5]), // Should be the same as Private/Public key has
+        id: Buffer.from([1, 2, 3, 4, 5]), // Should be the same as Private/Public key has
         label: "My certificate",
-        subject: new Buffer("3034310B300906035504...", "hex"),
-        value: new Buffer("308203A830820290A003...", "hex"),
+        subject: Buffer.from("3034310B300906035504...", "hex"),
+        value: Buffer.from("308203A830820290A003...", "hex"),
     };
 
     const objCert = session.create(template).toType();

@@ -1,11 +1,11 @@
-import * as pkcs11 from "pkcs11js";
 import { Int64LE } from "int64-buffer";
+import * as pkcs11 from "pkcs11js";
 
-import * as core from "./core";
 import * as fs from "fs";
-import * as obj from "./object";
-import { MechanismEnum } from "./mech_enum";
+import * as core from "./core";
 import { IParams } from "./keys/params";
+import { MechanismEnum } from "./mech_enum";
+import * as obj from "./object";
 export * from "./mech_enum";
 
 export interface IAlgorithm {
@@ -72,7 +72,67 @@ export enum MechanismFlag {
 
 export class Mechanism extends core.HandleObject {
 
-    protected slotHandle: core.Handle;
+    /**
+     * returns string name from MechanismEnum
+     */
+    get name(): string {
+        return MechanismEnum[this.type] || "unknown";
+    }
+
+    public static create(algorithm: MechanismType): pkcs11.Mechanism {
+        let res: pkcs11.Mechanism;
+
+        let alg: IAlgorithm;
+        if (core.isString(algorithm)) {
+            alg = { name: algorithm as string, params: null };
+        } else if (core.isNumber(algorithm)) {
+            alg = { name: MechanismEnum[algorithm as number], params: null };
+        } else {
+            alg = algorithm as IAlgorithm;
+        }
+
+        const hAlg = (MechanismEnum as any)[alg.name.toUpperCase()];
+        if (core.isEmpty(hAlg)) { throw new TypeError(`Unknown mechanism name '${alg.name}'`); }
+
+        let params: any = null;
+        if (alg.params) {
+            if ((alg.params as IParams).toCKI) {
+                // Convert object with toCKI to Buffer
+                params = (alg.params as IParams).toCKI();
+            } else {
+                params = alg.params;
+            }
+        }
+
+        res = {
+            mechanism: hAlg,
+            parameter: params,
+        };
+        return res;
+    }
+
+    public static vendor(jsonFile: string): void;
+    public static vendor(name: string, value: number): void;
+    public static vendor(name: string, value?: number): void {
+        const mechs: any = MechanismEnum;
+
+        if (core.isEmpty(value)) {
+            // vendor(jsonFile: string);
+            const file = fs.readFileSync(name);
+            const vendor = JSON.parse(file.toString());
+            for (const i in vendor) {
+                const newName = i;
+                const v = vendor[i];
+                mechs[newName] = v;
+                mechs[v] = newName;
+            }
+        } else {
+            // vendor(name: string, value: number)
+            const newName = name;
+            mechs[newName] = value;
+            mechs[value as any] = newName;
+        }
+    }
 
     public type: MechanismEnum;
 
@@ -80,25 +140,20 @@ export class Mechanism extends core.HandleObject {
      * the minimum size of the key for the mechanism
      * _whether this is measured in bits or in bytes is mechanism-dependent_
      */
-    minKeySize: number;
+    public minKeySize: number;
 
     /**
      * the maximum size of the key for the mechanism
      * _whether this is measured in bits or in bytes is mechanism-dependent_
      */
-    maxKeySize: number;
+    public maxKeySize: number;
 
     /**
      * bit flag specifying mechanism capabilities
      */
-    flags: number;
+    public flags: number;
 
-    /**
-     * returns string name from MechanismEnum
-     */
-    get name(): string {
-        return MechanismEnum[this.type] || "unknown";
-    }
+    protected slotHandle: core.Handle;
 
     constructor(type: number, handle: pkcs11.Handle, slotHandle: core.Handle, lib: pkcs11.PKCS11) {
         super(handle, lib);
@@ -109,68 +164,11 @@ export class Mechanism extends core.HandleObject {
     }
 
     protected getInfo(): void {
-        let info = this.lib.C_GetMechanismInfo(this.slotHandle, this.type);
+        const info = this.lib.C_GetMechanismInfo(this.slotHandle, this.type);
 
         this.minKeySize = info.minKeySize;
         this.maxKeySize = info.maxKeySize;
         this.flags = info.flags;
-    }
-
-    static create(alg: MechanismType): pkcs11.Mechanism {
-        let res: pkcs11.Mechanism;
-
-        let _alg: IAlgorithm;
-        if (core.isString(alg)) {
-            _alg = { name: alg as string, params: null };
-        }
-        else if (core.isNumber(alg)) {
-            _alg = { name: MechanismEnum[alg as number], params: null };
-        }
-        else {
-            _alg = alg as IAlgorithm;
-        }
-
-        let hAlg = (MechanismEnum as any)[_alg.name.toUpperCase()];
-        if (core.isEmpty(hAlg)) throw new TypeError(`Unknown mechanism name '${_alg.name}'`);
-
-        let params: any = null;
-        if (_alg.params) {
-            if ((_alg.params as IParams).toCKI)
-                // Convert object with toCKI to Buffer
-                params = (_alg.params as IParams).toCKI();
-            else
-                params = _alg.params;
-        }
-
-        res = {
-            mechanism: hAlg,
-            parameter: params
-        };
-        return res;
-    }
-
-    static vendor(jsonFile: string): void;
-    static vendor(name: string, value: number): void;
-    static vendor(name: string, value?: number): void {
-        let mechs: any = MechanismEnum;
-
-        if (core.isEmpty(value)) {
-            // vendor(jsonFile: string);
-            let file = fs.readFileSync(name);
-            let vendor = JSON.parse(file.toString());
-            for (let i in vendor) {
-                let new_name = i;
-                let v = vendor[i];
-                mechs[new_name] = v;
-                mechs[v] = new_name;
-            }
-        }
-        else {
-            // vendor(name: string, value: number)
-            let new_name = name;
-            mechs[new_name] = value;
-            mechs[value as any] = new_name;
-        }
     }
 
 }
@@ -178,7 +176,7 @@ export class Mechanism extends core.HandleObject {
 export class MechanismCollection extends core.Collection<Mechanism> {
     protected slotHandle: core.Handle;
 
-    constructor(items: Array<number>, slotHandle: core.Handle, lib: pkcs11.PKCS11, classType = Mechanism) {
+    constructor(items: number[], slotHandle: core.Handle, lib: pkcs11.PKCS11, classType = Mechanism) {
         super(items, lib, classType);
 
         this.slotHandle = slotHandle;
@@ -188,7 +186,7 @@ export class MechanismCollection extends core.Collection<Mechanism> {
      * returns item from collection by index
      * @param {number} index of element in collection `[0..n]`
      */
-    items(index: number): Mechanism {
+    public items(index: number): Mechanism {
         const type = this.items_[index];
         // convert type to buffer
         const handle = new Int64LE(type).toBuffer();

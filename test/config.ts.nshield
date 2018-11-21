@@ -1,8 +1,9 @@
-{
+export default {
     "init": {
         "lib": "/opt/nfast/toolkits/pkcs11/libcknfast.so",
         "libName": "nCipher PKCS#11+",
-        "pin": "6789"
+        "pin": "6789",
+        vendor: ""
     },
     "controlValues": {
         "module": {

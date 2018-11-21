@@ -1,6 +1,6 @@
 export function dateFromString(text: string) {
-    let reg = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
-    let vals = reg.exec(text);
-    if (!vals) return null;
-    return new Date(`${vals[1]}-${vals[2]}-${vals[3]} ${vals[4]}:${vals[5]}:${vals[6]}:${vals[7]}`);
+  const reg = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
+  const values = reg.exec(text);
+  if (!values) { return null; }
+  return new Date(`${values[1]}-${values[2]}-${values[3]} ${values[4]}:${values[5]}:${values[6]}:${values[7]}`);
 }

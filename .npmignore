@@ -10,5 +10,6 @@ npm-debug.log
 
 # build
 /src
+/test
 ts*.json
 **/*.js.map
