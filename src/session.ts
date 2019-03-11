@@ -273,7 +273,6 @@ export class Session extends core.HandleObject {
         res = obj;
         return false;
       }
-      if (compare === 1) { return false; }
     });
     if (res) {
       return res.toType<T>();
