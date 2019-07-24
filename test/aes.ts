@@ -61,7 +61,7 @@ context("AES", () => {
     const cipher = session.createCipher(alg, key);
     let enc = cipher.update(MSG);
     enc = Buffer.concat([enc, cipher.final()]);
-    const decipher = session.createDecipher(alg, key);
+    const decipher = session.createDecipher(alg, key, enc.length);
     const dec = decipher.update(enc);
     assert.equal(Buffer.concat([dec, decipher.final()]).toString(), MSG, "Correct");
   }
@@ -125,21 +125,29 @@ context("AES", () => {
   });
 
   it("AesGCM encrypt/decrypt default", () => {
-    if (isSoftHSM(mod) || isThalesNShield(mod)) { return; }
+    if (isThalesNShield(mod)) { return; }
 
+    let params = new graphene.AesGcmParams(Buffer.from("123456789012"));
+    if (isSoftHSM(mod)) {
+      params = new graphene.AesGcm240Params(Buffer.from("123456789012"));
+    }
     testEncryptDecrypt(
       secretKey,
-      { name: "AES_GCM", params: new graphene.AesGcmParams(Buffer.from("123456789012")) });
+      { name: "AES_GCM", params });
   });
 
   it("AesGCM encrypt/decrypt with additionalData", () => {
-    if (isSoftHSM(mod) || isThalesNShield(mod)) { return; }
+    if (isThalesNShield(mod)) { return; }
 
+    let params = new graphene.AesGcmParams(Buffer.from("123456789012"), Buffer.from("additional data"));
+    if (isSoftHSM(mod)) {
+      params = new graphene.AesGcm240Params(Buffer.from("123456789012"), Buffer.from("additional data"));
+    }
     testEncryptDecrypt(
       secretKey,
       {
         name: "AES_GCM",
-        params: new graphene.AesGcmParams(Buffer.from("123456789012"), Buffer.from("additional data")),
+        params,
       });
   });
 
