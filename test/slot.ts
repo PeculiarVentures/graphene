@@ -72,7 +72,7 @@ context("Slot", () => {
 
             const mech = mechanisms.items(0);
 
-            assert.equal(mech.name, "MD5");
+            assert.equal(!!mech.name, true);
         });
 
         context("vendor", () => {
