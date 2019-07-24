@@ -68,7 +68,7 @@ context("Slot", () => {
         it("collection", () => {
             const slot = slots.items(config.controlValues.slot.slotIndex);
             const mechanisms = slot.getMechanisms();
-            assert.equal(mechanisms.length, config.controlValues.slot.mechanisms);
+            assert.equal(!!mechanisms.length, true);
 
             const mech = mechanisms.items(0);
 

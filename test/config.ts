@@ -19,7 +19,6 @@ export default {
                 serialNumber: "1a918b5db0a83cb1",
                 minPinLen: 4,
             },
-            mechanisms: 72,
         },
         slotsCount: 2,
     },
