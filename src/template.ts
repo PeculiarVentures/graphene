@@ -610,19 +610,44 @@ function b2v(type: string, value: Buffer): any {
       return value.toString();
     case TYPE_BUFFER:
       return value;
+    case TYPE_DATE:
+      const date = value.toString();
+      return new Date(+date.slice(0, 4), +date.slice(4, 6), +date.slice(6, 8));
     default:
       throw new Error(`Unknown type in use '${type}'`);
   }
 }
 
+function getAttribute(name: string) {
+  for (const key in attribute) {
+    if (key === name) {
+      return attribute[key];
+    }
+  }
+  throw new Error(`Unsupported attribute ID '${name}'. Use 'registerAttribute' to add custom attribute.`);
+}
+
 export class Template {
 
+  /**
+   * Converts Graphene Template to PKCS#11 Template
+   * @param tmpl Graphene Template
+   */
   public static toPkcs11(tmpl: ITemplate | null) {
     const res: pkcs11.Template = [];
     if (tmpl) {
       for (const key in tmpl) {
+        const attr = getAttribute(key);
+        let value = tmpl[key];
+        if (attr.t === TYPE_DATE) {
+          const year = value.toLocaleDateString("en-en", { year: "numeric" });
+          const month = value.toLocaleDateString("en-en", { month: "2-digit" });
+          const day = value.toLocaleDateString("en-en", { day: "2-digit" });
+          value = `${year}${month}${day}`;
+        }
+
         res.push({
-          type: n2i(key),
+          type: attr.v,
           value: (tmpl as any)[key],
         });
       }
@@ -630,6 +655,10 @@ export class Template {
     return res;
   }
 
+  /**
+   * Converts PKCS#11 Template to Graphene Template
+   * @param tmpl PKCS#11 Template
+   */
   public static fromPkcs11(tmpl: pkcs11.Template) {
     const res: ITemplate = {};
     for (const i in tmpl) {
