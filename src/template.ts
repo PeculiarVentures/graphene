@@ -1,4 +1,5 @@
 import * as pkcs11 from "pkcs11js";
+import moment from 'moment';
 
 export interface ITemplate {
   [key: string]: any;
@@ -610,6 +611,8 @@ function b2v(type: string, value: Buffer): any {
       return value.toString();
     case TYPE_BUFFER:
       return value;
+    case TYPE_DATE:
+        return moment(value.toString(), 'YYYYMMDD').toDate();
     default:
       throw new Error(`Unknown type in use '${type}'`);
   }
