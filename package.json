@@ -19,7 +19,7 @@
     "url": "https://github.com/PeculiarVentures/graphene.git"
   },
   "engines": {
-    "node": "^5.0.0"
+    "node": ">=8.0.0"
   },
   "dependencies": {
     "int64-buffer": "^0.99.1007",
