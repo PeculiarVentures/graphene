@@ -2,6 +2,7 @@ const namedCurves: INamedCurve[] = [
   { name: "secp160r1", oid: "1.3.132.0.8", value: Buffer.from("06052b81040008", "hex"), size: 160 },
   { name: "secp192r1", oid: "1.2.840.10045.3.1.1", value: Buffer.from("06082A8648CE3D030101", "hex"), size: 192 },
   { name: "secp256r1", oid: "1.2.840.10045.3.1.7", value: Buffer.from("06082A8648CE3D030107", "hex"), size: 256 },
+  { name: "secp256k1", oid: "1.3.132.0.10", value: Buffer.from("06052b8104000A", "hex"), size: 256 },
   { name: "secp384r1", oid: "1.3.132.0.34", value: Buffer.from("06052B81040022", "hex"), size: 384 },
   { name: "secp521r1", oid: "1.3.132.0.35", value: Buffer.from("06052B81040023", "hex"), size: 521 },
   { name: "prime192r1", oid: "1.2.840.10045.3.1.1", value: Buffer.from("06082A8648CE3D030101", "hex"), size: 192 },

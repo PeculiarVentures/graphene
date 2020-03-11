@@ -24,6 +24,7 @@ context("ECDSA", () => {
     if (config.init.vendor) {
       graphene.Mechanism.vendor(config.init.vendor);
     }
+    signingKeys = testGenerateSigningKeys(graphene.NamedCurve.getByName("secp256r1").value);
   });
 
   after(() => {
@@ -43,13 +44,13 @@ context("ECDSA", () => {
       wrap: true,
       derive: false,
     }, {
-        keyType: graphene.KeyType.EC,
-        token: false,
-        sign: true,
-        decrypt: true,
-        unwrap: true,
-        derive: false,
-      });
+      keyType: graphene.KeyType.EC,
+      token: false,
+      sign: true,
+      decrypt: true,
+      unwrap: true,
+      derive: false,
+    });
   }
 
   function testGenerateDerivationKeys(paramsEc: Buffer) {
@@ -62,13 +63,13 @@ context("ECDSA", () => {
       wrap: false,
       derive: true,
     }, {
-        keyType: graphene.KeyType.EC,
-        token: false,
-        sign: false,
-        decrypt: true,
-        unwrap: true,
-        derive: true,
-      });
+      keyType: graphene.KeyType.EC,
+      token: false,
+      sign: false,
+      decrypt: true,
+      unwrap: true,
+      derive: true,
+    });
   }
 
   it("generate ECDSA secp192r1 by OID", () => {
@@ -76,7 +77,11 @@ context("ECDSA", () => {
   });
 
   it("generate ECDSA secp256r1 signing keys by name", () => {
-    signingKeys = testGenerateSigningKeys(graphene.NamedCurve.getByName("secp256r1").value);
+    testGenerateSigningKeys(graphene.NamedCurve.getByName("secp256r1").value);
+  });
+
+  it("generate ECDSA secp256k1 signing keys by name", () => {
+    testGenerateSigningKeys(graphene.NamedCurve.getByName("secp256k1").value);
   });
 
   it("generate ECDSA secp192r1 by Buffer", () => {
@@ -106,7 +111,7 @@ context("ECDSA", () => {
     assert.equal(!!dKey, true, "Empty derived key");
   }
 
-  it("sign/verify ECDSA", () => {
+  it("sign/verify ECDSA P-256", () => {
     const digest = Buffer.from("1234567890abcdf");
     const sign = session.createSign("ECDSA", signingKeys.privateKey);
     const sig = sign.once(digest);
@@ -116,28 +121,49 @@ context("ECDSA", () => {
     assert.equal(verify.once(Buffer.from("1234567890abcd0"), sig), false);
   });
 
-  it("sign/verify SHA-1", () => {
-    if (isSoftHSM(mod)) { return; }
+  it("sign/verify ECDSA K-256", () => {
+    const digest = Buffer.from("1234567890abcdf");
+    const keys = testGenerateSigningKeys(graphene.NamedCurve.getByName("secp256k1").value);
+    const sign = session.createSign("ECDSA", keys.privateKey);
+    const sig = sign.once(digest);
+    let verify = session.createVerify("ECDSA", keys.publicKey);
+    assert.equal(verify.once(digest, sig), true, "Correct");
+    verify = session.createVerify("ECDSA", keys.publicKey);
+    assert.equal(verify.once(Buffer.from("1234567890abcd0"), sig), false);
+  });
+
+  it("sign/verify SHA-1", function() {
+    if (isSoftHSM(mod)) {
+      this.skip();
+    }
     testSignVerify(signingKeys, "ECDSA_SHA1");
   });
 
-  it("sign/verify SHA-224", () => {
-    if (isSoftHSM(mod) || isThalesNShield(mod)) { return; }
+  it("sign/verify SHA-224", function() {
+    if (isSoftHSM(mod) || isThalesNShield(mod)) {
+      this.skip();
+    }
     testSignVerify(signingKeys, "ECDSA_SHA224");
   });
 
-  it("sign/verify SHA-256", () => {
-    if (isSoftHSM(mod) || isThalesNShield(mod)) { return; }
+  it("sign/verify SHA-256", function() {
+    if (isSoftHSM(mod) || isThalesNShield(mod)) {
+      this.skip();
+    }
     testSignVerify(signingKeys, "ECDSA_SHA256");
   });
 
-  it("sign/verify SHA-384", () => {
-    if (isSoftHSM(mod) || isThalesNShield(mod)) { return; }
+  it("sign/verify SHA-384", function() {
+    if (isSoftHSM(mod) || isThalesNShield(mod)) {
+      this.skip();
+    }
     testSignVerify(signingKeys, "ECDSA_SHA384");
   });
 
-  it("sign/verify SHA-512", () => {
-    if (isSoftHSM(mod) || isThalesNShield(mod)) { return; }
+  it("sign/verify SHA-512", function() {
+    if (isSoftHSM(mod) || isThalesNShield(mod)) {
+      this.skip();
+    }
     testSignVerify(signingKeys, "ECDSA_SHA512");
   });
 
