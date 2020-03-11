@@ -11,7 +11,7 @@ if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sudo apt-get install libtool -y
     
     # Installing SoftHSM
-    git clone https://github.com/opendnssec/SoftHSMv2.git -b develop
+    git clone https://github.com/opendnssec/SoftHSMv2.git -b master --depth 1
     cd SoftHSMv2
     sh ./autogen.sh
     ./configure
@@ -36,7 +36,7 @@ elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
     command -v cppunit || brew install cppunit
     
     # Installing SoftHSM
-    git clone https://github.com/opendnssec/SoftHSMv2.git -b develop
+    git clone https://github.com/opendnssec/SoftHSMv2.git -b master --depth 1
     cd SoftHSMv2
     sh ./autogen.sh
     ./configure \
