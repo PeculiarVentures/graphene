@@ -183,13 +183,27 @@ export class MechanismCollection extends core.Collection<Mechanism> {
     }
 
     /**
-     * returns item from collection by index
-     * @param {number} index of element in collection `[0..n]`
+     * Returns item from collection by index
+     * @param {number} index index of an element in the collection `[0..n]`
      */
     public items(index: number): Mechanism {
         const type = this.items_[index];
         // convert type to buffer
         const handle = new Int64LE(type).toBuffer();
         return new Mechanism(type, handle, this.slotHandle, this.lib);
+    }
+
+    /**
+     * Tries to get Mechanism. Returns `null` if it's impossible to get mechanism
+     * @param index index of an element in the collection `[0..n]`
+     */
+    public tryGetItem(index: number): Mechanism | null {
+        // Some providers throw CKR_MECHANISM_INVALID on `C_GetMechanismInfo` method
+        // https://github.com/PeculiarVentures/node-webcrypto-p11/issues/55
+        try {
+            return this.items(index);
+        } catch {
+            return null;
+        }
     }
 }

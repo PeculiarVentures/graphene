@@ -65,14 +65,24 @@ context("Slot", () => {
             });
         });
 
-        it("collection", () => {
-            const slot = slots.items(config.controlValues.slot.slotIndex);
-            const mechanisms = slot.getMechanisms();
-            assert.equal(!!mechanisms.length, true);
+        context("collection", () => {
+            it("items", () => {
+                const slot = slots.items(config.controlValues.slot.slotIndex);
+                const mechanisms = slot.getMechanisms();
+                assert.equal(!!mechanisms.length, true);
 
-            const mech = mechanisms.items(0);
+                const mech = mechanisms.items(0);
 
-            assert.equal(!!mech.name, true);
+                assert.equal(!!mech.name, true);
+            });
+            it("tryGetItem", () => {
+                const slot = slots.items(config.controlValues.slot.slotIndex);
+                const mechanisms = slot.getMechanisms();
+
+                const mech = mechanisms.tryGetItem(99999);
+
+                assert.equal(mech, null);
+            });
         });
 
         context("vendor", () => {

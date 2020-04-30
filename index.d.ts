@@ -1176,10 +1176,15 @@ declare namespace GraphenePkcs11 {
 
     constructor(items: number[], slotHandle: Handle, lib: Pkcs11Js.PKCS11, classType?: typeof Mechanism);
     /**
-     * returns item from collection by index
-     * @param {number} index of element in collection `[0..n]`
+     * Returns item from collection by index
+     * @param {number} index index of an element in the collection `[0..n]`
      */
     public items(index: number): Mechanism;
+    /**
+     * Tries to get Mechanism. Returns `null` if it's impossible to get mechanism
+     * @param index index of an element in the collection `[0..n]`
+     */
+    public tryGetItem(index: number): Mechanism | null;
   }
 
   enum MechanismEnum {
