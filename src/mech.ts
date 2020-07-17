@@ -96,7 +96,7 @@ export class Mechanism extends core.HandleObject {
 
         let params: any = null;
         if (alg.params) {
-            if ((alg.params as IParams).toCKI) {
+            if ((alg.params as any).toCKI) {
                 // Convert object with toCKI to Buffer
                 params = (alg.params as IParams).toCKI();
             } else {

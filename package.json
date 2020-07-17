@@ -23,17 +23,17 @@
   },
   "dependencies": {
     "int64-buffer": "^0.99.1007",
-    "pkcs11js": "^1.0.19",
-    "tslib": "^1.11.1"
+    "pkcs11js": "^1.0.21",
+    "tslib": "^2.0.0"
   },
   "devDependencies": {
-    "@types/mocha": "^7.0.2",
-    "@types/node": "^12.12.29",
-    "coveralls": "^3.0.9",
-    "mocha": "^7.1.0",
-    "nyc": "^15.0.0",
-    "ts-node": "^8.6.2",
-    "typescript": "^3.8.3"
+    "@types/mocha": "^8.0.0",
+    "@types/node": "^12.12.50",
+    "coveralls": "^3.1.0",
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   },
   "bugs": {
     "url": "https://github.com/PeculiarVentures/graphene/issues"
@@ -66,6 +66,15 @@
     "reporter": [
       "text-summary",
       "html"
+    ]
+  },
+  "mocha": {
+    "require": "ts-node/register",
+    "extension": [
+      "ts"
+    ],
+    "spec": [
+      "test/**/*.ts"
     ]
   }
 }
