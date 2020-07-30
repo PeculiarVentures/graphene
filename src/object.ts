@@ -87,7 +87,6 @@ export class SessionObject extends core.HandleObject {
   public getAttribute(name: string): any;
   public getAttribute(attrs: ITemplate): ITemplate;
   public getAttribute(param: any): any {
-    let template: ITemplate;
     if (core.isNumber(param)) {
       // number
       return this.lib.C_GetAttributeValue(this.session.handle, this.handle, [
@@ -95,10 +94,12 @@ export class SessionObject extends core.HandleObject {
       ])[0].value;
     } else if (core.isString(param)) {
       // string
-      return this.lib.C_GetAttributeValue(
+      const res = this.lib.C_GetAttributeValue(
         this.session.handle,
         this.handle,
-        Template.toPkcs11({ [param]: null }))[0].value;
+        Template.toPkcs11({ [param]: null }));
+
+      return Template.fromPkcs11(res)[param];
     }
     // template
 
@@ -114,16 +115,14 @@ export class SessionObject extends core.HandleObject {
   public setAttribute(param: any, value?: any): void {
     let tmpl: pkcs11.Template = [];
     if (core.isNumber(param)) {
-      // type: number, value: Buffer
-      assert.equal(Buffer.isBuffer(value), true, "Argument 'value' must be Buffer");
-
+      // type: number
       tmpl.push({ type: param, value });
     } else if (core.isString(param)) {
       // name: string, value: any
       tmpl = Template.toPkcs11({ [param]: value });
     } else {
       // attrs: ITemplate
-      tmpl = Template.toPkcs11(tmpl);
+      tmpl = Template.toPkcs11(param);
     }
 
     this.lib.C_SetAttributeValue(this.session.handle, this.handle, tmpl);
