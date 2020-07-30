@@ -91,6 +91,20 @@ context("Object", () => {
         assert.equal(obj.getAttribute("label"), "new label");
     });
 
+    it("set attribute by type", () => {
+        const obj = session.create({
+            class: graphene.ObjectClass.PUBLIC_KEY,
+            label: "label",
+            keyType: graphene.KeyType.RSA,
+            wrap: true,
+            modulus,
+            publicExponent: exponent,
+        });
+
+        obj.set(pkcs11.CKA_LABEL, "new label");
+        assert.equal(obj.get(pkcs11.CKA_LABEL), "new label");
+    });
+
     it("set attribute by template", () => {
         const obj = session.create({
             class: graphene.ObjectClass.PUBLIC_KEY,
