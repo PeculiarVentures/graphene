@@ -1,9 +1,6 @@
 language: node_js
 node_js:
-  # v10 is disabled cause Linux Segmentation fault
-  # https://travis-ci.org/PeculiarVentures/graphene/builds/458161752
-  # - "10"
-  - "8"
+  - "12"
 
 env:
   - CXX=g++
