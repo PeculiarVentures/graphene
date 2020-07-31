@@ -1,3 +1,4 @@
+import * as assert from "assert";
 import * as pkcs11 from "pkcs11js";
 import * as core from "./core";
 import { Session } from "./session";
@@ -82,52 +83,61 @@ export class SessionObject extends core.HandleObject {
     this.lib.C_DestroyObject(this.session.handle, this.handle);
   }
 
-  public getAttribute(attr: string): any;
+  public getAttribute(type: number): Buffer;
+  public getAttribute(name: string): any;
   public getAttribute(attrs: ITemplate): ITemplate;
-  public getAttribute(attrs: any): any {
-    let template: ITemplate;
-    if (typeof attrs === "string") {
+  public getAttribute(param: any): any {
+    if (core.isNumber(param)) {
+      // number
+      return this.lib.C_GetAttributeValue(this.session.handle, this.handle, [
+        { type: param },
+      ])[0].value;
+    } else if (core.isString(param)) {
       // string
-      template = {};
-      (template as any)[attrs] = null;
-    } else {
-      // template
-      template = attrs;
+      const res = this.lib.C_GetAttributeValue(
+        this.session.handle,
+        this.handle,
+        Template.toPkcs11({ [param]: null }));
+
+      return Template.fromPkcs11(res)[param];
     }
-    let tmpl = Template.toPkcs11(template);
+    // template
 
     // get size of values of attributes
-    tmpl = this.lib.C_GetAttributeValue(this.session.handle, this.handle, tmpl);
+    const res = this.lib.C_GetAttributeValue(this.session.handle, this.handle, Template.toPkcs11(param));
 
-    if (typeof attrs === "string") {
-      return Template.fromPkcs11(tmpl)[attrs];
-    }
-    return Template.fromPkcs11(tmpl);
+    return Template.fromPkcs11(res);
   }
 
-  public setAttribute(attrs: string, value: any): void;
+  public setAttribute(type: number, value: number | boolean | string | Buffer): void;
+  public setAttribute(name: string, value: any): void;
   public setAttribute(attrs: ITemplate): void;
-  public setAttribute(attrs: any, value?: any): void {
-    if (core.isString(attrs)) {
-      const tmp: ITemplate = {};
-      (tmp as any)[attrs as string] = value;
-      attrs = tmp;
+  public setAttribute(param: any, value?: any): void {
+    let tmpl: pkcs11.Template = [];
+    if (core.isNumber(param)) {
+      // type: number
+      tmpl.push({ type: param, value });
+    } else if (core.isString(param)) {
+      // name: string, value: any
+      tmpl = Template.toPkcs11({ [param]: value });
+    } else {
+      // attrs: ITemplate
+      tmpl = Template.toPkcs11(param);
     }
-    const tmpl = Template.toPkcs11(attrs);
 
     this.lib.C_SetAttributeValue(this.session.handle, this.handle, tmpl);
   }
 
-  public get(name: string): any {
-    const tmpl: any = {};
-    tmpl[name] = null;
-    return (this.getAttribute(tmpl) as any)[name];
+  public get(type: number): Buffer;
+  public get(name: string): any;
+  public get(param: any): any {
+    return this.getAttribute(param as any);
   }
 
-  public set(name: string, value: any) {
-    const tmpl: any = {};
-    tmpl[name] = value;
-    this.setAttribute(tmpl);
+  public set(type: number, value: number | boolean | string | Buffer): void;
+  public set(name: string, value: any): void;
+  public set(param: any, value: any) {
+    this.setAttribute(param, value);
   }
 
   get class(): ObjectClass {

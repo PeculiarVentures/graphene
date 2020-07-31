@@ -397,12 +397,15 @@ declare namespace GraphenePkcs11 {
      * destroys an object
      */
     public destroy(): void;
-    public getAttribute(attr: string): any;
+    public getAttribute(name: string): any;
+    public getAttribute(type: number): Buffer;
     public getAttribute(attrs: ITemplate): ITemplate;
     public setAttribute(attrs: string, value: any): void;
     public setAttribute(attrs: ITemplate): void;
     public get(name: string): any;
+    public get(type: number): Buffer;
     public set(name: string, value: any): void;
+    public set(type: number, value: any): void;
     public toType<T extends SessionObject>(): T;
   }
 
