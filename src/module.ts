@@ -1,6 +1,6 @@
 import * as pkcs11 from "pkcs11js";
 import * as core from "./core";
-import * as slot from "./slot";
+import { Slot, SlotCollection } from "./";
 
 export class Module extends core.BaseObject {
 
@@ -72,18 +72,18 @@ export class Module extends core.BaseObject {
    * @param {number} index index of an element in collection
    * @param {number} tokenPresent only slots with tokens. Default `True`
    */
-  public getSlots(index: number, tokenPresent?: boolean): slot.Slot;
+  public getSlots(index: number, tokenPresent?: boolean): Slot;
   /**
    * @param {number} tokenPresent only slots with tokens. Default `True`
    */
-  public getSlots(tokenPresent?: boolean): slot.SlotCollection;
+  public getSlots(tokenPresent?: boolean): SlotCollection;
   public getSlots(index: any, tokenPresent: boolean = true): any {
     if (!core.isEmpty(index) && core.isBoolean(index)) {
       tokenPresent = index;
     }
 
     const arr = this.lib.C_GetSlotList(tokenPresent);
-    const col = new slot.SlotCollection(arr, this, this.lib);
+    const col = new SlotCollection(arr, this, this.lib);
     if (core.isNumber(index)) {
       return col.items(index);
     }

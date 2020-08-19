@@ -2,8 +2,8 @@ import * as pkcs11 from "pkcs11js";
 
 import * as core from "./core";
 import * as mech from "./mech";
-import { Module } from "./module";
-import * as session from "./session";
+import { Module } from "./";
+import { SessionFlag, Session } from "./";
 import * as token from "./token";
 
 export enum SlotFlag {
@@ -72,9 +72,9 @@ export class Slot extends core.HandleObject {
    * @param {SessionFlag} [flags=session.SessionFlag.SERIAL_SESSION] indicates the type of session
    * @returns {Session}
    */
-  public open(flags: session.SessionFlag = session.SessionFlag.SERIAL_SESSION): session.Session {
+  public open(flags: SessionFlag = SessionFlag.SERIAL_SESSION): Session {
     const hSession = this.lib.C_OpenSession(this.handle, flags);
-    return new session.Session(hSession, this, this.lib);
+    return new Session(hSession, this, this.lib);
   }
 
   /**
