@@ -5,7 +5,7 @@ import * as fs from "fs";
 import * as core from "./core";
 import { IParams } from "./keys/params";
 import { MechanismEnum } from "./mech_enum";
-import * as obj from "./object";
+import { KeyGenMechanism } from "./";
 export * from "./mech_enum";
 
 export interface IAlgorithm {
@@ -13,7 +13,7 @@ export interface IAlgorithm {
     params: Buffer | IParams | null;
 }
 
-export type MechanismType = MechanismEnum | obj.KeyGenMechanism | IAlgorithm | string;
+export type MechanismType = MechanismEnum | KeyGenMechanism | IAlgorithm | string;
 
 export enum MechanismFlag {
     /**

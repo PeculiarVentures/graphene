@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import * as pkcs11 from "pkcs11js";
 import * as core from "./core";
-import { Session } from "./session";
+import { Session } from "./";
 import { ITemplate, Template } from "./template";
 
 export enum ObjectClass {
