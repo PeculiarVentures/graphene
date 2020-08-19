@@ -1,10 +1,7 @@
 import * as pkcs11 from "pkcs11js";
 
 import * as core from "./core";
-import * as mech from "./mech";
-import { Module } from "./";
-import { SessionFlag, Session } from "./";
-import * as token from "./token";
+import { Module, SessionFlag, Session, Token, MechanismCollection } from "./";
 
 export enum SlotFlag {
   /**
@@ -42,8 +39,8 @@ export class Slot extends core.HandleObject {
    *
    * @returns {Token}
    */
-  public getToken(): token.Token {
-    return new token.Token(this.handle, this.lib);
+  public getToken(): Token {
+    return new Token(this.handle, this.lib);
   }
 
   /**
@@ -51,9 +48,9 @@ export class Slot extends core.HandleObject {
    *
    * @returns {MechanismCollection}
    */
-  public getMechanisms(): mech.MechanismCollection {
+  public getMechanisms(): MechanismCollection {
     const arr = this.lib.C_GetMechanismList(this.handle);
-    return new mech.MechanismCollection(arr, this.handle, this.lib);
+    return new MechanismCollection(arr, this.handle, this.lib);
   }
 
   /**
