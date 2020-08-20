@@ -1,8 +1,8 @@
 import * as pkcs11 from "pkcs11js";
 import * as core from "../core";
 import { Mechanism, MechanismType } from "../mech";
-import { Key } from "../object";
 import { Session } from "../session";
+import { Key } from '../objects';
 
 const INVALID = 192;
 

@@ -3,6 +3,8 @@ export * from "./module";
 export * from "./slot";
 export * from "./token";
 export * from "./object";
+export * from "./objects";
+export * from "./keys";
 export * from "./session";
 export { Mechanism, MechanismFlag, MechanismEnum, MechanismCollection, MechanismType } from "./mech";
 export { registerAttribute } from "./template";

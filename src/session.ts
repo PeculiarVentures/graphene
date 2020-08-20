@@ -3,8 +3,11 @@
 import * as pkcs11 from "pkcs11js";
 
 import * as core from "./core";
+import { MechanismType, Mechanism } from './mech';
+import { SessionObject, SessionObjectCollection, ObjectClass } from "./object";
 import * as objects from "./objects";
-import { Slot, Key, ObjectClass, SecretKey, SessionObject, SessionObjectCollection, Mechanism, MechanismType } from "./";
+import { Key, SecretKey } from './objects';
+import { Slot } from "./slot";
 import { ITemplate, Template } from "./template";
 
 import { Cipher, Decipher, Digest, Sign, Verify } from "./crypto";

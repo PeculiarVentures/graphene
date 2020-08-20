@@ -1,14 +1,14 @@
 import * as pkcs11 from "pkcs11js";
 import * as core from "../core";
 import * as mech from "../mech";
-import * as objects from "../object";
 import { Session } from "../session";
+import { Key } from '../objects';
 
 export class Sign extends core.BaseObject {
 
   public session: Session;
 
-  constructor(session: Session, alg: mech.MechanismType, key: objects.Key, lib: pkcs11.PKCS11) {
+  constructor(session: Session, alg: mech.MechanismType, key: Key, lib: pkcs11.PKCS11) {
     super(lib);
     this.session = session;
     this.init(alg, key);
@@ -51,7 +51,7 @@ export class Sign extends core.BaseObject {
     }
   }
 
-  protected init(alg: mech.MechanismType, key: objects.Key) {
+  protected init(alg: mech.MechanismType, key: Key) {
     const pMech = mech.Mechanism.create(alg);
     this.lib.C_SignInit(this.session.handle, pMech, key.handle);
   }

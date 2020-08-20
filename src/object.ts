@@ -1,8 +1,7 @@
-import * as assert from "assert";
 import * as pkcs11 from "pkcs11js";
-import * as core from "./core";
-import type { Session } from "./";
 import { ITemplate, Template } from "./template";
+import { HandleObject } from "./core/object";
+import type { Session } from "./session";
 
 export enum ObjectClass {
   DATA = pkcs11.CKO_DATA,
@@ -16,7 +15,37 @@ export enum ObjectClass {
   OTP_KEY = pkcs11.CKO_OTP_KEY,
 }
 
-export class SessionObject extends core.HandleObject {
+export type SessionObjectFactoryItemCallback = (obj: any, target: any) => any;
+
+export interface SessionObjectFactoryItem {
+  type: any;
+  cb?: SessionObjectFactoryItemCallback;
+}
+
+export class SessionObjectFactory {
+  private static items = new Map<ObjectClass, SessionObjectFactoryItem>();
+
+  public static register<T>(cko: ObjectClass, type: any, cb?: SessionObjectFactoryItemCallback) {
+    this.items.set(cko, {
+      type,
+      cb
+    })
+  }
+
+  public static create(cko: ObjectClass, object: SessionObject): any {
+    const item = this.items.get(cko);
+    if (!item) {
+      throw new Error("Cannot create SessionObject. Unsupported CKO type.");
+    }
+    const res = new item.type(object);
+    if (item.cb) {
+      return item.cb(res, object);
+    }
+    return res;
+  }
+}
+
+export class SessionObject extends HandleObject {
 
   /**
    * Session
@@ -149,40 +178,11 @@ export class SessionObject extends core.HandleObject {
   }
 
   public toType<T extends SessionObject>(): T {
-    // auto detect type of object
-    const c = this.class;
-    switch (c) {
-      case ObjectClass.DATA:
-        return new objects.Data(this) as any;
-      case ObjectClass.DOMAIN_PARAMETERS:
-        return new objects.DomainParameters(this) as any;
-      case ObjectClass.CERTIFICATE:
-        const cert = new objects.Certificate(this);
-        const t = cert.type;
-        switch (t) {
-          case objects.CertificateType.X_509:
-            return new objects.X509Certificate(this) as any;
-          case objects.CertificateType.WTLS:
-            return new objects.WtlsCertificate(this) as any;
-          case objects.CertificateType.X_509_ATTR_CERT:
-            return new objects.AttributeCertificate(this) as any;
-          default:
-            throw new Error(`Unknown certificate (CKC_?) type '${t}'`);
-        }
-      case ObjectClass.PRIVATE_KEY:
-        return new objects.PrivateKey(this) as any;
-      case ObjectClass.PUBLIC_KEY:
-        return new objects.PublicKey(this) as any;
-      case ObjectClass.SECRET_KEY:
-        return new objects.SecretKey(this) as any;
-      case ObjectClass.HW_FEATURE:
-      case ObjectClass.OTP_KEY:
-        throw new Error(`Type converter for ${ObjectClass[c]} is not implemented`);
-      default:
-        throw new Error(`Unknown session object (CKO_?) type '${c}'`);
-    }
+    return SessionObjectFactory.create(this.class, this);
   }
 }
+
+import * as core from "./core";
 
 export class SessionObjectCollection extends core.Collection<SessionObject> {
   public session: Session;
@@ -197,8 +197,3 @@ export class SessionObjectCollection extends core.Collection<SessionObject> {
     return new SessionObject(this.items_[index], this.session, this.lib);
   }
 }
-
-// import must be here, because other class from SessionObject must be initialized
-import * as objects from "./objects";
-export * from "./objects";
-export * from "./keys";

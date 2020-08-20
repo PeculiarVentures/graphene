@@ -32,10 +32,10 @@
     "tslib": "^2.0.0"
   },
   "devDependencies": {
-    "@types/mocha": "^8.0.0",
-    "@types/node": "^12.12.53",
+    "@types/mocha": "^8.0.3",
+    "@types/node": "^12.12.54",
     "coveralls": "^3.1.0",
-    "mocha": "^8.0.1",
+    "mocha": "^8.1.1",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",

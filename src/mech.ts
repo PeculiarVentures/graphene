@@ -5,7 +5,7 @@ import * as fs from "fs";
 import * as core from "./core";
 import { IParams } from "./keys/params";
 import { MechanismEnum } from "./mech_enum";
-import { KeyGenMechanism } from "./";
+import type { KeyGenMechanism } from "./objects";
 export * from "./mech_enum";
 
 export interface IAlgorithm {
