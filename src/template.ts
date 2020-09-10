@@ -539,7 +539,7 @@ const attribute: IAttributeItems = {
   otpPinReq: { v: pkcs11.CKA_OTP_PIN_REQUIREMENT, t: TYPE_BUFFER },
   otpCounter: { v: pkcs11.CKA_OTP_COUNTER, t: TYPE_BUFFER },
   otpTime: { v: pkcs11.CKA_OTP_TIME, t: TYPE_BUFFER },
-  OtpUserId: { v: pkcs11.CKA_OTP_USER_IDENTIFIER, t: TYPE_BUFFER },
+  otpUserId: { v: pkcs11.CKA_OTP_USER_IDENTIFIER, t: TYPE_BUFFER },
   otpServiceId: { v: pkcs11.CKA_OTP_SERVICE_IDENTIFIER, t: TYPE_BUFFER },
   otpServiceLogo: { v: pkcs11.CKA_OTP_SERVICE_LOGO, t: TYPE_BUFFER },
   otpServiceLogoType: { v: pkcs11.CKA_OTP_SERVICE_LOGO_TYPE, t: TYPE_BUFFER },
