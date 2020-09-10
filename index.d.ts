@@ -37,16 +37,13 @@ declare namespace GraphenePkcs11 {
     protected getInfo(): void;
   }
 
-  class Collection<T extends BaseObject> extends BaseObject {
+  class Collection<T extends BaseObject> extends BaseObject implements Iterable<T> {
 
     /**
      * returns length of collection
      */
     public length: number;
-
-    // tslint:disable-next-line:variable-name
-    protected items_: any[];
-    protected classType: any;
+    protected classType: new (handle: Pkcs11Js.Handle, lib: Pkcs11Js.PKCS11) => T;
 
     constructor(items: any[], lib: Pkcs11Js.PKCS11, classType: any);
 
@@ -63,6 +60,8 @@ declare namespace GraphenePkcs11 {
      * If fromIndex is omitted, the search starts at index 0.
      */
     public indexOf(obj: T, fromIndex?: number): number;
+    
+    public [Symbol.iterator](): Iterator<T>;
   }
 
   function isString(v: any): v is string;
