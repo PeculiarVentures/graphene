@@ -194,6 +194,6 @@ export class SessionObjectCollection extends core.Collection<SessionObject> {
   }
 
   public items(index: number): SessionObject {
-    return new SessionObject(this.items_[index], this.session, this.lib);
+    return new SessionObject(this.innerItems[index], this.session, this.lib);
   }
 }

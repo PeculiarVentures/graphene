@@ -1,14 +1,14 @@
 import * as pkcs11 from "pkcs11js";
 import * as object from "./object";
 
-export class Collection<T extends object.HandleObject> extends object.BaseObject {
+export abstract class Collection<T extends object.HandleObject> extends object.BaseObject implements Iterable<T> {
   // tslint:disable-next-line:variable-name
-  protected items_: any[];
-  protected classType: any;
+  protected innerItems: any[];
+  protected classType: new (handle: pkcs11.Handle, lib: pkcs11.PKCS11) => T;
 
   constructor(items: any[], lib: pkcs11.PKCS11, classType: any) {
     super(lib);
-    this.items_ = items;
+    this.innerItems = items;
     this.lib = lib;
     this.classType = classType;
   }
@@ -17,7 +17,7 @@ export class Collection<T extends object.HandleObject> extends object.BaseObject
    * returns length of collection
    */
   public get length(): number {
-    return this.items_.length;
+    return this.innerItems.length;
   }
 
   /**
@@ -25,7 +25,7 @@ export class Collection<T extends object.HandleObject> extends object.BaseObject
    * @param {number} index of element in collection `[0..n]`
    */
   public items(index: number): T {
-    const handle = this.items_[index];
+    const handle = this.innerItems[index];
     return new this.classType(handle, this.lib);
   }
 
@@ -37,7 +37,7 @@ export class Collection<T extends object.HandleObject> extends object.BaseObject
    */
   public indexOf(obj: T, fromIndex: number = 0) {
     if (obj.lib.libPath === obj.lib.libPath) {
-      for (let i = fromIndex; i < this.items_.length; i++) {
+      for (let i = fromIndex; i < this.innerItems.length; i++) {
         const item = this.items(i);
         if (item.handle.equals(obj.handle)) {
           return i;
@@ -46,4 +46,26 @@ export class Collection<T extends object.HandleObject> extends object.BaseObject
     }
     return -1;
   }
+
+  [Symbol.iterator]() {
+    let pointer = 0;
+    const _this = this;
+
+    return {
+      next(): IteratorResult<T> {
+        if (pointer < _this.innerItems.length) {
+          return {
+            done: false,
+            value: _this.items(pointer++)
+          }
+        } else {
+          return {
+            done: true,
+            value: null
+          }
+        }
+      }
+    }
+  }
+
 }

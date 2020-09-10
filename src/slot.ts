@@ -115,7 +115,7 @@ export class SlotCollection extends core.Collection<Slot> {
   }
 
   public items(index: number): Slot {
-    return new Slot(this.items_[index], this.module, this.lib);
+    return new Slot(this.innerItems[index], this.module, this.lib);
   }
 
 }

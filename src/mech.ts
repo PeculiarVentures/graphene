@@ -187,7 +187,7 @@ export class MechanismCollection extends core.Collection<Mechanism> {
      * @param {number} index index of an element in the collection `[0..n]`
      */
     public items(index: number): Mechanism {
-        const type = this.items_[index];
+        const type = this.innerItems[index];
         // convert type to buffer
         const handle = new Int64LE(type).toBuffer();
         return new Mechanism(type, handle, this.slotHandle, this.lib);
