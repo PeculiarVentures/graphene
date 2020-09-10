@@ -61,9 +61,9 @@ context("RSA", () => {
     const sign = session.createSign(alg, keys.privateKey);
     const sig = sign.once(MSG);
     let verify = session.createVerify(alg, keys.publicKey);
-    assert.equal(verify.once(MSG, sig), true, "Correct");
+    assert.strictEqual(verify.once(MSG, sig), true, "Correct");
     verify = session.createVerify(alg, keys.publicKey);
-    assert.equal(verify.once(MSG_WRONG, sig), false);
+    assert.strictEqual(verify.once(MSG_WRONG, sig), false);
   }
 
   function testEncryptDecrypt(keys: graphene.IKeyPair, alg: MechanismType) {
@@ -73,7 +73,7 @@ context("RSA", () => {
     const enc = cipher.once(MSG, encrypted);
     const decipher = session.createDecipher(alg, keys.privateKey);
     const dec = decipher.once(enc, decrypted);
-    assert.equal(dec.toString(), MSG, "Correct");
+    assert.strictEqual(dec.toString(), MSG, "Correct");
   }
 
   function testWrapUnwrap(keys: graphene.IKeyPair, alg: MechanismType, sKey: graphene.Key) {
@@ -86,7 +86,7 @@ context("RSA", () => {
       encrypt: true,
       decrypt: true,
     });
-    assert.equal(!!uKey.handle, true);
+    assert.strictEqual(!!uKey.handle, true);
   }
 
   it("sign/verify SHA-1", () => {
@@ -100,9 +100,9 @@ context("RSA", () => {
 
   it("sign/verify SHA-1 once async", (done) => {
     session.createSign("SHA1_RSA_PKCS", keyPair.privateKey).once(MSG, (err, sig) => {
-      assert.equal(!!err, false, err ? err.message : "Error");
+      assert.strictEqual(!!err, false, err ? err.message : "Error");
       session.createVerify("SHA1_RSA_PKCS", keyPair.publicKey).once(MSG, sig, (err) => {
-        assert.equal(!!err, false, err ? err.message : "Error");
+        assert.strictEqual(!!err, false, err ? err.message : "Error");
         done();
       });
     });
@@ -158,7 +158,7 @@ context("RSA", () => {
   it("OAEP wrap/unwrap SHA-1 async", (done) => {
     const alg = { name: "RSA_PKCS_OAEP", params: new graphene.RsaOaepParams() };
     session.wrapKey(alg, keyPair.publicKey, secretKey, (err, wKey) => {
-      assert.equal(!!err, false, err ? err.message : "Error");
+      assert.strictEqual(!!err, false, err ? err.message : "Error");
       session.unwrapKey(
         alg,
         keyPair.privateKey,
@@ -172,8 +172,8 @@ context("RSA", () => {
           decrypt: true,
         },
         (err, uKey) => {
-          assert.equal(!!err, false, err ? err.message : "Error");
-          assert.equal(!!uKey!.handle, true);
+          assert.strictEqual(!!err, false, err ? err.message : "Error");
+          assert.strictEqual(!!uKey!.handle, true);
           done();
         });
 

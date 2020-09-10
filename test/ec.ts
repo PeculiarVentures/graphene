@@ -98,7 +98,7 @@ context("ECDSA", () => {
     const sig = sign.final();
     let verify = session.createVerify(alg, key.publicKey);
     verify.update(MSG);
-    assert.equal(verify.final(sig), true, "Correct");
+    assert.strictEqual(verify.final(sig), true, "Correct");
     verify = session.createVerify(alg, key.publicKey);
     verify.update(MSG_WRONG);
     assert.throws(() => {
@@ -108,7 +108,7 @@ context("ECDSA", () => {
 
   function testDerive(keys: graphene.IKeyPair, alg: MechanismType, template: ITemplate) {
     const dKey = session.deriveKey(alg, keys.privateKey, template);
-    assert.equal(!!dKey, true, "Empty derived key");
+    assert.strictEqual(!!dKey, true, "Empty derived key");
   }
 
   it("sign/verify ECDSA P-256", () => {
@@ -116,9 +116,9 @@ context("ECDSA", () => {
     const sign = session.createSign("ECDSA", signingKeys.privateKey);
     const sig = sign.once(digest);
     let verify = session.createVerify("ECDSA", signingKeys.publicKey);
-    assert.equal(verify.once(digest, sig), true, "Correct");
+    assert.strictEqual(verify.once(digest, sig), true, "Correct");
     verify = session.createVerify("ECDSA", signingKeys.publicKey);
-    assert.equal(verify.once(Buffer.from("1234567890abcd0"), sig), false);
+    assert.strictEqual(verify.once(Buffer.from("1234567890abcd0"), sig), false);
   });
 
   it("sign/verify ECDSA K-256", () => {
@@ -127,9 +127,9 @@ context("ECDSA", () => {
     const sign = session.createSign("ECDSA", keys.privateKey);
     const sig = sign.once(digest);
     let verify = session.createVerify("ECDSA", keys.publicKey);
-    assert.equal(verify.once(digest, sig), true, "Correct");
+    assert.strictEqual(verify.once(digest, sig), true, "Correct");
     verify = session.createVerify("ECDSA", keys.publicKey);
-    assert.equal(verify.once(Buffer.from("1234567890abcd0"), sig), false);
+    assert.strictEqual(verify.once(Buffer.from("1234567890abcd0"), sig), false);
   });
 
   it("sign/verify SHA-1", function() {
@@ -208,7 +208,7 @@ context("ECDSA", () => {
         decrypt: true,
       },
       (err, dKey) => {
-        assert.equal(!!dKey, true, err ? err.message : "Empty dKey");
+        assert.strictEqual(!!dKey, true, err ? err.message : "Empty dKey");
         done();
       });
   });

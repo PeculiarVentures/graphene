@@ -46,7 +46,7 @@ context("Session", () => {
     try {
       const oldPIN = config.init.pin;
       const newPIN = "54321";
-      assert.equal(graphene.UserType.USER, 1);
+      assert.strictEqual(graphene.UserType.USER, 1);
       changePIN(session, graphene.UserType.USER, oldPIN, newPIN);
       changePIN(session, graphene.UserType.USER, newPIN, oldPIN);
     } catch (e) {
@@ -61,7 +61,7 @@ context("Session", () => {
     try {
       const oldPIN = config.init.pin;
       const newPIN = "54321";
-      assert.equal(graphene.UserType.SO, 0);
+      assert.strictEqual(graphene.UserType.SO, 0);
       changePIN(session, graphene.UserType.SO, oldPIN, newPIN);
       changePIN(session, graphene.UserType.SO, newPIN, oldPIN);
     } catch (e) {
@@ -78,7 +78,7 @@ context("Session", () => {
     const modulus = Buffer.alloc(128);
     modulus[127] = 1;
     let objects = session.find();
-    assert.equal(objects.length, 0, "Wrong init objects length");
+    assert.strictEqual(objects.length, 0, "Wrong init objects length");
 
     session.create({
       class: graphene.ObjectClass.PUBLIC_KEY,
@@ -96,20 +96,20 @@ context("Session", () => {
     });
 
     const data = obj.toType<graphene.Data>();
-    assert.equal(data.application, "application");
-    assert.equal(data.label.toString(), "My label");
-    assert.equal(data.value.toString(), "value");
-    assert.equal(data.class, 0);
+    assert.strictEqual(data.application, "application");
+    assert.strictEqual(data.label.toString(), "My label");
+    assert.strictEqual(data.value.toString(), "value");
+    assert.strictEqual(data.class, 0);
 
     objects = session.find();
-    assert.equal(objects.length, 2, "Wrong objects length");
+    assert.strictEqual(objects.length, 2, "Wrong objects length");
   });
 
   it("copy", () => {
 
     session.clear();
     let objects = session.find();
-    assert.equal(objects.length, 0, "Wrong init objects length");
+    assert.strictEqual(objects.length, 0, "Wrong init objects length");
 
     const obj = session.generateKey("AES_KEY_GEN", {
       keyType: graphene.KeyType.AES,
@@ -123,7 +123,7 @@ context("Session", () => {
 
     // test objects length
     objects = session.find();
-    assert.equal(objects.length, 1, "Wrong objects length");
+    assert.strictEqual(objects.length, 1, "Wrong objects length");
 
     session.copy(
       obj,
@@ -134,7 +134,7 @@ context("Session", () => {
 
     // test objects length
     objects = session.find();
-    assert.equal(objects.length, 2, "Wrong objects length");
+    assert.strictEqual(objects.length, 2, "Wrong objects length");
   });
 
   it("find", () => {
@@ -162,14 +162,14 @@ context("Session", () => {
     session.create(templateGenerator("second", "2"));
     session.create(templateGenerator("third", "3"));
 
-    assert.equal(session.find().length, count + 3);
+    assert.strictEqual(session.find().length, count + 3);
     const objects = session.find({
       application: "testFind",
     });
-    assert.equal(objects.length, 3);
-    assert.equal(objects.items(0).toType<graphene.Data>().value.toString(), "1");
-    assert.equal(objects.items(1).toType<graphene.Data>().value.toString(), "2");
-    assert.equal(objects.items(2).toType<graphene.Data>().value.toString(), "3");
+    assert.strictEqual(objects.length, 3);
+    assert.strictEqual(objects.items(0).toType<graphene.Data>().value.toString(), "1");
+    assert.strictEqual(objects.items(1).toType<graphene.Data>().value.toString(), "2");
+    assert.strictEqual(objects.items(2).toType<graphene.Data>().value.toString(), "3");
   });
 
   it("destroy by template", () => {
@@ -188,11 +188,11 @@ context("Session", () => {
       value: Buffer.from("2"),
     });
 
-    assert.equal(session.find().length, count + 2);
+    assert.strictEqual(session.find().length, count + 2);
 
     session.destroy({ label: "destroy" });
 
-    assert.equal(session.find().length, count);
+    assert.strictEqual(session.find().length, count);
 
   });
 
@@ -212,20 +212,20 @@ context("Session", () => {
       value: Buffer.from("second"),
     });
 
-    assert.equal(session.find().length, count + 2);
+    assert.strictEqual(session.find().length, count + 2);
 
     session.destroy(obj);
 
-    assert.equal(session.find().length, count + 1);
+    assert.strictEqual(session.find().length, count + 1);
 
   });
 
   it("clear", () => {
-    assert.equal(session.find().length !== 0, true);
+    assert.strictEqual(session.find().length !== 0, true);
 
     session.clear();
 
-    assert.equal(session.find().length === 0, true);
+    assert.strictEqual(session.find().length === 0, true);
 
   });
 
@@ -239,10 +239,10 @@ context("Session", () => {
       encrypt: true,
     });
     if (!isThalesNShield(mod)) {
-      assert.equal(!key.checkValue, false);
+      assert.strictEqual(!key.checkValue, false);
     }
-    assert.equal(key.encrypt, true);
-    assert.equal(key.getAttribute("value").length, keylen);
+    assert.strictEqual(key.encrypt, true);
+    assert.strictEqual(key.getAttribute("value").length, keylen);
   });
 
   it("generate key pair RSA", () => {
@@ -256,13 +256,13 @@ context("Session", () => {
         keyType: graphene.KeyType.RSA,
         decrypt: true,
       });
-    assert.equal(!keys, false);
-    assert.equal(keys.publicKey.class, graphene.ObjectClass.PUBLIC_KEY);
-    assert.equal(keys.privateKey.class, graphene.ObjectClass.PRIVATE_KEY);
+    assert.strictEqual(!keys, false);
+    assert.strictEqual(keys.publicKey.class, graphene.ObjectClass.PUBLIC_KEY);
+    assert.strictEqual(keys.privateKey.class, graphene.ObjectClass.PRIVATE_KEY);
   });
 
   it("getObject wrong handle", () => {
-    assert.equal(!session.getObject(Buffer.from([0xff, 0xff])), true);
+    assert.strictEqual(!session.getObject(Buffer.from([0xff, 0xff])), true);
   });
 
   it("getObject", () => {
@@ -271,7 +271,7 @@ context("Session", () => {
       obj = o;
       return false; // exit on first element
     });
-    assert.equal(!session.getObject(obj!.handle), false);
+    assert.strictEqual(!session.getObject(obj!.handle), false);
   });
 
   function testSign(alg: MechanismType, key1: graphene.Key, key2: graphene.Key) {
@@ -279,12 +279,12 @@ context("Session", () => {
     sign.update(TEST_MESSAGE);
     sign.update(TEST_MESSAGE);
     const signature = sign.final();
-    assert.equal(!!signature.length, true);
+    assert.strictEqual(!!signature.length, true);
 
     const verify = session.createVerify(alg, key2);
     verify.update(TEST_MESSAGE);
     verify.update(TEST_MESSAGE);
-    assert.equal(verify.final(signature), true);
+    assert.strictEqual(verify.final(signature), true);
   }
 
   it("sign/verify RSA", () => {

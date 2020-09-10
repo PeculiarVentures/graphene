@@ -24,7 +24,7 @@ context("Digest", () => {
 
     digest.update("some data");
     const md = digest.final();
-    assert.equal(md.toString("hex"), "baf34551fecb48acc3da868eb85e1b6dac9de356");
+    assert.strictEqual(md.toString("hex"), "baf34551fecb48acc3da868eb85e1b6dac9de356");
   });
 
   context("once", () => {
@@ -34,7 +34,7 @@ context("Digest", () => {
       const digest = session.createDigest({ name: "SHA1", params: null });
 
       const md = digest.once("some data");
-      assert.equal(md.toString("hex"), "baf34551fecb48acc3da868eb85e1b6dac9de356");
+      assert.strictEqual(md.toString("hex"), "baf34551fecb48acc3da868eb85e1b6dac9de356");
     });
 
     it("async", (done) => {
@@ -42,7 +42,7 @@ context("Digest", () => {
       const digest = session.createDigest({ name: "SHA1", params: null });
 
       digest.once("some data", (err, md) => {
-        assert.equal(md.toString("hex"), "baf34551fecb48acc3da868eb85e1b6dac9de356");
+        assert.strictEqual(md.toString("hex"), "baf34551fecb48acc3da868eb85e1b6dac9de356");
         done();
       });
     });

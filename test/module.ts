@@ -34,18 +34,18 @@ context("Module", () => {
     const slotLength = slots.length;
     mod.finalize();
 
-    assert.equal(slotLength, config.controlValues.slotsCount, "Wrong number of slots");
+    assert.strictEqual(slotLength, config.controlValues.slotsCount, "Wrong number of slots");
   });
 
   it("props", () => {
     const mod = Module.load(config.init.lib, config.init.libName);
     mod.initialize();
 
-    assert.equal(mod.libFile, config.init.lib, "Wrong libFile");
-    assert.equal(mod.libName, config.init.libName, "Wrong libName");
-    assert.equal(mod.flags, 0, "Wrong flags");
-    assert.equal(mod.manufacturerID, config.controlValues.module.manufacturerID, "Wrong manufacturerID");
-    assert.equal(mod.libraryDescription, config.controlValues.module.libraryDescription, "Wrong libraryDescription");
+    assert.strictEqual(mod.libFile, config.init.lib, "Wrong libFile");
+    assert.strictEqual(mod.libName, config.init.libName, "Wrong libName");
+    assert.strictEqual(mod.flags, 0, "Wrong flags");
+    assert.strictEqual(mod.manufacturerID, config.controlValues.module.manufacturerID, "Wrong manufacturerID");
+    assert.strictEqual(mod.libraryDescription, config.controlValues.module.libraryDescription, "Wrong libraryDescription");
 
     mod.finalize();
   });
@@ -66,8 +66,8 @@ context("Module", () => {
       const session = slot.open();
 
       const rnd = session.generateRandom(20);
-      assert.equal(!!rnd, true);
-      assert.equal(rnd.length, 20);
+      assert.strictEqual(!!rnd, true);
+      assert.strictEqual(rnd.length, 20);
 
       mod.finalize();
     });

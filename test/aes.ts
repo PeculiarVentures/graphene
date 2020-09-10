@@ -63,7 +63,7 @@ context("AES", () => {
     enc = Buffer.concat([enc, cipher.final()]);
     const decipher = session.createDecipher(alg, key, enc.length);
     const dec = decipher.update(enc);
-    assert.equal(Buffer.concat([dec, decipher.final()]).toString(), MSG, "Correct");
+    assert.strictEqual(Buffer.concat([dec, decipher.final()]).toString(), MSG, "Correct");
   }
 
   function testWrapUnwrap(key: graphene.Key, alg: MechanismType, sKey: graphene.Key) {
@@ -76,7 +76,7 @@ context("AES", () => {
       encrypt: true,
       decrypt: true,
     });
-    assert.equal(!!uKey.handle, true);
+    assert.strictEqual(!!uKey.handle, true);
   }
 
   it("AesCBC encrypt/decrypt", () => {
@@ -115,7 +115,7 @@ context("AES", () => {
       },
     );
 
-    assert.equal(!!derivedKey, true);
+    assert.strictEqual(!!derivedKey, true);
   });
 
   it("AesCBCPad encrypt/decrypt", () => {

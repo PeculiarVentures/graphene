@@ -39,10 +39,10 @@ context("Object", () => {
         const copy = obj.copy({
             label: "new label",
         });
-        assert.equal(!copy, false);
+        assert.strictEqual(!copy, false);
         const key = copy.toType<graphene.Key>();
-        assert.equal(key.label, "new label");
-        assert.equal(session.find().length, count + 2);
+        assert.strictEqual(key.label, "new label");
+        assert.strictEqual(session.find().length, count + 2);
     });
 
     it("get attribute by name", () => {
@@ -56,7 +56,7 @@ context("Object", () => {
         });
 
         const wrap = obj.getAttribute("wrap");
-        assert.equal(wrap, true);
+        assert.strictEqual(wrap, true);
     });
 
     it("get attribute by template", () => {
@@ -73,8 +73,8 @@ context("Object", () => {
             wrap: null,
             label: null,
         });
-        assert.equal(attrs.wrap, true);
-        assert.equal(attrs.label, "label");
+        assert.strictEqual(attrs.wrap, true);
+        assert.strictEqual(attrs.label, "label");
     });
 
     it("set attribute by name", () => {
@@ -88,7 +88,7 @@ context("Object", () => {
         });
 
         obj.setAttribute("label", "new label");
-        assert.equal(obj.getAttribute("label"), "new label");
+        assert.strictEqual(obj.getAttribute("label"), "new label");
     });
 
     it("set attribute by type", () => {
@@ -102,7 +102,7 @@ context("Object", () => {
         });
 
         obj.set(pkcs11.CKA_LABEL, "new label");
-        assert.equal(obj.get(pkcs11.CKA_LABEL), "new label");
+        assert.strictEqual(obj.get(pkcs11.CKA_LABEL).toString(), "new label");
     });
 
     it("set attribute by template", () => {
@@ -118,7 +118,7 @@ context("Object", () => {
         obj.setAttribute({
             label: "new label",
         });
-        assert.equal(obj.getAttribute("label"), "new label");
+        assert.strictEqual(obj.getAttribute("label"), "new label");
     });
 
     it("destroy", () => {
@@ -131,10 +131,10 @@ context("Object", () => {
             modulus,
             publicExponent: exponent,
         });
-        assert.equal(session.find().length, count + 1);
+        assert.strictEqual(session.find().length, count + 1);
 
         obj.destroy();
-        assert.equal(session.find().length, count);
+        assert.strictEqual(session.find().length, count);
     });
 
     it("size", () => {
@@ -148,7 +148,7 @@ context("Object", () => {
         });
 
         // SoftHSM doesn't return real size of object
-        assert.equal(obj.size > 0, true);
+        assert.strictEqual(obj.size > 0, true);
         obj.destroy();
     });
 
@@ -162,19 +162,19 @@ context("Object", () => {
         });
 
         let data = obj.toType<graphene.Data>();
-        assert.equal(data.value.toString(), "Hello");
-        assert.equal(data.token, false);
-        assert.equal(data.private, true);
-        assert.equal(data.modifiable, true);
-        assert.equal(data.objectId.toString("hex"), "01");
+        assert.strictEqual(data.value.toString(), "Hello");
+        assert.strictEqual(data.token, false);
+        assert.strictEqual(data.private, true);
+        assert.strictEqual(data.modifiable, true);
+        assert.strictEqual(data.objectId.toString("hex"), "01");
 
         data.label = "data.new.label";
 
         const objs = session.find({ label: "data.new.label" });
-        assert.equal(objs.length, 1);
+        assert.strictEqual(objs.length, 1);
 
         data = objs.items(0).toType();
-        assert.equal(data.label, "data.new.label");
+        assert.strictEqual(data.label, "data.new.label");
         data.destroy();
     });
 
@@ -203,13 +203,13 @@ context("Object", () => {
 
         it("get value", () => {
             const value = object.getAttribute(attrName);
-            assert.equal(Buffer.isBuffer(value), true);
+            assert.strictEqual(Buffer.isBuffer(value), true);
         });
 
         it("set value", () => {
             const newValue = "new value";
             object.setAttribute(attrName, newValue);
-            assert.equal(object.getAttribute(attrName), newValue);
+            assert.strictEqual(Buffer.isBuffer(object.getAttribute(attrName)), true);
         });
 
     });
