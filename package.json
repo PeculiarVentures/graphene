@@ -23,6 +23,11 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "docs": "typedoc --mode file --inputFiles ./src --out docs"
   },
+  "files": [
+    "build/**/*.{ts,js}",
+    "README.md",
+    "LICENSE.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/PeculiarVentures/graphene.git"
