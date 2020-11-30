@@ -1,0 +1,33 @@
+name: publish
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: Install dependencies
+      run: npm install
+    - name: Build
+      run: npm run build
+    - name: Publish to NPM
+      run: |
+            npm set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+            npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
