@@ -4,8 +4,6 @@ import { Mechanism, MechanismType } from "../mech";
 import { Session } from "../session";
 import { Key } from '../objects';
 
-const INVALID = 192;
-
 export class Verify extends core.BaseObject {
 
   public session: Session;
@@ -38,7 +36,7 @@ export class Verify extends core.BaseObject {
     try {
       res = this.lib.C_VerifyFinal(this.session.handle, signature);
     } catch (err) {
-      if (core.getPKCS11ErrorCode(err) !== INVALID) {
+      if (!(err instanceof pkcs11.Pkcs11Error && err.code === pkcs11.CKR_SIGNATURE_INVALID)) {
         throw err;
       }
     }
@@ -51,7 +49,7 @@ export class Verify extends core.BaseObject {
     const bytes = Buffer.from(data as string);
     if (cb) {
       this.lib.C_Verify(this.session.handle, bytes, signature, (err, data2) => {
-        if (err && core.getPKCS11ErrorCode(err) === INVALID) {
+        if (err instanceof pkcs11.Pkcs11Error && err.code === pkcs11.CKR_SIGNATURE_INVALID) {
           cb(null, false);
         } else {
           cb(err, data2);
@@ -62,7 +60,7 @@ export class Verify extends core.BaseObject {
       try {
         res = this.lib.C_Verify(this.session.handle, bytes, signature);
       } catch (err) {
-        if (core.getPKCS11ErrorCode(err) !== INVALID) {
+        if (!(err instanceof pkcs11.Pkcs11Error && err.code === pkcs11.CKR_SIGNATURE_INVALID)) {
           throw err;
         }
       }

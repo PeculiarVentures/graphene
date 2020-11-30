@@ -54,7 +54,7 @@ export class Module extends core.BaseObject {
   /**
    * initializes the Cryptoki library
    */
-  public initialize(options?: Pkcs11Js.InitializationOptions) {
+  public initialize(options?: pkcs11.InitializationOptions) {
     try {
       this.lib.C_Initialize(options);
     } catch (e) {
