@@ -1,5 +1,3 @@
-/// <reference path="./typings/type.d.ts" />
-
 import * as pkcs11 from "pkcs11js";
 
 import * as core from "./core";
@@ -9,6 +7,7 @@ import * as objects from "./objects";
 import { Key, SecretKey } from './objects';
 import { Slot } from "./slot";
 import { ITemplate, Template } from "./template";
+import { Callback } from "./types";
 
 import { Cipher, Decipher, Digest, Sign, Verify } from "./crypto";
 

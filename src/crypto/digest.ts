@@ -2,6 +2,7 @@ import * as pkcs11 from "pkcs11js";
 import * as core from "../core";
 import * as mech from "../mech";
 import { Session } from "../session";
+import * as types from "../types";
 
 export class Digest extends core.BaseObject {
 
@@ -13,7 +14,7 @@ export class Digest extends core.BaseObject {
     this.init(alg);
   }
 
-  public update(data: core.CryptoData): void {
+  public update(data: types.CryptoData): void {
     try {
       const bytes = Buffer.from(data as string);
 
@@ -38,9 +39,9 @@ export class Digest extends core.BaseObject {
     return res;
   }
 
-  public once(data: core.CryptoData): Buffer;
-  public once(data: core.CryptoData, cb: (error: Error, data: Buffer) => void): void;
-  public once(data: core.CryptoData, cb?: (error: Error, data: Buffer) => void): any {
+  public once(data: types.CryptoData): Buffer;
+  public once(data: types.CryptoData, cb: (error: Error, data: Buffer) => void): void;
+  public once(data: types.CryptoData, cb?: (error: Error, data: Buffer) => void): any {
     const digest = Buffer.alloc(1024);
     const bytes = Buffer.from(data as string);
     if (cb) {

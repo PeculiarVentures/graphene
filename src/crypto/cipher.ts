@@ -3,6 +3,7 @@ import * as core from "../core";
 import { Mechanism, MechanismType } from "../mech";
 import { Session } from "../session";
 import { Key } from '../objects';
+import * as types from '../types';
 
 export class Cipher extends core.BaseObject {
 
@@ -15,7 +16,7 @@ export class Cipher extends core.BaseObject {
     this.init(alg, key);
   }
 
-  public update(data: core.CryptoData): Buffer {
+  public update(data: types.CryptoData): Buffer {
     try {
       data = Buffer.from(data as string);
 
@@ -44,9 +45,9 @@ export class Cipher extends core.BaseObject {
     return res;
   }
 
-  public once(data: core.CryptoData, enc: Buffer): Buffer;
-  public once(data: core.CryptoData, enc: Buffer, cb: (error: Error, data: Buffer) => void): void;
-  public once(data: core.CryptoData, enc: Buffer, cb?: (error: Error, data: Buffer) => void): any {
+  public once(data: types.CryptoData, enc: Buffer): Buffer;
+  public once(data: types.CryptoData, enc: Buffer, cb: (error: Error, data: Buffer) => void): void;
+  public once(data: types.CryptoData, enc: Buffer, cb?: (error: Error, data: Buffer) => void): any {
     const bytes = Buffer.from(data as string);
     if (cb) {
       this.lib.C_Encrypt(this.session.handle, bytes, enc, cb);

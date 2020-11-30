@@ -28,3 +28,6 @@ export function isArray(v: any): v is any[] {
 export function isFlag(v: any, fv: number) {
   return (v & fv) === fv;
 }
+export function removePadding(text: string) {
+  return text.replace(/\0.*/g, "").trim();
+}

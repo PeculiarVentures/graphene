@@ -3,6 +3,7 @@ import * as core from "../core";
 import { Mechanism, MechanismType } from "../mech";
 import { Session } from "../session";
 import { Key } from '../objects';
+import * as types from '../types';
 
 export class Verify extends core.BaseObject {
 
@@ -14,7 +15,7 @@ export class Verify extends core.BaseObject {
     this.init(alg, key);
   }
 
-  public update(data: core.CryptoData): void {
+  public update(data: types.CryptoData): void {
     try {
       const bytes = Buffer.from(data as string);
 
@@ -43,9 +44,9 @@ export class Verify extends core.BaseObject {
     return res;
   }
 
-  public once(data: core.CryptoData, signature: Buffer): boolean;
-  public once(data: core.CryptoData, signature: Buffer, cb: (error: Error | null, valid: boolean) => void): void;
-  public once(data: core.CryptoData, signature: Buffer, cb?: (error: Error | null, valid: boolean) => void): any {
+  public once(data: types.CryptoData, signature: Buffer): boolean;
+  public once(data: types.CryptoData, signature: Buffer, cb: (error: Error | null, valid: boolean) => void): void;
+  public once(data: types.CryptoData, signature: Buffer, cb?: (error: Error | null, valid: boolean) => void): any {
     const bytes = Buffer.from(data as string);
     if (cb) {
       this.lib.C_Verify(this.session.handle, bytes, signature, (err, data2) => {
