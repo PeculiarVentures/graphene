@@ -1,5 +1,8 @@
 import * as pkcs11 from "pkcs11js";
 
+/**
+ * Represents the list of attributes
+ */
 export interface ITemplate {
   [key: string]: any;
   /**
@@ -595,10 +598,10 @@ function i2n(cka: number) {
 }
 
 /**
- * Convert buffer to value
- *
- * @param {Buffer} value
- * @returns {*}
+ * Converts buffer to value
+ * @param type Type of attribute
+ * @param value Value in byte array
+ * @returns Converted value
  */
 function b2v(type: string, value: Buffer): any {
   switch (type) {
@@ -618,6 +621,12 @@ function b2v(type: string, value: Buffer): any {
   }
 }
 
+/**
+ * Gets attribute item by name
+ * @param name Attribute name
+ * @returns Attribute item
+ * @throws {@link Error} if attribute name is not registered
+ */
 function getAttribute(name: string) {
   for (const key in attribute) {
     if (key === name) {
@@ -627,11 +636,15 @@ function getAttribute(name: string) {
   throw new Error(`Unsupported attribute ID '${name}'. Use 'registerAttribute' to add custom attribute.`);
 }
 
+/**
+ * Static class that allows to convert graphene template to pkcs11js template and back
+ */
 export class Template {
 
   /**
    * Converts Graphene Template to PKCS#11 Template
    * @param tmpl Graphene Template
+   * @returns pkcs11js template
    */
   public static toPkcs11(tmpl: ITemplate | null) {
     const res: pkcs11.Template = [];
@@ -658,6 +671,7 @@ export class Template {
   /**
    * Converts PKCS#11 Template to Graphene Template
    * @param tmpl PKCS#11 Template
+   * @returns Graphene template
    */
   public static fromPkcs11(tmpl: pkcs11.Template) {
     const res: ITemplate = {};
@@ -675,10 +689,10 @@ export class Template {
 }
 
 /**
- * Registers new attribute
- * @param {string}              name        name of attribute
- * @param {number}              value       PKCS#11 number value of attribute
- * @param {AttributeItemType}   type        string name of type
+ * Registers attribute items
+ * @param name The name of attribute
+ * @param value PKCS#11 number value of attribute
+ * @param type The string name of type
  */
 export function registerAttribute(name: string, value: number, type: AttributeItemType) {
   attribute[name] = { v: value, t: type };

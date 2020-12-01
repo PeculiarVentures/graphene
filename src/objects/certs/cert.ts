@@ -1,12 +1,28 @@
 import * as pkcs11 from "pkcs11js";
+import { attribute } from "../../core";
 import { Storage } from "../storage";
 
+/**
+ * Enumeration specifies certificate types
+ */
 export enum CertificateType {
+  /**
+   * X509 certificate
+   */
   X_509 = pkcs11.CKC_X_509,
+  /**
+   * X509 attribute certificate
+   */
   X_509_ATTR_CERT = pkcs11.CKC_X_509_ATTR_CERT,
+  /**
+   * WTLS public key certificates
+   */
   WTLS = pkcs11.CKC_WTLS,
 }
 
+/**
+ * Enumeration specifies categories of certificate
+ */
 export enum CertificateCategory {
   Unspecified = 0,
   TokenUser = 1,
@@ -22,66 +38,37 @@ export class Certificate extends Storage {
   /**
    * Type of certificate
    */
-  get type(): CertificateType {
-    return this.get("certType");
-  }
-
-  set type(v: CertificateType) {
-    this.set("certType", v);
-  }
+  @attribute("certType")
+  public type: CertificateType;
 
   /**
    * The certificate can be trusted for the application that it was created.
    */
-  get trusted(): boolean {
-    return this.get("trusted");
-  }
-
-  set trusted(v: boolean) {
-    this.set("trusted", v);
-  }
+  @attribute("trusted")
+  public trusted: boolean;
 
   /**
    * Categorization of the certificate
    */
-  get category(): CertificateCategory {
-    return this.get("certCategory");
-  }
-
-  set category(v: CertificateCategory) {
-    this.set("certCategory", v);
-  }
+  @attribute("certCategory")
+  public category: CertificateCategory;
 
   /**
    * Checksum
    */
-  get checkValue(): Buffer {
-    return this.get("checkValue");
-  }
-
-  set checkValue(v: Buffer) {
-    this.set("checkValue", v);
-  }
+  @attribute("checkValue")
+  public checkValue: Buffer;
 
   /**
    * Start date for the certificate (default empty)
    */
-  get startDate(): Date {
-    return this.get("startDate");
-  }
-
-  set startDate(v: Date) {
-    this.set("startDate", v);
-  }
+  @attribute("startDate")
+  public startDate: Date;
 
   /**
    * End date for the certificate (default empty)
    */
-  get endDate(): Date {
-    return this.get("endDate");
-  }
+  @attribute("endDate")
+  public endDate: Date;
 
-  set endDate(v: Date) {
-    this.set("endDate", v);
-  }
 }

@@ -1,6 +1,10 @@
 import * as pkcs11 from "pkcs11js";
+import { attribute } from "../../core";
 import { Storage } from "../storage";
 
+/**
+ * Enumeration specifies key types
+ */
 export enum KeyType {
   RSA = pkcs11.CKK_RSA,
   DSA = pkcs11.CKK_DSA,
@@ -38,6 +42,9 @@ export enum KeyType {
   ARIA = pkcs11.CKK_ARIA,
 }
 
+/**
+ * Enumeration specifies key generation mechanisms
+ */
 export enum KeyGenMechanism {
   AES = pkcs11.CKM_AES_KEY_GEN,
   RSA = pkcs11.CKM_RSA_PKCS_KEY_PAIR_GEN,
@@ -84,13 +91,8 @@ export class Key extends Storage {
    * - Must be specified when object is created with `C_CreateObject`
    * - Must be specified when object is unwrapped with `C_UnwrapKey`
    */
-  get type(): KeyType {
-    return this.get("keyType");
-  }
-
-  set type(v: KeyType) {
-    this.set("keyType", v);
-  }
+  @attribute("keyType")
+  public type: KeyType;
 
   /**
    * Key identifier for key (default empty)
@@ -99,13 +101,8 @@ export class Key extends Storage {
    * However, it is possible that a particular token may not permit modification
    * of the attribute during the course of a `C_CopyObject` call.
    */
-  get id(): Buffer {
-    return this.get("id");
-  }
-
-  set id(v: Buffer) {
-    this.set("id", v);
-  }
+  @attribute("id")
+  public id: Buffer;
 
   /**
    * Start date for the key (default empty)
@@ -114,13 +111,8 @@ export class Key extends Storage {
    * However, it is possible that a particular token may not permit modification
    * of the attribute during the course of a `C_CopyObject` call.
    */
-  get startDate(): Date {
-    return this.get("startDate");
-  }
-
-  set startDate(v: Date) {
-    this.set("startDate", v);
-  }
+  @attribute("startDate")
+  public startDate: Date;
 
   /**
    * End date for the key (default empty)
@@ -129,14 +121,8 @@ export class Key extends Storage {
    * However, it is possible that a particular token may not permit modification
    * of the attribute during the course of a `C_CopyObject` call.
    */
-  get endDate(): Date {
-    return this.get("endDate");
-  }
-
-  set endDate(v: Date) {
-    this.set("endDate", v);
-  }
-
+  @attribute("endDate")
+  public endDate: Date;
   /**
    * `CK_TRUE` if key supports key derivation
    * (i.e., if other keys can be derived from this one (default `CK_FALSE`)
@@ -146,17 +132,8 @@ export class Key extends Storage {
    * of the attribute during the course of a `C_CopyObject` call.
    * @returns boolean
    */
-  get derive(): boolean {
-    try {
-      return this.get("derive");
-    } catch (err) {
-      return false;
-    }
-  }
-
-  set derive(v: boolean) {
-    this.set("derive", v);
-  }
+  @attribute("derive", false)
+  public derive: boolean;
 
   /**
    * `CK_TRUE` only if key was either * generated locally (i.e., on the token)
@@ -166,13 +143,8 @@ export class Key extends Storage {
    * - Must not be specified when object is generated with `C_GenerateKey` or `C_GenerateKeyPair`.
    * - Must not be specified when object is unwrapped with `C_UnwrapKey`.
    */
-  get local(): boolean {
-    return this.get("local");
-  }
-
-  set local(v: boolean) {
-    this.set("local", v);
-  }
+  @attribute("local")
+  public local: boolean;
 
   /**
    * Identifier of the mechanism used to generate the key material.
@@ -180,13 +152,8 @@ export class Key extends Storage {
    * - Must not be specified when object is generated with `C_GenerateKey` or `C_GenerateKeyPair`.
    * - Must not be specified when object is unwrapped with `C_UnwrapKey`.
    */
-  get mechanism(): KeyGenMechanism {
-    return this.get("keyGenMechanism");
-  }
-
-  set mechanism(v: KeyGenMechanism) {
-    this.set("keyGenMechanism", v);
-  }
+  @attribute("keyGenMechanism")
+  public mechanism: KeyGenMechanism;
 
   get allowedMechanisms() {
     throw new Error("Not implemented");

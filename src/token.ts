@@ -23,92 +23,101 @@ export enum TokenFlag {
   ERROR_STATE = 0x01000000,
 }
 
+/**
+ * Represents PKCS#11 token structure
+ */
 export class Token extends core.HandleObject {
 
   /**
-   * application-defined label, assigned during token initialization.
-   * - Must be padded with the blank character (' ').
-   * - Should __not__ be null-terminated.
+   * Application-defined label, assigned during token initialization
    */
   public label: string;
-  /**
-   * ID of the device manufacturer.
-   * - Must be padded with the blank character (' ').
-   * - Should __not__ be null-terminated.
-   */
-  public manufacturerID: string;
-  /**
-   * model of the device.
-   * - Must be padded with the blank character (' ').
-   * - Should __not__ be null-terminated.
-   */
-  public model: string;
-  /**
-   * character-string serial number of the device.
-   * - Must be padded with the blank character (' ').
-   * - Should __not__ be null-terminated.
-   */
-  public serialNumber: string;
-  /**
-   * bit flags indicating capabilities and status of the device
-   */
-  public flags: number;
 
   /**
-   * maximum number of sessions that can be opened with the token at one time by a single application
+   * ID of the device manufacturer
+   */
+  public manufacturerID: string;
+
+  /**
+   * Model of the device
+   */
+  public model: string;
+
+  /**
+   * Character-string serial number of the device.
+   */
+  public serialNumber: string;
+
+  /**
+   * Bit flags indicating capabilities and status of the device
+   */
+  public flags: TokenFlag;
+
+  /**
+   * Maximum number of sessions that can be opened with the token at one time by a single application
    */
   public maxSessionCount: number;
+
   /**
-   * number of sessions that this application currently has open with the token
+   * Number of sessions that this application currently has open with the token
    */
   public sessionCount: number;
+
   /**
    * maximum number of read/write sessions that can be opened
    * with the token at one time by a single application
    */
   public maxRwSessionCount: number;
+
   /**
-   * number of read/write sessions that this application currently has open with the token
+   * Number of read/write sessions that this application currently has open with the token
    */
   public rwSessionCount: number;
+
   /**
-   * maximum length in bytes of the PIN
+   * Maximum length in bytes of the PIN
    */
   public maxPinLen: number;
+
   /**
-   * minimum length in bytes of the PIN
+   * Minimum length in bytes of the PIN
    */
   public minPinLen: number;
+
   /**
-   * the total amount of memory on the token in bytes in which public objects may be stored
+   * The total amount of memory on the token in bytes in which public objects may be stored
    */
   public totalPublicMemory: number;
+
   /**
-   * the amount of free (unused) memory on the token in bytes for public objects
+   * The amount of free (unused) memory on the token in bytes for public objects
    */
   public freePublicMemory: number;
+
   /**
-   * the total amount of memory on the token in bytes in which private objects may be stored
+   * The total amount of memory on the token in bytes in which private objects may be stored
    */
   public totalPrivateMemory: number;
+
   /**
-   * the amount of free (unused) memory on the token in bytes for private objects
+   * The amount of free (unused) memory on the token in bytes for private objects
    */
   public freePrivateMemory: number;
+
   /**
-   * version number of hardware
+   * Version number of hardware
    */
   public hardwareVersion: pkcs11.Version;
+
   /**
-   * version number of firmware
+   * Version number of firmware
    */
   public firmwareVersion: pkcs11.Version;
+
   /**
-   * current time as a character-string of length 16,
-   * represented in the format YYYYMMDDhhmmssxx.
-   * Null when a token does not have a clock.
+   * Current time. Null when a token does not have a clock.
    */
-  public utcTime: Date;
+  public utcTime: Date | null;
 
   constructor(handle: core.Handle, lib: pkcs11.PKCS11) {
     super(handle, lib);
@@ -135,9 +144,9 @@ export class Token extends core.HandleObject {
     this.freePrivateMemory = info.freePrivateMemory;
     this.hardwareVersion = info.hardwareVersion;
     this.firmwareVersion = info.firmwareVersion;
-    if (info.flags & TokenFlag.CLOCK_ON_TOKEN) {
-      core.dateFromString(info.utcTime);
-    }
+    this.utcTime = info.flags & TokenFlag.CLOCK_ON_TOKEN
+      ? core.dateFromString(info.utcTime)
+      : null;
   }
 
 }

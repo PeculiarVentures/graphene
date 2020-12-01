@@ -6,79 +6,98 @@ import * as core from "./core";
 import { IParams } from "./keys/params";
 import { MechanismEnum } from "./mech_enum";
 import type { KeyGenMechanism } from "./objects";
-export * from "./mech_enum";
 
+/**
+ * Structure that describes algorithm
+ */
 export interface IAlgorithm {
-    name: string;
+    /**
+     * The algorithm name
+     */
+    name: keyof typeof MechanismEnum | string;
+    /**
+     * The algorithm parameters
+     */
     params: Buffer | IParams | null;
 }
 
-export type MechanismType = MechanismEnum | KeyGenMechanism | IAlgorithm | string;
+export type MechanismType = MechanismEnum | KeyGenMechanism | IAlgorithm | keyof typeof MechanismEnum | string;
 
+/**
+ * Bit flags specifying mechanism capabilities
+ */
 export enum MechanismFlag {
     /**
-     * `True` if the mechanism is performed by the device; `false` if the mechanism is performed in software
+     * `true` if the mechanism is performed by the device; `false` if the mechanism is performed in software
      */
     HW = pkcs11.CKF_HW,
     /**
-     * `True` if the mechanism can be used with encrypt function
+     * `true` if the mechanism can be used with encrypt function
      */
     ENCRYPT = pkcs11.CKF_ENCRYPT,
     /**
-     * `True` if the mechanism can be used with decrypt function
+     * `true` if the mechanism can be used with decrypt function
      */
     DECRYPT = pkcs11.CKF_DECRYPT,
     /**
-     * `True` if the mechanism can be used with digest function
+     * `true` if the mechanism can be used with digest function
      */
     DIGEST = pkcs11.CKF_DIGEST,
     /**
-     * `True` if the mechanism can be used with sign function
+     * `true` if the mechanism can be used with sign function
      */
     SIGN = pkcs11.CKF_SIGN,
     /**
-     * `True` if the mechanism can be used with sign recover function
+     * `true` if the mechanism can be used with sign recover function
      */
     SIGN_RECOVER = pkcs11.CKF_SIGN_RECOVER,
     /**
-     * `True` if the mechanism can be used with verify function
+     * `true` if the mechanism can be used with verify function
      */
     VERIFY = pkcs11.CKF_VERIFY,
     /**
-     * `True` if the mechanism can be used with verify recover function
+     * `true` if the mechanism can be used with verify recover function
      */
     VERIFY_RECOVER = pkcs11.CKF_VERIFY_RECOVER,
     /**
-     * `True` if the mechanism can be used with geberate function
+     * `true` if the mechanism can be used with geberate function
      */
     GENERATE = pkcs11.CKF_GENERATE,
     /**
-     * `True` if the mechanism can be used with generate key pair function
+     * `true` if the mechanism can be used with generate key pair function
      */
     GENERATE_KEY_PAIR = pkcs11.CKF_GENERATE_KEY_PAIR,
     /**
-     * `True` if the mechanism can be used with wrap function
+     * `true` if the mechanism can be used with wrap function
      */
     WRAP = pkcs11.CKF_WRAP,
     /**
-     * `True` if the mechanism can be used with unwrap function
+     * `true` if the mechanism can be used with unwrap function
      */
     UNWRAP = pkcs11.CKF_UNWRAP,
     /**
-     * `True` if the mechanism can be used with derive function
+     * `true` if the mechanism can be used with derive function
      */
     DERIVE = pkcs11.CKF_DERIVE,
 }
 
+/**
+ * Represents a PKCS#11 mechanism
+ */
 export class Mechanism extends core.HandleObject {
 
     /**
-     * returns string name from MechanismEnum
+     * Returns string name from {@link MechanismEnum}. For unregistered mechanism returns string `unknown`.
+     * To register a custom mechanism in {@link MechanismEnum} use {@link Mechanism.vendor} static function
      */
     get name(): string {
         return MechanismEnum[this.type] || "unknown";
     }
 
+    /**
+     * Creates PKCS#11 mechanism structure from {@link MechanismType}
+     * @param algorithm Mechanism type
+     */
     public static create(algorithm: MechanismType): pkcs11.Mechanism {
         let res: pkcs11.Mechanism;
 
@@ -111,7 +130,16 @@ export class Mechanism extends core.HandleObject {
         return res;
     }
 
+    /**
+     * Adds a vendor mechanisms to {@link MechanismEnum} from the specified file
+     * @param jsonFile Path to JSON file with vendor mechanisms
+     */
     public static vendor(jsonFile: string): void;
+    /**
+     * Adds a vendor mechanism to {@link MechanismEnum}
+     * @param name Mechanism name
+     * @param value Mechanism value
+     */
     public static vendor(name: string, value: number): void;
     public static vendor(name: string, value?: number): void {
         const mechs: any = MechanismEnum;
@@ -134,27 +162,42 @@ export class Mechanism extends core.HandleObject {
         }
     }
 
+    /**
+     * The mechanism type number
+     */
     public type: MechanismEnum;
 
     /**
-     * the minimum size of the key for the mechanism
+     * The minimum size of the key for the mechanism
+     *
      * _whether this is measured in bits or in bytes is mechanism-dependent_
      */
     public minKeySize: number;
 
     /**
-     * the maximum size of the key for the mechanism
+     * The maximum size of the key for the mechanism
+     *
      * _whether this is measured in bits or in bytes is mechanism-dependent_
      */
     public maxKeySize: number;
 
     /**
-     * bit flag specifying mechanism capabilities
+     * Bit flag specifying mechanism capabilities
      */
     public flags: number;
 
+    /**
+     * The ID of the token’s slot
+     */
     protected slotHandle: core.Handle;
 
+    /**
+     * Initializes the mechanism structure
+     * @param type The type of mechanism
+     * @param handle The ID of mechanism
+     * @param slotHandle The ID of the token’s slot
+     * @param lib PKCS#11 module
+     */
     constructor(type: number, handle: pkcs11.Handle, slotHandle: core.Handle, lib: pkcs11.PKCS11) {
         super(handle, lib);
         this.type = type;
@@ -163,6 +206,9 @@ export class Mechanism extends core.HandleObject {
         this.getInfo();
     }
 
+    /**
+     * Retrieves information about mechanism and fills object fields
+     */
     protected getInfo(): void {
         const info = this.lib.C_GetMechanismInfo(this.slotHandle, this.type);
 
@@ -173,11 +219,23 @@ export class Mechanism extends core.HandleObject {
 
 }
 
+/**
+ * Represents a collection of PKCS#11 mechanisms
+ */
 export class MechanismCollection extends core.Collection<Mechanism> {
+    /**
+     * The ID of token's slot
+     */
     protected slotHandle: core.Handle;
 
-    constructor(items: number[], slotHandle: core.Handle, lib: pkcs11.PKCS11, classType = Mechanism) {
-        super(items, lib, classType);
+    /**
+     * Initialize a new instance of mechanism collection
+     * @param items The list of mechanism types
+     * @param slotHandle The ID of token's slot
+     * @param lib PKCS#11 module
+     */
+    constructor(items: number[], slotHandle: core.Handle, lib: pkcs11.PKCS11) {
+        super(items, lib, Mechanism);
 
         this.slotHandle = slotHandle;
     }
