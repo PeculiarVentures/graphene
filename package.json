@@ -94,5 +94,9 @@
     "spec": [
       "test/**/*.ts"
     ]
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/PeculiarVentures"
   }
 }
