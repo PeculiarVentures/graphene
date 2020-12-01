@@ -16,7 +16,7 @@
     "build:types": "tsc -p tsconfig.json --outDir build/types --declaration --emitDeclarationOnly",
     "rebuild": "npm run clean && npm run build",
     "prepare": "npm run build",
-    "pub": "npm run rebuild && npm version patch && npm publish && git push && git push --tags",
+    "pub": "npm version patch && git push --follow-tags",
     "sync": "git ac && git pull --rebase && git push",
     "lint": "tslint 'src/**/*.ts'",
     "coverage": "nyc npm test",
