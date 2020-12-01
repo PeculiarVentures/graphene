@@ -2,12 +2,16 @@ import * as pkcs11 from "pkcs11js";
 import * as core from "./core";
 import { Slot, SlotCollection } from "./slot";
 
+/**
+ * Represents the PKCS#11 module
+ */
 export class Module extends core.BaseObject {
 
   /**
-   * loads pkcs11 lib
-   * @param libFile path to PKCS11 library
-   * @param libName name of PKCS11 library
+   * Loads PKCS#11 library
+   * @param libFile The path to PKCS#11 library
+   * @param libName The name of PKCS#11 library
+   * @returns The new instance of {@link Module}
    */
   public static load(libFile: string, libName?: string): Module {
     const lib = new pkcs11.PKCS11();
@@ -19,7 +23,13 @@ export class Module extends core.BaseObject {
     return module;
   }
 
+  /**
+   * Path to PKCS#11 library
+   */
   public libFile: string = "";
+  /**
+   * Name of PKCS#11 module
+   */
   public libName: string = "";
 
   /**
@@ -33,26 +43,31 @@ export class Module extends core.BaseObject {
   public manufacturerID: string;
 
   /**
-   * must be zero
+   * Bit flags reserved for future versions. Must be zero for this version
    */
   public flags: number;
 
   /**
-   * blank padded library description
+   * Library description
    */
   public libraryDescription: string;
 
   /**
-   * version of library
+   * Cryptoki library version number
    */
   public libraryVersion: pkcs11.Version;
 
+  /**
+   * Initialize a new instance of {@link Module}
+   * @param lib PKCS#11 module
+   */
   public constructor(lib: pkcs11.PKCS11) {
     super(lib);
   }
 
   /**
-   * initializes the Cryptoki library
+   * Initializes the Cryptoki library
+   * @param options Initialization options
    */
   public initialize(options?: pkcs11.InitializationOptions) {
     try {
@@ -67,7 +82,7 @@ export class Module extends core.BaseObject {
   }
 
   /**
-   * indicates that an application is done with the Cryptoki library
+   * Indicates that an application is done with the Cryptoki library
    */
   public finalize() {
     this.lib.C_Finalize();
@@ -97,12 +112,15 @@ export class Module extends core.BaseObject {
   }
 
   /**
-   * closes PKCS#11 library
+   * Closes PKCS#11 library
    */
   public close() {
     this.lib.close();
   }
 
+  /**
+   * Retrieves information about module and fills object fields
+   */
   protected getInfo() {
     const info = this.lib.C_GetInfo();
 

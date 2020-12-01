@@ -1,11 +1,25 @@
 import * as pkcs11 from "pkcs11js";
 import * as object from "./object";
 
+/**
+ * Abstract class which represents a collection of items
+ */
 export abstract class Collection<T extends object.HandleObject> extends object.BaseObject implements Iterable<T> {
-  // tslint:disable-next-line:variable-name
+  /**
+   * List of inner items
+   */
   protected innerItems: any[];
-  protected classType: new (handle: pkcs11.Handle, lib: pkcs11.PKCS11) => T;
+  /**
+   * Type for child item initialization
+   */
+  protected classType: object.HandleObjectConstructor<T>;
 
+  /**
+   * Initialize a new instance of collection
+   * @param items List of IDs
+   * @param lib PKCS#11 module
+   * @param classType Type for a child item initialization
+   */
   constructor(items: any[], lib: pkcs11.PKCS11, classType: any) {
     super(lib);
     this.innerItems = items;
@@ -14,15 +28,16 @@ export abstract class Collection<T extends object.HandleObject> extends object.B
   }
 
   /**
-   * returns length of collection
+   * Returns length of collection
    */
   public get length(): number {
     return this.innerItems.length;
   }
 
   /**
-   * returns item from collection by index
-   * @param {number} index of element in collection `[0..n]`
+   * Returns item from collection by index
+   * @param index Index of element in the collection `[0..n]`
+   * @returns Child item
    */
   public items(index: number): T {
     const handle = this.innerItems[index];
@@ -33,7 +48,7 @@ export abstract class Collection<T extends object.HandleObject> extends object.B
    * Returns the index of the first occurrence of a value in an array.
    * @param obj       The value to locate in the array.
    * @param fromIndex The array index at which to begin the search.
-   * If fromIndex is omitted, the search starts at index 0.
+   * @remarks If `fromIndex` is omitted, the search starts at index 0.
    */
   public indexOf(obj: T, fromIndex: number = 0) {
     if (obj.lib.libPath === obj.lib.libPath) {
@@ -47,6 +62,10 @@ export abstract class Collection<T extends object.HandleObject> extends object.B
     return -1;
   }
 
+  /**
+   * A method that returns the default iterator for an object. Called by the semantics of the
+   * for-of statement.
+   */
   [Symbol.iterator]() {
     let pointer = 0;
     const _this = this;

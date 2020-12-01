@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import * as graphene from "../src";
-import { MechanismType } from "../src/mech";
+import { IAlgorithm, MechanismType } from "../src/mech";
 import config from "./config";
 import { isSoftHSM, isThalesNShield } from "./helpers";
 
@@ -21,6 +21,19 @@ context("AES", () => {
     if (config.init.vendor) {
       graphene.Mechanism.vendor(config.init.vendor);
     }
+
+    secretKey = session.generateKey(graphene.KeyGenMechanism.AES, {
+      keyType: graphene.KeyType.AES,
+      valueLen: 192 / 8,
+      encrypt: true,
+      decrypt: true,
+      sign: true,
+      verify: true,
+      wrap: true,
+      unwrap: true,
+      derive: true,
+      token: false,
+    });
   });
 
   after(() => {
@@ -50,7 +63,7 @@ context("AES", () => {
   });
 
   it("generate AES 192", () => {
-    secretKey = testGenerate(192);
+    testGenerate(192);
   });
 
   it("generate AES 256", () => {

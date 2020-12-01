@@ -1,3 +1,4 @@
+import { attribute } from "../../core";
 import { Certificate } from "./cert";
 
 /**
@@ -11,37 +12,22 @@ export class AttributeCertificate extends Certificate {
    * because the `ASN.1` syntax and encoding are different.
    * - Must be specified when the object is created
    */
-  get owner(): Buffer {
-    return this.get("owner");
-  }
-
-  set owner(v: Buffer) {
-    this.set("owner", v);
-  }
+  @attribute("owner")
+  public owner: Buffer;
 
   /**
    * DER-encoding of the attribute certificate's issuer field.
    * This is distinct from the `CKA_ISSUER` attribute contained in `CKC_X_509` certificates
    * because the ASN.1 syntax and encoding are different. (default empty)
    */
-  get issuer(): Buffer {
-    return this.get("issuerAC");
-  }
-
-  set issuer(v: Buffer) {
-    this.set("issuerAC", v);
-  }
+  @attribute("issuerAC")
+  public issuer: Buffer;
 
   /**
    * DER-encoding of the certificate serial number (default empty)
    */
-  get serialNumber(): Buffer {
-    return this.get("serial");
-  }
-
-  set serialNumber(v: Buffer) {
-    this.set("serial", v);
-  }
+  @attribute("serial")
+  public serialNumber: Buffer;
 
   /**
    * BER-encoding of a sequence of object identifier values corresponding
@@ -50,24 +36,14 @@ export class AttributeCertificate extends Certificate {
    * to search for a particular attribute certificate without fetching
    * and parsing the certificate itself. (default empty)
    */
-  get types(): Buffer {
-    return this.get("attrTypes");
-  }
-
-  set types(v: Buffer) {
-    this.set("attrTypes", v);
-  }
+  @attribute("attrTypes")
+  public types: Buffer;
 
   /**
    * BER-encoding of the certificate
    * - Must be specified when the object is created.
    */
-  get value(): Buffer {
-    return this.get("value");
-  }
-
-  set value(v: Buffer) {
-    this.set("value", v);
-  }
+  @attribute("value")
+  public value: Buffer;
 
 }

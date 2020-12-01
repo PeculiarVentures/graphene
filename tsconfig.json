@@ -8,7 +8,8 @@
     "importHelpers": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "experimentalDecorators": true
   },
   "exclude": [
     "index.d.ts",

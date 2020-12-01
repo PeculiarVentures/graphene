@@ -3,29 +3,32 @@ import { IParams, MechParams } from "../params";
 
 import { EcKdf } from "./kdf";
 
+/**
+ * ECDH parameters
+ */
 export class EcdhParams implements IParams, pkcs11.ECDH1 {
 
   /**
-   * key derivation function used on the shared secret value
+   * Key derivation function used on the shared secret value
    */
   public kdf: EcKdf;
   /**
-   * some data shared between the two parties
+   * Some data shared between the two parties
    */
   public sharedData: Buffer;
   /**
-   * other party's EC public key value
+   * Other party's EC public key value
    */
   public publicData: Buffer;
 
   public type = MechParams.EcDH;
 
   /**
-   * Creates an instance of EcdhParams.
+   * Creates an instance of {@link EcdhParams}
    *
-   * @param {EcKdf} kdf key derivation function used on the shared secret value
-   * @param {Buffer} [sharedData=null] some data shared between the two parties
-   * @param {Buffer} [publicData=null] other party's EC public key value
+   * @param kdf key derivation function used on the shared secret value
+   * @param sharedData some data shared between the two parties
+   * @param publicData other party's EC public key value
    */
   constructor(kdf: EcKdf, sharedData: Buffer | null = null, publicData: Buffer | null = null) {
     this.kdf = kdf;

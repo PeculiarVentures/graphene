@@ -55,9 +55,9 @@ context("Slot", () => {
         assert.strictEqual(token.manufacturerID, config.controlValues.slot.token.manufacturerID);
         assert.strictEqual(token.minPinLen, config.controlValues.slot.token.minPinLen);
         if (token.flags & pkcs11.CKF_CLOCK_ON_TOKEN) {
-            assert.notStrictEqual(token.utcTime, undefined);
+            assert.notStrictEqual(token.utcTime, null);
         } else {
-            assert.strictEqual(token.utcTime, undefined);
+            assert.strictEqual(token.utcTime, null);
         }
     });
 

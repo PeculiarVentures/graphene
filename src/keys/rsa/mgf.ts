@@ -1,5 +1,8 @@
 import * as pkcs11 from "pkcs11js";
 
+/**
+ * Enumeration specifies RSA mask generation function
+ */
 export enum RsaMgf {
   MGF1_SHA1 = pkcs11.CKG_MGF1_SHA1,
   MGF1_SHA224 = pkcs11.CKG_MGF1_SHA224,

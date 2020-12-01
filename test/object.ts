@@ -160,6 +160,7 @@ context("Object", () => {
             token: false,
             value: Buffer.from("Hello"),
         });
+        console.log(obj);
 
         let data = obj.toType<graphene.Data>();
         assert.strictEqual(data.value.toString(), "Hello");

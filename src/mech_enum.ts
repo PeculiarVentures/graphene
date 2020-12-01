@@ -1,5 +1,8 @@
 import * as pkcs11 from "pkcs11js";
 
+/**
+ * Enumeration specifies mechanism types
+ */
 export enum MechanismEnum {
   RSA_PKCS_KEY_PAIR_GEN = pkcs11.CKM_RSA_PKCS_KEY_PAIR_GEN,
   RSA_PKCS = pkcs11.CKM_RSA_PKCS,
@@ -241,8 +244,8 @@ export enum MechanismEnum {
   ECDSA_SHA384 = pkcs11.CKM_ECDSA_SHA384,
   ECDSA_SHA512 = pkcs11.CKM_ECDSA_SHA512,
 
-  /* CKM_ECDH1_DERIVE, CKM_ECDH1_COFACTOR_DERIVE, and CKM_ECMQV_DERIVE
-	 * are new for v2.11 */
+  // CKM_ECDH1_DERIVE, CKM_ECDH1_COFACTOR_DERIVE, and CKM_ECMQV_DERIVE
+  // are new for v2.11
   ECDH1_DERIVE = pkcs11.CKM_ECDH1_DERIVE,
   ECDH1_COFACTOR_DERIVE = pkcs11.CKM_ECDH1_COFACTOR_DERIVE,
   ECMQV_DERIVE = pkcs11.CKM_ECMQV_DERIVE,
@@ -255,10 +258,10 @@ export enum MechanismEnum {
   JUNIPER_WRAP = pkcs11.CKM_JUNIPER_WRAP,
   FASTHASH = pkcs11.CKM_FASTHASH,
 
-  /* CKM_AES_KEY_GEN, CKM_AES_ECB, CKM_AES_CBC, CKM_AES_MAC,
-	 * CKM_AES_MAC_GENERAL, CKM_AES_CBC_PAD, CKM_DSA_PARAMETER_GEN,
-	 * CKM_DH_PKCS_PARAMETER_GEN, and CKM_X9_42_DH_PARAMETER_GEN are
-	 * new for v2.11 */
+  // CKM_AES_KEY_GEN, CKM_AES_ECB, CKM_AES_CBC, CKM_AES_MAC,
+  // CKM_AES_MAC_GENERAL, CKM_AES_CBC_PAD, CKM_DSA_PARAMETER_GEN,
+  // CKM_DH_PKCS_PARAMETER_GEN, and CKM_X9_42_DH_PARAMETER_GEN are
+  // new for v2.11
   AES_KEY_GEN = pkcs11.CKM_AES_KEY_GEN,
   AES_ECB = pkcs11.CKM_AES_ECB,
   AES_CBC = pkcs11.CKM_AES_CBC,
@@ -266,13 +269,13 @@ export enum MechanismEnum {
   AES_MAC_GENERAL = pkcs11.CKM_AES_MAC_GENERAL,
   AES_CBC_PAD = pkcs11.CKM_AES_CBC_PAD,
 
-  /* AES counter mode is new for PKCS #11 v2.20 amendment 3 */
+  // AES counter mode is new for PKCS #11 v2.20 amendment 3
   AES_CTR = pkcs11.CKM_AES_CTR,
 
   AES_CMAC = pkcs11.CKM_AES_CMAC,
   AES_CMAC_GENERAL = pkcs11.CKM_AES_CMAC_GENERAL,
 
-  /* BlowFish and TwoFish are new for v2.20 */
+  // BlowFish and TwoFish are new for v2.20
   BLOWFISH_KEY_GEN = pkcs11.CKM_BLOWFISH_KEY_GEN,
   BLOWFISH_CBC = pkcs11.CKM_BLOWFISH_CBC,
   TWOFISH_KEY_GEN = pkcs11.CKM_TWOFISH_KEY_GEN,
@@ -283,7 +286,7 @@ export enum MechanismEnum {
   AES_KEY_WRAP = pkcs11.CKM_AES_KEY_WRAP,
   AES_KEY_WRAP_PAD = pkcs11.CKM_AES_KEY_WRAP_PAD,
 
-  /* CKM_xxx_ENCRYPT_DATA mechanisms are new for v2.20 */
+  // CKM_xxx_ENCRYPT_DATA mechanisms are new for v2.20
   DES_ECB_ENCRYPT_DATA = pkcs11.CKM_DES_ECB_ENCRYPT_DATA,
   DES_CBC_ENCRYPT_DATA = pkcs11.CKM_DES_CBC_ENCRYPT_DATA,
   DES3_ECB_ENCRYPT_DATA = pkcs11.CKM_DES3_ECB_ENCRYPT_DATA,
@@ -291,7 +294,7 @@ export enum MechanismEnum {
   AES_ECB_ENCRYPT_DATA = pkcs11.CKM_AES_ECB_ENCRYPT_DATA,
   AES_CBC_ENCRYPT_DATA = pkcs11.CKM_AES_CBC_ENCRYPT_DATA,
 
-  /* CKM_GOST mechanisms */
+  // CKM_GOST mechanisms
   GOSTR3410_KEY_PAIR_GEN = pkcs11.CKM_GOSTR3410_KEY_PAIR_GEN,
   GOSTR3410 = pkcs11.CKM_GOSTR3410,
   GOSTR3410_WITH_GOSTR3411 = pkcs11.CKM_GOSTR3410_WITH_GOSTR3411,

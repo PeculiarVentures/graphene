@@ -5,16 +5,33 @@ import { Session } from "../session";
 import { Key } from '../objects';
 import * as types from '../types';
 
+/**
+ * Represents verifying operation
+ */
 export class Verify extends core.BaseObject {
 
+  /**
+   * Session
+   */
   public session: Session;
 
+  /**
+   * Create a new instance of verifying operation
+   * @param session Session
+   * @param alg The verifying mechanism
+   * @param key The verifying key
+   * @param lib PKCS#11 library
+   */
   constructor(session: Session, alg: MechanismType, key: Key, lib: pkcs11.PKCS11) {
     super(lib);
     this.session = session;
     this.init(alg, key);
   }
 
+  /**
+   * Continues a multiple-part verification operation
+   * @param data The signed data
+   */
   public update(data: types.CryptoData): void {
     try {
       const bytes = Buffer.from(data as string);
@@ -32,6 +49,11 @@ export class Verify extends core.BaseObject {
     }
   }
 
+  /**
+   * Finishes a multiple-part verification operation, checking the signature
+   * @param signature Th signature value
+   * @returns `true` if signature is valid, otherwise `false`
+   */
   public final(signature: Buffer): boolean {
     let res = false;
     try {
@@ -44,7 +66,19 @@ export class Verify extends core.BaseObject {
     return res;
   }
 
+  /**
+   * Verifies a signature in a single-part operation
+   * @param data The signed data
+   * @param signature The signature value
+   * @returns `true` if signature is valid, otherwise `false`
+   */
   public once(data: types.CryptoData, signature: Buffer): boolean;
+  /**
+   * * Verifies a signature in a single-part operation
+   * @param data The signed data
+   * @param signature The signature value
+   * @param cb Async callback function with boolean result of checking. `true` if signature is valid, otherwise `false`
+   */
   public once(data: types.CryptoData, signature: Buffer, cb: (error: Error | null, valid: boolean) => void): void;
   public once(data: types.CryptoData, signature: Buffer, cb?: (error: Error | null, valid: boolean) => void): any {
     const bytes = Buffer.from(data as string);
@@ -69,6 +103,11 @@ export class Verify extends core.BaseObject {
     }
   }
 
+  /**
+   * initializes a verification operation
+   * @param alg The verifying mechanism
+   * @param key The verifying key
+   */
   protected init(alg: MechanismType, key: Key) {
     const pMech = Mechanism.create(alg);
     this.lib.C_VerifyInit(this.session.handle, pMech, key.handle);
