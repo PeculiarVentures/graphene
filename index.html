@@ -1,0 +1,1025 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>graphene-pk11</title>
+	<meta name="description" content="Documentation for graphene-pk11">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">graphene-pk11</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>graphene-pk11</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#graphene" id="graphene" style="color: inherit; text-decoration: none;">
+					<h1>Graphene</h1>
+				</a>
+				<p><a href="https://raw.githubusercontent.com/PeculiarVentures/graphene/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=flat" alt="license"></a>
+					<img src="https://github.com/PeculiarVentures/graphene/workflows/test/badge.svg" alt="test">
+					<a href="https://coveralls.io/github/PeculiarVentures/graphene?branch=master"><img src="https://coveralls.io/repos/github/PeculiarVentures/graphene/badge.svg?branch=master" alt="Coverage Status"></a>
+				<a href="https://badge.fury.io/js/graphene-pk11"><img src="https://badge.fury.io/js/graphene-pk11.svg" alt="npm version"></a></p>
+				<p><a href="https://nodei.co/npm/graphene-pk11/"><img src="https://nodei.co/npm/graphene-pk11.png" alt="NPM"></a></p>
+				<p>A simple layer for interacting with PKCS #11 / PKCS11 / CryptoKI for Node in TypeScript</p>
+				<p>PKCS #11 (also known as CryptoKI or PKCS11) is the standard interface for interacting with hardware crypto devices such as Smart Cards and Hardware Security Modules (HSMs). It wraps the library closely, but uses attempts to look like &#39;node.crypto&#39; where it makes sense. </p>
+				<p>It has been tested with :</p>
+				<ul>
+					<li><a href="https://www.opendnssec.org/softhsm/">SoftHSM2</a></li>
+					<li><a href="https://www.thales-esecurity.com/products-and-services/products-and-services/hardware-security-modules/general-purpose-hsms/nshield-solo">Thales nShield Solo+</a></li>
+					<li><a href="http://www.safenet-inc.com/">Safenet Luna HSMs</a></li>
+					<li><a href="http://www.rutoken.ru/">RuToken</a></li>
+				</ul>
+				<p>We have also created a basic <a href="https://github.com/PeculiarVentures/graphene-cli">CLI</a> for interacting with PKCS#11 devices based on this library we call <a href="https://github.com/PeculiarVentures/graphene-cli">graphene-cli</a>.</p>
+				<p><strong>NOTE:</strong> For testing purposes it may be easier to work with SoftHSM2 which is a software implementation of PKCS#11 based on OpenSSL or Botan.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+<span class="hljs-keyword">var</span> Module = graphene.Module;
+
+<span class="hljs-keyword">var</span> mod = Module.load(<span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+
+mod.initialize();
+
+<span class="hljs-keyword">var</span> session = mod.getSlots(<span class="hljs-number">0</span>).open();
+session.login(<span class="hljs-string">&quot;password&quot;</span>);
+
+<span class="hljs-comment">// Get a number of private key objects on token</span>
+<span class="hljs-built_in">console</span>.log(session.find({<span class="hljs-attr">class</span>: graphene.ObjectClass.PRIVATE_KEY}).length);
+
+session.logout();
+mod.finalize();</code></pre>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<pre><code>$ npm <span class="hljs-keyword">install</span> graphene-pk11</code></pre>
+				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+					<h2>Documentation</h2>
+				</a>
+				<p><a href="https://peculiarventures.github.io/graphene/">https://peculiarventures.github.io/graphene/</a></p>
+				<a href="#using-the-package" id="using-the-package" style="color: inherit; text-decoration: none;">
+					<h2>Using the Package</h2>
+				</a>
+				<p>Install the package</p>
+				<pre><code>$ npm <span class="hljs-keyword">install</span> graphene-pk11 <span class="hljs-comment">--save</span></code></pre>
+				<p>Install TypeScript definition using <a href="https://www.npmjs.com/package/tsd">TSD</a> package manager</p>
+				<pre><code>$ tsd <span class="hljs-keyword">install</span> graphene-pk11 <span class="hljs-comment">--save</span></code></pre>
+				<p>Load module</p>
+				<pre><code class="language-javascript"><span class="hljs-comment">// file.js</span>
+<span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);</code></pre>
+				<a href="#install-softhsm2" id="install-softhsm2" style="color: inherit; text-decoration: none;">
+					<h3>Install SoftHSM2</h3>
+				</a>
+				<ul>
+					<li>For OSX see the <a href="https://github.com/opendnssec/SoftHSMv2/blob/develop/OSX-NOTES.md">instructions here</a></li>
+					<li>For linux <a href="https://github.com/opendnssec/SoftHSMv2/blob/develop/README.md">instructions here</a></li>
+				</ul>
+				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+					<h2>Examples</h2>
+				</a>
+				<a href="#listing-capabilities" id="listing-capabilities" style="color: inherit; text-decoration: none;">
+					<h3>Listing capabilities</h3>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+<span class="hljs-keyword">var</span> Module = graphene.Module;
+<span class="hljs-keyword">var</span> lib = <span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>;
+<span class="hljs-keyword">var</span> mod = Module.load(lib, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+mod.initialize();
+<span class="hljs-comment">// get slots</span>
+<span class="hljs-keyword">var</span> slots = mod.getSlots(<span class="hljs-literal">true</span>);
+<span class="hljs-keyword">if</span> (slots.length &gt; <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; slots.length; i++) {
+        <span class="hljs-keyword">var</span> slot = slots.items(i);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Slot #&quot;</span> + slot.handle);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;\tDescription:&quot;</span>, slot.slotDescription);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;\tSerial:&quot;</span>, slot.getToken().serialNumber);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;\tPassword(min/max): %d/%d&quot;</span>, slot.getToken().minPinLen, slot.getToken().maxPinLen);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;\tIs hardware:&quot;</span>, !!(slot.flags &amp; graphene.SlotFlag.HW_SLOT));
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;\tIs removable:&quot;</span>, !!(slot.flags &amp; graphene.SlotFlag.REMOVABLE_DEVICE));
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;\tIs initialized:&quot;</span>, !!(slot.flags &amp; graphene.SlotFlag.TOKEN_PRESENT));
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;\n\nMechanisms:&quot;</span>);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Name                       h/s/v/e/d/w/u&quot;</span>);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;========================================&quot;</span>);
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">b</span>(<span class="hljs-params">v</span>) </span>{
+            <span class="hljs-keyword">return</span> v ? <span class="hljs-string">&quot;+&quot;</span> : <span class="hljs-string">&quot;-&quot;</span>;
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">s</span>(<span class="hljs-params">v</span>) </span>{
+            v = v.toString();
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i_1 = v.length; i_1 &lt; <span class="hljs-number">27</span>; i_1++) {
+                v += <span class="hljs-string">&quot; &quot;</span>;
+            }
+            <span class="hljs-keyword">return</span> v;
+        }
+
+        <span class="hljs-keyword">var</span> mechs = slot.getMechanisms();
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>; j &lt; mechs.length; j++) {
+            <span class="hljs-keyword">var</span> mech = mechs.items(j);
+            <span class="hljs-built_in">console</span>.log(s(mech.name) +
+                b(mech.flags &amp; graphene.MechanismFlag.DIGEST) + <span class="hljs-string">&quot;/&quot;</span> +
+                b(mech.flags &amp; graphene.MechanismFlag.SIGN) + <span class="hljs-string">&quot;/&quot;</span> +
+                b(mech.flags &amp; graphene.MechanismFlag.VERIFY) + <span class="hljs-string">&quot;/&quot;</span> +
+                b(mech.flags &amp; graphene.MechanismFlag.ENCRYPT) + <span class="hljs-string">&quot;/&quot;</span> +
+                b(mech.flags &amp; graphene.MechanismFlag.DECRYPT) + <span class="hljs-string">&quot;/&quot;</span> +
+                b(mech.flags &amp; graphene.MechanismFlag.WRAP) + <span class="hljs-string">&quot;/&quot;</span> +
+                b(mech.flags &amp; graphene.MechanismFlag.UNWRAP));
+        }
+    }
+}
+mod.finalize();</code></pre>
+				<p>####Output</p>
+				<pre><code>Slot #<span class="hljs-number">0</span>
+    <span class="hljs-keyword">Description</span>: SoftHSM slot <span class="hljs-number">0</span>
+    Serial: f89e34b310e83df2
+    Password(min<span class="hljs-regexp">/max): 4/</span><span class="hljs-number">255</span>
+    Is hardware: <span class="hljs-keyword">false</span>
+    Is removable: <span class="hljs-keyword">false</span>
+    Is initialized: <span class="hljs-keyword">true</span>
+Mechanisms:
+Name                       h<span class="hljs-regexp">/s/</span>v<span class="hljs-regexp">/e/</span>d<span class="hljs-regexp">/w/u</span>
+========================================
+MD5                        +<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA_1                      +<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA224                     +<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA256                     +<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA384                     +<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA512                     +<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+MD5_HMAC                   -<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA_1_HMAC                 -<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA224_HMAC                -<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA256_HMAC                -<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA384_HMAC                -<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA512_HMAC                -<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+RSA_PKCS_KEY_PAIR_GEN      -<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+RSA_PKCS                   -<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/+/</span>+
+RSA_X_509                  -<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/-/</span>-
+MD5_RSA_PKCS               -<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+SHA1_RSA_PKCS              -<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/-/</span>-
+RSA_PKCS_OAEP              -<span class="hljs-regexp">/-/</span>-<span class="hljs-regexp">/+/</span>+<span class="hljs-regexp">/+/</span>+</code></pre>
+				<a href="#hashing" id="hashing" style="color: inherit; text-decoration: none;">
+					<h3>Hashing</h3>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+<span class="hljs-keyword">var</span> Module = graphene.Module;
+
+<span class="hljs-keyword">var</span> lib = <span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>;
+
+<span class="hljs-keyword">var</span> mod = Module.load(lib, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+mod.initialize();
+
+<span class="hljs-keyword">var</span> slot = mod.getSlots(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">if</span> (slot.flags &amp; graphene.SlotFlag.TOKEN_PRESENT) {
+    <span class="hljs-keyword">var</span> session = slot.open();
+    <span class="hljs-keyword">var</span> digest = session.createDigest(<span class="hljs-string">&quot;sha1&quot;</span>);
+    digest.update(<span class="hljs-string">&quot;simple text 1&quot;</span>);
+    digest.update(<span class="hljs-string">&quot;simple text 2&quot;</span>);
+    <span class="hljs-keyword">var</span> hash = digest.final();
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Hash SHA1:&quot;</span>, hash.toString(<span class="hljs-string">&quot;hex&quot;</span>)); <span class="hljs-comment">// Hash SHA1: e1dc1e52e9779cd69679b3e0af87d2e288190d34 </span>
+    session.close();
+}
+<span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">&quot;Slot is not initialized&quot;</span>);
+}
+
+mod.finalize();</code></pre>
+				<a href="#generating-keys" id="generating-keys" style="color: inherit; text-decoration: none;">
+					<h3>Generating keys</h3>
+				</a>
+				<a href="#aes" id="aes" style="color: inherit; text-decoration: none;">
+					<h4>AES</h4>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+<span class="hljs-keyword">var</span> Module = graphene.Module;
+
+<span class="hljs-keyword">var</span> lib = <span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>;
+
+<span class="hljs-keyword">var</span> mod = Module.load(lib, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+mod.initialize();
+
+<span class="hljs-keyword">var</span> slot = mod.getSlots(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">if</span> (slot.flags &amp; graphene.SlotFlag.TOKEN_PRESENT) {
+    <span class="hljs-keyword">var</span> session = slot.open();
+    session.login(<span class="hljs-string">&quot;12345&quot;</span>);
+
+    <span class="hljs-keyword">var</span> k = session.generateKey(graphene.KeyGenMechanism.AES, {
+        <span class="hljs-string">&quot;class&quot;</span>: graphene.ObjectClass.SECRET_KEY,
+        <span class="hljs-string">&quot;token&quot;</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-string">&quot;valueLen&quot;</span>: <span class="hljs-number">256</span> / <span class="hljs-number">8</span>,
+        <span class="hljs-string">&quot;keyType&quot;</span>: graphene.KeyType.AES,
+        <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;My AES secret key&quot;</span>,
+        <span class="hljs-string">&quot;private&quot;</span>: <span class="hljs-literal">true</span>
+    });
+
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Key.handle:&quot;</span>, k.handle);                 <span class="hljs-comment">// Key.handle: 2</span>
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Key.type:&quot;</span>, graphene.KeyType[k.type]);   <span class="hljs-comment">// Key.type: AES</span>
+
+    session.logout();
+    session.close();
+}
+<span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">&quot;Slot is not initialized&quot;</span>);
+}
+
+mod.finalize();</code></pre>
+				<a href="#ecc" id="ecc" style="color: inherit; text-decoration: none;">
+					<h4>ECC</h4>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+<span class="hljs-keyword">var</span> Module = graphene.Module;
+
+<span class="hljs-keyword">var</span> lib = <span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>;
+
+<span class="hljs-keyword">var</span> mod = Module.load(lib, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+mod.initialize();
+
+<span class="hljs-keyword">var</span> slot = mod.getSlots(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">if</span> (slot.flags &amp; graphene.SlotFlag.TOKEN_PRESENT) {
+    <span class="hljs-keyword">var</span> session = slot.open();
+    session.login(<span class="hljs-string">&quot;12345&quot;</span>);
+
+    <span class="hljs-comment">// generate ECDSA key pair</span>
+    <span class="hljs-keyword">var</span> keys = session.generateKeyPair(graphene.KeyGenMechanism.ECDSA, {
+        <span class="hljs-attr">keyType</span>: graphene.KeyType.ECDSA,
+        <span class="hljs-attr">token</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">verify</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">paramsECDSA</span>: graphene.NamedCurve.getByName(<span class="hljs-string">&quot;secp192r1&quot;</span>).value
+    }, {
+        <span class="hljs-attr">keyType</span>: graphene.KeyType.ECDSA,
+        <span class="hljs-attr">token</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">sign</span>: <span class="hljs-literal">true</span>
+    });
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Key type:&quot;</span>, graphene.KeyType[keys.privateKey.type]);            <span class="hljs-comment">// Key type: ECDSA</span>
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Object&#x27;s class:&quot;</span>, graphene.ObjectClass[keys.privateKey.class]); <span class="hljs-comment">// Object&#x27;s class: PRIVATE_KEY </span>
+
+    session.logout();
+    session.close();
+}
+<span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">&quot;Slot is not initialized&quot;</span>);
+}
+
+mod.finalize();</code></pre>
+				<a href="#exporting-public-key" id="exporting-public-key" style="color: inherit; text-decoration: none;">
+					<h3>Exporting public key</h3>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+<span class="hljs-keyword">var</span> Module = graphene.Module;
+
+<span class="hljs-keyword">var</span> lib = <span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>;
+
+<span class="hljs-keyword">var</span> mod = Module.load(lib, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+mod.initialize();
+
+<span class="hljs-keyword">var</span> slot = mod.getSlots(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">if</span> (slot.flags &amp; graphene.SlotFlag.TOKEN_PRESENT) {
+    <span class="hljs-keyword">var</span> session = slot.open();
+    session.login(<span class="hljs-string">&quot;12345&quot;</span>);
+
+    <span class="hljs-comment">// generate RSA key pair</span>
+    <span class="hljs-keyword">var</span> keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
+        <span class="hljs-attr">keyType</span>: graphene.KeyType.RSA,
+        <span class="hljs-attr">modulusBits</span>: <span class="hljs-number">1024</span>,
+        <span class="hljs-attr">publicExponent</span>: Buffer.from([<span class="hljs-number">3</span>]),
+        <span class="hljs-attr">token</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">verify</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">encrypt</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">wrap</span>: <span class="hljs-literal">true</span>
+    }, {
+        <span class="hljs-attr">keyType</span>: graphene.KeyType.RSA,
+        <span class="hljs-attr">token</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">sign</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">decrypt</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">unwrap</span>: <span class="hljs-literal">true</span>
+    });
+
+    <span class="hljs-comment">// get public key attributes</span>
+    <span class="hljs-keyword">var</span> pubKey = keys.publicKey.getAttribute({
+        <span class="hljs-attr">modulus</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">publicExponent</span>: <span class="hljs-literal">null</span>
+    });
+
+    <span class="hljs-comment">// convert values to base64</span>
+    pubKey.modulus = pubKey.modulus.toString(<span class="hljs-string">&quot;base64&quot;</span>);
+    pubKey.publicExponent = pubKey.publicExponent.toString(<span class="hljs-string">&quot;base64&quot;</span>);
+
+
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(pubKey, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+
+    session.logout();
+    session.close();
+}
+<span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">&quot;Slot is not initialized&quot;</span>);
+}
+
+mod.finalize();
+
+<span class="hljs-comment">/*
+  Result
+  ------------------
+
+  {
+      &quot;modulus&quot;: &quot;21HTpGsKn3lQh4fqhYkZ/NprzKZqCnUIs0Ekbg8Y0M0Er4yJ4tKVFLlaxUkym6nRBQuS2tzwSQcvuKVUNeK3k6AiPitlQs5CRc8csqL6BYMU+rme3L0w/d+1OryH/pMrDGOmkWXTrzBWoRgulXHX92jK6CcXKBeS/yUSgCLP/MM=&quot;,
+      &quot;publicExponent&quot;: &quot;Aw==&quot;
+  }
+
+*/</span></code></pre>
+				<a href="#signing--verifying" id="signing--verifying" style="color: inherit; text-decoration: none;">
+					<h3>Signing / Verifying</h3>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+<span class="hljs-keyword">var</span> Module = graphene.Module;
+
+<span class="hljs-keyword">var</span> lib = <span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>;
+
+<span class="hljs-keyword">var</span> mod = Module.load(lib, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+mod.initialize();
+
+<span class="hljs-keyword">var</span> slot = mod.getSlots(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">if</span> (slot.flags &amp; graphene.SlotFlag.TOKEN_PRESENT) {
+    <span class="hljs-keyword">var</span> session = slot.open();
+    session.login(<span class="hljs-string">&quot;12345&quot;</span>);
+
+    <span class="hljs-comment">// generate RSA key pair</span>
+    <span class="hljs-keyword">var</span> keys = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
+        <span class="hljs-attr">keyType</span>: graphene.KeyType.RSA,
+        <span class="hljs-attr">modulusBits</span>: <span class="hljs-number">1024</span>,
+        <span class="hljs-attr">publicExponent</span>: Buffer.from([<span class="hljs-number">3</span>]),
+        <span class="hljs-attr">token</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">verify</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">encrypt</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">wrap</span>: <span class="hljs-literal">true</span>
+    }, {
+        <span class="hljs-attr">keyType</span>: graphene.KeyType.RSA,
+        <span class="hljs-attr">token</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">sign</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">decrypt</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">unwrap</span>: <span class="hljs-literal">true</span>
+    });
+
+    <span class="hljs-comment">// sign content</span>
+    <span class="hljs-keyword">var</span> sign = session.createSign(<span class="hljs-string">&quot;SHA1_RSA_PKCS&quot;</span>, keys.privateKey);
+    sign.update(<span class="hljs-string">&quot;simple text 1&quot;</span>);
+    sign.update(<span class="hljs-string">&quot;simple text 2&quot;</span>);
+    <span class="hljs-keyword">var</span> signature = sign.final();
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Signature RSA-SHA1:&quot;</span>, signature.toString(<span class="hljs-string">&quot;hex&quot;</span>)); <span class="hljs-comment">// Signature RSA-SHA1: 6102a66dc0d97fadb5...</span>
+
+    <span class="hljs-comment">// verify content</span>
+    <span class="hljs-keyword">var</span> verify = session.createVerify(<span class="hljs-string">&quot;SHA1_RSA_PKCS&quot;</span>, keys.publicKey);
+    verify.update(<span class="hljs-string">&quot;simple text 1&quot;</span>);
+    verify.update(<span class="hljs-string">&quot;simple text 2&quot;</span>);
+    <span class="hljs-keyword">var</span> verify_result = verify.final(signature);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Signature RSA-SHA1 verify:&quot;</span>, verify_result);      <span class="hljs-comment">// Signature RSA-SHA1 verify: true</span>
+
+    session.logout();
+    session.close();
+}
+<span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">&quot;Slot is not initialized&quot;</span>);
+}
+
+mod.finalize();</code></pre>
+				<a href="#encrypting--decrypting" id="encrypting--decrypting" style="color: inherit; text-decoration: none;">
+					<h3>Encrypting / Decrypting</h3>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+<span class="hljs-keyword">var</span> Module = graphene.Module;
+
+<span class="hljs-keyword">var</span> lib = <span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>;
+
+<span class="hljs-keyword">var</span> mod = Module.load(lib, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+mod.initialize();
+
+<span class="hljs-keyword">var</span> slot = mod.getSlots(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">if</span> (slot.flags &amp; graphene.SlotFlag.TOKEN_PRESENT) {
+    <span class="hljs-keyword">var</span> session = slot.open();
+    session.login(<span class="hljs-string">&quot;12345&quot;</span>);
+
+    <span class="hljs-comment">// generate AES key</span>
+    <span class="hljs-keyword">var</span> key = session.generateKey(graphene.KeyGenMechanism.AES, {
+        <span class="hljs-string">&quot;class&quot;</span>: graphene.ObjectClass.SECRET_KEY,
+        <span class="hljs-string">&quot;token&quot;</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-string">&quot;valueLen&quot;</span>: <span class="hljs-number">256</span> / <span class="hljs-number">8</span>,
+        <span class="hljs-string">&quot;keyType&quot;</span>: graphene.KeyType.AES,
+        <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;My AES secret key&quot;</span>,
+        <span class="hljs-string">&quot;encrypt&quot;</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">&quot;decrypt&quot;</span>: <span class="hljs-literal">true</span>
+    });
+
+    <span class="hljs-comment">// enc algorithm</span>
+    <span class="hljs-keyword">var</span> alg = {
+        <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;AES_CBC_PAD&quot;</span>,
+        <span class="hljs-attr">params</span>: Buffer.from([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>]) <span class="hljs-comment">// IV</span>
+    };
+    <span class="hljs-keyword">var</span> MESSAGE = <span class="hljs-string">&quot;Encrypted message&quot;</span>;
+
+    <span class="hljs-comment">// encrypting</span>
+    <span class="hljs-keyword">var</span> cipher = session.createCipher(alg, key);
+    <span class="hljs-keyword">var</span> enc = cipher.update(MESSAGE);
+    enc = Buffer.concat([enc, cipher.final()]);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Enc:&quot;</span>, enc.toString(<span class="hljs-string">&quot;hex&quot;</span>));           <span class="hljs-comment">// Enc: eb21e15b896f728a4...</span>
+
+    <span class="hljs-comment">// decrypting</span>
+    <span class="hljs-keyword">var</span> decipher = session.createDecipher(alg, key);
+    <span class="hljs-keyword">var</span> dec = decipher.update(enc);
+    <span class="hljs-keyword">var</span> msg = Buffer.concat([dec, decipher.final()]).toString();
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Message:&quot;</span>, msg.toString());            <span class="hljs-comment">// Message: Encrypted message</span>
+
+    session.logout();
+    session.close();
+}
+<span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">&quot;Slot is not initialized&quot;</span>);
+}
+
+mod.finalize();</code></pre>
+				<a href="#derive-key" id="derive-key" style="color: inherit; text-decoration: none;">
+					<h3>Derive key</h3>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+<span class="hljs-keyword">var</span> Module = graphene.Module;
+
+<span class="hljs-keyword">var</span> lib = <span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>;
+
+<span class="hljs-keyword">var</span> mod = Module.load(lib, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+mod.initialize();
+
+<span class="hljs-keyword">var</span> slot = mod.getSlots(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">if</span> (slot.flags &amp; graphene.SlotFlag.TOKEN_PRESENT) {
+    <span class="hljs-keyword">var</span> session = slot.open();
+    session.login(<span class="hljs-string">&quot;12345&quot;</span>);
+
+    <span class="hljs-comment">// generate EC key</span>
+    <span class="hljs-keyword">var</span> keys = session.generateKeyPair(graphene.KeyGenMechanism.ECDSA, {
+        <span class="hljs-attr">keyType</span>: graphene.KeyType.ECDSA,
+        <span class="hljs-attr">token</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">derive</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">paramsECDSA</span>: graphene.NamedCurve.getByName(<span class="hljs-string">&quot;secp192r1&quot;</span>).value
+    }, {
+        <span class="hljs-attr">keyType</span>: graphene.KeyType.ECDSA,
+        <span class="hljs-attr">token</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">derive</span>: <span class="hljs-literal">true</span>
+    });
+
+    <span class="hljs-comment">// derive algorithm</span>
+    <span class="hljs-keyword">var</span> alg = {
+        <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;ECDH1_DERIVE&quot;</span>,
+        <span class="hljs-attr">params</span>: <span class="hljs-keyword">new</span> graphene.EcdhParams(
+            graphene.EcKdf.SHA1,
+            <span class="hljs-literal">null</span>,
+            keys.publicKey.getAttribute({<span class="hljs-attr">pointEC</span>: <span class="hljs-literal">null</span>}).pointEC)
+        };
+
+    <span class="hljs-comment">// Template for derived key</span>
+    <span class="hljs-keyword">var</span> template = {
+        <span class="hljs-string">&quot;class&quot;</span>: graphene.ObjectClass.SECRET_KEY,
+        <span class="hljs-string">&quot;token&quot;</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-string">&quot;keyType&quot;</span>: graphene.KeyType.AES,
+        <span class="hljs-string">&quot;valueLen&quot;</span>: <span class="hljs-number">256</span> / <span class="hljs-number">8</span>,
+        <span class="hljs-string">&quot;encrypt&quot;</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">&quot;decrypt&quot;</span>: <span class="hljs-literal">true</span>
+    }
+
+    <span class="hljs-comment">// Key derivation</span>
+    <span class="hljs-keyword">var</span> dKey = session.deriveKey(alg, keys.privateKey, template)
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Derived key handle:&quot;</span>, dKey.handle);
+
+    session.logout();
+    session.close();
+}
+<span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">&quot;Slot is not initialized&quot;</span>);
+}
+
+mod.finalize();</code></pre>
+				<a href="#change-user39s-pin" id="change-user39s-pin" style="color: inherit; text-decoration: none;">
+					<h3>Change User&#39;s PIN</h3>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+<span class="hljs-keyword">var</span> Module = graphene.Module;
+
+<span class="hljs-keyword">var</span> lib = <span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>;
+
+<span class="hljs-keyword">var</span> mod = Module.load(lib, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+mod.initialize();
+
+<span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">var</span> slot = mod.getSlots(<span class="hljs-number">0</span>);
+    <span class="hljs-keyword">if</span> (slot.flags &amp; graphene.SlotFlag.TOKEN_PRESENT) {
+        <span class="hljs-keyword">var</span> session = slot.open();
+        session.login(<span class="hljs-string">&quot;12345&quot;</span>, graphene.UserType.USER);
+        session.setPin(<span class="hljs-string">&quot;12345&quot;</span>, <span class="hljs-string">&quot;new pin&quot;</span>);
+        session.logout();
+        session.close();
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;User&#x27;s PIN was changed successfully&quot;</span>);
+    }
+}
+<span class="hljs-keyword">catch</span>(e) {
+    <span class="hljs-built_in">console</span>.error(e);
+}
+mod.finalize();</code></pre>
+				<a href="#adding-x509-certificate" id="adding-x509-certificate" style="color: inherit; text-decoration: none;">
+					<h3>Adding x509 certificate</h3>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> graphene = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;graphene-pk11&quot;</span>);
+
+<span class="hljs-keyword">const</span> mod = graphene.Module.load(<span class="hljs-string">&quot;/usr/local/lib/softhsm/libsofthsm2.so&quot;</span>, <span class="hljs-string">&quot;SoftHSM&quot;</span>);
+
+mod.initialize();
+
+<span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> slot = mod.getSlots(<span class="hljs-number">0</span>);
+    <span class="hljs-keyword">const</span> session = slot.open(<span class="hljs-number">2</span> | <span class="hljs-number">4</span>)
+    session.login(<span class="hljs-string">&quot;password&quot;</span>);
+
+    <span class="hljs-keyword">const</span> template = {
+        <span class="hljs-attr">class</span>: graphene.ObjectClass.CERTIFICATE,
+        <span class="hljs-attr">certType</span>: graphene.CertificateType.X_509,
+        <span class="hljs-attr">private</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">token</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">id</span>: Buffer.from([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]), <span class="hljs-comment">// Should be the same as Private/Public key has</span>
+        <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;My certificate&quot;</span>,
+        <span class="hljs-attr">subject</span>: Buffer.from(<span class="hljs-string">&quot;3034310B300906035504...&quot;</span>, <span class="hljs-string">&quot;hex&quot;</span>),
+        <span class="hljs-attr">value</span>: Buffer.from(<span class="hljs-string">&quot;308203A830820290A003...&quot;</span>, <span class="hljs-string">&quot;hex&quot;</span>),
+    };
+
+    <span class="hljs-keyword">const</span> objCert = session.create(template).toType();
+
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Certificate: created\n&quot;</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Certificate info:\n===========================&quot;</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Handle:&quot;</span>, objCert.handle.toString(<span class="hljs-string">&quot;hex&quot;</span>));
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;ID:&quot;</span>, objCert.id.toString(<span class="hljs-string">&quot;hex&quot;</span>));
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Label:&quot;</span>, objCert.label);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;category:&quot;</span>, graphene.CertificateCategory[objCert.category]);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Subject:&quot;</span>, objCert.subject.toString(<span class="hljs-string">&quot;hex&quot;</span>));
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Value:&quot;</span>, objCert.value.toString(<span class="hljs-string">&quot;hex&quot;</span>));
+} <span class="hljs-keyword">catch</span> (err) {
+    <span class="hljs-built_in">console</span>.error(err);
+}
+
+mod.finalize();</code></pre>
+				<a href="#initializing-nss-crypto-library" id="initializing-nss-crypto-library" style="color: inherit; text-decoration: none;">
+					<h3>Initializing NSS crypto library</h3>
+				</a>
+				<p>Use <code>options</code> parameter for <code>Module::initialize</code> method.</p>
+				<p><strong>Type</strong></p>
+				<pre><code class="language-ts"><span class="hljs-keyword">interface</span> InitializationOptions {
+    <span class="hljs-comment">/**
+     * NSS library parameters
+     */</span>
+    libraryParameters?: <span class="hljs-built_in">string</span>;
+    <span class="hljs-comment">/**
+     * bit flags specifying options for `C_Initialize`
+     * - CKF_LIBRARY_CANT_CREATE_OS_THREADS. True if application threads which are executing calls to the library
+     *   may not use native operating system calls to spawn new threads; false if they may
+     * - CKF_OS_LOCKING_OK. True if the library can use the native operation system threading model for locking;
+     *   false otherwise
+     */</span>
+    flags?: <span class="hljs-built_in">number</span>;
+}</code></pre>
+				<p><strong>Code</strong></p>
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> mod = Module.load(<span class="hljs-string">&quot;/usr/local/opt/nss/lib/libsoftokn3.dylib&quot;</span>, <span class="hljs-string">&quot;NSS&quot;</span>);
+
+mod.initialize({
+    <span class="hljs-attr">libraryParameters</span>: <span class="hljs-string">&quot;configdir=&#x27;&#x27; certPrefix=&#x27;&#x27; keyPrefix=&#x27;&#x27; secmod=&#x27;&#x27; flags=readOnly,noCertDB,noModDB,forceOpen,optimizeSpace&quot;</span>,
+});
+
+<span class="hljs-comment">// Your code here</span>
+
+mod.finalize();</code></pre>
+				<a href="#developing" id="developing" style="color: inherit; text-decoration: none;">
+					<h2>Developing</h2>
+				</a>
+				<p>Use npm command to publish graphene-pk11 module</p>
+				<pre><code>&gt; npm <span class="hljs-keyword">run</span><span class="bash"> pub</span></code></pre>
+				<a href="#suitability" id="suitability" style="color: inherit; text-decoration: none;">
+					<h2>Suitability</h2>
+				</a>
+				<p>At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.</p>
+				<a href="#bug-reporting" id="bug-reporting" style="color: inherit; text-decoration: none;">
+					<h2>Bug Reporting</h2>
+				</a>
+				<p>Please report bugs either as pull requests or as issues in the issue tracker. Graphene has a full disclosure vulnerability policy. Please do NOT attempt to report any security vulnerability in this code privately to anybody.</p>
+				<a href="#todo" id="todo" style="color: inherit; text-decoration: none;">
+					<h2>TODO</h2>
+				</a>
+				<ul>
+					<li>Add tests to the library</li>
+					<li>Add additional capabilities to CLI (device initialization, file signing, file encryption, etc)</li>
+				</ul>
+				<a href="#related" id="related" style="color: inherit; text-decoration: none;">
+					<h2>Related</h2>
+				</a>
+				<ul>
+					<li><a href="http://docs.oasis-open.org/pkcs11/pkcs11-curr/v2.40/pkcs11-curr-v2.40.html">PKCS #11 2.40 Specification</a></li>
+					<li><a href="http://www.cryptsoft.com/pkcs11doc/">Many PKCS #11 Specifications</a></li>
+					<li><a href="https://github.com/dotse/p5-crypt-pkcs11">PERL PKCS #11 binding</a></li>
+					<li><a href="https://github.com/jariq/Pkcs11Interop">.NET PKCS #11 binding</a></li>
+					<li><a href="https://github.com/larskanis/pkcs11">Ruby PKCS #11 binding</a></li>
+					<li><a href="https://github.com/ANSSI-FR/caml-crush">OCaml PKCS #11 binding</a></li>
+					<li><a href="https://github.com/ANSSI-FR/opkcs11-tool">OCaml PKCS #11 CLI</a></li>
+					<li><a href="https://github.com/miekg/pkcs11">Go PKCS #11 binding</a> </li>
+					<li><a href="http://www.pkcs11admin.net">PKCS #11 Admin</a></li>
+					<li><a href="https://github.com/node-ffi/node-ffi">Node.js Foreign Function Interface</a></li>
+					<li><a href="https://github.com/romanovskiy-k/pkcs11/blob/master/rtpkcs11t.h">GOST PKCS#11 constants</a></li>
+					<li><a href="https://github.com/jariq/pkcs11-logger">PKCS#11 logging proxy module</a></li>
+					<li><a href="https://github.com/iksaif/pkcs11-proxy">PKCS#11 Proxy</a></li>
+					<li><a href="https://github.com/google/pkcs11test">PKCS#11 Tests</a></li>
+					<li><a href="http://sourceforge.net/projects/opencryptoki/">OpenCryptoKi</a></li>
+					<li><a href="https://www.opendnssec.org/softhsm/">SoftHSM</a></li>
+					<li><a href="https://github.com/disig/SoftHSM2-for-Windows/">SoftHSM2 for Windows</a></li>
+					<li><a href="https://github.com/santigimeno/node-pcsclite">node-pcsc</a></li>
+					<li><a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a></li>
+					<li><a href="http://www.keylength.com/en/compare/">Key Length Recommendations</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="enums/certificatecategory.html" class="tsd-kind-icon">Certificate<wbr>Category</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/certificatetype.html" class="tsd-kind-icon">Certificate<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/eckdf.html" class="tsd-kind-icon">Ec<wbr>Kdf</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/javamidp.html" class="tsd-kind-icon">JavaMIDP</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/keygenmechanism.html" class="tsd-kind-icon">Key<wbr>Gen<wbr>Mechanism</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/keytype.html" class="tsd-kind-icon">Key<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/mechparams.html" class="tsd-kind-icon">Mech<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/mechanismenum.html" class="tsd-kind-icon">Mechanism<wbr>Enum</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/mechanismflag.html" class="tsd-kind-icon">Mechanism<wbr>Flag</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/objectclass.html" class="tsd-kind-icon">Object<wbr>Class</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/rsamgf.html" class="tsd-kind-icon">Rsa<wbr>Mgf</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/sessionflag.html" class="tsd-kind-icon">Session<wbr>Flag</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/slotflag.html" class="tsd-kind-icon">Slot<wbr>Flag</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/tokenflag.html" class="tsd-kind-icon">Token<wbr>Flag</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/usertype.html" class="tsd-kind-icon">User<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/aescbcencryptdataparams.html" class="tsd-kind-icon">Aes<wbr>Cbc<wbr>Encrypt<wbr>Data<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/aescbcparams.html" class="tsd-kind-icon">Aes<wbr>Cbc<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/aesccmparams.html" class="tsd-kind-icon">Aes<wbr>Ccm<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/aesgcm240params.html" class="tsd-kind-icon">Aes<wbr>Gcm240<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/aesgcmparams.html" class="tsd-kind-icon">Aes<wbr>Gcm<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/attributecertificate.html" class="tsd-kind-icon">Attribute<wbr>Certificate</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseobject.html" class="tsd-kind-icon">Base<wbr>Object</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/certificate.html" class="tsd-kind-icon">Certificate</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/cipher.html" class="tsd-kind-icon">Cipher</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/collection.html" class="tsd-kind-icon">Collection</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/data.html" class="tsd-kind-icon">Data</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/decipher.html" class="tsd-kind-icon">Decipher</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/digest.html" class="tsd-kind-icon">Digest</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/domainparameters.html" class="tsd-kind-icon">Domain<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/ecdhparams.html" class="tsd-kind-icon">Ecdh<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/handleobject.html" class="tsd-kind-icon">Handle<wbr>Object</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/key.html" class="tsd-kind-icon">Key</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/mechanism.html" class="tsd-kind-icon">Mechanism</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/mechanismcollection.html" class="tsd-kind-icon">Mechanism<wbr>Collection</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/module.html" class="tsd-kind-icon">Module</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/namedcurve.html" class="tsd-kind-icon">Named<wbr>Curve</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/privatekey.html" class="tsd-kind-icon">Private<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/publickey.html" class="tsd-kind-icon">Public<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/rsaoaepparams.html" class="tsd-kind-icon">Rsa<wbr>Oaep<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/rsapssparams.html" class="tsd-kind-icon">Rsa<wbr>Pss<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/secretkey.html" class="tsd-kind-icon">Secret<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/session.html" class="tsd-kind-icon">Session</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/sessionobject.html" class="tsd-kind-icon">Session<wbr>Object</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/sessionobjectcollection.html" class="tsd-kind-icon">Session<wbr>Object<wbr>Collection</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/sessionobjectfactory.html" class="tsd-kind-icon">Session<wbr>Object<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/sign.html" class="tsd-kind-icon">Sign</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/slot.html" class="tsd-kind-icon">Slot</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/slotcollection.html" class="tsd-kind-icon">Slot<wbr>Collection</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/storage.html" class="tsd-kind-icon">Storage</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/template.html" class="tsd-kind-icon">Template</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/token.html" class="tsd-kind-icon">Token</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/verify.html" class="tsd-kind-icon">Verify</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/wtlscertificate.html" class="tsd-kind-icon">Wtls<wbr>Certificate</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/x509certificate.html" class="tsd-kind-icon">X509<wbr>Certificate</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ialgorithm.html" class="tsd-kind-icon">IAlgorithm</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/iattributeitem.html" class="tsd-kind-icon">IAttribute<wbr>Item</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/iattributeitems.html" class="tsd-kind-icon">IAttribute<wbr>Items</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ikeypair.html" class="tsd-kind-icon">IKey<wbr>Pair</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/inamedcurve.html" class="tsd-kind-icon">INamed<wbr>Curve</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/iparams.html" class="tsd-kind-icon">IParams</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/itemplate.html" class="tsd-kind-icon">ITemplate</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/sessionobjectfactoryitem.html" class="tsd-kind-icon">Session<wbr>Object<wbr>Factory<wbr>Item</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#attributeitemtype" class="tsd-kind-icon">Attribute<wbr>Item<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#callback" class="tsd-kind-icon">Callback</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#cryptodata" class="tsd-kind-icon">Crypto<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#handle" class="tsd-kind-icon">Handle</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#handleobjectconstructor" class="tsd-kind-icon">Handle<wbr>Object<wbr>Constructor</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#mechanismtype" class="tsd-kind-icon">Mechanism<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#sessionfindcallback" class="tsd-kind-icon">Session<wbr>Find<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#sessionobjectfactoryitemcallback" class="tsd-kind-icon">Session<wbr>Object<wbr>Factory<wbr>Item<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#default_block_size" class="tsd-kind-icon">DEFAULT_<wbr>BLOCK_<wbr>SIZE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#type_bool" class="tsd-kind-icon">TYPE_<wbr>BOOL</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#type_buffer" class="tsd-kind-icon">TYPE_<wbr>BUFFER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#type_date" class="tsd-kind-icon">TYPE_<wbr>DATE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#type_number" class="tsd-kind-icon">TYPE_<wbr>NUMBER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#type_string" class="tsd-kind-icon">TYPE_<wbr>STRING</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#namedcurves" class="tsd-kind-icon">named<wbr>Curves</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#b2v" class="tsd-kind-icon">b2v</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#datefromstring" class="tsd-kind-icon">date<wbr>From<wbr>String</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#enumerable" class="tsd-kind-icon">enumerable</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getattribute" class="tsd-kind-icon">get<wbr>Attribute</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#i2n" class="tsd-kind-icon">i2n</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isarray" class="tsd-kind-icon">is<wbr>Array</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isboolean" class="tsd-kind-icon">is<wbr>Boolean</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isempty" class="tsd-kind-icon">is<wbr>Empty</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isflag" class="tsd-kind-icon">is<wbr>Flag</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isfunction" class="tsd-kind-icon">is<wbr>Function</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isnull" class="tsd-kind-icon">is<wbr>Null</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isnumber" class="tsd-kind-icon">is<wbr>Number</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isobject" class="tsd-kind-icon">is<wbr>Object</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isstring" class="tsd-kind-icon">is<wbr>String</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isundefined" class="tsd-kind-icon">is<wbr>Undefined</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#n2i" class="tsd-kind-icon">n2i</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#registerattribute" class="tsd-kind-icon">register<wbr>Attribute</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#removepadding" class="tsd-kind-icon">remove<wbr>Padding</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#attribute" class="tsd-kind-icon">attribute</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
