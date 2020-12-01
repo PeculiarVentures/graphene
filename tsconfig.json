@@ -4,7 +4,6 @@
     "module": "commonjs",
     "outDir": "./build",
     "moduleResolution": "node",
-    "removeComments": true,
     "importHelpers": true,
     "strict": true,
     "strictPropertyInitialization": false,
