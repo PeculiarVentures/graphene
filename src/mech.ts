@@ -14,7 +14,7 @@ export interface IAlgorithm {
     /**
      * The algorithm name
      */
-    name: keyof typeof MechanismEnum | string;
+    name: keyof typeof MechanismEnum | string | number;
     /**
      * The algorithm parameters
      */
@@ -105,13 +105,20 @@ export class Mechanism extends core.HandleObject {
         if (core.isString(algorithm)) {
             alg = { name: algorithm as string, params: null };
         } else if (core.isNumber(algorithm)) {
-            alg = { name: MechanismEnum[algorithm as number], params: null };
+            alg = { name: algorithm, params: null };
         } else {
             alg = algorithm as IAlgorithm;
         }
 
-        const hAlg = (MechanismEnum as any)[alg.name.toUpperCase()];
-        if (core.isEmpty(hAlg)) { throw new TypeError(`Unknown mechanism name '${alg.name}'`); }
+        let hAlg: number;
+        if (core.isNumber(alg.name)) {
+            hAlg = alg.name;
+        } else {
+            hAlg = (MechanismEnum as any)[alg.name.toUpperCase()];
+            if (core.isEmpty(hAlg)) {
+                throw new TypeError(`Unknown mechanism name '${alg.name}'`);
+            }
+        }
 
         let params: any = null;
         if (alg.params) {
