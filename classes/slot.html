@@ -7,6 +7,7 @@
 	<meta name="description" content="Documentation for graphene-pk11">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -40,8 +41,6 @@
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
 							<input type="checkbox" id="tsd-filter-externals" checked />
 							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -53,7 +52,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
+					<a href="../modules.html">graphene-pk11</a>
 				</li>
 				<li>
 					<a href="slot.html">Slot</a>
@@ -77,7 +76,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="handleobject.html" class="tsd-signature-type">HandleObject</a>
+						<a href="handleobject.html" class="tsd-signature-type" data-tsd-kind="Class">HandleObject</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">Slot</span>
@@ -129,14 +128,14 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Slot<span class="tsd-signature-symbol">(</span>handle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">core.Handle</span>, module<span class="tsd-signature-symbol">: </span><a href="module.html" class="tsd-signature-type">Module</a>, lib<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PKCS11</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="slot.html" class="tsd-signature-type">Slot</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Slot<span class="tsd-signature-symbol">(</span>handle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, module<span class="tsd-signature-symbol">: </span><a href="module.html" class="tsd-signature-type" data-tsd-kind="Class">Module</a>, lib<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PKCS11</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="slot.html" class="tsd-signature-type" data-tsd-kind="Class">Slot</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L57">slot.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L57">slot.ts:57</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -147,31 +146,25 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>handle: <span class="tsd-signature-type">core.Handle</span></h5>
+									<h5>handle: <span class="tsd-signature-type">Buffer</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>ID of token&#39;s slot</p>
-										</div>
+										<p>ID of token&#39;s slot</p>
 									</div>
 								</li>
 								<li>
-									<h5>module: <a href="module.html" class="tsd-signature-type">Module</a></h5>
+									<h5>module: <a href="module.html" class="tsd-signature-type" data-tsd-kind="Class">Module</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>PKCS#11 module</p>
-										</div>
+										<p>PKCS#11 module</p>
 									</div>
 								</li>
 								<li>
 									<h5>lib: <span class="tsd-signature-type">PKCS11</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>PKCS#11 library</p>
-										</div>
+										<p>PKCS#11 library</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="slot.html" class="tsd-signature-type">Slot</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="slot.html" class="tsd-signature-type" data-tsd-kind="Class">Slot</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -184,7 +177,7 @@
 					<div class="tsd-signature tsd-kind-icon">firmware<wbr>Version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Version</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L52">slot.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L52">slot.ts:52</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -196,10 +189,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="flags" class="tsd-anchor"></a>
 					<h3>flags</h3>
-					<div class="tsd-signature tsd-kind-icon">flags<span class="tsd-signature-symbol">:</span> <a href="../enums/slotflag.html" class="tsd-signature-type">SlotFlag</a></div>
+					<div class="tsd-signature tsd-kind-icon">flags<span class="tsd-signature-symbol">:</span> <a href="../enums/slotflag.html" class="tsd-signature-type" data-tsd-kind="Enumeration">SlotFlag</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L42">slot.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L42">slot.ts:42</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -211,11 +204,11 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="handle" class="tsd-anchor"></a>
 					<h3>handle</h3>
-					<div class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">:</span> <a href="../globals.html#handle" class="tsd-signature-type">Handle</a></div>
+					<div class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#handle">handle</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/core/object.ts#L37">core/object.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/core/object.ts#L37">core/object.ts:37</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -230,7 +223,7 @@
 					<div class="tsd-signature tsd-kind-icon">hardware<wbr>Version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Version</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L47">slot.ts:47</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L47">slot.ts:47</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -244,9 +237,9 @@
 					<h3>lib</h3>
 					<div class="tsd-signature tsd-kind-icon">lib<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PKCS11</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="baseobject.html">BaseObject</a>.<a href="baseobject.html#lib">lib</a></p>
+						<p>Inherited from <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#lib">lib</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/core/object.ts#L19">core/object.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/core/object.ts#L19">core/object.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -261,7 +254,7 @@
 					<div class="tsd-signature tsd-kind-icon">manufacturerID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L37">slot.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L37">slot.ts:37</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -273,10 +266,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="module" class="tsd-anchor"></a>
 					<h3>module</h3>
-					<div class="tsd-signature tsd-kind-icon">module<span class="tsd-signature-symbol">:</span> <a href="module.html" class="tsd-signature-type">Module</a></div>
+					<div class="tsd-signature tsd-kind-icon">module<span class="tsd-signature-symbol">:</span> <a href="module.html" class="tsd-signature-type" data-tsd-kind="Class">Module</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L57">slot.ts:57</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L57">slot.ts:57</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -291,7 +284,7 @@
 					<div class="tsd-signature tsd-kind-icon">slot<wbr>Description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L32">slot.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L32">slot.ts:32</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -313,7 +306,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L114">slot.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L114">slot.ts:114</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -336,7 +329,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#getinfo">getInfo</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L118">slot.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L118">slot.ts:118</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -347,13 +340,13 @@
 					<a name="getmechanisms" class="tsd-anchor"></a>
 					<h3>get<wbr>Mechanisms</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Mechanisms<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="mechanismcollection.html" class="tsd-signature-type">MechanismCollection</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Mechanisms<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="mechanismcollection.html" class="tsd-signature-type" data-tsd-kind="Class">MechanismCollection</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L84">slot.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L84">slot.ts:84</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -361,7 +354,7 @@
 									<p>Obtains a list of mechanism types supported by a token</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <a href="mechanismcollection.html" class="tsd-signature-type">MechanismCollection</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="mechanismcollection.html" class="tsd-signature-type" data-tsd-kind="Class">MechanismCollection</a></h4>
 							<p>The list of  <a href="mechanism.html">Mechanism</a></p>
 						</li>
 					</ul>
@@ -370,13 +363,13 @@
 					<a name="gettoken" class="tsd-anchor"></a>
 					<h3>get<wbr>Token</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Token<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="token.html" class="tsd-signature-type">Token</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Token<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="token.html" class="tsd-signature-type" data-tsd-kind="Class">Token</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L76">slot.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L76">slot.ts:76</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -384,7 +377,7 @@
 									<p>Returns information about token</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <a href="token.html" class="tsd-signature-type">Token</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="token.html" class="tsd-signature-type" data-tsd-kind="Class">Token</a></h4>
 							<p>PKCS#11 token structure</p>
 						</li>
 					</ul>
@@ -399,7 +392,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L95">slot.ts:95</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L95">slot.ts:95</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -416,7 +409,7 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> label: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></h5>
+									<h5>label: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>token label</p>
 									</div>
@@ -431,13 +424,13 @@
 					<a name="open" class="tsd-anchor"></a>
 					<h3>open</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">open<span class="tsd-signature-symbol">(</span>flags<span class="tsd-signature-symbol">?: </span><a href="../enums/sessionflag.html" class="tsd-signature-type">SessionFlag</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="session.html" class="tsd-signature-type">Session</a></li>
+						<li class="tsd-signature tsd-kind-icon">open<span class="tsd-signature-symbol">(</span>flags<span class="tsd-signature-symbol">?: </span><a href="../enums/sessionflag.html" class="tsd-signature-type" data-tsd-kind="Enumeration">SessionFlag</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="session.html" class="tsd-signature-type" data-tsd-kind="Class">Session</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/slot.ts#L106">slot.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/slot.ts#L106">slot.ts:106</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -448,13 +441,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> flags: <a href="../enums/sessionflag.html" class="tsd-signature-type">SessionFlag</a><span class="tsd-signature-symbol"> = SessionFlag.SERIAL_SESSION</span></h5>
+									<h5>flags: <a href="../enums/sessionflag.html" class="tsd-signature-type" data-tsd-kind="Enumeration">SessionFlag</a><span class="tsd-signature-symbol"> = ...</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Indicates the type of session</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="session.html" class="tsd-signature-type">Session</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="session.html" class="tsd-signature-type" data-tsd-kind="Class">Session</a></h4>
 							<p>Opened session</p>
 						</li>
 					</ul>
@@ -464,8 +457,8 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>

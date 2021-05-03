@@ -7,6 +7,7 @@
 	<meta name="description" content="Documentation for graphene-pk11">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -40,8 +41,6 @@
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
 							<input type="checkbox" id="tsd-filter-externals" checked />
 							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -53,7 +52,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
+					<a href="../modules.html">graphene-pk11</a>
 				</li>
 				<li>
 					<a href="data.html">Data</a>
@@ -78,7 +77,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="storage.html" class="tsd-signature-type">Storage</a>
+						<a href="storage.html" class="tsd-signature-type" data-tsd-kind="Class">Storage</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">Data</span>
@@ -94,7 +93,7 @@
 						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="data.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="data.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -113,7 +112,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="data.html#value" class="tsd-kind-icon">value</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="data.html#size" class="tsd-kind-icon">size</a></li>
@@ -126,7 +125,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="data.html#destroy" class="tsd-kind-icon">destroy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="data.html#get" class="tsd-kind-icon">get</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="data.html#getattribute" class="tsd-kind-icon">get<wbr>Attribute</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited tsd-is-protected"><a href="data.html#getinfo" class="tsd-kind-icon">get<wbr>Info</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="data.html#getinfo" class="tsd-kind-icon">get<wbr>Info</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="data.html#set" class="tsd-kind-icon">set</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="data.html#setattribute" class="tsd-kind-icon">set<wbr>Attribute</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="data.html#totype" class="tsd-kind-icon">to<wbr>Type</a></li>
@@ -137,20 +136,19 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Data<span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><a href="sessionobject.html" class="tsd-signature-type">SessionObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="data.html" class="tsd-signature-type">Data</a></li>
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Data<span class="tsd-signature-symbol">(</span>handle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">core.Handle</span>, session<span class="tsd-signature-symbol">: </span><a href="session.html" class="tsd-signature-type">Session</a>, lib<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PKCS11</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="data.html" class="tsd-signature-type">Data</a></li>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Data<span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><a href="sessionobject.html" class="tsd-signature-type" data-tsd-kind="Class">SessionObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="data.html" class="tsd-signature-type" data-tsd-kind="Class">Data</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Data<span class="tsd-signature-symbol">(</span>handle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, session<span class="tsd-signature-symbol">: </span><a href="session.html" class="tsd-signature-type" data-tsd-kind="Class">Session</a>, lib<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PKCS11</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="data.html" class="tsd-signature-type" data-tsd-kind="Class">Data</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#constructor">constructor</a></p>
-								<p>Overrides <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#constructor">constructor</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L106">object.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L106">object.ts:106</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -161,17 +159,16 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>object: <a href="sessionobject.html" class="tsd-signature-type">SessionObject</a></h5>
+									<h5>object: <a href="sessionobject.html" class="tsd-signature-type" data-tsd-kind="Class">SessionObject</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="data.html" class="tsd-signature-type">Data</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="data.html" class="tsd-signature-type" data-tsd-kind="Class">Data</a></h4>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#constructor">constructor</a></p>
-								<p>Overrides <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#constructor">constructor</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L111">object.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L111">object.ts:111</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -182,13 +179,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>handle: <span class="tsd-signature-type">core.Handle</span></h5>
+									<h5>handle: <span class="tsd-signature-type">Buffer</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>ID of session object</p>
 									</div>
 								</li>
 								<li>
-									<h5>session: <a href="session.html" class="tsd-signature-type">Session</a></h5>
+									<h5>session: <a href="session.html" class="tsd-signature-type" data-tsd-kind="Class">Session</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>PKCS#11 session</p>
 									</div>
@@ -200,7 +197,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="data.html" class="tsd-signature-type">Data</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="data.html" class="tsd-signature-type" data-tsd-kind="Class">Data</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -213,7 +210,7 @@
 					<div class="tsd-signature tsd-kind-icon">application<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/objects/data.ts#L13">objects/data.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/objects/data.ts#L13">objects/data.ts:13</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -225,11 +222,11 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="class" class="tsd-anchor"></a>
 					<h3>class</h3>
-					<div class="tsd-signature tsd-kind-icon">class<span class="tsd-signature-symbol">:</span> <a href="../enums/objectclass.html" class="tsd-signature-type">ObjectClass</a></div>
+					<div class="tsd-signature tsd-kind-icon">class<span class="tsd-signature-symbol">:</span> <a href="../enums/objectclass.html" class="tsd-signature-type" data-tsd-kind="Enumeration">ObjectClass</a></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#class">class</a></p>
+						<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#class">class</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L250">object.ts:250</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L250">object.ts:250</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -241,11 +238,11 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="handle" class="tsd-anchor"></a>
 					<h3>handle</h3>
-					<div class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">:</span> <a href="../globals.html#handle" class="tsd-signature-type">Handle</a></div>
+					<div class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#handle">handle</a></p>
+						<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#handle">handle</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/core/object.ts#L37">core/object.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/core/object.ts#L37">core/object.ts:37</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -261,7 +258,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#label">label</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/objects/storage.ts#L32">objects/storage.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/objects/storage.ts#L32">objects/storage.ts:32</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -275,9 +272,9 @@
 					<h3>lib</h3>
 					<div class="tsd-signature tsd-kind-icon">lib<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PKCS11</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="baseobject.html">BaseObject</a>.<a href="baseobject.html#lib">lib</a></p>
+						<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#lib">lib</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/core/object.ts#L19">core/object.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/core/object.ts#L19">core/object.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -293,7 +290,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#modifiable">modifiable</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/objects/storage.ts#L26">objects/storage.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/objects/storage.ts#L26">objects/storage.ts:26</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -308,7 +305,7 @@
 					<div class="tsd-signature tsd-kind-icon">object<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/objects/data.ts#L19">objects/data.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/objects/data.ts#L19">objects/data.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -324,7 +321,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#private">private</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/objects/storage.ts#L20">objects/storage.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/objects/storage.ts#L20">objects/storage.ts:20</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -338,11 +335,11 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="session" class="tsd-anchor"></a>
 					<h3>session</h3>
-					<div class="tsd-signature tsd-kind-icon">session<span class="tsd-signature-symbol">:</span> <a href="session.html" class="tsd-signature-type">Session</a></div>
+					<div class="tsd-signature tsd-kind-icon">session<span class="tsd-signature-symbol">:</span> <a href="session.html" class="tsd-signature-type" data-tsd-kind="Class">Session</a></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#session">session</a></p>
+						<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#session">session</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L99">object.ts:99</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L99">object.ts:99</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -358,7 +355,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#token">token</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/objects/storage.ts#L12">objects/storage.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/objects/storage.ts#L12">objects/storage.ts:12</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -375,7 +372,7 @@
 					<div class="tsd-signature tsd-kind-icon">value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/objects/data.ts#L25">objects/data.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/objects/data.ts#L25">objects/data.ts:25</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -385,7 +382,7 @@
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
 					<a name="size" class="tsd-anchor"></a>
@@ -396,9 +393,8 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#size">size</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L104">object.ts:104</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L104">object.ts:104</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -417,14 +413,14 @@
 					<a name="copy" class="tsd-anchor"></a>
 					<h3>copy</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">copy<span class="tsd-signature-symbol">(</span>template<span class="tsd-signature-symbol">: </span><a href="../interfaces/itemplate.html" class="tsd-signature-type">ITemplate</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="sessionobject.html" class="tsd-signature-type">SessionObject</a></li>
+						<li class="tsd-signature tsd-kind-icon">copy<span class="tsd-signature-symbol">(</span>template<span class="tsd-signature-symbol">: </span><a href="../interfaces/itemplate.html" class="tsd-signature-type" data-tsd-kind="Interface">ITemplate</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="sessionobject.html" class="tsd-signature-type" data-tsd-kind="Class">SessionObject</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#copy">copy</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#copy">copy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L139">object.ts:139</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L139">object.ts:139</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -435,13 +431,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>template: <a href="../interfaces/itemplate.html" class="tsd-signature-type">ITemplate</a></h5>
+									<h5>template: <a href="../interfaces/itemplate.html" class="tsd-signature-type" data-tsd-kind="Interface">ITemplate</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Template for the new object</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="sessionobject.html" class="tsd-signature-type">SessionObject</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="sessionobject.html" class="tsd-signature-type" data-tsd-kind="Class">SessionObject</a></h4>
 							<p>The new instance of <a href="sessionobject.html">SessionObject</a></p>
 						</li>
 					</ul>
@@ -455,9 +451,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#destroy">destroy</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#destroy">destroy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L150">object.ts:150</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L150">object.ts:150</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -479,9 +475,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#get">get</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#get">get</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L231">object.ts:231</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L231">object.ts:231</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -499,9 +495,9 @@
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#get">get</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#get">get</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L232">object.ts:232</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L232">object.ts:232</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -520,14 +516,14 @@
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Attribute<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span></li>
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Attribute<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Attribute<span class="tsd-signature-symbol">(</span>attrs<span class="tsd-signature-symbol">: </span><a href="../interfaces/itemplate.html" class="tsd-signature-type">ITemplate</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/itemplate.html" class="tsd-signature-type">ITemplate</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Attribute<span class="tsd-signature-symbol">(</span>attrs<span class="tsd-signature-symbol">: </span><a href="../interfaces/itemplate.html" class="tsd-signature-type" data-tsd-kind="Interface">ITemplate</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/itemplate.html" class="tsd-signature-type" data-tsd-kind="Interface">ITemplate</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#getattribute">getAttribute</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#getattribute">getAttribute</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L159">object.ts:159</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L159">object.ts:159</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -549,9 +545,9 @@
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#getattribute">getAttribute</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#getattribute">getAttribute</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L165">object.ts:165</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L165">object.ts:165</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -573,9 +569,9 @@
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#getattribute">getAttribute</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#getattribute">getAttribute</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L171">object.ts:171</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L171">object.ts:171</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -586,30 +582,29 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>attrs: <a href="../interfaces/itemplate.html" class="tsd-signature-type">ITemplate</a></h5>
+									<h5>attrs: <a href="../interfaces/itemplate.html" class="tsd-signature-type" data-tsd-kind="Interface">ITemplate</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The list of attributes for receiving</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/itemplate.html" class="tsd-signature-type">ITemplate</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/itemplate.html" class="tsd-signature-type" data-tsd-kind="Interface">ITemplate</a></h4>
 							<p>The list of attributes</p>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="getinfo" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> get<wbr>Info</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited tsd-is-protected">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Info<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#getinfo">getInfo</a></p>
-								<p>Overrides <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#getinfo">getInfo</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#getinfo">getInfo</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L256">object.ts:256</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L256">object.ts:256</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -620,15 +615,15 @@
 					<a name="set" class="tsd-anchor"></a>
 					<h3>set</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">set<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						<li class="tsd-signature tsd-kind-icon">set<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#set">set</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#set">set</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L240">object.ts:240</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L240">object.ts:240</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -642,16 +637,16 @@
 									<h5>type: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
-									<h5>value: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span></h5>
+									<h5>value: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#set">set</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#set">set</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L241">object.ts:241</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L241">object.ts:241</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -671,16 +666,16 @@
 					<a name="setattribute" class="tsd-anchor"></a>
 					<h3>set<wbr>Attribute</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Attribute<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Attribute<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						<li class="tsd-signature tsd-kind-icon">set<wbr>Attribute<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Attribute<span class="tsd-signature-symbol">(</span>attrs<span class="tsd-signature-symbol">: </span><a href="../interfaces/itemplate.html" class="tsd-signature-type">ITemplate</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Attribute<span class="tsd-signature-symbol">(</span>attrs<span class="tsd-signature-symbol">: </span><a href="../interfaces/itemplate.html" class="tsd-signature-type" data-tsd-kind="Interface">ITemplate</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#setattribute">setAttribute</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#setattribute">setAttribute</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L200">object.ts:200</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L200">object.ts:200</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -697,7 +692,7 @@
 									</div>
 								</li>
 								<li>
-									<h5>value: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span></h5>
+									<h5>value: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Attribute value</p>
 									</div>
@@ -707,9 +702,9 @@
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#setattribute">setAttribute</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#setattribute">setAttribute</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L206">object.ts:206</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L206">object.ts:206</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -736,9 +731,9 @@
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#setattribute">setAttribute</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#setattribute">setAttribute</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L211">object.ts:211</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L211">object.ts:211</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -749,7 +744,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>attrs: <a href="../interfaces/itemplate.html" class="tsd-signature-type">ITemplate</a></h5>
+									<h5>attrs: <a href="../interfaces/itemplate.html" class="tsd-signature-type" data-tsd-kind="Interface">ITemplate</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The list of attributes</p>
 									</div>
@@ -768,15 +763,15 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="sessionobject.html">SessionObject</a>.<a href="sessionobject.html#totype">toType</a></p>
+								<p>Inherited from <a href="storage.html">Storage</a>.<a href="storage.html#totype">toType</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/object.ts#L252">object.ts:252</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/object.ts#L252">object.ts:252</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
 								<li>
-									<h4>T<span class="tsd-signature-symbol">: </span><a href="sessionobject.html" class="tsd-signature-type">SessionObject</a></h4>
+									<h4>T<span class="tsd-signature-symbol">: </span><a href="sessionobject.html" class="tsd-signature-type" data-tsd-kind="Class">SessionObject</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
@@ -788,8 +783,8 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>
@@ -800,7 +795,7 @@
 					<li class="current tsd-kind-class">
 						<a href="data.html" class="tsd-kind-icon">Data</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
 								<a href="data.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
@@ -851,7 +846,7 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="data.html#getattribute" class="tsd-kind-icon">get<wbr>Attribute</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited tsd-is-protected">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="data.html#getinfo" class="tsd-kind-icon">get<wbr>Info</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">

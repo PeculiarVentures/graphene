@@ -7,6 +7,7 @@
 	<meta name="description" content="Documentation for graphene-pk11">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -40,8 +41,6 @@
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
 							<input type="checkbox" id="tsd-filter-externals" checked />
 							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -53,7 +52,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
+					<a href="../modules.html">graphene-pk11</a>
 				</li>
 				<li>
 					<a href="verify.html">Verify</a>
@@ -77,7 +76,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="baseobject.html" class="tsd-signature-type">BaseObject</a>
+						<a href="baseobject.html" class="tsd-signature-type" data-tsd-kind="Class">BaseObject</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">Verify</span>
@@ -121,14 +120,14 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Verify<span class="tsd-signature-symbol">(</span>session<span class="tsd-signature-symbol">: </span><a href="session.html" class="tsd-signature-type">Session</a>, alg<span class="tsd-signature-symbol">: </span><a href="../globals.html#mechanismtype" class="tsd-signature-type">MechanismType</a>, key<span class="tsd-signature-symbol">: </span><a href="key.html" class="tsd-signature-type">Key</a>, lib<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PKCS11</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="verify.html" class="tsd-signature-type">Verify</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Verify<span class="tsd-signature-symbol">(</span>session<span class="tsd-signature-symbol">: </span><a href="session.html" class="tsd-signature-type" data-tsd-kind="Class">Session</a>, alg<span class="tsd-signature-symbol">: </span><a href="../modules.html#mechanismtype" class="tsd-signature-type" data-tsd-kind="Type alias">MechanismType</a>, key<span class="tsd-signature-symbol">: </span><a href="key.html" class="tsd-signature-type" data-tsd-kind="Class">Key</a>, lib<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PKCS11</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="verify.html" class="tsd-signature-type" data-tsd-kind="Class">Verify</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="baseobject.html">BaseObject</a>.<a href="baseobject.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/crypto/verify.ts#L16">crypto/verify.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/crypto/verify.ts#L16">crypto/verify.ts:16</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -139,39 +138,31 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>session: <a href="session.html" class="tsd-signature-type">Session</a></h5>
+									<h5>session: <a href="session.html" class="tsd-signature-type" data-tsd-kind="Class">Session</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Session</p>
-										</div>
+										<p>Session</p>
 									</div>
 								</li>
 								<li>
-									<h5>alg: <a href="../globals.html#mechanismtype" class="tsd-signature-type">MechanismType</a></h5>
+									<h5>alg: <a href="../modules.html#mechanismtype" class="tsd-signature-type" data-tsd-kind="Type alias">MechanismType</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The verifying mechanism</p>
-										</div>
+										<p>The verifying mechanism</p>
 									</div>
 								</li>
 								<li>
-									<h5>key: <a href="key.html" class="tsd-signature-type">Key</a></h5>
+									<h5>key: <a href="key.html" class="tsd-signature-type" data-tsd-kind="Class">Key</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The verifying key</p>
-										</div>
+										<p>The verifying key</p>
 									</div>
 								</li>
 								<li>
 									<h5>lib: <span class="tsd-signature-type">PKCS11</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>PKCS#11 library</p>
-										</div>
+										<p>PKCS#11 library</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="verify.html" class="tsd-signature-type">Verify</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="verify.html" class="tsd-signature-type" data-tsd-kind="Class">Verify</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -185,7 +176,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="baseobject.html">BaseObject</a>.<a href="baseobject.html#lib">lib</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/core/object.ts#L19">core/object.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/core/object.ts#L19">core/object.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -197,10 +188,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="session" class="tsd-anchor"></a>
 					<h3>session</h3>
-					<div class="tsd-signature tsd-kind-icon">session<span class="tsd-signature-symbol">:</span> <a href="session.html" class="tsd-signature-type">Session</a></div>
+					<div class="tsd-signature tsd-kind-icon">session<span class="tsd-signature-symbol">:</span> <a href="session.html" class="tsd-signature-type" data-tsd-kind="Class">Session</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/crypto/verify.ts#L16">crypto/verify.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/crypto/verify.ts#L16">crypto/verify.ts:16</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -222,7 +213,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/crypto/verify.ts#L57">crypto/verify.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/crypto/verify.ts#L57">crypto/verify.ts:57</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -248,13 +239,13 @@
 					<a name="init" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> init</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">init<span class="tsd-signature-symbol">(</span>alg<span class="tsd-signature-symbol">: </span><a href="../globals.html#mechanismtype" class="tsd-signature-type">MechanismType</a>, key<span class="tsd-signature-symbol">: </span><a href="key.html" class="tsd-signature-type">Key</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">init<span class="tsd-signature-symbol">(</span>alg<span class="tsd-signature-symbol">: </span><a href="../modules.html#mechanismtype" class="tsd-signature-type" data-tsd-kind="Type alias">MechanismType</a>, key<span class="tsd-signature-symbol">: </span><a href="key.html" class="tsd-signature-type" data-tsd-kind="Class">Key</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/crypto/verify.ts#L111">crypto/verify.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/crypto/verify.ts#L111">crypto/verify.ts:111</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -265,13 +256,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>alg: <a href="../globals.html#mechanismtype" class="tsd-signature-type">MechanismType</a></h5>
+									<h5>alg: <a href="../modules.html#mechanismtype" class="tsd-signature-type" data-tsd-kind="Type alias">MechanismType</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The verifying mechanism</p>
 									</div>
 								</li>
 								<li>
-									<h5>key: <a href="key.html" class="tsd-signature-type">Key</a></h5>
+									<h5>key: <a href="key.html" class="tsd-signature-type" data-tsd-kind="Class">Key</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The verifying key</p>
 									</div>
@@ -285,14 +276,14 @@
 					<a name="once" class="tsd-anchor"></a>
 					<h3>once</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">once<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">types.CryptoData</span>, signature<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-						<li class="tsd-signature tsd-kind-icon">once<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">types.CryptoData</span>, signature<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, cb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, valid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">once<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">CryptoData</span>, signature<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">once<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">CryptoData</span>, signature<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, cb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Error</span>, valid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/crypto/verify.ts#L75">crypto/verify.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/crypto/verify.ts#L75">crypto/verify.ts:75</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -303,7 +294,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>data: <span class="tsd-signature-type">types.CryptoData</span></h5>
+									<h5>data: <span class="tsd-signature-type">CryptoData</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The signed data</p>
 									</div>
@@ -321,7 +312,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/crypto/verify.ts#L82">crypto/verify.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/crypto/verify.ts#L82">crypto/verify.ts:82</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -334,7 +325,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>data: <span class="tsd-signature-type">types.CryptoData</span></h5>
+									<h5>data: <span class="tsd-signature-type">CryptoData</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The signed data</p>
 									</div>
@@ -346,21 +337,21 @@
 									</div>
 								</li>
 								<li>
-									<h5>cb: <span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, valid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+									<h5>cb: <span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Error</span>, valid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Async callback function with boolean result of checking. <code>true</code> if signature is valid, otherwise <code>false</code></p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-signature">
 											<ul class="tsd-signatures tsd-kind-type-literal">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, valid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Error</span>, valid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 											</ul>
 											<ul class="tsd-descriptions">
 												<li class="tsd-description">
 													<h4 class="tsd-parameters-title">Parameters</h4>
 													<ul class="tsd-parameters">
 														<li>
-															<h5>error: <span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+															<h5>error: <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Error</span></h5>
 														</li>
 														<li>
 															<h5>valid: <span class="tsd-signature-type">boolean</span></h5>
@@ -381,13 +372,13 @@
 					<a name="update" class="tsd-anchor"></a>
 					<h3>update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">types.CryptoData</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">CryptoData</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/crypto/verify.ts#L35">crypto/verify.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/crypto/verify.ts#L35">crypto/verify.ts:35</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -398,7 +389,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>data: <span class="tsd-signature-type">types.CryptoData</span></h5>
+									<h5>data: <span class="tsd-signature-type">CryptoData</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The signed data</p>
 									</div>
@@ -413,8 +404,8 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>

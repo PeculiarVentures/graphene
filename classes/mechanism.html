@@ -7,6 +7,7 @@
 	<meta name="description" content="Documentation for graphene-pk11">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -40,8 +41,6 @@
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
 							<input type="checkbox" id="tsd-filter-externals" checked />
 							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -53,7 +52,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
+					<a href="../modules.html">graphene-pk11</a>
 				</li>
 				<li>
 					<a href="mechanism.html">Mechanism</a>
@@ -77,7 +76,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="handleobject.html" class="tsd-signature-type">HandleObject</a>
+						<a href="handleobject.html" class="tsd-signature-type" data-tsd-kind="Class">HandleObject</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">Mechanism</span>
@@ -131,14 +130,14 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Mechanism<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, handle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">pkcs11.Handle</span>, slotHandle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">core.Handle</span>, lib<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PKCS11</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="mechanism.html" class="tsd-signature-type">Mechanism</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Mechanism<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, handle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, slotHandle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, lib<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PKCS11</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="mechanism.html" class="tsd-signature-type" data-tsd-kind="Class">Mechanism</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L192">mech.ts:192</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L199">mech.ts:199</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -151,37 +150,29 @@
 								<li>
 									<h5>type: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The type of mechanism</p>
-										</div>
+										<p>The type of mechanism</p>
 									</div>
 								</li>
 								<li>
-									<h5>handle: <span class="tsd-signature-type">pkcs11.Handle</span></h5>
+									<h5>handle: <span class="tsd-signature-type">Buffer</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The ID of mechanism</p>
-										</div>
+										<p>The ID of mechanism</p>
 									</div>
 								</li>
 								<li>
-									<h5>slotHandle: <span class="tsd-signature-type">core.Handle</span></h5>
+									<h5>slotHandle: <span class="tsd-signature-type">Buffer</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The ID of the token’s slot</p>
-										</div>
+										<p>The ID of the token’s slot</p>
 									</div>
 								</li>
 								<li>
 									<h5>lib: <span class="tsd-signature-type">PKCS11</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>PKCS#11 module</p>
-										</div>
+										<p>PKCS#11 module</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="mechanism.html" class="tsd-signature-type">Mechanism</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="mechanism.html" class="tsd-signature-type" data-tsd-kind="Class">Mechanism</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -194,7 +185,7 @@
 					<div class="tsd-signature tsd-kind-icon">flags<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L187">mech.ts:187</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L194">mech.ts:194</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -206,11 +197,11 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="handle" class="tsd-anchor"></a>
 					<h3>handle</h3>
-					<div class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">:</span> <a href="../globals.html#handle" class="tsd-signature-type">Handle</a></div>
+					<div class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#handle">handle</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/core/object.ts#L37">core/object.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/core/object.ts#L37">core/object.ts:37</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -224,9 +215,9 @@
 					<h3>lib</h3>
 					<div class="tsd-signature tsd-kind-icon">lib<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PKCS11</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="baseobject.html">BaseObject</a>.<a href="baseobject.html#lib">lib</a></p>
+						<p>Inherited from <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#lib">lib</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/core/object.ts#L19">core/object.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/core/object.ts#L19">core/object.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -241,7 +232,7 @@
 					<div class="tsd-signature tsd-kind-icon">max<wbr>Key<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L182">mech.ts:182</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L189">mech.ts:189</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -257,7 +248,7 @@
 					<div class="tsd-signature tsd-kind-icon">min<wbr>Key<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L175">mech.ts:175</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L182">mech.ts:182</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -270,10 +261,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="slothandle" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> slot<wbr>Handle</h3>
-					<div class="tsd-signature tsd-kind-icon">slot<wbr>Handle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">core.Handle</span></div>
+					<div class="tsd-signature tsd-kind-icon">slot<wbr>Handle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L192">mech.ts:192</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L199">mech.ts:199</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -285,10 +276,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/mechanismenum.html" class="tsd-signature-type">MechanismEnum</a></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/mechanismenum.html" class="tsd-signature-type" data-tsd-kind="Enumeration">MechanismEnum</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L168">mech.ts:168</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L175">mech.ts:175</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -310,7 +301,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L93">mech.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L93">mech.ts:93</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -337,7 +328,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="handleobject.html">HandleObject</a>.<a href="handleobject.html#getinfo">getInfo</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L212">mech.ts:212</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L219">mech.ts:219</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -353,24 +344,24 @@
 					<a name="create" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> create</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">create<span class="tsd-signature-symbol">(</span>algorithm<span class="tsd-signature-symbol">: </span><a href="../globals.html#mechanismtype" class="tsd-signature-type">MechanismType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Mechanism</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<span class="tsd-signature-symbol">(</span>algorithm<span class="tsd-signature-symbol">: </span><a href="../modules.html#mechanismtype" class="tsd-signature-type" data-tsd-kind="Type alias">MechanismType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Mechanism</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L101">mech.ts:101</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L101">mech.ts:101</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates PKCS#11 mechanism structure from <a href="../globals.html#mechanismtype">MechanismType</a></p>
+									<p>Creates PKCS#11 mechanism structure from <a href="../modules.html#mechanismtype">MechanismType</a></p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>algorithm: <a href="../globals.html#mechanismtype" class="tsd-signature-type">MechanismType</a></h5>
+									<h5>algorithm: <a href="../modules.html#mechanismtype" class="tsd-signature-type" data-tsd-kind="Type alias">MechanismType</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Mechanism type</p>
 									</div>
@@ -391,7 +382,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L137">mech.ts:137</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L144">mech.ts:144</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -413,7 +404,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/mech.ts#L143">mech.ts:143</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/mech.ts#L150">mech.ts:150</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -445,8 +436,8 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>

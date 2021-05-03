@@ -7,6 +7,7 @@
 	<meta name="description" content="Documentation for graphene-pk11">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -40,8 +41,6 @@
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
 							<input type="checkbox" id="tsd-filter-externals" checked />
 							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -53,7 +52,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
+					<a href="../modules.html">graphene-pk11</a>
 				</li>
 				<li>
 					<a href="aescbcencryptdataparams.html">AesCbcEncryptDataParams</a>
@@ -84,7 +83,7 @@
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/iparams.html" class="tsd-signature-type">IParams</a></li>
+					<li><a href="../interfaces/iparams.html" class="tsd-signature-type" data-tsd-kind="Interface">IParams</a></li>
 					<li><span class="tsd-signature-type">AesCBC</span></li>
 				</ul>
 			</section>
@@ -121,13 +120,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Aes<wbr>Cbc<wbr>Encrypt<wbr>Data<wbr>Params<span class="tsd-signature-symbol">(</span>iv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, data<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="aescbcencryptdataparams.html" class="tsd-signature-type">AesCbcEncryptDataParams</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Aes<wbr>Cbc<wbr>Encrypt<wbr>Data<wbr>Params<span class="tsd-signature-symbol">(</span>iv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, data<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="aescbcencryptdataparams.html" class="tsd-signature-type" data-tsd-kind="Class">AesCbcEncryptDataParams</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/aes/cbc.ts#L51">keys/aes/cbc.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/aes/cbc.ts#L51">keys/aes/cbc.ts:51</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -140,21 +139,17 @@
 								<li>
 									<h5>iv: <span class="tsd-signature-type">Buffer</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The initialization vector. Must have a fixed size of 16 bytes</p>
-										</div>
+										<p>The initialization vector. Must have a fixed size of 16 bytes</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> data: <span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> = Buffer.alloc(0)</span></h5>
+									<h5>data: <span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> = ...</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The data</p>
-										</div>
+										<p>The data</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="aescbcencryptdataparams.html" class="tsd-signature-type">AesCbcEncryptDataParams</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="aescbcencryptdataparams.html" class="tsd-signature-type" data-tsd-kind="Class">AesCbcEncryptDataParams</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -166,8 +161,9 @@
 					<h3>data</h3>
 					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
 					<aside class="tsd-sources">
+						<p>Implementation of pkcs11.AesCBC.data</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/aes/cbc.ts#L49">keys/aes/cbc.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/aes/cbc.ts#L49">keys/aes/cbc.ts:49</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -181,8 +177,9 @@
 					<h3>iv</h3>
 					<div class="tsd-signature tsd-kind-icon">iv<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
 					<aside class="tsd-sources">
+						<p>Implementation of pkcs11.AesCBC.iv</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/aes/cbc.ts#L45">keys/aes/cbc.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/aes/cbc.ts#L45">keys/aes/cbc.ts:45</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -197,10 +194,11 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/mechparams.html" class="tsd-signature-type">MechParams</a><span class="tsd-signature-symbol"> = MechParams.AesCBC</span></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/mechparams.html" class="tsd-signature-type" data-tsd-kind="Enumeration">MechParams</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
+						<p>Implementation of pkcs11.AesCBC.type</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/aes/cbc.ts#L51">keys/aes/cbc.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/aes/cbc.ts#L51">keys/aes/cbc.ts:51</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -218,9 +216,14 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iparams.html">IParams</a>.<a href="../interfaces/iparams.html#tocki">toCKI</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/aes/cbc.ts#L63">keys/aes/cbc.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/aes/cbc.ts#L63">keys/aes/cbc.ts:63</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Converts parameter to pkcs11js paramter</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AesCBC</span></h4>
 						</li>
 					</ul>
@@ -230,8 +233,8 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>

@@ -7,6 +7,7 @@
 	<meta name="description" content="Documentation for graphene-pk11">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -40,8 +41,6 @@
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
 							<input type="checkbox" id="tsd-filter-externals" checked />
 							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -53,7 +52,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
+					<a href="../modules.html">graphene-pk11</a>
 				</li>
 				<li>
 					<a href="rsapssparams.html">RsaPssParams</a>
@@ -84,7 +83,7 @@
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/iparams.html" class="tsd-signature-type">IParams</a></li>
+					<li><a href="../interfaces/iparams.html" class="tsd-signature-type" data-tsd-kind="Interface">IParams</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -121,13 +120,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Rsa<wbr>Pss<wbr>Params<span class="tsd-signature-symbol">(</span>hashAlg<span class="tsd-signature-symbol">?: </span><a href="../enums/mechanismenum.html" class="tsd-signature-type">MechanismEnum</a>, mgf<span class="tsd-signature-symbol">?: </span><a href="../enums/rsamgf.html" class="tsd-signature-type">RsaMgf</a>, saltLen<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="rsapssparams.html" class="tsd-signature-type">RsaPssParams</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Rsa<wbr>Pss<wbr>Params<span class="tsd-signature-symbol">(</span>hashAlg<span class="tsd-signature-symbol">?: </span><a href="../enums/mechanismenum.html" class="tsd-signature-type" data-tsd-kind="Enumeration">MechanismEnum</a>, mgf<span class="tsd-signature-symbol">?: </span><a href="../enums/rsamgf.html" class="tsd-signature-type" data-tsd-kind="Enumeration">RsaMgf</a>, saltLen<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="rsapssparams.html" class="tsd-signature-type" data-tsd-kind="Class">RsaPssParams</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/rsa/pss.ts#L31">keys/rsa/pss.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/rsa/pss.ts#L31">keys/rsa/pss.ts:31</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -138,31 +137,25 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> hashAlg: <a href="../enums/mechanismenum.html" class="tsd-signature-type">MechanismEnum</a><span class="tsd-signature-symbol"> = MechanismEnum.SHA1</span></h5>
+									<h5>hashAlg: <a href="../enums/mechanismenum.html" class="tsd-signature-type" data-tsd-kind="Enumeration">MechanismEnum</a><span class="tsd-signature-symbol"> = ...</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Hash algorithm used in the PSS encoding</p>
-										</div>
+										<p>Hash algorithm used in the PSS encoding</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> mgf: <a href="../enums/rsamgf.html" class="tsd-signature-type">RsaMgf</a><span class="tsd-signature-symbol"> = RsaMgf.MGF1_SHA1</span></h5>
+									<h5>mgf: <a href="../enums/rsamgf.html" class="tsd-signature-type" data-tsd-kind="Enumeration">RsaMgf</a><span class="tsd-signature-symbol"> = ...</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Mask generation function to use on the encoded block</p>
-										</div>
+										<p>Mask generation function to use on the encoded block</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> saltLen: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 20</span></h5>
+									<h5>saltLen: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 20</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Length, in bytes, of the salt value used in the PSS encoding</p>
-										</div>
+										<p>Length, in bytes, of the salt value used in the PSS encoding</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="rsapssparams.html" class="tsd-signature-type">RsaPssParams</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="rsapssparams.html" class="tsd-signature-type" data-tsd-kind="Class">RsaPssParams</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -172,10 +165,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="hashalgorithm" class="tsd-anchor"></a>
 					<h3>hash<wbr>Algorithm</h3>
-					<div class="tsd-signature tsd-kind-icon">hash<wbr>Algorithm<span class="tsd-signature-symbol">:</span> <a href="../enums/mechanismenum.html" class="tsd-signature-type">MechanismEnum</a></div>
+					<div class="tsd-signature tsd-kind-icon">hash<wbr>Algorithm<span class="tsd-signature-symbol">:</span> <a href="../enums/mechanismenum.html" class="tsd-signature-type" data-tsd-kind="Enumeration">MechanismEnum</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/rsa/pss.ts#L20">keys/rsa/pss.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/rsa/pss.ts#L20">keys/rsa/pss.ts:20</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -195,10 +188,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="mgf" class="tsd-anchor"></a>
 					<h3>mgf</h3>
-					<div class="tsd-signature tsd-kind-icon">mgf<span class="tsd-signature-symbol">:</span> <a href="../enums/rsamgf.html" class="tsd-signature-type">RsaMgf</a></div>
+					<div class="tsd-signature tsd-kind-icon">mgf<span class="tsd-signature-symbol">:</span> <a href="../enums/rsamgf.html" class="tsd-signature-type" data-tsd-kind="Enumeration">RsaMgf</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/rsa/pss.ts#L24">keys/rsa/pss.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/rsa/pss.ts#L24">keys/rsa/pss.ts:24</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -213,7 +206,7 @@
 					<div class="tsd-signature tsd-kind-icon">salt<wbr>Length<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/rsa/pss.ts#L29">keys/rsa/pss.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/rsa/pss.ts#L29">keys/rsa/pss.ts:29</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -228,10 +221,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/mechparams.html" class="tsd-signature-type">MechParams</a><span class="tsd-signature-symbol"> = MechParams.RsaPSS</span></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/mechparams.html" class="tsd-signature-type" data-tsd-kind="Enumeration">MechParams</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/rsa/pss.ts#L31">keys/rsa/pss.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/rsa/pss.ts#L31">keys/rsa/pss.ts:31</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -249,9 +242,14 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/iparams.html">IParams</a>.<a href="../interfaces/iparams.html#tocki">toCKI</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/d2b3404/src/keys/rsa/pss.ts#L45">keys/rsa/pss.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/PeculiarVentures/graphene/blob/5877eb2/src/keys/rsa/pss.ts#L45">keys/rsa/pss.ts:45</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Converts parameter to pkcs11js paramter</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">RsaPSS</span></h4>
 						</li>
 					</ul>
@@ -261,8 +259,8 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>
