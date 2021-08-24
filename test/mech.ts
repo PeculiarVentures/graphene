@@ -1,5 +1,5 @@
 import * as assert from "assert";
-import { AesCbcParams, Mechanism, MechanismEnum } from "../src";
+import { Mechanism, MechanismEnum } from "../src";
 
 context("Mechanism", () => {
 

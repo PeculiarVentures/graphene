@@ -1,4 +1,3 @@
-import { Int64LE } from "int64-buffer";
 import * as pkcs11 from "pkcs11js";
 
 import * as fs from "fs";
@@ -6,6 +5,7 @@ import * as core from "./core";
 import { IParams } from "./keys/params";
 import { MechanismEnum } from "./mech_enum";
 import type { KeyGenMechanism } from "./objects";
+import { uint64ToBuffer } from "./core";
 
 /**
  * Structure that describes algorithm
@@ -254,7 +254,7 @@ export class MechanismCollection extends core.Collection<Mechanism> {
     public items(index: number): Mechanism {
         const type = this.innerItems[index];
         // convert type to buffer
-        const handle = new Int64LE(type).toBuffer();
+        const handle = uint64ToBuffer(type, true);
         return new Mechanism(type, handle, this.slotHandle, this.lib);
     }
 
