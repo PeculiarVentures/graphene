@@ -1,5 +1,6 @@
 import * as pkcs11 from "pkcs11js";
 import * as core from "./core";
+import { prepareError } from "./error";
 import { Slot, SlotCollection } from "./slot";
 
 /**
@@ -73,8 +74,9 @@ export class Module extends core.BaseObject {
     try {
       this.lib.C_Initialize(options);
     } catch (e) {
-      if (!/CKR_CRYPTOKI_ALREADY_INITIALIZED/.test(e.message)) {
-        throw e;
+      const error = prepareError(e);
+      if (!/CKR_CRYPTOKI_ALREADY_INITIALIZED/.test(error.message)) {
+        throw error;
       }
     }
 

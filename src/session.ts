@@ -10,6 +10,7 @@ import { ITemplate, Template } from "./template";
 import { Callback } from "./types";
 
 import { Cipher, Decipher, Digest, Sign, Verify } from "./crypto";
+import { prepareError } from "./error";
 
 export enum SessionFlag {
   /**
@@ -334,10 +335,11 @@ export class Session extends core.HandleObject {
         return obj.toType<objects.SecretKey>();
       }
     } catch (e) {
+      const error = prepareError(e);
       if (callback) {
-        callback(e, null);
+        callback(error, null);
       } else {
-        throw e;
+        throw error;
       }
     }
   }
@@ -412,10 +414,11 @@ export class Session extends core.HandleObject {
         };
       }
     } catch (e) {
+      const error = prepareError(e);
       if (callback) {
-        callback(e, null);
+        callback(error, null);
       } else {
-        throw e;
+        throw error;
       }
     }
   }
@@ -499,10 +502,11 @@ export class Session extends core.HandleObject {
         return wrappedKey;
       }
     } catch (e) {
+      const error = prepareError(e);
       if (callback) {
-        callback(e, null);
+        callback(error, null);
       } else {
-        throw e;
+        throw error;
       }
     }
   }
@@ -558,10 +562,11 @@ export class Session extends core.HandleObject {
       }
 
     } catch (e) {
+      const error = prepareError(e);
       if (callback) {
-        callback(e, null);
+        callback(error, null);
       } else {
-        throw e;
+        throw error;
       }
     }
   }
@@ -606,10 +611,11 @@ export class Session extends core.HandleObject {
         return new SecretKey(hKey, this, this.lib);
       }
     } catch (e) {
+      const error = prepareError(e);
       if (callback) {
-        callback(e, null);
+        callback(error, null);
       } else {
-        throw e;
+        throw error;
       }
     }
   }
