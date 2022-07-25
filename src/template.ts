@@ -521,13 +521,13 @@ const attribute: IAttributeItems = {
   /* CKA_SECONDARY_AUTH, CKA_AUTH_PIN_FLAGS,
  * are new for v2.10. Deprecated in v2.11 and onwards. */
   secondaryAuth: { v: pkcs11.CKA_SECONDARY_AUTH, t: TYPE_BOOL },
-  authPinFlags: { v: pkcs11.CKA_AUTH_PIN_FLAGS, t: TYPE_BUFFER },
+  authPinFlags: { v: pkcs11.CKA_AUTH_PIN_FLAGS, t: TYPE_NUMBER },
 
   /* CKA_ALWAYS_AUTHENTICATE ...
  * CKA_UNWRAP_TEMPLATE are new for v2.20 */
-  alwaysAuth: { v: pkcs11.CKA_ALWAYS_AUTHENTICATE, t: TYPE_BUFFER },
+  alwaysAuth: { v: pkcs11.CKA_ALWAYS_AUTHENTICATE, t: TYPE_BOOL },
 
-  wrapWithTrusted: { v: pkcs11.CKA_WRAP_WITH_TRUSTED, t: TYPE_BUFFER },
+  wrapWithTrusted: { v: pkcs11.CKA_WRAP_WITH_TRUSTED, t: TYPE_BOOL },
   wrapTemplate: { v: pkcs11.CKA_WRAP_TEMPLATE, t: TYPE_BUFFER },
   unwrapTemplate: { v: pkcs11.CKA_UNWRAP_TEMPLATE, t: TYPE_BUFFER },
 
@@ -627,7 +627,7 @@ function b2v(type: string, value: Buffer): any {
  * @returns Attribute item
  * @throws {@link Error} if attribute name is not registered
  */
-function getAttribute(name: string) {
+export function getAttribute(name: string): IAttributeItem {
   for (const key in attribute) {
     if (key === name) {
       return attribute[key];

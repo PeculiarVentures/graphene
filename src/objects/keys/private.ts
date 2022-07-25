@@ -107,7 +107,7 @@ export class PrivateKey extends Key {
    * that has `CKA_TRUSTED` set to `true`. Default is `false`.
    * - Attribute cannot be changed once set to `true`. It becomes a read only attribute.
    */
-  @attribute("wrapTrusted", false)
+  @attribute("wrapWithTrusted", false)
   public wrapTrusted: boolean;
 
   /**
@@ -127,6 +127,6 @@ export class PrivateKey extends Key {
    * if `true`, the user has to supply the PIN for each use (sign or decrypt) with the key.
    * Default is `false`
    */
-  @attribute("alwaysAuthenticate", false)
+  @attribute("alwaysAuth", false)
   public alwaysAuthenticate: boolean;
 }
