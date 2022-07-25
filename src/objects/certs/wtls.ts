@@ -52,7 +52,7 @@ export class WtlsCertificate extends Certificate {
    * SHA-1 hash of the subject public key (default empty)
    * - Can only be empty if `CKA_URL` is empty.
    */
-  @attribute("spi")
+  @attribute("ski")
   public subjectKeyIdentifier: Buffer;
 
   /**
