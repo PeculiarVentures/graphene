@@ -69,6 +69,8 @@ export class Module extends core.BaseObject {
   /**
    * Initializes the Cryptoki library
    * @param options Initialization options
+   *
+   * @remarks The method doesn't throw CKR_CRYPTOKI_ALREADY_INITIALIZED error if library already initialized.
    */
   public initialize(options?: pkcs11.InitializationOptions) {
     try {
