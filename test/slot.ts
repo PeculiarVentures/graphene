@@ -74,6 +74,7 @@ context("Slot", () => {
 
         context("collection", () => {
             it("items", () => {
+                const slots = mod.getSlots();
                 const slot = slots.items(config.controlValues.slot.slotIndex);
                 const mechanisms = slot.getMechanisms();
                 assert.strictEqual(!!mechanisms.length, true);
@@ -83,6 +84,7 @@ context("Slot", () => {
                 assert.strictEqual(!!mech.name, true);
             });
             it("tryGetItem", () => {
+                const slots = mod.getSlots();
                 const slot = slots.items(config.controlValues.slot.slotIndex);
                 const mechanisms = slot.getMechanisms();
 
@@ -91,6 +93,7 @@ context("Slot", () => {
                 assert.strictEqual(mech, null);
             });
             it("for..of mechanisms", () => {
+                const slots = mod.getSlots();
                 const slot = slots.items(config.controlValues.slot.slotIndex);
                 const mechanisms = slot.getMechanisms();
                 for (const mech of mechanisms) {
