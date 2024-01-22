@@ -10,7 +10,7 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
@@ -21,9 +21,8 @@ jobs:
         run: npm run docs
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@3.6.1
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: docs
-          CLEAN: true
+          branch: gh-pages
+          folder: docs
+          clean: true
