@@ -129,8 +129,12 @@ export class Module extends core.BaseObject {
     const info = this.lib.C_GetInfo();
 
     this.cryptokiVersion = info.cryptokiVersion;
-    this.manufacturerID = core.removePadding(info.manufacturerID);
-    this.libraryDescription = core.removePadding(info.libraryDescription);
+    if (info.manufacturerID != null) {
+      this.manufacturerID = core.removePadding(info.manufacturerID);
+    }
+    if (info.libraryDescription != null) {
+      this.libraryDescription = core.removePadding(info.libraryDescription);
+    }
     this.flags = info.flags;
     this.libraryVersion = info.libraryVersion;
   }
