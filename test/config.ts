@@ -3,7 +3,7 @@ import * as os from "node:os";
 let lib = "/usr/local/lib/softhsm/libsofthsm2.so";
 switch (os.platform()) {
     case "darwin":
-        lib = "/usr/local/lib/softhsm/libsofthsm2.dylib";
+        lib = "/usr/local/lib/softhsm/libsofthsm2.so";
         break;
     case "linux":
         lib = "/usr/lib/softhsm/libsofthsm2.so";
