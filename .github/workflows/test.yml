@@ -38,8 +38,10 @@ jobs:
           SOFTHSM2_CONF: ${{ github.workspace }}/softhsm2.conf
       
       - name: Install NSS
-        run: brew install nss
-
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libnss3-tools
+          
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
