@@ -39,12 +39,12 @@ context("RSA", () => {
       encrypt: true,
       wrap: true,
     }, {
-        keyType: graphene.KeyType.RSA,
-        token: false,
-        sign: true,
-        decrypt: true,
-        unwrap: true,
-      });
+      keyType: graphene.KeyType.RSA,
+      token: false,
+      sign: true,
+      decrypt: true,
+      unwrap: true,
+    });
   });
 
   it("generate AES", () => {
@@ -57,13 +57,15 @@ context("RSA", () => {
     });
   });
 
-  function testSignVerify(keys: graphene.IKeyPair, alg: MechanismType) {
+  function testSignVerify(keys: graphene.IKeyPair, alg: MechanismType): Buffer {
     const sign = session.createSign(alg, keys.privateKey);
     const sig = sign.once(MSG);
     let verify = session.createVerify(alg, keys.publicKey);
     assert.strictEqual(verify.once(MSG, sig), true, "Correct");
     verify = session.createVerify(alg, keys.publicKey);
     assert.strictEqual(verify.once(MSG_WRONG, sig), false);
+
+    return sig;
   }
 
   function testEncryptDecrypt(keys: graphene.IKeyPair, alg: MechanismType) {
@@ -89,43 +91,65 @@ context("RSA", () => {
     assert.strictEqual(!!uKey.handle, true);
   }
 
-  it("sign/verify SHA-1", () => {
-    testSignVerify(keyPair, "SHA1_RSA_PKCS");
-  });
-
-  it("sign/verify SHA-1 once", () => {
-    const sig = session.createSign("SHA1_RSA_PKCS", keyPair.privateKey).once(MSG);
-    session.createVerify("SHA1_RSA_PKCS", keyPair.publicKey).once(MSG, sig);
-  });
-
-  it("sign/verify SHA-1 once async", (done) => {
-    session.createSign("SHA1_RSA_PKCS", keyPair.privateKey).once(MSG, (err, sig) => {
-      assert.strictEqual(!!err, false, err ? err.message : "Error");
-      session.createVerify("SHA1_RSA_PKCS", keyPair.publicKey).once(MSG, sig, (err) => {
-        assert.strictEqual(!!err, false, err ? err.message : "Error");
-        done();
+  context("sign/verify", () => {
+    let keyPair: graphene.IKeyPair;
+    before(() => {
+      keyPair = session.generateKeyPair(graphene.KeyGenMechanism.RSA, {
+        keyType: graphene.KeyType.RSA,
+        modulusBits: 2048,
+        publicExponent: Buffer.from([3]),
+        token: false,
+        verify: true,
+        encrypt: true,
+        wrap: true,
+      }, {
+        keyType: graphene.KeyType.RSA,
+        token: false,
+        sign: true,
+        decrypt: true,
+        unwrap: true,
       });
     });
-  });
 
-  it("sign/verify SHA-224", () => {
-    if (isThalesNShield(mod)) { return; }
-    testSignVerify(keyPair, "SHA224_RSA_PKCS");
-  });
+    it("SHA-1", () => {
+      testSignVerify(keyPair, "SHA1_RSA_PKCS");
+    });
 
-  it("sign/verify SHA-256", () => {
-    if (isThalesNShield(mod)) { return; }
-    testSignVerify(keyPair, "SHA256_RSA_PKCS");
-  });
+    it("SHA-1 once", () => {
+      const sig = session.createSign("SHA1_RSA_PKCS", keyPair.privateKey).once(MSG);
+      session.createVerify("SHA1_RSA_PKCS", keyPair.publicKey).once(MSG, sig);
+    });
 
-  it("sign/verify SHA-384", () => {
-    if (isThalesNShield(mod)) { return; }
-    testSignVerify(keyPair, "SHA384_RSA_PKCS");
-  });
+    it("SHA-1 once async", (done) => {
+      session.createSign("SHA1_RSA_PKCS", keyPair.privateKey).once(MSG, (err, sig) => {
+        assert.strictEqual(!!err, false, err ? err.message : "Error");
+        session.createVerify("SHA1_RSA_PKCS", keyPair.publicKey).once(MSG, sig, (err) => {
+          assert.strictEqual(!!err, false, err ? err.message : "Error");
+          done();
+        });
+      });
+    });
 
-  it("sign/verify SHA-512", () => {
-    if (isThalesNShield(mod)) { return; }
-    testSignVerify(keyPair, "SHA512_RSA_PKCS");
+    it("SHA-224", () => {
+      if (isThalesNShield(mod)) { return; }
+      testSignVerify(keyPair, "SHA224_RSA_PKCS");
+    });
+
+    it("SHA-256", () => {
+      if (isThalesNShield(mod)) { return; }
+      const sig = testSignVerify(keyPair, "SHA256_RSA_PKCS");
+      assert.strictEqual(sig.length, 256);
+    });
+
+    it("SHA-384", () => {
+      if (isThalesNShield(mod)) { return; }
+      testSignVerify(keyPair, "SHA384_RSA_PKCS");
+    });
+
+    it("SHA-512", () => {
+      if (isThalesNShield(mod)) { return; }
+      testSignVerify(keyPair, "SHA512_RSA_PKCS");
+    });
   });
 
   it("OAEP encrypt/decrypt default SHA-1", () => {
