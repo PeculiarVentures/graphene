@@ -1,6 +1,20 @@
+import * as os from "node:os";
+
+let lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+switch (os.platform()) {
+    case "darwin":
+        lib = "/usr/local/lib/softhsm/libsofthsm2.dylib";
+        break;
+    case "linux":
+        lib = "/usr/lib/softhsm/libsofthsm2.so";
+        break;
+    default:
+        throw new Error("Unknown platform");
+}
+
 export default {
     init: {
-        lib: "/usr/local/lib/softhsm/libsofthsm2.so",
+        lib,
         libName: "SoftHSM",
         pin: "12345",
         vendor: "",
