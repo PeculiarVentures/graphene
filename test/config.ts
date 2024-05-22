@@ -1,6 +1,20 @@
+import os from "os";
+
+let lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+switch (os.platform()) {
+    case "darwin": // macOS
+        lib = "/usr/local/lib/softhsm/libsofthsm2.so";
+        break;
+    case "linux":
+        lib = "/usr/lib/softhsm/libsofthsm2.so";
+        break;
+    case "win32": // Windows
+        lib = "C:\\SoftHSM2\\lib\\softhsm2-x64.dll";
+        break;
+}
 export default {
     init: {
-        lib: "/usr/local/lib/softhsm/libsofthsm2.so",
+        lib,
         libName: "SoftHSM",
         pin: "12345",
         vendor: "",
