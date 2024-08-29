@@ -67,6 +67,8 @@ jobs:
 
       - name: Run test with coverage
         run: npm run coverage
+        env:
+          SOFTHSM2_CONF: ${{ github.workspace }}/softhsm2.conf
 
       - name: Coveralls
         uses: coverallsapp/github-action@v2
