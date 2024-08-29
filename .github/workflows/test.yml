@@ -1,6 +1,14 @@
 name: test
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - "*"
+    tags-ignore:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
 
 jobs:
   build:
@@ -17,23 +25,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       - name: Install SoftHSM
         run: |
           sudo apt-get update -y
           sudo apt-get install -y softhsm2
           echo "SoftHSM2 is installed"
+          # Create a configuration file
           echo "directories.tokendir = ${{ github.workspace }}/token" > softhsm2.conf
           echo "objectstore.backend = file" >> softhsm2.conf
           echo "log.level = ERROR" >> softhsm2.conf
           echo "slots.removable = false" >> softhsm2.conf
           echo "slots.mechanisms = ALL" >> softhsm2.conf
           echo "library.reset_on_fork = false" >> softhsm2.conf
+          # Create a directory for the token
           mkdir -p ${{ github.workspace }}/token
+          # Create a symlink to the SoftHSM library
           softhsm2-util --init-token --so-pin "12345" --pin "12345" --slot 0 --label "My slot 0"
         env:
           SOFTHSM2_CONF: ${{ github.workspace }}/softhsm2.conf
-      
+
       - name: Install NSS
         run: |
           sudo apt-get update -y
@@ -42,7 +53,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-      
+
       - uses: actions/cache@v4
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
